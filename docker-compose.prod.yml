@@ -1,0 +1,70 @@
+# ═══════════════════════════════════════════════════════════
+# PayPol Protocol — Production Docker Compose
+# Domain: paypol.xyz | VPS: 37.27.190.158 (Hetzner)
+# ═══════════════════════════════════════════════════════════
+
+services:
+  # ── Dashboard (Next.js 16) ──────────────────────────────
+  dashboard:
+    build:
+      context: ./apps/dashboard
+      dockerfile: Dockerfile
+    container_name: paypol-dashboard
+    restart: always
+    env_file:
+      - ./apps/dashboard/.env.production
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    volumes:
+      - dashboard_data:/app/prisma
+    expose:
+      - "3000"
+    networks:
+      - paypol-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── Nginx (Reverse Proxy + SSL) ─────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: paypol-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
+      - certbot_certs:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      dashboard:
+        condition: service_healthy
+    networks:
+      - paypol-net
+
+  # ── Certbot (Let's Encrypt SSL) ─────────────────────────
+  certbot:
+    image: certbot/certbot
+    container_name: paypol-certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - paypol-net
+
+volumes:
+  dashboard_data:
+  certbot_certs:
+  certbot_www:
+
+networks:
+  paypol-net:
+    driver: bridge

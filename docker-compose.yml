@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # 1. Database: Stores users, agents, and transaction logs
+  db:
+    image: postgres:15-alpine
+    container_name: paypol-db
+    restart: always
+    environment:
+      POSTGRES_USER: paypol
+      POSTGRES_PASSWORD: paypol_password
+      POSTGRES_DB: paypol_core
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # 2. Tempo Engine (Simulated via Temporal): The brain of Durable Workflows
+  tempo:
+    image: temporalio/auto-setup:latest
+    container_name: paypol-tempo
+    ports:
+      - "7233:7233" # gRPC port for Workers
+      - "8233:8233" # Web UI port to view workflows
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=paypol
+      - POSTGRES_PWD=paypol_password
+      - POSTGRES_SEEDS=db
+    depends_on:
+      - db
+
+  # 3. Adminer: Lightweight DB GUI (Access at http://localhost:8080)
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

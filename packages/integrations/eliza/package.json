@@ -1,0 +1,22 @@
+{
+  "name": "@paypol/eliza-plugin",
+  "version": "1.0.0",
+  "description": "Eliza plugin — exposes PayPol marketplace agents as Eliza actions.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev":   "tsc --watch"
+  },
+  "peerDependencies": {
+    "@ai16z/eliza": ">=0.1.0"
+  },
+  "dependencies": {
+    "axios": "^1.13.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript":  "^5.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,77 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") 
+}
+
+// 🏢 Multi-tenant Workspace
+model Workspace {
+  id              String   @id @default(uuid())
+  name            String
+  adminWallet     String   @unique
+  createdAt       DateTime @default(now())
+  payloads        TimeVaultPayload[]
+}
+
+// 🛡️ Shielded Transaction Ledger
+model TimeVaultPayload {
+  id              String   @id @default(uuid())
+  workspaceId     String
+  
+  // --- [NEW FIELDS ADDED] ---
+  name            String?  
+  token           String   @default("AlphaUSD")
+  note            String?  
+  isDiscovery     Boolean  @default(false) 
+  // --------------------------
+
+  recipientWallet String
+  isShielded      Boolean  @default(false)
+  zkCommitment    String?  
+  zkProof         String?  
+  amount          Float?   
+  status          String   @default("Draft")
+  createdAt       DateTime @default(now())
+  workspace       Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+// ZK Payroll History Storage Table
+model PayoutRecord {
+  id        String   @id @default(cuid())
+  recipient String   // Employee wallet address
+  amount    Float    // Amount (AlphaUSD)
+  txHash    String   @unique // Blockchain transaction hash
+  createdAt DateTime @default(now()) // Timestamp of transfer
+}
+
+// 🤖 Autopilot Agent Rules (Recurring Payouts)
+model AutopilotRule {
+  id             Int      @id @default(autoincrement()) // Using Int as UI passes id: number
+  name           String
+  wallet_address String
+  amount         Float
+  token          String   @default("AlphaUSD")
+  schedule       String   // e.g., "Daily", "Weekly", "Monthly (1st)"
+  note           String?
+  status         String   @default("Active") // Status: "Active" or "Paused"
+  createdAt      DateTime @default(now())
+}
+
+// 📝 Boardroom Queue (OmniTerminal Intents)
+// Stores temporary transactions before Admin signs the Escrow
+model EmployeeTx {
+  id            String   @id @default(uuid())
+  name          String
+  walletAddress String
+  amount        String
+  token         String   @default("AlphaUSD")
+  note          String?
+  isDiscovery   Boolean  @default(false)
+  status        String   @default("AWAITING") // Status: "AWAITING", "PENDING"
+  createdAt     DateTime @default(now())
+}

@@ -1,0 +1,25 @@
+{
+  "name": "paypol-agents",
+  "version": "1.0.0",
+  "description": "Native PayPol AI agents — contract auditor, yield optimizer, payroll planner, gas predictor.",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev":   "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "axios":             "^1.13.5",
+    "cors":              "^2.8.5",
+    "dotenv":            "^17.3.1",
+    "express":           "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/cors":       "^2.8.17",
+    "@types/express":    "^5.0.0",
+    "@types/node":       "^20.0.0",
+    "ts-node-dev":       "^2.0.0",
+    "typescript":        "^5.0.0"
+  }
+}

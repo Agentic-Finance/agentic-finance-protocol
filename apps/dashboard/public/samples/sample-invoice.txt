@@ -1,0 +1,45 @@
+============================================================
+                       INVOICE
+============================================================
+
+Invoice #:    INV-2026-0042
+Date:         February 23, 2026
+Due Date:     March 15, 2026
+
+From:         Acme Web3 Studios
+              1200 Blockchain Ave, Suite 400
+              San Francisco, CA 94105
+
+Bill To:      PayPol Protocol DAO Treasury
+              Wallet: 0xTreasury...
+
+------------------------------------------------------------
+LINE ITEMS
+------------------------------------------------------------
+
+ #   Description                  Recipient               Amount      Token
+---  ---------------------------  ----------------------  ----------  -------
+ 1.  Smart Contract Development   0xA1b2C3d4E5f67890...    $8,500     USDC
+ 2.  Frontend Integration         0xB2c3D4e5F6789012...    $4,200     USDC
+ 3.  Security Audit (Phase 1)     0xC3d4E5f6A7890123...    $6,000     USDC
+ 4.  UI/UX Design Sprint          0xD4e5F6a7B8901234...    $3,500     USDC
+ 5.  DevOps & Infrastructure      0xE5f6A7b8C9012345...    $2,800     USDC
+
+------------------------------------------------------------
+                                          Subtotal:  $25,000.00
+                                          Tax (0%):      $0.00
+                                          ---------
+                                          TOTAL:     $25,000.00
+------------------------------------------------------------
+
+Payment Terms: Net 30
+Payment Method: On-Chain via PayPol Protocol
+
+Notes:
+- All wallet addresses are verified Tempo Network addresses
+- Payment will be processed through PayPol Boardroom multi-sig
+- ZK-shielded execution available upon request
+
+============================================================
+             Thank you for your business!
+============================================================

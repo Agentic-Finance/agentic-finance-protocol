@@ -1,0 +1,25 @@
+{
+  "name": "paypol-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for the PayPol Agent Marketplace — build agents, hire agents, dispatch payments.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev":   "tsc --watch",
+    "test":  "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": ["paypol", "agents", "defi", "payroll", "zk"],
+  "author": "PayPol Protocol",
+  "license": "MIT",
+  "dependencies": {
+    "axios":   "^1.13.5",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node":    "^20.0.0",
+    "typescript":     "^5.0.0"
+  }
+}

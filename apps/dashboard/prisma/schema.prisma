@@ -1,0 +1,163 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./paypol_saas.db" 
+}
+
+// 🏢 Multi-tenant Workspace
+model Workspace {
+  id              String   @id @default(uuid())
+  name            String
+  adminWallet     String   @unique
+  createdAt       DateTime @default(now())
+  payloads        TimeVaultPayload[]
+}
+
+// 🛡️ Shielded Transaction Ledger
+model TimeVaultPayload {
+  id              String   @id @default(uuid())
+  workspaceId     String
+  
+  // --- [NEW FIELDS ADDED] ---
+  name            String?  
+  token           String   @default("AlphaUSD")
+  note            String?  
+  isDiscovery     Boolean  @default(false) 
+  // --------------------------
+
+  recipientWallet String
+  isShielded      Boolean  @default(false)
+  zkCommitment    String?  
+  zkProof         String?  
+  amount          Float?   
+  status          String   @default("Draft")
+  createdAt       DateTime @default(now())
+  workspace       Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+// ZK Payroll History Storage Table
+model PayoutRecord {
+  id        String   @id @default(cuid())
+  recipient String   // Employee wallet address
+  amount    Float    // Amount (AlphaUSD)
+  txHash    String   @unique // Blockchain transaction hash
+  createdAt DateTime @default(now()) // Timestamp of transfer
+}
+
+// 🤖 Autopilot Agent Rules (Recurring Payouts)
+model AutopilotRule {
+  id             Int      @id @default(autoincrement()) // Using Int as UI passes id: number
+  name           String
+  wallet_address String
+  amount         Float
+  token          String   @default("AlphaUSD")
+  schedule       String   // e.g., "Daily", "Weekly", "Monthly (1st)"
+  note           String?
+  status         String   @default("Active") // Status: "Active" or "Paused"
+  createdAt      DateTime @default(now())
+}
+
+// 📝 Boardroom Queue (OmniTerminal Intents)
+// Stores temporary transactions before Admin signs the Escrow
+model EmployeeTx {
+  id            String   @id @default(uuid())
+  name          String
+  walletAddress String
+  amount        String
+  token         String   @default("AlphaUSD")
+  note          String?
+  isDiscovery   Boolean  @default(false)
+  status        String   @default("AWAITING") // Status: "AWAITING", "PENDING"
+  createdAt     DateTime @default(now())
+}
+
+// ==========================================
+// 🤖 AGENT MARKETPLACE
+// ==========================================
+
+// Agent profiles registered in the marketplace
+model MarketplaceAgent {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String
+  category      String   // security, defi, payroll, analytics, automation, compliance, governance, tax, nft, deployment
+  skills        String   // JSON array: ["audit","solidity","reentrancy"]
+  basePrice     Float
+  webhookUrl    String?  // null = native PayPol agent
+  nativeAgentId String?  // maps to /services/agents/:id (e.g. "contract-auditor")
+  ownerWallet   String
+  avatarEmoji   String   @default("🤖")
+  isVerified    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  totalJobs     Int      @default(0)
+  successRate   Float    @default(100.0)
+  avgRating     Float    @default(0)
+  ratingCount   Int      @default(0)
+  responseTime  Int      @default(30) // avg seconds
+  source        String   @default("native")  // native | community | eliza | crewai | langchain | olas
+  sourceUrl     String?                       // GitHub repo or framework docs URL
+  createdAt     DateTime @default(now())
+  jobs          AgentJob[]
+  reviews       AgentReview[]
+}
+
+// Job lifecycle: CREATED → MATCHED → NEGOTIATING → ESCROW_LOCKED → EXECUTING → COMPLETED | FAILED | DISPUTED | SETTLED | REFUNDED
+model AgentJob {
+  id              String    @id @default(uuid())
+  agentId         String
+  agent           MarketplaceAgent @relation(fields: [agentId], references: [id])
+  clientWallet    String
+  prompt          String    // original user prompt
+  taskDescription String?
+  budget          Float
+  negotiatedPrice Float?
+  platformFee     Float?    // 8% of negotiated
+  token           String    @default("AlphaUSD")
+  status          String    @default("CREATED")
+  result          String?   // JSON: agent output
+  escrowTxHash    String?
+  settleTxHash    String?
+  onChainJobId    Int?      // Maps to PayPolNexusV2 contract's job ID
+  disputeReason   String?   // Why employer disputed
+  deadline        DateTime? // Auto-refund deadline (block.timestamp + deadlineDuration)
+  executionTime   Int?      // seconds
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  reviews         AgentReview[]
+}
+
+// Post-job reviews and ratings
+model AgentReview {
+  id        String   @id @default(uuid())
+  jobId     String
+  job       AgentJob @relation(fields: [jobId], references: [id])
+  agentId   String
+  agent     MarketplaceAgent @relation(fields: [agentId], references: [id])
+  rating    Int      // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// ⚡ CONDITIONAL PAYROLL
+// ==========================================
+
+// Rules that trigger payroll when conditions are met
+model ConditionalRule {
+  id              String    @id @default(uuid())
+  name            String                          // Rule name/label
+  recipients      String                          // JSON: [{ name, wallet, amount, token, note }]
+  conditions      String                          // JSON: [{ type, param, operator, value }]
+  conditionLogic  String    @default("AND")       // AND / OR
+  status          String    @default("Watching")  // Watching, Paused, Triggered, Expired
+  triggerCount    Int       @default(0)
+  maxTriggers     Int       @default(1)           // How many times to trigger (-1 = infinite)
+  note            String?
+  createdAt       DateTime  @default(now())
+  triggeredAt     DateTime?
+}

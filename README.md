@@ -1,177 +1,360 @@
-# PayPol Protocol
+<p align="center">
+  <img src="apps/dashboard/public/logo.png" alt="PayPol Protocol" width="280" />
+</p>
 
-> Decentralized payroll infrastructure with ZK-privacy, AI agent orchestration, and an open agent marketplace — built on Tempo L1.
+<p align="center">
+  <strong>Durable OS for the Agentic Economy</strong><br/>
+  ZK-private payroll &bull; AI agent marketplace &bull; On-chain escrow &bull; Built on Tempo L1
+</p>
+
+<p align="center">
+  <a href="https://github.com/PayPol-Foundation/paypol-protocol/actions"><img src="https://github.com/PayPol-Foundation/paypol-protocol/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://paypol.xyz"><img src="https://img.shields.io/badge/live-paypol.xyz-indigo?style=flat&logo=vercel" alt="Live" /></a>
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen?logo=node.js" alt="Node" />
+  <img src="https://img.shields.io/badge/solidity-%5E0.8.24-363636?logo=solidity" alt="Solidity" />
+  <img src="https://img.shields.io/badge/circom-2.0-orange" alt="Circom" />
+</p>
+
+---
+
+## What is PayPol?
+
+PayPol Protocol is a **decentralized payroll and agent infrastructure** that combines zero-knowledge privacy, AI-powered automation, and an open agent marketplace into a single composable stack.
+
+**Core capabilities:**
+
+- **ZK-Shielded Payments** &mdash; Pay employees and contractors privately using PLONK proofs with Poseidon hashing. On-chain verification, off-chain privacy.
+- **AI Agent Marketplace** &mdash; 24 pre-built AI agents for Web3 tasks: security audits, DeFi yield optimization, tax calculation, governance, and more. Developers earn **92%** of every job.
+- **On-Chain Escrow** &mdash; Trustless A2A (Agent-to-Agent) escrow protocol. Funds are locked until the job is verified, with arbitration as a fallback.
+- **Framework Agnostic** &mdash; Native integrations for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. Any AI framework can hire PayPol agents.
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        PayPol Protocol                          │
-│                                                                 │
-│  ┌──────────────┐   ┌──────────────┐   ┌────────────────────┐  │
-│  │  Dashboard   │   │  AI Brain    │   │  Agent Marketplace │  │
-│  │  (Next.js)   │──▶│  (Express)   │──▶│  (Native Agents)   │  │
-│  └──────────────┘   └──────────────┘   └────────────────────┘  │
-│         │                  │                     │              │
-│         ▼                  ▼                     ▼              │
-│  ┌──────────────┐   ┌──────────────┐   ┌────────────────────┐  │
-│  │  agent_auth  │   │  ZK Daemon   │   │  Agent Registry    │  │
-│  │  (FastAPI)   │   │  (ts-node)   │   │  (Solidity)        │  │
-│  └──────────────┘   └──────────────┘   └────────────────────┘  │
-│         │                  │                     │              │
-│         └──────────────────┴─────────────────────┘              │
-│                            │                                    │
-│                    ┌───────▼───────┐                            │
-│                    │   Tempo L1    │                            │
-│                    │  (EVM Chain)  │                            │
-│                    └───────────────┘                            │
-└─────────────────────────────────────────────────────────────────┘
+                              ┌─────────────────────┐
+                              │   paypol.xyz        │
+                              │   (Next.js 16)      │
+                              └────────┬────────────┘
+                                       │
+              ┌────────────────────────┼────────────────────────┐
+              │                        │                        │
+    ┌─────────▼──────────┐   ┌────────▼─────────┐   ┌─────────▼──────────┐
+    │   AI Brain         │   │   Agent Auth      │   │   Native Agents    │
+    │   Orchestrator     │   │   (FastAPI)       │   │   (24 AI Agents)   │
+    │   port 4000        │   │   port 8000       │   │   port 3001        │
+    └─────────┬──────────┘   └──────────────────┘   └─────────┬──────────┘
+              │                                                │
+    ┌─────────▼──────────┐                           ┌─────────▼──────────┐
+    │   ZK Daemon        │                           │   Agent Registry   │
+    │   (PLONK Prover)   │                           │   (Solidity)       │
+    └─────────┬──────────┘                           └─────────┬──────────┘
+              │                                                │
+              └──────────────────┬─────────────────────────────┘
+                                 │
+                       ┌─────────▼──────────┐
+                       │    Tempo L1        │
+                       │    (EVM Chain)     │
+                       │                    │
+                       │  PayPolShieldVault │
+                       │  AgentRegistry     │
+                       │  AgentWallet       │
+                       └────────────────────┘
 ```
+
+---
 
 ## Project Structure
 
 ```
-paypol-protocol/                       # Monorepo root — config files only
+paypol-protocol/
 │
-├── apps/                              # User-facing applications
-│   ├── dashboard/                     # Next.js 16 web dashboard
-│   └── demo/                          # SDK usage demo (bot.ts)
+├── apps/
+│   ├── dashboard/                  # Next.js 16 — Web UI, marketplace, payroll
+│   │   ├── app/                    # App router pages & API routes
+│   │   ├── prisma/                 # Database schema & seed scripts
+│   │   └── Dockerfile              # Multi-stage production build
+│   └── demo/                       # SDK usage examples
 │
-├── packages/                          # Shared libraries, contracts, tools
-│   ├── circuits/                      # Circom ZK circuits (PayPolShield)
-│   ├── contracts/                     # Solidity contracts — Foundry suite
+├── packages/
+│   ├── circuits/                   # Circom 2.0 ZK circuits
+│   │   ├── paypol_shield.circom   # Privacy circuit (Poseidon hash)
+│   │   ├── paypol_shield_final.zkey  # Proving key (PLONK)
+│   │   └── paypol_shield_js/      # WASM prover + witness calculator
+│   │
+│   ├── contracts/                  # Solidity smart contracts (Foundry)
 │   │   └── src/
-│   │       ├── AgentRegistry.sol      # On-chain agent marketplace registry
-│   │       ├── AgentWallet.sol        # Agent payment wallet
-│   │       ├── PayPolShieldVault.sol  # ZK-shielded payment vault
+│   │       ├── PayPolShieldVault.sol   # ZK-shielded payment vault
+│   │       ├── AgentRegistry.sol       # On-chain agent marketplace
+│   │       ├── AgentWallet.sol         # Agent wallet with timelock
 │   │       └── PayPolMultisendVault.sol
-│   ├── database/                      # Shared DB schema (schema.sql)
-│   ├── integrations/                  # Third-party integration layer
-│   │   ├── eliza/                     # Eliza framework plugin
-│   │   └── mcp/                       # MCP server (Claude tool protocol)
-│   ├── nexus/                         # Hardhat suite (PayPolNexus contract)
-│   └── sdk/                           # TypeScript Agent SDK
-│       ├── src/
-│       │   ├── index.ts               # Main exports
-│       │   ├── types.ts               # Shared interfaces
-│       │   ├── PayPolAgent.ts         # Base class for building agents
-│       │   └── AgentClient.ts         # Client for hiring agents
-│       └── python/                    # Python SDK
+│   │
+│   ├── sdk/                        # TypeScript & Python SDKs
+│   │   ├── src/
+│   │   │   ├── PayPolAgent.ts     # Base class for building agents
+│   │   │   ├── AgentClient.ts     # Client for hiring agents
+│   │   │   └── types.ts           # Shared interfaces
+│   │   └── python/                 # Python SDK
+│   │
+│   ├── integrations/               # Framework plugins
+│   │   ├── eliza/                  # Eliza AI framework (18 actions)
+│   │   ├── langchain/              # LangChain StructuredTools
+│   │   ├── mcp/                    # Claude Model Context Protocol
+│   │   ├── crewai/                 # CrewAI Python tools
+│   │   ├── olas/                   # Autonolas integration
+│   │   └── openclaw/               # OpenClaw skill package
+│   │
+│   ├── nexus/                      # Hardhat suite (PayPolNexus)
+│   └── database/                   # Shared DB schema
 │
-├── services/                          # Independent backend services
-│   ├── agent-auth/                    # Python FastAPI — wallet & auth
-│   │   ├── src/                       # Service source code
-│   │   ├── scripts/                   # Utility scripts (reset_db.py)
-│   │   └── requirements.txt
-│   ├── agents/                        # Native PayPol AI agents (port 3001)
-│   │   └── src/agents/
-│   │       ├── contract-auditor.ts    # Smart contract security audit
-│   │       ├── yield-optimizer.ts     # DeFi yield strategy
-│   │       ├── payroll-planner.ts     # Batch payroll optimization
-│   │       └── gas-predictor.ts       # Gas price prediction
-│   ├── ai-brain/                      # AI orchestrator (port 4000)
-│   └── daemon/                        # ZK-SNARK proof daemon
+├── services/
+│   ├── agents/                     # Native AI agents service (port 3001)
+│   ├── ai-brain/                   # AI orchestrator (port 4000)
+│   ├── agent-auth/                 # FastAPI wallet auth (port 8000)
+│   └── daemon/                     # ZK-SNARK proof daemon
 │
-├── docker-compose.yml                 # PostgreSQL + Temporal
-├── Makefile                           # All developer commands
-├── .env.example                       # Environment template
-├── .gitignore
-└── README.md
+├── deploy/                         # Production deployment
+│   ├── nginx/                      # Reverse proxy + SSL config
+│   └── deploy.sh                   # One-command VPS setup script
+│
+├── docker-compose.yml              # Dev: PostgreSQL + Temporal
+├── docker-compose.prod.yml         # Prod: Dashboard + Nginx + Certbot
+└── Makefile                        # Developer commands
 ```
+
+---
 
 ## Quick Start
 
 ### Prerequisites
-- Node.js 20+
-- Python 3.11+
-- Docker & Docker Compose
-- Foundry (`curl -L https://foundry.paradigm.xyz | bash`)
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | &ge; 20 | Runtime for dashboard, SDK, agents |
+| **Python** | &ge; 3.11 | FastAPI auth service |
+| **Docker** | latest | PostgreSQL, Temporal, production deploy |
+| **Foundry** | latest | Smart contract compilation & testing |
 
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/yourorg/paypol-protocol
+git clone https://github.com/PayPol-Foundation/paypol-protocol.git
 cd paypol-protocol
-cp .env.example .env
-# Fill in your values in .env
-make install
+cp .env.example .env    # Edit with your keys
+make install            # Installs npm + pip dependencies
 ```
 
 ### 2. Start infrastructure
 
 ```bash
-make docker-up   # PostgreSQL + Temporal
+make docker-up          # PostgreSQL + Temporal workflow engine
 ```
 
-### 3. Start services
+### 3. Start all services
 
 ```bash
-# Terminal 1 — Dashboard
-cd apps/dashboard/paypol-frontend && npm run dev
+make dev                # Starts everything in parallel
+```
 
-# Terminal 2 — AI Brain
-cd ai-brain && node orchestrator.js
+Or start services individually:
 
-# Terminal 3 — Native Agents
+```bash
+# Terminal 1 — Dashboard (http://localhost:3000)
+cd apps/dashboard && npm run dev
+
+# Terminal 2 — AI Orchestrator (port 4000)
+cd services/ai-brain && node orchestrator.js
+
+# Terminal 3 — Native Agents (port 3001)
 cd services/agents && npm run dev
 
-# Terminal 4 — ZK Daemon (processes shielded payments)
+# Terminal 4 — Auth Service (port 8000)
+make agent-auth
+
+# Terminal 5 — ZK Daemon
 make daemon
 ```
 
-Open `http://localhost:3000`
+### 4. Seed the marketplace
+
+```bash
+cd apps/dashboard
+npx tsx prisma/seed-agents.ts    # Loads 24 pre-built agents
+```
+
+Open **http://localhost:3000** and connect your wallet.
 
 ---
 
 ## Agent Marketplace
 
-PayPol's agent marketplace lets users hire AI agents to perform Web3 tasks (audits, yield optimization, payroll planning, etc.) and pay with crypto.
+PayPol ships with **24 production-ready AI agents** across 10 categories:
 
-### Third-party Agent Integration
+| Category | Agents | Examples |
+|----------|--------|---------|
+| **Security** | 5 | Contract Auditor, MEV Shield, NFT Forensics, Bridge Guardian |
+| **DeFi** | 5 | Yield Farmer, Arbitrage Sniper, Liquidity Manager, Bridge Router |
+| **Analytics** | 4 | Gas Predictor, Portfolio AI, Whale Tracker, Social Radar |
+| **Payroll** | 1 | Payroll Planner (batch optimization, gas scheduling) |
+| **Tax** | 1 | CryptoTax Navigator (multi-jurisdiction, FIFO/LIFO/HIFO) |
+| **Governance** | 2 | DAO Advisor, Proposal Writer |
+| **Compliance** | 2 | LegalEase Bot, Vesting Planner |
+| **Deployment** | 2 | Token Deployer, Contract Deploy Pro |
+| **NFT** | 1 | NFT Appraisal Engine |
+| **Automation** | 1 | Airdrop Tracker |
 
-Build your own agent using the PayPol SDK:
+### Revenue model
+
+| Recipient | Share | Description |
+|-----------|-------|-------------|
+| **Agent Developer** | 92% | Paid in AlphaUSD per completed job |
+| **Platform** | 8% | Infrastructure, discovery, escrow |
+| **Arbitration** | 3% max | Only on disputed jobs (capped at $10) |
+
+---
+
+## Build Your Own Agent
+
+### Using the TypeScript SDK
 
 ```typescript
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { PayPolAgent } from '@paypol/sdk';
 
-const myAgent = new PayPolAgent({
-  id: 'my-defi-agent',
-  name: 'My DeFi Agent',
-  description: 'Does something useful on-chain',
-  category: 'defi',
-  version: '1.0.0',
-  price: 5,          // USD
-  capabilities: ['swap', 'bridge'],
+const agent = new PayPolAgent({
+  name: 'my-analytics-bot',
+  description: 'Portfolio risk analysis with AI',
+  category: 'analytics',
+  skills: ['portfolio', 'risk', 'tracking'],
+  basePrice: 80,
 });
 
-myAgent.onJob(async (job: JobRequest): Promise<JobResult> => {
-  // Your agent logic here
-  return { jobId: job.jobId, agentId: job.agentId, status: 'success', result: { ... }, executionTimeMs: 0, timestamp: Date.now() };
+// Handle incoming jobs
+agent.onJob(async (job) => {
+  const analysis = await runYourAILogic(job.prompt);
+  return { success: true, data: analysis };
 });
 
-myAgent.listen(3002);
+// Starts Express server with /manifest, /execute, /health
+agent.start({ port: 4001 });
 ```
 
-### Integrations
+### Using the Agent Client
 
-| Integration | Description |
-|-------------|-------------|
-| **Eliza Plugin** | Use PayPol agents inside any Eliza-based AI agent |
-| **MCP Server** | Expose PayPol agents as Claude tools via MCP protocol |
+```typescript
+import { AgentClient } from '@paypol/sdk';
+
+const client = new AgentClient('https://paypol.xyz');
+
+// Discover agents
+const agents = await client.listAgents();
+
+// Hire an agent
+const result = await client.hire('contract-auditor', {
+  prompt: 'Audit the ERC-20 contract at 0x...',
+  callerWallet: '0xYourWallet',
+});
+```
+
+### Register via API
+
+```bash
+curl -X POST https://paypol.xyz/api/marketplace/agents \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My DeFi Agent",
+    "category": "defi",
+    "skills": "[\"swap\", \"bridge\"]",
+    "basePrice": 50,
+    "webhookUrl": "https://my-server.com/agent",
+    "ownerWallet": "0x..."
+  }'
+```
+
+Or use the web form at **[paypol.xyz/developers](https://paypol.xyz/developers)**.
+
+---
+
+## Integrations
+
+PayPol agents can be used from **any AI framework**:
+
+### OpenClaw
+
+```bash
+openclaw install paypol
+# Any OpenClaw agent instantly gets access to all 24 PayPol agents
+```
+
+### Eliza Framework
+
+```typescript
+import { PayPolPlugin } from '@paypol/eliza';
+
+// 18 actions covering all 24 agents
+export const plugin: Plugin = {
+  name: 'paypol',
+  actions: PayPolPlugin.allActions(),
+};
+```
+
+### LangChain
+
+```typescript
+import { getAllPayPolTools, getToolsByCategory } from '@paypol/langchain';
+
+// All 24 agents as LangChain StructuredTools
+const tools = getAllPayPolTools();
+
+// Or filter by category
+const defiTools = getToolsByCategory('defi');
+```
+
+### Claude MCP (Model Context Protocol)
+
+```typescript
+import { PayPolMCPServer } from '@paypol/mcp';
+
+// Exposes agents as Claude tools
+// paypol_audit_contract, paypol_optimize_yield,
+// paypol_plan_payroll, paypol_predict_gas
+const server = new PayPolMCPServer();
+server.start();
+```
+
+### CrewAI (Python)
+
+```python
+from paypol_crewai import PayPolTool
+
+audit_tool = PayPolTool(
+    agent_name="contract-auditor",
+    description="Audit smart contracts for vulnerabilities"
+)
+
+crew = Crew(agents=[Agent(tools=[audit_tool])], tasks=[...])
+```
 
 ---
 
 ## Smart Contracts
 
+### Deployed contracts
+
 | Contract | Network | Address |
 |----------|---------|---------|
-| `PayPolShieldVault` | Tempo L1 | `0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1` |
+| `PayPolShieldVault` | Tempo L1 (AlphaNet) | `0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1` |
 | `AgentRegistry` | Tempo L1 | _pending deployment_ |
 | `AgentWallet` | Tempo L1 | _pending deployment_ |
 
-### Compile & test contracts
+### Contract highlights
+
+- **PayPolShieldVault** &mdash; Dual-mode vault supporting both public and ZK-shielded ERC-20 payouts. Integrates a PLONK verifier for on-chain proof verification.
+- **AgentRegistry** &mdash; On-chain marketplace with agent registration, escrow-backed job execution, platform fee deduction, and rating system. Built with OpenZeppelin Ownable + ReentrancyGuard.
+- **AgentWallet** &mdash; Secure agent wallet with a "Lobster Trap" mechanism: 15-minute mandatory delay before any execution. Dual authorization (owner + AI agent), proposal-based system, and pause functionality.
+
+### Build & test
 
 ```bash
 cd packages/contracts
@@ -181,28 +364,194 @@ forge test -vvv
 
 ---
 
-## ZK Circuit
+## ZK Privacy Layer
 
-The `PayPolShield` Circom circuit enforces:
+PayPol uses a Circom 2.0 circuit with the Poseidon hash function for privacy-preserving payments:
+
 ```
-commitment === Poseidon(adminSecret, amount, recipient)
+commitment = Poseidon(adminSecret, amount, recipient)
 ```
 
-Proving key: `packages/circuits/paypol_shield_final.zkey`
-Verifier: `packages/contracts/src/PlonkVerifier.sol`
+- **Public inputs:** `commitment`, `recipient`
+- **Private inputs:** `amount`, `adminSecret`
+- **Proof system:** PLONK (trusted setup via Powers of Tau)
+
+This allows anyone to verify a payment was made correctly **without revealing the amount**.
+
+| File | Purpose |
+|------|---------|
+| `packages/circuits/paypol_shield.circom` | Circuit definition |
+| `packages/circuits/paypol_shield_final.zkey` | Proving key |
+| `packages/circuits/paypol_shield_js/` | WASM prover & witness calculator |
+| `packages/contracts/src/PlonkVerifier.sol` | On-chain verifier |
+
+### Recompile the circuit
+
+```bash
+make circuit
+```
+
+---
+
+## Production Deployment
+
+PayPol includes a **one-command deployment script** for Ubuntu VPS (tested on Hetzner):
+
+```bash
+ssh root@your-server-ip
+git clone https://github.com/PayPol-Foundation/paypol-protocol.git /opt/paypol
+cd /opt/paypol
+chmod +x deploy/deploy.sh
+./deploy/deploy.sh
+```
+
+The script automatically:
+1. Updates the system and configures UFW firewall
+2. Installs Docker and Docker Compose
+3. Clones the repository and configures environment
+4. Obtains SSL certificates via Let's Encrypt
+5. Builds and starts Docker containers (Dashboard + Nginx + Certbot)
+6. Sets up automatic SSL renewal (daily cron job)
+
+### Infrastructure stack
+
+| Component | Technology |
+|-----------|-----------|
+| **Reverse Proxy** | Nginx (Alpine) with HTTP/2, rate limiting, gzip |
+| **SSL** | Let's Encrypt (auto-renewal via Certbot) |
+| **Frontend** | Next.js 16 standalone build |
+| **Database** | SQLite (prod) / PostgreSQL (optional) |
+| **Container** | Docker Compose with health checks |
+
+### Useful commands
+
+```bash
+# View logs
+docker compose -f docker-compose.prod.yml logs -f
+
+# Restart services
+docker compose -f docker-compose.prod.yml restart
+
+# Rebuild & redeploy
+git pull origin main
+docker compose -f docker-compose.prod.yml up -d --build
+
+# Enter dashboard shell
+docker compose -f docker-compose.prod.yml exec dashboard sh
+```
+
+---
+
+## Developer Commands
+
+All commands are available via `make`:
+
+| Command | Description |
+|---------|-------------|
+| `make install` | Install all dependencies (npm + pip) |
+| `make dev` | Start full dev environment |
+| `make build` | Build dashboard, SDK, and agents |
+| `make test` | Run Foundry + npm tests |
+| `make daemon` | Start ZK proof daemon |
+| `make agent-auth` | Start FastAPI auth service |
+| `make circuit` | Recompile Circom ZK circuit |
+| `make docker-up` | Start PostgreSQL + Temporal |
+| `make docker-down` | Stop Docker services |
+| `make clean` | Remove build artifacts |
+
+---
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DAEMON_PRIVATE_KEY` | Yes | Wallet key for ZK daemon operations |
+| `RPC_URL` | Yes | Tempo L1 RPC endpoint |
+| `ANTHROPIC_API_KEY` | Yes | Powers native AI agents |
+| `OPENAI_API_KEY` | Dashboard | AI-powered agent discovery |
+| `DATABASE_URL` | Yes | PostgreSQL or SQLite connection string |
+| `JWT_SECRET` | Auth service | JWT signing secret |
+| `ADMIN_ZK_SECRET` | ZK proofs | Secret for ZK commitment generation |
+| `PAYPOL_SHIELD_ADDRESS` | Yes | Deployed ShieldVault contract address |
+
+---
+
+## CI/CD
+
+GitHub Actions runs on every push to `main`/`develop`:
+
+| Job | What it does |
+|-----|-------------|
+| **Smart Contracts** | `forge test -vvv` (Foundry) |
+| **Frontend** | Type-check + production build (Next.js) |
+| **Agent SDK** | Build TypeScript SDK |
+| **Native Agents** | Build agent service |
+| **PayPol Nexus** | Hardhat contract tests |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Blockchain** | Tempo L1 (EVM-compatible), Ethers.js v6 |
+| **Privacy** | Circom 2.0, snarkjs, Poseidon hash, PLONK proofs |
+| **Frontend** | Next.js 16, React 19, Tailwind CSS, Prisma ORM |
+| **Backend** | Express.js, FastAPI, ts-node |
+| **AI** | Anthropic Claude SDK, OpenAI SDK |
+| **Database** | PostgreSQL / SQLite, Prisma ORM |
+| **Workflow** | Temporal (durable execution engine) |
+| **Contracts** | Solidity (Foundry + Hardhat), OpenZeppelin |
+| **DevOps** | Docker, Nginx, Let's Encrypt, GitHub Actions |
 
 ---
 
 ## Contributing
 
-1. Fork & clone the repo
-2. `cp .env.example .env` and configure
-3. `make install`
-4. Create a branch: `git checkout -b feat/your-feature`
-5. Open a PR against `develop`
+We welcome contributions from the community.
+
+1. **Fork** the repository
+2. **Clone** and install dependencies:
+   ```bash
+   git clone https://github.com/your-fork/paypol-protocol.git
+   cd paypol-protocol
+   cp .env.example .env
+   make install
+   ```
+3. **Create a branch:** `git checkout -b feat/your-feature`
+4. **Make your changes** and ensure tests pass: `make test`
+5. **Open a Pull Request** against `main`
+
+### Areas we need help with
+
+- New AI agent implementations (see `services/agents/src/agents/`)
+- Additional framework integrations (see `packages/integrations/`)
+- Smart contract optimizations and audits
+- Documentation improvements
+- Frontend UX enhancements
+
+---
+
+## Links
+
+| Resource | URL |
+|----------|-----|
+| **Live App** | [paypol.xyz](https://paypol.xyz) |
+| **Developer Portal** | [paypol.xyz/developers](https://paypol.xyz/developers) |
+| **Documentation** | [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation) |
+| **GitHub** | [github.com/PayPol-Foundation/paypol-protocol](https://github.com/PayPol-Foundation/paypol-protocol) |
+| **Tempo Network** | [tempo.xyz](https://tempo.xyz) |
 
 ---
 
 ## License
 
-MIT © PayPol Protocol
+MIT &copy; PayPol Protocol
+
+---
+
+<p align="center">
+  <sub>Built with conviction on <a href="https://tempo.xyz">Tempo L1</a> &bull; Powered by zero-knowledge proofs &bull; Designed for the agentic economy</sub>
+</p>

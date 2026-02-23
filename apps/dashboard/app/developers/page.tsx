@@ -338,8 +338,7 @@ export default function DevelopersPage() {
             <nav className="sticky top-0 z-50 bg-[#0A0D14]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
-                        <Image src="/logo.png" alt="PayPol" width={32} height={32} className="h-8 w-auto object-contain" />
-                        <span className="text-lg font-bold tracking-wide group-hover:text-indigo-400 transition-colors">PayPol</span>
+                        <Image src="/logo.png" alt="PayPol" width={120} height={32} className="h-8 w-auto object-contain" />
                         <span className="text-xs font-mono text-slate-500 border border-white/5 px-2 py-0.5 rounded-md">developers</span>
                     </a>
                     <div className="flex items-center gap-4">

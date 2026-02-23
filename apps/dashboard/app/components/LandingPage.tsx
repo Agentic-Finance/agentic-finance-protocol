@@ -37,9 +37,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
         setAgentData(null);
 
         if (activeTab !== 1) {
-            const t1 = setTimeout(() => setOutputStep(1), 400);
-            const t2 = setTimeout(() => setOutputStep(2), 1200);
-            const t3 = setTimeout(() => setOutputStep(3), 2000);
+            const t1 = setTimeout(() => setOutputStep(1), 200);
+            const t2 = setTimeout(() => setOutputStep(2), 600);
+            const t3 = setTimeout(() => setOutputStep(3), 1000);
             return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
         } else {
             // Nexus A2A — Simulated demo for landing page
@@ -90,9 +90,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </div>
 
             {/* NAVBAR */}
-            <div style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(5, 8, 12, 0.9)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : 'none', transition: 'all 0.3s ease' }}>
-                <div style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <Image src="/logo.png" alt="PayPol Logo" width={192} height={48} style={{ height: '48px', width: 'auto', objectFit: 'contain' }} priority />
+            <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(5, 8, 12, 0.9)' : 'transparent', backdropFilter: scrolled ? 'blur(20px)' : 'none', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : 'none', transition: 'all 0.3s ease' }}>
+                <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                    <Image src="/logo.png" alt="PayPol Logo" width={192} height={48} className="landing-logo-img" style={{ width: 'auto', objectFit: 'contain' }} priority />
                 </div>
                 <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '40px', padding: '12px 48px', backgroundColor: 'rgba(255, 255, 255, 0.02)', backdropFilter: 'blur(30px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.02)', height: '52px' }}>
                     {[
@@ -104,7 +104,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
                     ))}
                 </div>
-                <button onClick={onLaunchApp} className="animate-pulse-slow" style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 36px', backgroundColor: '#fff', color: '#000', borderRadius: '9999px', fontSize: '0.95rem', fontWeight: '900', border: 'none', cursor: 'pointer', boxShadow: '0 0 30px rgba(255,255,255,0.3)', transition: 'transform 0.2s', height: '52px', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                <button onClick={onLaunchApp} className="animate-pulse-slow landing-cta-btn" style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fff', color: '#000', borderRadius: '9999px', fontWeight: '900', border: 'none', cursor: 'pointer', boxShadow: '0 0 30px rgba(255,255,255,0.3)', transition: 'transform 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                     Launch App
                 </button>
             </div>
@@ -291,7 +291,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* VERTICAL STACK — 7 layers with connecting lines */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '900px', margin: '0 auto' }}>
+                    <div className="protocol-stack" style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '900px', margin: '0 auto' }}>
 
                         {/* Layer 7: Application */}
                         <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '20px 20px 4px 4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
@@ -618,7 +618,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     .eco-grid-3 { grid-template-columns: repeat(3, 1fr); }
                 }
 
-                /* ── Mobile protocol layers ── */
+                /* ── Default navbar sizing ── */
+                .landing-logo-img { height: 48px; }
+                .landing-cta-btn { padding: 12px 36px; font-size: 0.95rem; }
+
+                /* ── Mobile overrides ── */
                 @media (max-width: 640px) {
                     .bento-item { padding: 20px 16px !important; gap: 12px !important; }
                     .bento-item p { font-size: 0.8rem !important; }
@@ -626,6 +630,50 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     .resource-card:hover { transform: none !important; }
                     .terminal-tilt { transform: none !important; }
                     .terminal-tilt:hover { transform: none !important; }
+
+                    /* Navbar mobile */
+                    .landing-nav { padding: 8px 12px !important; }
+                    .landing-logo-img { height: 28px !important; }
+                    .landing-cta-btn { padding: 8px 18px !important; font-size: 0.75rem !important; }
+
+                    /* Protocol stack mobile card redesign */
+                    .protocol-stack { gap: 8px !important; }
+                    .protocol-stack .bento-item {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        border-radius: 16px !important;
+                        padding: 16px 16px 16px 22px !important;
+                        gap: 10px !important;
+                    }
+                    .protocol-stack .bento-item > div:nth-child(2) {
+                        width: 36px !important;
+                        height: 36px !important;
+                        border-radius: 10px !important;
+                    }
+                    .protocol-stack .bento-item > div:nth-child(2) svg {
+                        width: 18px !important;
+                        height: 18px !important;
+                    }
+                    .protocol-stack .bento-item h3 {
+                        font-size: 0.95rem !important;
+                    }
+                    .protocol-stack .bento-item > div:last-child {
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        gap: 6px !important;
+                        align-self: flex-start;
+                        background: rgba(255,255,255,0.03);
+                        padding: 5px 12px;
+                        border-radius: 8px;
+                        border: 1px solid rgba(255,255,255,0.06);
+                        margin-top: 2px;
+                    }
+                    .protocol-stack .bento-item > div:last-child span:first-child {
+                        font-size: 0.6rem !important;
+                    }
+                    .protocol-stack .bento-item > div:last-child span:last-child {
+                        font-size: 0.7rem !important;
+                    }
                 }
             `}</style>
         </div>

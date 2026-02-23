@@ -237,7 +237,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <section id="overview" style={{ padding: '120px 20px', backgroundColor: '#05080C', position: 'relative', zIndex: 10 }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: '100px' }}><h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>The Thesis. <br /><span style={{ color: '#34d399' }}>The Inevitable Shift.</span></h2></div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '60px', alignItems: 'start' }}>
+                    <div className="thesis-grid" style={{ display: 'grid', gap: '60px', alignItems: 'start' }}>
 
                         {/* COLUMN 1: Why Agents? */}
                         <div>
@@ -294,7 +294,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', maxWidth: '900px', margin: '0 auto' }}>
 
                         {/* Layer 7: Application */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '20px 20px 4px 4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '20px 20px 4px 4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #818cf8)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><SparklesIcon style={{ width: '24px', height: '24px', color: '#c084fc' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -311,7 +311,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 6: Agent Marketplace */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(34,211,238,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(34,211,238,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #22d3ee, #06b6d4)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#22d3ee' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -328,7 +328,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 5: Arbitration */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #f59e0b, #d97706)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ScaleIcon style={{ width: '24px', height: '24px', color: '#f59e0b' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -345,7 +345,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 4: Privacy */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #818cf8, #6366f1)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><EyeSlashIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -362,7 +362,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 3: Treasury */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #10b981, #059669)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ShieldCheckIcon style={{ width: '24px', height: '24px', color: '#10b981' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -379,7 +379,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 2: Bridge */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(236,72,153,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(236,72,153,0.2)', borderRadius: '4px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #ec4899, #db2777)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ArrowsRightLeftIcon style={{ width: '24px', height: '24px', color: '#ec4899' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -396,7 +396,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Layer 1: Settlement */}
-                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px 4px 20px 20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '4px 4px 20px 20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' as const, position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #e2e8f0, #94a3b8)' }}></div>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#e2e8f0' }} /></div>
                             <div style={{ flex: 1 }}>
@@ -455,7 +455,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* Top row — 2 large cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: '24px' }}>
+                    <div className="eco-grid-2" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Protocol Treasuries */}
                         <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #10b981, transparent)' }} />
@@ -492,7 +492,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* Middle row — 3 medium cards */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '24px' }}>
+                    <div className="eco-grid-3" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Institutional Finance */}
                         <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
@@ -519,7 +519,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* Bottom row — 2 cards + stats panel */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
+                    <div className="eco-grid-3" style={{ display: 'grid', gap: '24px' }}>
                         {/* Gaming */}
                         <div className="bento-item" style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
@@ -603,6 +603,30 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 .animate-bounce-slow-scroll { animation: bounce-slow-scroll 2s ease-in-out infinite; }
                 .terminal-tilt { transform: perspective(2000px) rotateX(2deg); transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.5s ease, box-shadow 0.5s ease; }
                 .terminal-tilt:hover { transform: perspective(2000px) rotateX(0deg); }
+
+                /* ── Responsive grids ── */
+                .thesis-grid { grid-template-columns: 1fr; }
+                .eco-grid-2 { grid-template-columns: 1fr; }
+                .eco-grid-3 { grid-template-columns: 1fr; }
+
+                @media (min-width: 768px) {
+                    .thesis-grid { grid-template-columns: repeat(2, 1fr); }
+                    .eco-grid-2 { grid-template-columns: repeat(2, 1fr); }
+                    .eco-grid-3 { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (min-width: 1024px) {
+                    .eco-grid-3 { grid-template-columns: repeat(3, 1fr); }
+                }
+
+                /* ── Mobile protocol layers ── */
+                @media (max-width: 640px) {
+                    .bento-item { padding: 20px 16px !important; gap: 12px !important; }
+                    .bento-item p { font-size: 0.8rem !important; }
+                    .bento-item:hover { transform: none !important; }
+                    .resource-card:hover { transform: none !important; }
+                    .terminal-tilt { transform: none !important; }
+                    .terminal-tilt:hover { transform: none !important; }
+                }
             `}</style>
         </div>
     );

@@ -1,48 +1,48 @@
-# PayPol Bounty Program
+# PayPol Contributor Program
 
-Welcome to the PayPol Bounty Program! We reward contributors who build high-quality agents, improve our infrastructure, and strengthen the protocol.
+Welcome to the PayPol Contributor Program! We recognize and reward contributors who build high-quality agents, improve our infrastructure, and strengthen the protocol.
 
 ## How It Works
 
-1. **Pick a bounty** from the tables below (or propose your own)
+1. **Pick a task** from the tables below (or propose your own)
 2. **Comment on the GitHub Issue** to claim it (first-come, first-served)
 3. **Submit a PR** that meets the acceptance criteria
 4. **Get reviewed** by a maintainer (usually within 48 hours)
-5. **Receive payment** in AlphaUSD on Tempo L1 after merge
+5. **Get recognized** as a contributor + potential future token allocation
 
-## Reward Tiers
+## Contributor Tiers
 
-| Tier | Reward | Typical Scope |
-|------|--------|---------------|
-| **Tier 1** | 50 - 100 AlphaUSD | Simple agents, documentation, bug fixes |
-| **Tier 2** | 100 - 300 AlphaUSD | Complex agents, SDK features, frontend pages |
-| **Tier 3** | 300 - 500 AlphaUSD | Smart contracts, ZK circuits, architecture changes |
-| **Tier 4** | 500 - 1,000 AlphaUSD | Critical infrastructure, security audits, multi-component features |
+| Tier | Recognition | Typical Scope |
+|------|------------|---------------|
+| **Bronze** | README mention + contributor badge | Simple agents, documentation, bug fixes |
+| **Silver** | Bronze + priority review + co-author credit | Complex agents, SDK features, frontend pages |
+| **Gold** | Silver + architecture input + early access | Smart contracts, ZK circuits, architecture changes |
+| **Platinum** | Gold + core team consideration + future token allocation | Critical infrastructure, security audits, multi-component features |
 
-> Payment is sent to your wallet within 7 days of PR merge. Provide your Tempo L1 wallet address in the PR description.
+> **Note:** PayPol is currently pre-funding. When the project secures VC investment, early contributors will be prioritized for retroactive rewards and token allocation based on their contribution tier.
 
 ---
 
 ## Open Bounties: AI Agents
 
-Build agents that run on the PayPol marketplace and earn AlphaUSD on every job.
+Build agents that run on the PayPol marketplace. Each agent you build becomes a permanent part of the protocol.
 
-| Agent | Category | Difficulty | Reward | Status |
-|-------|----------|------------|--------|--------|
-| Token Vesting Agent | defi | Easy | 75 AlphaUSD | Open |
-| Airdrop Distribution Agent | defi | Easy | 75 AlphaUSD | Open |
-| Gas Estimation Agent | analytics | Easy | 50 AlphaUSD | Open |
-| DAO Treasury Reporter | defi | Medium | 150 AlphaUSD | Open |
-| Lending Rate Optimizer | defi | Medium | 200 AlphaUSD | Open |
-| Liquidation Monitor | security | Medium | 200 AlphaUSD | Open |
-| Smart Contract Fuzzer | security | Hard | 400 AlphaUSD | Open |
-| MEV Protection Agent | security | Hard | 500 AlphaUSD | Open |
-| Cross-chain Arbitrage Scanner | defi | Hard | 400 AlphaUSD | Open |
-| On-chain Reputation Scorer | analytics | Medium | 150 AlphaUSD | Open |
+| Agent | Category | Difficulty | Tier | Status |
+|-------|----------|------------|------|--------|
+| Token Vesting Agent | defi | Easy | Bronze | Open |
+| Airdrop Distribution Agent | defi | Easy | Bronze | Open |
+| Gas Estimation Agent | analytics | Easy | Bronze | Open |
+| DAO Treasury Reporter | defi | Medium | Silver | Open |
+| Lending Rate Optimizer | defi | Medium | Silver | Open |
+| Liquidation Monitor | security | Medium | Silver | Open |
+| Smart Contract Fuzzer | security | Hard | Gold | Open |
+| MEV Protection Agent | security | Hard | Gold | Open |
+| Cross-chain Arbitrage Scanner | defi | Hard | Gold | Open |
+| On-chain Reputation Scorer | analytics | Medium | Silver | Open |
 
 ### Agent Requirements
 
-Every agent bounty submission must include:
+Every agent submission must include:
 
 - **Source code** in `agents/your-agent-name/`
 - **Working endpoints**: `/health`, `/manifest`, `/execute`
@@ -55,41 +55,41 @@ Every agent bounty submission must include:
 
 ## Open Bounties: SDK & Tooling
 
-| Task | Difficulty | Reward | Status |
-|------|------------|--------|--------|
-| Python SDK bindings for agent registration | Medium | 200 AlphaUSD | Open |
-| Rust SDK for high-performance agents | Hard | 500 AlphaUSD | Open |
-| CLI tool for scaffolding new agents | Easy | 100 AlphaUSD | Open |
-| Agent testing framework (mock jobs, assertions) | Medium | 250 AlphaUSD | Open |
-| SDK rate limiting and retry logic | Easy | 75 AlphaUSD | Open |
+| Task | Difficulty | Tier | Status |
+|------|------------|------|--------|
+| Python SDK bindings for agent registration | Medium | Silver | Open |
+| Rust SDK for high-performance agents | Hard | Gold | Open |
+| CLI tool for scaffolding new agents | Easy | Bronze | Open |
+| Agent testing framework (mock jobs, assertions) | Medium | Silver | Open |
+| SDK rate limiting and retry logic | Easy | Bronze | Open |
 
 ---
 
 ## Open Bounties: Smart Contracts
 
-| Task | Difficulty | Reward | Status |
-|------|------------|--------|--------|
-| Time-locked withdrawals for ShieldVault | Hard | 400 AlphaUSD | Open |
-| ERC-4337 Account Abstraction for agent wallets | Hard | 750 AlphaUSD | Open |
-| Multi-token escrow support in NexusV2 | Medium | 300 AlphaUSD | Open |
-| On-chain reputation system (SBT-based) | Medium | 250 AlphaUSD | Open |
-| Gas sponsorship relay for new agents | Hard | 500 AlphaUSD | Open |
+| Task | Difficulty | Tier | Status |
+|------|------------|------|--------|
+| Time-locked withdrawals for ShieldVault | Hard | Gold | Open |
+| ERC-4337 Account Abstraction for agent wallets | Hard | Platinum | Open |
+| Multi-token escrow support in NexusV2 | Medium | Silver | Open |
+| On-chain reputation system (SBT-based) | Medium | Silver | Open |
+| Gas sponsorship relay for new agents | Hard | Gold | Open |
 
 ---
 
 ## Open Bounties: Frontend & Documentation
 
-| Task | Difficulty | Reward | Status |
-|------|------------|--------|--------|
-| Agent performance analytics page | Medium | 200 AlphaUSD | Open |
-| OpenAPI/Swagger spec for all API routes | Easy | 100 AlphaUSD | Open |
-| Interactive agent playground (try before hiring) | Hard | 400 AlphaUSD | Open |
-| Video tutorial: "Build Your First Agent" | Easy | 100 AlphaUSD | Open |
-| Translate docs to Vietnamese, Chinese, Spanish | Easy | 75 AlphaUSD/lang | Open |
+| Task | Difficulty | Tier | Status |
+|------|------------|------|--------|
+| Agent performance analytics page | Medium | Silver | Open |
+| OpenAPI/Swagger spec for all API routes | Easy | Bronze | Open |
+| Interactive agent playground (try before hiring) | Hard | Gold | Open |
+| Video tutorial: "Build Your First Agent" | Easy | Bronze | Open |
+| Translate docs to Vietnamese, Chinese, Spanish | Easy | Bronze | Open |
 
 ---
 
-## Bounty Rules
+## Rules
 
 ### Eligibility
 
@@ -109,50 +109,32 @@ Every agent bounty submission must include:
 1. Submit PR referencing the bounty issue (`Closes #XX`)
 2. Maintainer reviews within 48 hours
 3. Address feedback if requested (usually 1-2 rounds)
-4. PR merged and bounty paid within 7 days
-
-### Bonus Multipliers
-
-| Condition | Bonus |
-|-----------|-------|
-| First-time contributor | +10% |
-| Includes comprehensive tests | +15% |
-| Agent executes real on-chain transactions | +20% |
-| PR includes video demo | +10% |
+4. PR merged and contributor tier assigned
 
 ---
 
 ## Propose a New Bounty
 
-Don't see what you want to build? Open a [New Agent Proposal](https://github.com/PayPol-Foundation/paypol-protocol/issues/new?template=agent_proposal.yml) issue and we'll evaluate it for a bounty.
+Don't see what you want to build? Open a [New Agent Proposal](https://github.com/PayPol-Foundation/paypol-protocol/issues/new?template=agent_proposal.yml) issue and we'll evaluate it.
 
 ---
 
-## Completed Bounties
+## Past Contributors
 
-| Agent/Task | Contributor | Reward | Date |
-|------------|-------------|--------|------|
-| Treasury Manager | @cubicle-vdo | 150 AlphaUSD | Feb 2026 |
-| Staking Optimizer | @swecast | 100 AlphaUSD | Feb 2026 |
-| NFT Minter + Collection Deployer | @Malcer | 200 AlphaUSD | Feb 2026 |
-| DEX Deployer + Liquidity Bootstrapper | @nhson0110-coder | 250 AlphaUSD | Feb 2026 |
-| Governance Executor + Proposal Voter | @tariqachaudhry | 200 AlphaUSD | Feb 2026 |
-| Oracle Deployer + Price Feed Manager | @doctormanhattan | 200 AlphaUSD | Feb 2026 |
-| Cross-Chain Relayer + Bridge Operator | @Hobnobs | 250 AlphaUSD | Feb 2026 |
+We thank the following teams for their early contributions to the PayPol ecosystem:
 
----
-
-## Payment Details
-
-- **Network**: Tempo Moderato (Chain ID: 42431)
-- **Token**: AlphaUSD (`0x20c0000000000000000000000000000000000001`)
-- **Method**: Direct ERC-20 transfer to your wallet
-- **Timing**: Within 7 days of PR merge
-
-> Provide your Tempo L1 wallet address in your PR description or DM a maintainer.
+| Contribution | Agents Built | Tier |
+|-------------|-------------|------|
+| Treasury & Multi-Sig agents | Treasury Manager, Multi-Sig Creator | Silver |
+| Staking agents | Staking Optimizer, Validator Monitor | Silver |
+| NFT agents | NFT Minter, Collection Deployer | Silver |
+| DEX agents | DEX Deployer, Liquidity Bootstrapper | Gold |
+| Governance agents | Governance Executor, Proposal Voter | Silver |
+| Oracle agents | Oracle Deployer, Price Feed Manager | Silver |
+| Bridge agents | Cross-Chain Relayer, Bridge Operator | Gold |
 
 ---
 
 <p align="center">
-  <sub>Build agents. Earn crypto. Shape the agentic economy.</sub>
+  <sub>Build agents. Get recognized. Shape the agentic economy.</sub>
 </p>

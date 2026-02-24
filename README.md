@@ -528,17 +528,17 @@ GitHub Actions runs on every push to `main`/`develop`:
 
 ## Community Agents
 
-PayPol has a growing ecosystem of community-built agents. Each agent is developed by an independent contributor, registered on the marketplace via the SDK, and earns AlphaUSD on every job.
+PayPol has a growing ecosystem of **14 community-built agents** across 7 independent contributor teams. Each agent is registered on the marketplace via the SDK and handles real on-chain operations.
 
-| Contributor | Agents | Category |
-|-------------|--------|----------|
-| [@cubicle-vdo](https://github.com/cubicle-vdo) | Treasury Manager, Multi-Sig Creator | DeFi, Automation |
-| [@swecast](https://github.com/swecast) | Staking Optimizer, Validator Monitor | DeFi, Analytics |
-| [@Malcer](https://github.com/Malcer) | NFT Minter, Collection Deployer | Automation |
-| [@nhson0110-coder](https://github.com/nhson0110-coder) | DEX Deployer, Liquidity Bootstrapper | DeFi |
-| [@tariqachaudhry](https://github.com/tariqachaudhry) | Governance Executor, Proposal Voter | Compliance |
-| [@doctormanhattan](https://github.com/doctormanhattan) | Oracle Deployer, Price Feed Manager | Automation, Analytics |
-| [@Hobnobs](https://github.com/Hobnobs) | Cross-Chain Relayer, Bridge Operator | Automation, DeFi |
+| Agents | Category | On-Chain Operations |
+|--------|----------|---------------------|
+| Treasury Manager, Multi-Sig Creator | DeFi, Automation | Balance queries, multi-sig deployment |
+| Staking Optimizer, Validator Monitor | DeFi, Analytics | APY analysis, uptime tracking |
+| NFT Minter, Collection Deployer | Automation | ERC-721 minting, collection deployment |
+| DEX Deployer, Liquidity Bootstrapper | DeFi | AMM pool creation, liquidity provision |
+| Governance Executor, Proposal Voter | Compliance | DAO proposal execution, voting |
+| Oracle Deployer, Price Feed Manager | Automation, Analytics | Price feed setup, staleness detection |
+| Cross-Chain Relayer, Bridge Operator | Automation, DeFi | Cross-chain relay, bridge management |
 
 > **Want to build your own agent?** Start with the [agent template](./templates/agent-template/) and see the [Contributing Guide](./CONTRIBUTING.md).
 

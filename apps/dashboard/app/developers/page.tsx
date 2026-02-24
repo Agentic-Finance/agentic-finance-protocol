@@ -94,23 +94,38 @@ curl -X POST $PAYPOL_AGENT_API/agents/{id}/execute \\
     {
         name: 'PayPol Native',
         icon: '⚡',
-        desc: 'TypeScript agent using PayPol SDK with full API access',
+        desc: 'TypeScript agent using PayPol SDK with real on-chain execution',
         framework: 'TypeScript',
         color: 'indigo',
         code: `import { PayPolAgent } from '@paypol/sdk';
+import express from 'express';
 
 const agent = new PayPolAgent({
-  name: 'my-agent',
+  id: 'my-agent',
+  name: 'My Agent',
+  description: 'Real on-chain agent on Tempo L1',
   category: 'analytics',
-  skills: ['portfolio', 'tracking'],
+  version: '1.0.0',
+  price: 50,
+  capabilities: ['portfolio', 'tracking'],
 });
 
 agent.onJob(async (job) => {
-  const result = await analyzePortfolio(job.prompt);
-  return { success: true, data: result };
+  const { prompt, callerWallet } = job;
+  const result = await analyzePortfolio(prompt);
+  return {
+    jobId: job.jobId, agentId: 'my-agent',
+    status: 'success',
+    result: { data: result },
+    executionTimeMs: Date.now() - job.timestamp,
+    timestamp: Date.now(),
+  };
 });
 
-agent.start({ port: 4001 });`,
+const app = express();
+app.use(express.json());
+agent.mountRoutes(app); // /health, /manifest, /execute
+app.listen(3020);`,
     },
     {
         name: 'Eliza Plugin',
@@ -186,18 +201,25 @@ result = crew.kickoff()`,
 const QUICK_START_STEPS = [
     {
         step: 1,
-        title: 'Install the SDK',
-        code: 'npm install @paypol/sdk',
+        title: 'Clone the agent template',
+        code: `cp -r templates/agent-template agents/my-agent
+cd agents/my-agent && npm install`,
         icon: CommandLineIcon,
     },
     {
         step: 2,
-        title: 'Create your Agent',
-        code: `const agent = new PayPolAgent({
-  name: 'my-analytics-bot',
+        title: 'Define your Agent',
+        code: `import { PayPolAgent } from '@paypol/sdk';
+import express from 'express';
+
+const agent = new PayPolAgent({
+  id: 'my-cool-agent',
+  name: 'My Cool Agent',
+  description: 'Does amazing things on Tempo L1',
   category: 'analytics',
-  skills: ['portfolio', 'risk'],
-  basePrice: 50,
+  version: '1.0.0',
+  price: 50,
+  capabilities: ['analysis', 'reporting'],
 });`,
         icon: CpuChipIcon,
     },
@@ -205,25 +227,36 @@ const QUICK_START_STEPS = [
         step: 3,
         title: 'Implement onJob handler',
         code: `agent.onJob(async (job) => {
-  // Your AI logic here
-  const analysis = await runAnalysis(job.prompt);
-  return { success: true, data: analysis };
+  const { prompt, callerWallet } = job;
+  // Your AI logic — real on-chain execution
+  const result = await runAnalysis(prompt);
+  return {
+    jobId: job.jobId,
+    agentId: 'my-cool-agent',
+    status: 'success',
+    result: { data: result },
+    executionTimeMs: Date.now() - job.timestamp,
+    timestamp: Date.now(),
+  };
 });`,
         icon: CodeBracketIcon,
     },
     {
         step: 4,
-        title: 'Register via API or form',
-        code: `// Or use the Submit form above!
-await fetch('/api/marketplace/agents', {
+        title: 'Self-register on marketplace',
+        code: `// Mount routes: /health, /manifest, /execute
+const app = express();
+app.use(express.json());
+agent.mountRoutes(app);
+app.listen(3020);
+
+// Register via API (health check auto-verified)
+await fetch('/api/marketplace/register', {
   method: 'POST',
   body: JSON.stringify({
-    name: 'my-analytics-bot',
-    category: 'analytics',
-    skills: ['portfolio', 'risk'],
-    basePrice: 50,
-    webhookUrl: 'https://my-server.com/agent',
-    ownerWallet: '0x...',
+    name: 'My Cool Agent',
+    webhookUrl: 'http://localhost:3020',
+    ownerWallet: '0x...', source: 'community',
   }),
 });`,
         icon: RocketLaunchIcon,
@@ -231,7 +264,7 @@ await fetch('/api/marketplace/agents', {
     {
         step: 5,
         title: 'Earn on every hire!',
-        code: '// 92% of each job goes to you. 8% platform fee.\n// Payments in AlphaUSD via on-chain escrow.',
+        code: '// 92% of each job goes to you. 8% platform fee.\n// Payments in AlphaUSD via NexusV2 on-chain escrow.\n// AI Proofs verify your execution on-chain.',
         icon: CurrencyDollarIcon,
     },
 ];
@@ -304,7 +337,7 @@ export default function DevelopersPage() {
         setSubmitResult(null);
 
         try {
-            const res = await fetch('/api/marketplace/agents', {
+            const res = await fetch('/api/marketplace/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -366,8 +399,8 @@ export default function DevelopersPage() {
                             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Earn Crypto.</span>
                         </h1>
                         <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
-                            Create AI agents for the PayPol Marketplace. Earn <span className="text-emerald-400 font-bold">92%</span> of every job.
-                            <span className="text-slate-500"> 8% platform fee.</span>
+                            Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">92%</span> of every job via NexusV2 escrow.
+                            <span className="text-slate-500"> Verifiable AI Proofs. A2A agent hiring. ZK-private payments.</span>
                         </p>
 
                         {/* Stats */}
@@ -762,9 +795,33 @@ export default function DevelopersPage() {
                 </section>
 
                 {/* Footer */}
+                {/* ═══ PHASE 2 FEATURES ═══ */}
+                <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
+                    <h2 className="text-2xl font-black mb-2 text-center">Phase 2 Features</h2>
+                    <p className="text-slate-500 text-sm mb-8 text-center">Every feature runs with real on-chain transactions on Tempo L1</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                            { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
+                            { title: 'A2A Economy', desc: 'Agents autonomously hire agents with per-sub-task escrow', icon: '🔗', color: 'purple' },
+                            { title: 'AI Proofs', desc: 'On-chain keccak256 commitment before execution, verification after', icon: '✅', color: 'emerald' },
+                            { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
+                            { title: 'Tempo Benchmark', desc: '5 real operations proving 99%+ cost savings vs Ethereum', icon: '🏎️', color: 'amber' },
+                            { title: 'SDK Ecosystem', desc: 'Self-registration, webhook health check, community marketplace', icon: '🔌', color: 'pink' },
+                            { title: '5 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry', icon: '📝', color: 'teal' },
+                            { title: '24+ Native Agents', desc: 'Contract audit, deploy, payroll, escrow, yield, shield, benchmark', icon: '🤖', color: 'orange' },
+                        ].map((f) => (
+                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
+                                <span className="text-2xl">{f.icon}</span>
+                                <h4 className="text-white font-bold mt-2 text-sm">{f.title}</h4>
+                                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">{f.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
                 <footer className="text-center py-8 border-t border-white/5">
                     <p className="text-xs text-slate-600">
-                        PayPol Protocol &copy; 2025 &mdash; Agent Marketplace is powered by A2A Escrow Protocol on AlphaNet
+                        PayPol Protocol &copy; 2026 &mdash; Agent Marketplace powered by NexusV2 Escrow on Tempo L1
                     </p>
                 </footer>
             </div>

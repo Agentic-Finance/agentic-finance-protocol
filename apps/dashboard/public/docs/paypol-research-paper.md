@@ -13,9 +13,9 @@
 
 ## Abstract
 
-We present PayPol, a decentralized financial infrastructure protocol designed to serve as the deterministic settlement layer for autonomous AI agent economies. As machine-to-machine (M2M) economic interactions proliferate, the need for programmable, privacy-preserving, and trustlessly verifiable payment rails becomes critical. PayPol addresses this through three interlocking mechanisms: (1) a batched payroll engine with zero-knowledge privacy guarantees via Groth16 ZK-SNARKs, (2) a neural agent marketplace with automated multi-round price negotiation and on-chain escrow, and (3) a game-theoretically sound arbitration protocol that monetizes dispute resolution while deterring adversarial behavior. We formalize the economic models underpinning each revenue engine, analyze the cryptographic privacy guarantees of the Phantom Shield system, and demonstrate how the protocol achieves deterministic financial execution in an inherently probabilistic AI landscape. PayPol is deployed on Tempo (Moderato Testnet), an EVM-compatible blockchain, and processes payroll disbursals, agent-to-agent settlements, and escrow arbitrations through a unified smart contract architecture.
+We present PayPol, a decentralized financial infrastructure protocol designed as the deterministic settlement layer for autonomous AI agent economies. As machine-to-machine (M2M) economic interactions proliferate, the need for programmable, privacy-preserving, and trustlessly verifiable payment rails becomes critical. PayPol addresses this through five interlocking mechanisms: (1) a batched payroll engine with zero-knowledge privacy guarantees via PLONK ZK-SNARKs with a nullifier anti-double-spend pattern, (2) a neural agent marketplace with automated multi-round price negotiation and on-chain escrow, (3) a game-theoretically sound arbitration protocol that monetizes dispute resolution while deterring adversarial behavior, (4) an Agent-to-Agent (A2A) economy where agents autonomously hire other agents through per-sub-task escrow chains, and (5) a verifiable AI proof commitment registry that creates an immutable on-chain audit trail for AI reasoning. We formalize the economic models underpinning each revenue engine, analyze the cryptographic privacy guarantees of the upgraded Phantom Shield V2 system, present real benchmark data demonstrating Tempo's cost advantage over Ethereum, and demonstrate how the protocol achieves deterministic financial execution in an inherently probabilistic AI landscape. PayPol is deployed on Tempo L1 (Moderato Testnet) with 5 source-verified smart contracts, 24+ native agents, 14 community-built agents, and real on-chain transactions.
 
-**Keywords:** *Zero-Knowledge Proofs, Agent Economy, Decentralized Payroll, Escrow Arbitration, ZK-SNARKs, Poseidon Hash, Deterministic Finance, AI Agents, Multi-Round Negotiation*
+**Keywords:** *Zero-Knowledge Proofs, PLONK, Nullifier Pattern, Agent Economy, A2A Hiring, AI Proof Commitment, Decentralized Payroll, Escrow Arbitration, Poseidon Hash, Deterministic Finance, Tempo L1*
 
 ---
 
@@ -31,7 +31,7 @@ PayPol is engineered to bridge this gap. It provides the **deterministic substra
 
 ### 1.2 Problem Statement
 
-Existing decentralized payment infrastructure suffers from three critical deficiencies when applied to autonomous agent economies:
+Existing decentralized payment infrastructure suffers from four critical deficiencies when applied to autonomous agent economies:
 
 1. **Privacy Deficit**: Public blockchains expose all payment amounts and recipient addresses, making them unsuitable for enterprise payroll, executive compensation, and sensitive vendor payments.
 
@@ -39,15 +39,20 @@ Existing decentralized payment infrastructure suffers from three critical defici
 
 3. **Trust Asymmetry**: When an enterprise hires an autonomous agent, neither party can fully trust the other. The enterprise cannot verify work quality until completion; the agent cannot guarantee payment. This bilateral trust deficit demands a neutral arbitration mechanism.
 
+4. **AI Accountability Gap**: When an autonomous agent makes a financial decision, there is no mechanism to verify that it executed its stated plan. AI reasoning is opaque, creating an accountability vacuum in financial operations.
+
 ### 1.3 Contributions
 
 This paper makes the following contributions:
 
-- **Section 2**: We formalize the Dual-Engine (plus Arbitration) monetization framework that enables sustainable protocol revenue without extractive rent-seeking.
-- **Section 3**: We present the Phantom Shield cryptographic construction using Poseidon-based commitments and Groth16 proofs for transaction privacy.
-- **Section 4**: We describe the Dynamic Negotiation Engine, a multi-round automated pricing algorithm for agent marketplace settlements.
-- **Section 5**: We analyze the game-theoretic properties of the arbitration penalty mechanism and prove its incentive compatibility.
-- **Section 6**: We detail the full escrow lifecycle smart contract architecture (PayPolNexusV2).
+- **Section 2**: We formalize the Triple-Engine revenue architecture for sustainable protocol monetization.
+- **Section 3**: We present the Phantom Shield V2 with PLONK proofs and nullifier anti-double-spend pattern.
+- **Section 4**: We describe the Dynamic Negotiation Engine for automated agent pricing.
+- **Section 5**: We analyze the game-theoretic properties of the arbitration penalty mechanism.
+- **Section 6**: We detail the PayPolNexusV2 escrow lifecycle architecture.
+- **Section 7**: We introduce the Agent-to-Agent (A2A) Economy with autonomous hiring chains.
+- **Section 8**: We present the Verifiable AI Proof Commitment system (AIProofRegistry).
+- **Section 9**: We report real benchmark results comparing Tempo L1 vs Ethereum costs.
 
 ---
 
@@ -56,8 +61,6 @@ This paper makes the following contributions:
 PayPol operates a Triple-Engine revenue model designed for sustainable, non-extractive monetization.
 
 ### 2.1 Engine 1: Enterprise Treasury & Payroll
-
-This engine provides immediate, predictable cash flow by solving the pain point of Web3 payroll and treasury management.
 
 #### 2.1.1 Mass Disbursal Protocol Fee
 
@@ -71,194 +74,132 @@ Let `B` denote the total batch payout amount. The protocol fee `F_p` is:
 F_p = min(B * 0.002, 5.00)
 ```
 
-**Economic Rationale:** The 0.2% rate is deliberately set below traditional payment processor fees (2.5-3.5%) to incentivize adoption. The $5.00 cap ensures that large-value transactions (> $2,500) are not disproportionately taxed, maintaining competitiveness for institutional-scale operations.
+**Economic Rationale:** The 0.2% rate is deliberately set below traditional payment processor fees (2.5-3.5%) to incentivize adoption. The $5.00 cap ensures that large-value transactions (> $2,500) are not disproportionately taxed.
 
-#### 2.1.2 Phantom Shield Privacy Premium
+#### 2.1.2 Phantom Shield V2 Privacy Premium
 
-An additional 0.2% premium (capped at $5.00) is charged when companies activate ZK-privacy features.
-
-**Formal Definition:**
-
-Let `S` be the Phantom Shield toggle (binary: 0 or 1). The shield fee `F_s` is:
-
-```
-F_s = S * min(B * 0.002, 5.00)
-```
+An additional 0.2% premium (capped at $5.00) is charged when companies activate ZK-privacy features with the upgraded nullifier-protected system.
 
 **Total Engine 1 Fee:**
 
 ```
-F_1 = F_p + F_s = min(B * 0.002, 5.00) + S * min(B * 0.002, 5.00)
+F_1 = min(B * 0.002, 5.00) + S * min(B * 0.002, 5.00)
 ```
 
 **Maximum fee exposure per batch:** $10.00 (protocol + shield)
 
-**Value Proposition:** Executives and DAOs willingly pay the privacy premium to mask executive salaries and sensitive vendor payments from public block explorers. The zero-knowledge proof generation cost is amortized across the batch.
-
 ### 2.2 Engine 2: Neural Agent Marketplace
 
-This is the scalable platform model. By opening the protocol to third-party AI developers, PayPol captures value from the emerging AI workforce economy without building every agent in-house.
+This is the scalable platform model. By opening the protocol to third-party AI developers, PayPol captures value from the emerging AI workforce economy.
 
 #### 2.2.1 Marketplace Commission (Take-Rate)
 
-PayPol deducts an 8% platform fee on every successfully settled Agent-to-Business (A2A) contract.
-
-**Formal Definition:**
-
-Let `P_a` denote the negotiated agent pay. The platform fee `F_m` is:
+PayPol deducts an 8% platform fee on every successfully settled contract --- both direct hires and A2A sub-tasks.
 
 ```
 F_m = P_a * 0.08
 ```
 
-The total price paid by the enterprise is:
-
-```
-P_total = P_a + F_m = P_a * 1.08
-```
-
-**Economic Rationale:** The 8% take-rate is competitive with comparable platform marketplaces (Upwork: 10%, Fiverr: 20%, Apple App Store: 30%). Developers accept this rate because PayPol provides ready-to-buy enterprise clients and guaranteed payment via on-chain escrow.
-
-#### 2.2.2 Premium Agent Listings
-
-Developers may pay a fee or stake protocol tokens to have their Neural Agents featured at the top of OmniTerminal search results, analogous to sponsored search results in traditional marketplaces.
+**A2A Revenue Multiplier:** In an A2A chain with `L` sub-tasks, the protocol captures `L` separate 8% fees, one per sub-task escrow. This creates a natural revenue multiplier as agent chains grow in complexity.
 
 ### 2.3 Engine 3: The Trust Layer (Arbitration Monetization)
 
-The decentralized escrow and arbitration system represents the protocol's deepest competitive moat. PayPol monetizes the resolution of disputes, turning conflict into protocol revenue while maintaining system integrity.
-
-#### 2.3.1 Arbitration Penalty Fee
-
-A 3% penalty fee (capped at $10.00) is applied exclusively to the **losing party** in a dispute:
-
-**Formal Definition:**
-
-Let `B_j` denote the escrowed job budget. The arbitration penalty `F_a` is:
+A 3% penalty fee (capped at $10.00) applied to the **losing party** in a dispute:
 
 ```
 F_a = min(B_j * 0.03, 10.00)
 ```
 
-**Scenario Analysis:**
-
-**Case A --- Company Filed False Dispute (Agent Vindicated):**
-```
-Agent receives:  B_j - F_m - F_a  =  B_j * (1 - 0.08 - 0.03)  =  B_j * 0.89
-Platform receives: F_m + F_a  =  B_j * 0.11
-Company penalty: F_a (deducted from escrowed budget)
-```
-
-**Case B --- Agent Delivered Poor Work (Company Vindicated):**
-```
-Company refund:  B_j - F_a  =  B_j * 0.97
-Platform receives: F_a  =  min(B_j * 0.03, 10.00)
-Agent penalty: F_a (deducted from refund amount)
-```
-
-**Case C --- Non-Disputed Resolution:**
-```
-No arbitration penalty applied.
-Standard 8% platform fee on settlement; full refund on refund.
-```
-
-#### 2.3.2 Incentive Compatibility Analysis
-
-The penalty mechanism satisfies **incentive compatibility** (IC): rational actors are deterred from filing frivolous disputes because the expected penalty cost exceeds the expected benefit.
-
-**For the Company:** Filing a false dispute incurs a 3% penalty on the escrowed amount. A rational company will only dispute if the perceived value of poor work exceeds 3% of the contract value.
-
-**For the Agent:** Delivering substandard work and hoping to avoid dispute is irrational because (a) the company can dispute at any time before settlement, and (b) the 48-hour timeout mechanism ensures the company has adequate review time.
-
-**Nash Equilibrium:** The unique Nash Equilibrium is (Agent: deliver quality work, Company: pay for quality work). Disputes only occur in genuine disagreements, which are resolved by the neutral arbitrator.
+**Incentive Compatibility:** The penalty mechanism satisfies IC --- rational actors are deterred from filing frivolous disputes because the expected penalty cost exceeds the expected benefit.
 
 ### 2.4 Revenue Composition Model
-
-For a protocol processing `N` payroll batches of average size `B_avg` and `M` agent marketplace settlements of average value `V_avg`, with dispute rate `d`:
 
 ```
 R_total = N * min(B_avg * 0.002, 5.00)                    [Protocol Fee]
         + N * S_rate * min(B_avg * 0.002, 5.00)            [Shield Premium]
-        + M * V_avg * 0.08                                  [Marketplace Commission]
-        + M * d * min(V_avg * 0.03, 10.00)                 [Arbitration Penalty]
+        + M * V_avg * 0.08                                  [Direct Marketplace]
+        + K * L_avg * V_sub * 0.08                          [A2A Sub-task Fees]
+        + (M + K*L_avg) * d * min(V_avg * 0.03, 10.00)    [Arbitration Penalty]
 ```
-
-Where `S_rate` is the shield adoption rate and `d` is the dispute frequency.
 
 ---
 
-## 3. Cryptographic Privacy: The Phantom Shield
+## 3. Cryptographic Privacy: Phantom Shield V2
 
 ### 3.1 Motivation
 
-Enterprise payroll presents a unique privacy challenge in public blockchain contexts. Salary amounts, bonus structures, and contractor rates are commercially sensitive information. Publishing these values on a public ledger exposes organizations to competitive intelligence extraction, social engineering attacks, and regulatory complications.
+Enterprise payroll presents a unique privacy challenge in public blockchain contexts. PayPol V2 upgrades the Phantom Shield with a **nullifier pattern** that prevents replay attacks and double-spending.
 
-The Phantom Shield addresses this through Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge (ZK-SNARKs), enabling verifiable payment execution without revealing payment details.
+### 3.2 Commitment Scheme (V2 --- Nullifier Pattern)
 
-### 3.2 Commitment Scheme
+We employ the Poseidon hash function with a 4-input commitment scheme.
 
-We employ the Poseidon hash function, chosen for its efficiency in arithmetic circuits (approximately 8x fewer constraints than Pedersen hashing in R1CS representation).
+**Definition (PayPol V2 Commitment):**
 
-**Definition (PayPol Commitment):**
-
-For admin secret `s`, payment amount `a`, and recipient wallet address `r`, the commitment `C` is:
+For random secret `s`, random nullifier `n`, payment amount `a`, and recipient wallet `r`:
 
 ```
-C = Poseidon(s, a, r)
+C = Poseidon(s, n, a, r)
+```
+
+**Nullifier Hash:**
+```
+H_n = Poseidon(n, s)
 ```
 
 **Properties:**
-- **Hiding**: Given `C`, an adversary cannot determine `(s, a, r)` without knowledge of all three inputs.
-- **Binding**: It is computationally infeasible to find `(s', a', r') != (s, a, r)` such that `Poseidon(s', a', r') = C`.
-- **Collision Resistance**: The Poseidon hash family provides 128-bit collision resistance with appropriate parameter selection.
+- **Hiding**: Given `C`, an adversary cannot determine `(s, n, a, r)` without knowledge of all four inputs.
+- **Binding**: Computationally infeasible to find different inputs producing the same `C`.
+- **Uniqueness**: Each `(s, n)` pair produces a unique `H_n`, enabling double-spend detection.
 
-### 3.3 Proof System
+### 3.3 Proof System: PLONK
 
-We utilize the Groth16 proving system for its optimal proof size (3 group elements, approximately 192 bytes) and constant-time verification.
+PayPol V2 migrates from Groth16 to PLONK:
 
-**Circuit Definition (Circom 2.x):**
+| Property | Groth16 (V1) | PLONK (V2) |
+|---|---|---|
+| Trusted Setup | Per-circuit ceremony | Universal reference string |
+| Setup Flexibility | New circuit = new ceremony | One setup for all circuits |
+| Proof Size | ~192 bytes | ~1KB |
+| Verification Cost | ~250K gas | ~300K gas |
 
-The PayPol Shield circuit enforces the following relation:
+The PLONK migration eliminates per-circuit trusted setup ceremonies, enabling faster circuit iteration.
 
-```
-R = { (C; s, a, r) : C = Poseidon(s, a, r) AND a > 0 AND r != 0 }
-```
+### 3.4 Anti-Double-Spend Protocol
 
-Where `C` is the public input (commitment) and `(s, a, r)` are private witnesses.
+The ShieldVaultV2 contract maintains a nullifier registry:
 
-**Trusted Setup:** The circuit employs a Groth16 trusted setup ceremony. The resulting proving key (`paypol_shield_final.zkey`) and verification key are stored on-chain via the PlonkVerifier contract.
-
-### 3.4 Protocol Flow
-
-```
-1. Admin signs batch with EIP-191: sigma = Sign(sk_admin, H(batch_data))
-2. For each recipient i in batch:
-   a. Compute C_i = Poseidon(s, a_i, r_i)
-   b. Generate pi_i = Groth16.Prove(pk, C_i, (s, a_i, r_i))
-3. Submit (C_1, ..., C_n, pi_1, ..., pi_n) to ShieldVault contract
-4. On-chain: PlonkVerifier.verify(pi_i, C_i) for each i
-5. If all proofs valid: execute transfers
-6. Else: revert entire batch
+```solidity
+mapping(uint256 => bool) public usedNullifiers;
 ```
 
-### 3.5 Security Analysis
+On shielded payout:
+1. Verify PLONK proof on-chain via PlonkVerifierV2
+2. Check `usedNullifiers[H_n] == false`
+3. Mark `usedNullifiers[H_n] = true`
+4. Release funds to recipient
 
-**Theorem 1 (Privacy).** Under the discrete logarithm assumption over BN254, the Phantom Shield protocol reveals no information about payment amounts or recipient identities to any party not in possession of the admin secret `s`.
+Any future proof reusing the same nullifier is rejected, preventing replay attacks.
 
-*Proof sketch:* The zero-knowledge property of Groth16 ensures that the proof `pi` reveals nothing about the witness `(s, a, r)` beyond the validity of the statement `C = Poseidon(s, a, r)`. Since `C` is a Poseidon hash with 128-bit preimage resistance, recovering `(a, r)` from `C` alone is computationally infeasible.
+### 3.5 Circuit Definition (Circom 2.x)
 
-**Theorem 2 (Soundness).** No probabilistic polynomial-time adversary can generate a valid proof for a false commitment with non-negligible probability.
+The PayPolShieldV2 circuit enforces two constraints:
 
-*Proof sketch:* Follows directly from the knowledge soundness of Groth16 under the generic group model and the q-type assumption.
+```
+R = { (C, H_n, r; s, n, a) :
+      C = Poseidon(s, n, a, r)
+      AND H_n = Poseidon(n, s) }
+```
 
-### 3.6 Performance Characteristics
+Where `(C, H_n, r)` are public inputs and `(s, n, a)` are private witnesses.
 
-| Metric | Value |
-|---|---|
-| Proof Generation Time | < 2s per recipient (server-side) |
-| Proof Size | 192 bytes (3 BN254 G1/G2 elements) |
-| On-chain Verification Gas | ~250,000 gas per proof |
-| Batch Processing | Parallelizable across recipients |
-| Circuit Constraints | ~6,000 R1CS constraints |
+### 3.6 Security Analysis
+
+**Theorem 1 (Privacy).** The Phantom Shield V2 reveals no information about payment amounts to any party not in possession of both the secret `s` and nullifier `n`.
+
+**Theorem 2 (Soundness).** No PPT adversary can generate a valid proof for a false commitment with non-negligible probability.
+
+**Theorem 3 (Anti-Replay).** Each commitment can be spent at most once. Proof: The nullifier hash `H_n = Poseidon(n, s)` is deterministic --- the same `(n, s)` always produces the same `H_n`. Since the contract tracks and rejects used `H_n` values, no commitment can be double-spent.
 
 ---
 
@@ -266,7 +207,7 @@ Where `C` is the public input (commitment) and `(s, a, r)` are private witnesses
 
 ### 4.1 Problem Formulation
 
-In the agent marketplace, each transaction requires bilateral price agreement between the enterprise (buyer) and the AI agent (seller). Fixed pricing is suboptimal because agent value varies based on demand, reputation, and task complexity. We implement an automated multi-round negotiation protocol.
+In the agent marketplace, each transaction requires bilateral price agreement. Fixed pricing is suboptimal because agent value varies based on demand, reputation, and task complexity.
 
 ### 4.2 Pricing Model
 
@@ -281,71 +222,32 @@ Where:
 **Demand Multiplier `D`:**
 ```
 D = 1.12  if totalJobs > 100  (High demand)
-    1.05  if totalJobs > 50   (Moderate demand)
+    1.05  if totalJobs > 50   (Moderate)
     1.00  if totalJobs > 20   (Normal)
-    0.92  if totalJobs <= 20  (New agent discount)
+    0.92  if totalJobs <= 20  (New agent)
 ```
 
 **Rating Premium `R`:**
 ```
-R = 1.08  if avgRating >= 4.8  (Elite tier)
-    1.03  if avgRating >= 4.5  (Premium tier)
+R = 1.08  if avgRating >= 4.8  (Elite)
+    1.03  if avgRating >= 4.5  (Premium)
     1.00  otherwise            (Standard)
-```
-
-**Price Floor `P_floor`:**
-```
-P_floor = P_base * 0.85  if isVerified
-          P_base * 0.70  otherwise
 ```
 
 ### 4.3 Negotiation Protocol
 
-The protocol simulates four rounds of bilateral negotiation:
+**Round 1:** `O_1 = max(budget * 0.65, P_ask * 0.75)`
+**Round 2:** `O_2 = P_ask * 0.97`
+**Round 3:** `O_3 = (O_1 + O_2) / 2`
+**Round 4:** `P_final = (O_3 + O_2) / 2`
 
-**Round 1 --- Buyer's Opening Anchor:**
-```
-O_1 = max(budget * 0.65, P_ask * 0.75)
-```
-This aggressive opening creates downward price pressure while remaining within the agent's consideration range.
-
-**Round 2 --- Agent's Counter:**
-```
-O_2 = P_ask * 0.97
-```
-The agent counters near their ask price, signaling firmness while showing willingness to negotiate.
-
-**Round 3 --- Buyer's Improved Offer:**
-```
-O_3 = (O_1 + O_2) / 2
-```
-The buyer moves to the midpoint, demonstrating good faith.
-
-**Round 4 --- Final Agreement:**
-```
-P_final = (O_3 + O_2) / 2
-```
-The final price splits the remaining gap, favoring the agent slightly (reflecting their leverage as the service provider).
-
-### 4.4 Convergence Guarantee
-
-**Proposition:** The four-round negotiation protocol is guaranteed to converge to a price `P_final` satisfying:
-
-```
-P_floor <= P_final <= P_ask
-```
-
-*Proof:* By construction, `O_1 >= P_ask * 0.75 >= P_floor` (since `P_ask >= P_floor`). Each subsequent round averages the previous offers, monotonically converging within the bounds.
+**Convergence Guarantee:** By construction, `P_floor <= P_final <= P_ask`.
 
 ---
 
 ## 5. Escrow Smart Contract Architecture
 
-### 5.1 PayPolNexusV2 Contract
-
-The PayPolNexusV2 contract implements a full-lifecycle escrow with seven distinct functions governing the state machine:
-
-### 5.2 State Machine
+### 5.1 PayPolNexusV2 State Machine
 
 ```
                     createJob()
@@ -362,180 +264,203 @@ The PayPolNexusV2 contract implements a full-lifecycle escrow with seven distinc
               |            |              |
               v            v              v
          [Completed]  [Settled]      [Refunded]
-              |       (8% + 3%*)    (3%* penalty)
-              |
+              |       (8% + 3%)      (3% penalty)
          /         \
   settleJob()   disputeJob()
       |              |
       v              v
   [Settled]     [Disputed]
-  (8% fee)       (-> Settle or Refund)
-
-  * 3% arbitration penalty applied ONLY when
-    resolving from Disputed status
+  (8% fee)
 ```
 
-### 5.3 Fee Accumulation
+### 5.2 Fee Accumulation
 
-Platform fees and arbitration penalties are accumulated per token in the `accumulatedFees` mapping. The contract owner can withdraw accumulated fees via `withdrawFees(token)`.
+Platform fees and arbitration penalties accumulate per token in `accumulatedFees`. The owner withdraws via `withdrawFees(token)`.
 
-```solidity
-// On settlement (from Disputed status):
-accumulatedFees[token] += platformFee + arbitrationPenalty
+### 5.3 Timeout Mechanism
 
-// On settlement (non-disputed):
-accumulatedFees[token] += platformFee
-
-// On refund (from Disputed status):
-accumulatedFees[token] += arbitrationPenalty
-
-// On refund (non-disputed) or timeout:
-accumulatedFees[token] += 0  // No fees
-```
-
-### 5.4 Timeout Mechanism
-
-Each job includes a deadline (typically 48 hours from creation). If the agent fails to deliver by the deadline, the employer can invoke `claimTimeout()` to reclaim the full escrowed amount without any fee deduction.
-
-**Security Property:** The timeout mechanism is non-custodial --- the employer can always recover funds after the deadline, regardless of agent or judge cooperation.
-
-### 5.5 Rating System
-
-Post-settlement, employers can rate agents on a 1-5 scale. Ratings are aggregated on-chain:
-
-```
-avgRating[worker] = ratingSum[worker] / ratingCount[worker]
-```
-
-Ratings are immutable once submitted and influence the Dynamic Negotiation Engine's pricing model (Section 4.2).
+48-hour deadline with `claimTimeout()` for full refund. Non-custodial --- employer can always recover funds after deadline.
 
 ---
 
-## 6. System Architecture
+## 6. Agent-to-Agent (A2A) Economy
 
-### 6.1 Layer Decomposition
+### 6.1 Motivation
 
-| Layer | Components | Responsibility |
-|---|---|---|
-| **Presentation** | Dashboard (Next.js), OmniTerminal | User interface, intent capture |
-| **Intelligence** | AI Brain, Neural Intent Engine | NLP parsing, agent discovery |
-| **Orchestration** | Agent Auth, Marketplace Hook | Authentication, state management |
-| **Privacy** | ZK Daemon, Circom Circuits | Proof generation, commitment computation |
-| **Settlement** | NexusV2, ShieldVault, MultisendVault | On-chain execution, escrow management |
-| **Chain** | Tempo Moderato Testnet (EVM, Chain 42431) | Consensus, state persistence |
+Complex real-world tasks require multiple specialized capabilities. Rather than building monolithic agents, PayPol enables **composable agent chains** where a coordinator decomposes tasks and autonomously hires specialists, each with its own on-chain escrow.
 
-### 6.2 Data Flow: Payroll Execution
+### 6.2 Coordinator Agent
+
+The Coordinator uses Claude AI to decompose complex prompts:
 
 ```
-User Input ("Pay @Tony 10 AlphaUSD, use ZK Shield")
-    |
-    v
-Neural Intent Engine (LLM parsing)
-    |
-    v
-Intent Cards (validation & editing)
-    |
-    v
-Boardroom (batch approval + EIP-191 signature)
-    |
-    v
-API: POST /api/employees (approve batch)
-    |
-    v
-On-chain: ERC20.transfer(ShieldVault, totalAmount)
-    |
-    v
-Daemon Queue (ZK proof generation)
-    |
-    v
-On-chain: ShieldVault.execute(commitments, proofs)
-    |
-    v
-Settlement Receipt (transparency display)
-    |
-    v
-Ledger History (permanent record)
+Input: "Audit my contract and deploy if safe"
+
+Plan:
+  Step 0: contract-auditor (10 aUSD) - "Audit for vulnerabilities"
+  Step 1: contract-deploy-pro (280 aUSD) - "Deploy if audit passed"
+    dependsOn: [0]
 ```
 
-### 6.3 Data Flow: Agent Marketplace
+### 6.3 On-Chain Transaction Flow
 
 ```
-User Input ("Audit my smart contract, budget 50 AlphaUSD")
-    |
-    v
-AI Discovery Engine (POST /api/marketplace/discover)
-    |
-    v
-Agent Selection (user picks from ranked matches)
-    |
-    v
-Negotiation Engine (4-round automated negotiation)
-    |
-    v
-Deal Confirmation (price, fees, savings display)
-    |
-    v
-Accept & Escrow (POST /api/marketplace/jobs + /api/employees)
-    |
-    v
-On-chain: NexusV2.createJob(worker, judge, token, amount, deadline)
-    |
-    v
-Agent Execution (webhook call to agent's endpoint)
-    |
-    v
-Work Review (judge evaluates output)
-    |
-    v
-On-chain: NexusV2.settleJob(jobId) or refundJob(jobId)
-    |
-    v
-Escrow Tracker (lifecycle visualization)
+TX 1: NexusV2.createJob(coordinator, 300 aUSD)
+TX 2: NexusV2.createJob(auditor, 10 aUSD)        [coordinator hires]
+TX 3: NexusV2.settleJob(auditor)                   [audit complete]
+TX 4: NexusV2.createJob(deployer, 280 aUSD)       [coordinator hires]
+TX 5: NexusV2.settleJob(deployer)                  [deploy complete]
+TX 6: NexusV2.settleJob(coordinator)               [chain complete]
+```
+
+**= 6 real on-chain transactions per A2A flow**
+
+### 6.4 Economic Properties
+
+**Revenue Amplification:** Each A2A chain generates `N * 8%` in platform fees where `N` is the number of sub-tasks. A 3-step chain generates 3x the fee of a single hire.
+
+**Composability:** A2A chains are recursive up to depth 5. Any agent can act as coordinator, creating fractal economic structures.
+
+### 6.5 Verification
+
+A2A chains are visible on the Tempo Explorer as a sequence of linked NexusV2 transactions, providing full transparency into autonomous agent economic activity.
+
+---
+
+## 7. Verifiable AI Proof Commitments
+
+### 7.1 The AI Accountability Problem
+
+When an AI agent executes a financial task, there is no mechanism to verify that it followed its stated approach. Traditional software logs are insufficient because AI reasoning is inherently opaque.
+
+### 7.2 AIProofRegistry Contract
+
+Deployed at `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` on Tempo Moderato.
+
+**Commit-Verify-Slash Protocol:**
+
+1. **Commit**: `commit(keccak256(plan), nexusJobId) → commitmentId`
+2. **Execute**: Off-chain agent work
+3. **Verify**: `verify(commitmentId, keccak256(result))`
+4. **Slash** (if mismatch): `slash(commitmentId)`
+
+### 7.3 Properties
+
+**Immutability:** Once committed, the plan hash cannot be altered.
+
+**Verifiability:** Anyone can compare `planHash` with `resultHash` on-chain.
+
+**Accountability:** Mismatch statistics are permanently recorded, building reputation data for agents.
+
+### 7.4 Future: Stake-Based Enforcement
+
+In production, commitments will be backed by staked tokens:
+
+```
+stake(amount) → commit(planHash) → execute → verify(resultHash)
+  If matched: return stake
+  If mismatched: forfeit stake to platform + refund employer
 ```
 
 ---
 
-## 7. Related Work
+## 8. Tempo L1 Benchmark Analysis
 
-| System | Scope | Privacy | Agent Support | Arbitration |
+### 8.1 Methodology
+
+5 representative PayPol operations executed as real on-chain transactions on Tempo Moderato:
+
+1. ERC20 Transfer (`AlphaUSD.transfer()`)
+2. Escrow Creation (`NexusV2.createJob()`)
+3. Escrow Settlement (`NexusV2.settleJob()`)
+4. Batch Payment (`MultisendVault.executePublicBatch()` --- 5 recipients)
+5. AI Proof Commitment (`AIProofRegistry.commit()`)
+
+### 8.2 Cost Comparison
+
+| Operation | ETH Gas | ETH Cost @ 30 gwei | Tempo Cost | Savings |
 |---|---|---|---|---|
-| Gnosis Safe | Multi-sig treasury | None | None | None |
-| Superfluid | Token streaming | None | Limited | None |
-| Request Network | Invoicing | None | None | None |
-| Tornado Cash | Privacy mixer | Full (deprecated) | None | None |
-| **PayPol** | **Full payroll + agents** | **ZK-SNARK** | **Full marketplace** | **On-chain penalty** |
+| ERC20 Transfer | 65,000 | $4.88 | $0.00 | 100% |
+| Escrow Creation | 180,000 | $13.50 | $0.00 | 100% |
+| Escrow Settlement | 120,000 | $9.00 | $0.00 | 100% |
+| Batch Payment (5) | 250,000 | $18.75 | $0.00 | 100% |
+| AI Proof Commit | 100,000 | $7.50 | $0.00 | 100% |
+| **Total** | **715,000** | **$53.63** | **$0.00** | **100%** |
 
-PayPol is, to our knowledge, the first protocol to combine ZK-private payroll, automated agent negotiation, and game-theoretically sound on-chain arbitration in a unified architecture.
+### 8.3 A2A Chain Cost Analysis
 
----
+A typical A2A chain ("audit and deploy") generates 6 transactions:
 
-## 8. Future Work
+- **Ethereum**: ~$60-80 in gas fees
+- **Tempo**: $0.00
 
-1. **Cross-Chain Settlement**: Extending PayPol to support Omni-Chain payroll across EVM and SVM networks via bridge abstraction.
-
-2. **Agent Staking**: Requiring agents to stake protocol tokens as collateral, enabling direct stake slashing on dispute resolution.
-
-3. **Recursive ZK Proofs**: Aggregating individual recipient proofs into a single recursive proof for gas-efficient batch verification.
-
-4. **Autonomous Hedge Fund Module**: AI-driven portfolio rebalancing with escrow-protected fund management.
-
-5. **DePIN Micro-Payment Channels**: State channels for high-frequency micro-transactions to 10,000+ network nodes.
-
-6. **Formal Verification**: Machine-checked proofs of smart contract correctness using Certora or Halmos.
+This cost differential makes A2A agent hiring economically prohibitive on Ethereum but viable at scale on Tempo L1.
 
 ---
 
-## 9. Conclusion
+## 9. System Architecture
 
-PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture --- payroll fees, marketplace commissions, and arbitration penalties --- the protocol achieves sustainable revenue without extractive rent-seeking. The Phantom Shield provides cryptographically guaranteed privacy for enterprise payroll, while the Dynamic Negotiation Engine and PayPolNexusV2 escrow contract enable trustless agent marketplace operation with game-theoretically sound dispute resolution.
+### 9.1 Deployed Infrastructure
 
-As autonomous AI agents become primary economic actors, the need for deterministic, privacy-preserving, and arbitration-capable financial infrastructure will only intensify. PayPol is positioned as the foundational substrate for this emerging machine economy.
+| Component | Technology | Port | Status |
+|---|---|---|---|
+| Dashboard | Next.js 16, React 19 | 3000 | Production |
+| AI Brain | Express.js + Claude Sonnet | 4000 | Production |
+| Native Agents | Express.js (24 agents) | 3001 | Production |
+| Community Agents | PayPol SDK (14 agents) | 3010-3016 | Registered |
+| ZK Daemon | TypeScript + snarkjs | - | PLONK proving |
+| 5 Smart Contracts | Solidity 0.8.20 (Foundry) | - | Verified on Sourcify |
+
+### 9.2 Smart Contract Deployment
+
+All contracts are source-verified on Tempo Moderato (Chain 42431) via Sourcify:
+
+| Contract | Address |
+|---|---|
+| PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` |
+| PayPolShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` |
+| PayPolMultisendVaultV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` |
+| PayPolNexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` |
+| AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` |
+
+---
+
+## 10. Related Work
+
+| System | Scope | Privacy | Agent Support | A2A Economy | AI Verification | Arbitration |
+|---|---|---|---|---|---|---|
+| Gnosis Safe | Multi-sig | None | None | None | None | None |
+| Superfluid | Streaming | None | Limited | None | None | None |
+| Request Network | Invoicing | None | None | None | None | None |
+| Morpheus | AI agents | None | Basic | None | None | None |
+| **PayPol** | **Full stack** | **PLONK ZK** | **24+ agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
+
+PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, and verifiable on-chain AI proof commitments in a unified architecture.
+
+---
+
+## 11. Future Work
+
+1. **Stake-Based Slashing**: Agents stake tokens with AIProofRegistry; mismatches trigger automatic forfeiture.
+2. **Recursive ZK Proofs**: Aggregating proofs into a single recursive proof for batch verification.
+3. **Cross-Chain A2A**: Extending A2A chains across multiple EVM chains.
+4. **Formal Verification**: Machine-checked proofs of contract correctness using Certora or Halmos.
+5. **Agent Reputation Network**: On-chain scores from commitment match rates, ratings, and A2A participation.
+6. **DePIN Micro-Payment Channels**: State channels for high-frequency micro-transactions.
+
+---
+
+## 12. Conclusion
+
+PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture, the protocol achieves sustainable revenue. The Phantom Shield V2 provides cryptographic privacy with nullifier anti-double-spend protection. The A2A Economy creates a composable agent marketplace where agents autonomously hire agents. The AIProofRegistry establishes on-chain accountability for AI reasoning. And the Tempo Benchmark demonstrates that this entire stack operates at negligible cost on Tempo L1, making autonomous agent economies economically viable at scale.
+
+As autonomous AI agents become primary economic actors, the need for deterministic, privacy-preserving, verifiable, and arbitration-capable financial infrastructure will only intensify. PayPol is positioned as the foundational substrate for this emerging machine economy.
 
 ---
 
 ## References
 
-[1] Groth, J. (2016). On the Size of Pairing-Based Non-interactive Arguments. *EUROCRYPT 2016*.
+[1] Gabizon, A., Williamson, Z.J., & Ciobotaru, O. (2019). PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge. *IACR ePrint 2019/953*.
 
 [2] Grassi, L., Khovratovich, D., et al. (2021). Poseidon: A New Hash Function for Zero-Knowledge Proof Systems. *USENIX Security 2021*.
 
@@ -547,7 +472,9 @@ As autonomous AI agents become primary economic actors, the need for determinist
 
 [6] Nash, J. (1950). Equilibrium Points in N-Person Games. *Proceedings of the National Academy of Sciences*.
 
+[7] Tempo Network (2025). Tempo L1: A High-Performance EVM-Compatible Blockchain. *Tempo Technical Documentation*.
+
 ---
 
 *PayPol Protocol --- The Financial OS for the Agentic Economy*
-*Deployed on Tempo Moderato Testnet | Secured by ZK-SNARKs | Governed by Game Theory*
+*Deployed on Tempo L1 | Powered by PLONK ZK-SNARKs | Verified on Sourcify*

@@ -13,12 +13,15 @@
 4. [Core Modules](#4-core-modules)
 5. [Smart Contract Reference](#5-smart-contract-reference)
 6. [API Reference](#6-api-reference)
-7. [ZK Privacy Shield](#7-zk-privacy-shield)
-8. [Agent Marketplace (A2A)](#8-agent-marketplace-a2a)
-9. [SDK & Integrations](#9-sdk--integrations)
-10. [Fee Schedule](#10-fee-schedule)
-11. [Security Model](#11-security-model)
-12. [Deployment Guide](#12-deployment-guide)
+7. [ZK Privacy Shield V2](#7-zk-privacy-shield-v2)
+8. [Agent-to-Agent (A2A) Economy](#8-agent-to-agent-a2a-economy)
+9. [Verifiable AI Proofs](#9-verifiable-ai-proofs)
+10. [Real-Time Live Dashboard](#10-real-time-live-dashboard)
+11. [Tempo Benchmark Report](#11-tempo-benchmark-report)
+12. [SDK & Plugin Ecosystem](#12-sdk--plugin-ecosystem)
+13. [Fee Schedule](#13-fee-schedule)
+14. [Security Model](#14-security-model)
+15. [Deployment Guide](#15-deployment-guide)
 
 ---
 
@@ -28,21 +31,37 @@
 
 PayPol is the **Financial Operating System for the Agentic Economy** --- a decentralized infrastructure layer enabling autonomous AI agents, DAOs, and enterprises to execute programmable, privacy-preserving financial operations at scale.
 
-Built on **Tempo** (EVM-compatible, Moderato Testnet), PayPol bridges the gap between probabilistic AI intent and deterministic on-chain execution.
+Built on **Tempo L1** (EVM-compatible, Moderato Testnet), PayPol bridges the gap between probabilistic AI intent and deterministic on-chain execution.
 
 ### 1.2 Core Thesis
 
 > *AI is probabilistic; finance must be deterministic. PayPol is the Deterministic Substrate for the new machine economy.*
 
-### 1.3 Key Capabilities
+### 1.3 What We Built (Phase 2)
+
+PayPol Phase 2 delivers 8 production features --- all running on Tempo Moderato with real on-chain transactions:
+
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | **ZK Circuit V2** | Nullifier pattern preventing double-spend attacks (PLONK proving system) |
+| 2 | **5+ Flagship Agents** | Real on-chain execution: audits, deployments, payroll, escrow, yield |
+| 3 | **AI Brain Orchestrator** | Claude-powered intent parsing with real NexusV2 escrow creation |
+| 4 | **A2A Economy** | Agents autonomously hire other agents with per-sub-task escrow |
+| 5 | **Live Dashboard** | Real-time SSE streaming: TX feed, agent heatmap, TVL gauge, ZK counter |
+| 6 | **Verifiable AI Proofs** | On-chain keccak256 commitment before execution, verification after |
+| 7 | **Tempo Benchmark** | 5 real operations comparing Tempo vs Ethereum costs (99%+ savings) |
+| 8 | **SDK Plugin Ecosystem** | Self-registration, webhook health check, community agent marketplace |
+
+### 1.4 Key Capabilities
 
 | Capability | Description |
 |---|---|
-| **Neural Intent Engine** | LLM-powered natural language command parsing for multi-layered payroll scheduling |
-| **ZK Privacy Shield** | Zero-knowledge proofs obscure payroll amounts and recipient identities from public ledgers |
-| **Fortress Treasury** | EIP-191 multi-sig enforcement with time-vault escrows |
-| **A2A Settlement Layer** | Infrastructure for autonomous Agent-to-Agent economic interactions |
-| **Escrow Arbitration** | On-chain dispute resolution with cryptographic verdict enforcement |
+| **AI Brain Orchestrator** | Claude-powered natural language command parsing with real NexusV2 escrow |
+| **ZK Privacy Shield V2** | PLONK ZK-SNARKs with nullifier anti-double-spend pattern |
+| **A2A Economy** | Agent-to-Agent autonomous hiring with per-sub-task escrow chains |
+| **Verifiable AI Proofs** | On-chain commitment registry for auditable AI reasoning |
+| **Escrow Arbitration** | Game-theoretic dispute resolution with 8% platform fee + 3% penalty |
+| **Real-Time Dashboard** | SSE-powered live monitoring of all protocol activity |
 
 ---
 
@@ -51,46 +70,45 @@ Built on **Tempo** (EVM-compatible, Moderato Testnet), PayPol bridges the gap be
 ### 2.1 System Layers
 
 ```
-+-------------------------------------------------------+
-|                   FRONTEND LAYER                       |
-|    Dashboard (Next.js 16) | OmniTerminal | Landing    |
-+-------------------------------------------------------+
-|                   SERVICE LAYER                        |
-|  AI Brain (Express:4000) | Agent Auth (FastAPI:8000)   |
-|  ZK Daemon (ts-node) | Native Agents (port:3001)       |
-+-------------------------------------------------------+
-|                   PROTOCOL LAYER                       |
-|  PayPolNexusV2 | ShieldVault | MultisendVault          |
-|  AgentRegistry | PlonkVerifier                          |
-+-------------------------------------------------------+
-|                   CHAIN LAYER                          |
-|        Tempo Moderato Testnet (EVM, Chain 42431)       |
-|         RPC: https://rpc.moderato.tempo.xyz            |
-+-------------------------------------------------------+
++--------------------------------------------------------------------+
+|                        FRONTEND LAYER                               |
+|  Dashboard (Next.js 16) | Live Dashboard | Landing | Developers    |
++--------------------------------------------------------------------+
+|                        SERVICE LAYER                                |
+|  AI Brain (Express:4000) | Native Agents (port:3001)               |
+|  ZK Daemon (ts-node) | Community Agents (port:3010-3099)           |
++--------------------------------------------------------------------+
+|                        PROTOCOL LAYER                               |
+|  PayPolNexusV2 | ShieldVaultV2 | MultisendVaultV2                  |
+|  AIProofRegistry | PlonkVerifierV2                                  |
++--------------------------------------------------------------------+
+|                        CHAIN LAYER                                  |
+|         Tempo Moderato Testnet (EVM, Chain 42431)                   |
+|          RPC: https://rpc.moderato.tempo.xyz                        |
++--------------------------------------------------------------------+
 ```
 
-### 2.2 Contract Addresses (Tempo Moderato Testnet — Chain ID: 42431)
+### 2.2 Contract Addresses (Tempo Moderato Testnet --- Chain ID: 42431)
 
-All contracts are **source-verified** on the [Tempo Explorer](https://explore.tempo.xyz).
+All contracts are **source-verified** on the [Tempo Explorer](https://explore.tempo.xyz) via Sourcify.
 
 | Contract | Address | Purpose | Verified |
 |---|---|---|---|
-| PlonkVerifier | [`0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964`](https://explore.tempo.xyz/address/0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964) | ZK-SNARK on-chain proof verifier (PLONK) | ✅ |
-| PayPolShieldVault | [`0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1`](https://explore.tempo.xyz/address/0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1) | ZK-shielded private payroll vault | ✅ |
-| PayPolMultisendVault | [`0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69`](https://explore.tempo.xyz/address/0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69) | Batch payroll (up to 100 recipients per tx) | ✅ |
+| PlonkVerifierV2 | [`0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | ZK-SNARK on-chain proof verifier (PLONK) | ✅ |
+| PayPolShieldVaultV2 | [`0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded private payment vault with nullifier | ✅ |
+| PayPolMultisendVaultV2 | [`0x25f4d3f12C579002681a52821F3a6251c46D4575`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Batch payment vault (multi-token, per-transfer events) | ✅ |
 | PayPolNexusV2 | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow (dispute, settlement, timeout, rating) | ✅ |
-| PayPolNexus (v1) | `0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c` | Legacy escrow (deprecated) | — |
+| AIProofRegistry | [`0x8fDB8E871c9eaF2955009566F41490Bbb128a014`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | Verifiable on-chain AI commitment registry | ✅ |
 
 > **RPC:** `https://rpc.moderato.tempo.xyz` · **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz) · **Compiler:** Solidity 0.8.20 (optimizer 200 runs, EVM Paris)
 
 ### 2.3 Supported Tokens
 
-| Token | Symbol | Decimals | Type |
+| Token | Symbol | Address | Decimals |
 |---|---|---|---|
-| AlphaUSD | aUSD | 18 | Primary stablecoin |
-| BetaUSD | bUSD | 18 | Secondary stablecoin |
-| ThetaUSD | tUSD | 18 | Synthetic stablecoin |
-| pathUSD | pUSD | 18 | Path-routed stablecoin |
+| AlphaUSD | aUSD | `0x20c0000000000000000000000000000000000001` | 6 |
+
+> **Note:** AlphaUSD is the native stablecoin on Tempo Moderato Testnet. Gas on Tempo is free --- no native gas token required.
 
 ---
 
@@ -98,7 +116,7 @@ All contracts are **source-verified** on the [Tempo Explorer](https://explore.te
 
 ### 3.1 Prerequisites
 
-- Node.js >= 18.0
+- Node.js >= 20.0
 - MetaMask or compatible EVM wallet
 - Tempo Moderato Testnet configuration (Chain ID: 42431)
 - Foundry (for smart contract development)
@@ -108,24 +126,26 @@ All contracts are **source-verified** on the [Tempo Explorer](https://explore.te
 ```
 paypol-protocol/
   apps/
-    dashboard/          Next.js 16 frontend application
+    dashboard/              Next.js 16 frontend application
   packages/
-    contracts/          Solidity smart contracts (Foundry)
-    circuits/           Circom ZK circuits
-    sdk/                TypeScript SDK
-    integrations/       Eliza plugin + MCP server
+    contracts/              Solidity smart contracts (Foundry)
+    circuits/               Circom ZK circuits (V1 + V2)
+    sdk/                    TypeScript SDK for building agents
+    integrations/           Eliza plugin + MCP server
   services/
-    agent-auth/         FastAPI wallet authentication
-    agents/             Native AI agents
-    ai-brain/           AI orchestrator (Express)
-    daemon/             ZK-SNARK proof generator
+    agents/                 Native AI agents (24 built-in)
+    ai-brain/               AI Brain Orchestrator (Express:4000)
+    daemon/                 ZK-SNARK proof generator
+  agents/                   Community-built agents (14+ registered)
+  templates/
+    agent-template/         Starter template for new agents
 ```
 
 ### 3.3 Quick Start
 
 ```bash
 # Clone and install
-git clone <repository-url>
+git clone https://github.com/PayPol-Foundation/paypol-protocol.git
 cd paypol-protocol
 
 # Install dependencies
@@ -133,15 +153,20 @@ npm install
 
 # Start dashboard
 cd apps/dashboard
+npx prisma generate
+npx prisma db push
 npm run dev
+# Open http://localhost:3000
 
 # Start AI Brain (separate terminal)
 cd services/ai-brain
 npm start
+# Runs on port 4000
 
-# Start ZK Daemon (separate terminal)
-cd services/daemon
-npx ts-node daemon.ts
+# Start Agent Service (separate terminal)
+cd services/agents
+npm run build && npm start
+# Runs on port 3001 with 24 native agents
 ```
 
 ### 3.4 Wallet Configuration
@@ -152,12 +177,11 @@ Add Tempo Moderato Testnet to MetaMask:
 |---|---|
 | Network Name | Tempo Testnet (Moderato) |
 | RPC URL | `https://rpc.moderato.tempo.xyz` |
-| WebSocket URL | `wss://rpc.moderato.tempo.xyz` |
 | Chain ID | `42431` |
 | Currency Symbol | USD |
-| Block Explorer | `https://explore.moderato.tempo.xyz` |
+| Block Explorer | `https://explore.tempo.xyz` |
 
-> **Note:** Tempo has no native gas token. Transaction fees are paid in TIP-20 stablecoins (pathUSD, AlphaUSD, etc.). The USD value shown in wallets is a placeholder. Use the Tempo faucet (`tempo_fundAddress` RPC method) to receive 1M of each testnet stablecoin.
+> **Note:** Tempo has no native gas token. Transaction fees are free on testnet. Use the Tempo faucet (`tempo_fundAddress` RPC method) to receive testnet stablecoins.
 
 ---
 
@@ -168,7 +192,7 @@ Add Tempo Moderato Testnet to MetaMask:
 The OmniTerminal is the primary command interface. It operates in two modes:
 
 **Tab 1 --- Mass Disbursal (Payroll)**
-- Natural language payroll commands parsed by the Neural Intent Engine
+- Natural language payroll commands parsed by the AI Brain
 - CSV upload support for bulk payroll processing
 - Phantom Shield toggle for ZK-privacy
 - Real-time intent card previews with editable fields
@@ -183,63 +207,49 @@ The OmniTerminal is the primary command interface. It operates in two modes:
 ```
 "Pay @Tony 10 AlphaUSD, @Sarah 15 AlphaUSD, use ZK Shield"
 "Hire an agent to audit my smart contract, budget 50 AlphaUSD"
-"Parse Q3_Engineering_Roster.csv and map to wallet addresses"
+"Audit my contract and deploy if safe" (triggers A2A chain)
 ```
 
-### 4.2 Boardroom
+### 4.2 Live Dashboard (Nerve Center)
+
+Real-time SSE-powered monitoring dashboard with 6 panels:
+
+| Panel | Description |
+|---|---|
+| **Transaction Feed** | Scrolling feed with TX hashes linking to Tempo Explorer |
+| **Agent Heatmap** | Color-coded agent tiles (green=active, yellow=busy, gray=idle) |
+| **ZK Proof Counter** | Animated counter of proofs generated and verified |
+| **Revenue Ticker** | Platform fees collected with trend arrow |
+| **TVL Gauge** | Donut chart showing real on-chain balances of NexusV2, ShieldVault, MultisendVault |
+| **A2A Flow Visualization** | Animated graph of active Agent-to-Agent chains |
+
+Events stream via SSE from the AI Brain Orchestrator at `GET /api/live/stream` with 15-second heartbeat and auto-reconnect.
+
+### 4.3 Boardroom
 
 The Boardroom is the batch transaction approval center:
-
 - Displays queued payroll payloads awaiting admin signature
 - EIP-191 message signing for cryptographic authorization
 - Dynamic fee calculation (Protocol Fee + optional Shield Premium)
 - Phantom Shield toggle for ZK-privacy mode
-- On-chain deposit to appropriate vault (MultisendVault or ShieldVault)
+- On-chain deposit to MultisendVaultV2 or ShieldVaultV2
 
-### 4.3 Daemon Queue (TimeVault)
+### 4.4 Escrow Tracker
 
-Real-time monitoring of batch processing:
+Real-time escrow lifecycle visualization:
+- Five-step lifecycle stepper with animated progress nodes
+- Deadline countdown (48-hour auto-refund mechanism)
+- AI Proof badge showing commitment/verification status
+- A2A chain tree view (parent->child with escrow status)
+- Transaction hash display for escrow and settlement
 
-- Visual progress bar with time remaining
-- ZK-SNARK proof generation status (for shielded batches)
-- Public L1 broadcast status (for standard batches)
-- Batch ID tracking and commitment hash display
-
-### 4.4 Settlement Receipt
-
-Transparency panel for recently settled batches (24h window):
-
-- Fund flow visualization: Wallet > Vault > Daemon > Recipients
-- Per-recipient breakdown: name, wallet, amount, delivery status
-- On-chain proof links to Tempo Explorer
-- Automatic expansion for newly settled batches
-
-### 4.5 Settled Batches & History (LedgerHistory)
-
-Comprehensive ledger of all executed protocol payloads:
-
-- Expandable batch details with recipient breakdown
-- CSV export functionality
-- ZK-Shielded vs Public L1 badge indicators
-- Source hash and total volume display
-
-### 4.6 Judge Dashboard
+### 4.5 Judge Dashboard
 
 Escrow arbitration interface for dispute resolution:
-
 - **Arbitrator View**: Pending review queue and disputed cases
 - **Company View**: Active escrows and resolution history
 - On-chain settlement actions: Settle, Refund, Dispute, Claim Timeout
 - Automatic sync between on-chain events and database records
-
-### 4.7 Escrow Tracker
-
-Real-time escrow lifecycle visualization:
-
-- Five-step lifecycle stepper with animated progress nodes
-- Deadline countdown (48-hour auto-refund mechanism)
-- Transaction hash display for escrow and settlement
-- Recently settled/refunded summary cards
 
 ---
 
@@ -247,7 +257,7 @@ Real-time escrow lifecycle visualization:
 
 ### 5.1 PayPolNexusV2
 
-The core escrow contract for the Agent Marketplace. Handles full job lifecycle with dispute resolution.
+The core escrow contract for the Agent Marketplace. Handles full job lifecycle with dispute resolution, rating system, and timeout mechanism.
 
 **Job Status Flow:**
 ```
@@ -267,27 +277,19 @@ Creates an escrow job. Employer must approve token transfer beforehand.
 | Parameter | Type | Description |
 |---|---|---|
 | `_worker` | `address` | Agent's receiving wallet |
-| `_judge` | `address` | Arbitrator wallet (PayPol bot or designated judge) |
-| `_token` | `address` | ERC20 token address |
-| `_amount` | `uint256` | Payment amount (smallest unit) |
-| `_deadlineDuration` | `uint256` | Seconds until timeout (e.g., 172800 = 48h) |
-
-**Returns:** `uint256 jobId`
+| `_judge` | `address` | Arbitrator wallet |
+| `_token` | `address` | ERC20 token address (AlphaUSD) |
+| `_amount` | `uint256` | Payment amount (6 decimals for AlphaUSD) |
+| `_deadlineDuration` | `uint256` | Seconds until timeout (default: 172800 = 48h) |
 
 #### `settleJob(jobId)`
-Judge approves work. Pays worker `(budget - platformFee - arbitrationPenalty)`.
-
-- **Normal settlement**: Worker receives `budget - 8%`
-- **Disputed settlement** (company loses): Worker receives `budget - 8% - 3%` penalty. Penalty goes to platform revenue.
+Judge approves work. Worker receives `budget - 8% platformFee`. If disputed: additional 3% penalty on losing party.
 
 #### `refundJob(jobId)`
-Judge refunds employer.
-
-- **Normal refund**: Full budget returned to employer
-- **Disputed refund** (agent loses): Employer receives `budget - 3%` penalty. Penalty goes to platform revenue.
+Judge refunds employer. If disputed: 3% penalty on agent (capped at max arbitration penalty).
 
 #### `claimTimeout(jobId)`
-Employer claims auto-refund after deadline expires. Full budget returned, no fee deducted.
+Employer claims auto-refund after deadline expires. Full budget returned.
 
 #### `disputeJob(jobId)`
 Employer disputes the job result. Only callable by employer on non-finalized jobs.
@@ -295,102 +297,71 @@ Employer disputes the job result. Only callable by employer on non-finalized job
 #### `rateWorker(jobId, rating)`
 Employer rates worker 1-5 stars after settlement. One rating per job.
 
-#### `getJob(jobId) -> (employer, worker, judge, token, budget, platformFee, deadline, status, rated)`
-Returns full job details.
+### 5.2 AIProofRegistry
 
-**Configuration (Owner Only):**
+On-chain commitment registry for verifiable AI agent execution.
 
-| Function | Description | Constraint |
-|---|---|---|
-| `setPlatformFeeBps(feeBps)` | Update platform fee | Max 3000 (30%) |
-| `setArbitrationPenaltyBps(penaltyBps)` | Update arbitration penalty | Max 1000 (10%) |
-| `setMaxArbitrationPenalty(maxPenalty)` | Update penalty cap | In token units |
-| `withdrawFees(token)` | Withdraw accumulated fees | Owner only |
+**How it works:**
+1. Before execution: agent commits `keccak256(plan)` on-chain
+2. Agent executes off-chain work
+3. After execution: agent calls `verify(commitmentId, keccak256(result))`
+4. If planHash matches resultHash: `matched = true`
+5. If mismatch: owner can call `slash(commitmentId)` to record on-chain
+
+**Key Functions:**
+
+#### `commit(planHash, nexusJobId) -> commitmentId`
+Commits a plan hash before executing an agent job.
+
+#### `verify(commitmentId, resultHash)`
+Verifies execution result against commitment. Sets `matched` boolean.
+
+#### `slash(commitmentId)`
+Records a slash event for mismatched commitments. Owner only.
+
+#### `getStats() -> (totalCommitments, totalVerified, totalMatched, totalMismatched, totalSlashed)`
+Returns protocol-wide statistics.
 
 **Events:**
-
 ```solidity
-event JobCreated(uint256 indexed jobId, address indexed employer, address indexed worker, uint256 budget, uint256 deadline)
-event JobStatusChanged(uint256 indexed jobId, JobStatus oldStatus, JobStatus newStatus)
-event JobSettled(uint256 indexed jobId, uint256 workerPay, uint256 fee)
-event JobRefunded(uint256 indexed jobId, uint256 amount)
-event JobDisputed(uint256 indexed jobId, address indexed employer)
-event ArbitrationPenaltyApplied(uint256 indexed jobId, address indexed penalizedParty, uint256 penaltyAmount)
-event WorkerRated(uint256 indexed jobId, address indexed worker, uint256 rating)
+event CommitmentMade(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId, bytes32 planHash)
+event CommitmentVerified(bytes32 indexed commitmentId, bool matched, bytes32 resultHash)
+event AgentSlashed(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId)
 ```
 
-### 5.2 PayPolShieldVault
+### 5.3 PayPolShieldVaultV2
 
-ZK-shielded payment vault using Poseidon hashing and PlonkVerifier.
+ZK-shielded payment vault using Poseidon hashing, PLONK verifier, and nullifier pattern.
 
 **Commitment Formula:**
 ```
-commitment = Poseidon(adminSecret, amount, recipientAddress)
+commitment = Poseidon(secret, nullifier, amount, recipient)
+nullifierHash = Poseidon(nullifier, secret)
 ```
 
-**Verification:** Server-side ZK-SNARK proof generation using `paypol_shield.wasm` and `paypol_shield_final.zkey`.
+**Key Difference from V1:** The nullifier pattern prevents double-spending. The contract tracks used `nullifierHash` values and rejects any proof that attempts to reuse a nullifier.
 
-### 5.3 PayPolMultisendVault
+#### `deposit(commitment, amount)`
+Deposits AlphaUSD into the vault with a commitment hash.
 
-Batch public transfer vault. Receives ERC20 tokens and distributes to multiple recipients in a single transaction.
+#### `executeShieldedPayout(proof, pubSignals, exactAmount)`
+Verifies the PLONK proof and releases funds to the recipient specified in pubSignals.
+
+### 5.4 PayPolMultisendVaultV2
+
+Batch public transfer vault. Multi-token support with per-transfer events.
+
+#### `executePublicBatch(token, recipients, amounts)`
+Distributes tokens to multiple recipients in a single transaction.
 
 ---
 
 ## 6. API Reference
 
-### 6.1 Workspace Management
-
-#### `POST /api/workspace`
-Create a new workspace.
-
-```json
-{
-  "adminWallet": "0x...",
-  "name": "My DAO Treasury",
-  "type": "DAO"
-}
-```
-
-#### `GET /api/workspace?wallet=0x...`
-Retrieve workspace by admin wallet.
-
-### 6.2 Payroll Operations
-
-#### `POST /api/employees`
-Queue payroll payloads to the Boardroom.
-
-```json
-{
-  "intents": [
-    {
-      "name": "Tony Martinez",
-      "wallet": "0x1234...5678",
-      "amount": "10.00",
-      "token": "AlphaUSD",
-      "note": "January salary"
-    }
-  ]
-}
-```
-
-#### `PUT /api/employees`
-Process state transitions (approve, sign, process).
-
-```json
-{
-  "action": "approve",
-  "isShielded": true,
-  "batchTxHash": "0xabc..."
-}
-```
-
-#### `GET /api/employees`
-Returns `{ awaiting: [], pending: [], vaulted: [] }`.
-
-### 6.3 Marketplace Operations
+### 6.1 Marketplace Operations
 
 #### `POST /api/marketplace/discover`
-AI-powered agent discovery.
+AI-powered agent discovery using Claude Sonnet.
 
 ```json
 {
@@ -399,52 +370,8 @@ AI-powered agent discovery.
 }
 ```
 
-**Response:**
-```json
-{
-  "agents": [
-    {
-      "agentId": "...",
-      "relevanceScore": 0.95,
-      "reasoning": "Specialized in Solidity security...",
-      "agent": {
-        "name": "AuditBot",
-        "category": "Security",
-        "basePrice": 25.00,
-        "avgRating": 4.8,
-        "isVerified": true
-      }
-    }
-  ],
-  "suggestedBudget": 50
-}
-```
-
-#### `POST /api/marketplace/jobs`
-Create a new agent job.
-
-```json
-{
-  "agentId": "uuid",
-  "clientWallet": "0x...",
-  "prompt": "Audit my ERC20 token contract",
-  "budget": 50.00,
-  "negotiatedPrice": 42.50,
-  "platformFee": 3.40
-}
-```
-
-#### `PUT /api/marketplace/jobs`
-Update job status.
-
-```json
-{
-  "jobId": "uuid",
-  "status": "COMPLETED",
-  "result": "{ ... }",
-  "executionTime": 45
-}
-```
+#### `POST /api/marketplace/execute`
+Trigger agent task execution with real NexusV2 escrow.
 
 #### `POST /api/marketplace/settle`
 Sync on-chain escrow events to database.
@@ -457,294 +384,446 @@ Sync on-chain escrow events to database.
 }
 ```
 
-**Supported actions:** `escrow_locked`, `executing`, `completed`, `settle`, `refund`, `dispute`
-
-#### `POST /api/marketplace/execute`
-Trigger agent task execution.
-
-### 6.4 Escrow Operations
-
-#### `GET /api/escrow`
-List all escrow payloads.
-
-#### `POST /api/escrow`
-Submit escrow settlement action.
+#### `POST /api/marketplace/register`
+Self-register a community agent on the marketplace.
 
 ```json
 {
-  "id": "uuid",
-  "action": "release",
-  "agentJobId": "uuid",
-  "txHash": "0x..."
+  "name": "My Agent",
+  "description": "Does amazing things",
+  "category": "analytics",
+  "skills": "[\"analysis\", \"reporting\"]",
+  "basePrice": "50",
+  "webhookUrl": "http://localhost:3010/my-agent",
+  "ownerWallet": "0x...",
+  "source": "community"
 }
 ```
 
-#### `GET /api/escrow/tracker?wallet=0x...`
-Real-time escrow tracking for a specific wallet.
+The registration endpoint performs a health check against `{baseUrl}/health` before accepting the agent.
 
-### 6.5 History & Analytics
+### 6.2 A2A Operations
 
-#### `GET /api/payout-history`
-Returns all settled transaction history with recipient breakdown.
+#### `POST /api/a2a/execute`
+Execute a complex task through the A2A Coordinator agent. The coordinator decomposes the prompt into sub-tasks and autonomously hires other agents.
 
-#### `GET /api/stats`
-Returns system-wide statistics.
+#### `GET /api/a2a/chain?chainId=xxx`
+Fetch A2A chain data showing parent-child job relationships.
 
-```json
-{
-  "stats": {
-    "totalShieldedVolume": "125430.500",
-    "totalBatches": 342,
-    "activeAgents": 28
-  }
-}
-```
+### 6.3 Live Dashboard
+
+#### `GET /api/live/stream`
+SSE endpoint streaming real-time protocol events (escrow created, settled, agent jobs, ZK proofs, etc.).
+
+#### `GET /api/live/stats`
+Initial hydration endpoint with current totals from Prisma.
+
+#### `GET /api/live/tvl`
+Real on-chain TVL: `AlphaUSD.balanceOf()` for NexusV2, ShieldVaultV2, and MultisendVaultV2.
+
+### 6.4 AI Proofs
+
+#### `GET /api/ai-proof?jobId=xxx`
+Fetch AI proof commitment/verification data for a specific job.
+
+### 6.5 Benchmark
+
+#### `GET /api/benchmark`
+Trigger the Tempo Benchmark agent. Returns comparison data for 5 operations (1-hour cache).
+
+### 6.6 Payroll Operations
+
+#### `POST /api/employees`
+Queue payroll payloads to the Boardroom.
+
+#### `PUT /api/employees`
+Process state transitions (approve, sign, process).
+
+#### `GET /api/employees`
+Returns `{ awaiting: [], pending: [], vaulted: [] }`.
 
 ---
 
-## 7. ZK Privacy Shield
+## 7. ZK Privacy Shield V2
 
 ### 7.1 Overview
 
-The Phantom Shield uses Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge (ZK-SNARKs) to enable private payroll transactions. Amounts and recipient identities are hidden from public block explorers.
+The Privacy Shield V2 uses Zero-Knowledge SNARKs with a **nullifier pattern** to enable private transactions that cannot be replayed or double-spent.
 
-### 7.2 Circuit Design
+### 7.2 Circuit Design (V2 --- Nullifier Pattern)
 
 **Technology Stack:**
 - Circuit Language: Circom 2.x
-- Proving System: Groth16 (via snarkjs)
+- Proving System: PLONK (via snarkjs)
 - Hash Function: Poseidon (circomlibjs)
-- Verification: PlonkVerifier.sol (on-chain)
+- Verification: PlonkVerifierV2.sol (on-chain)
 
-**Commitment Scheme:**
-```
-commitment = Poseidon(adminSecret, amount, recipientWalletAddress)
-```
+**Public Inputs (visible on-chain):**
+- `commitment`: Hash binding all private data
+- `nullifierHash`: Unique spend tag --- contract tracks used nullifiers
+- `recipient`: Payment destination
 
-### 7.3 Proof Generation Flow
+**Private Inputs (hidden from public):**
+- `amount`: Payment amount (hidden from block explorer)
+- `secret`: Random secret generated per payment
+- `nullifier`: Random nullifier generated per payment
 
+**Constraints:**
 ```
-1. Admin signs batch (EIP-191 signature)
-2. Frontend sends batch to /api/employees with isShielded=true
-3. ZK Daemon receives batch via polling
-4. For each recipient:
-   a. Compute Poseidon commitment
-   b. Generate Groth16 proof using paypol_shield.wasm + paypol_shield_final.zkey
-   c. Store zkProof and zkCommitment in database
-5. Submit proof + commitment to ShieldVault on-chain
-6. PlonkVerifier.sol verifies proof validity
-7. ShieldVault releases funds to recipients
+1. commitment === Poseidon(secret, nullifier, amount, recipient)
+2. nullifierHash === Poseidon(nullifier, secret)
 ```
 
-### 7.4 Privacy Guarantees
+### 7.3 Security Properties
 
 | Property | Guarantee |
 |---|---|
-| Amount Privacy | Payment amounts hidden from observers |
-| Recipient Privacy | Recipient addresses obscured via commitments |
-| Sender Authentication | EIP-191 signature proves admin authorization |
-| On-chain Verification | PlonkVerifier ensures proof validity without revealing inputs |
-| Proof Soundness | Groth16 guarantees computational soundness |
+| **Amount Privacy** | Payment amounts hidden from observers |
+| **Recipient Privacy** | Recipient addresses obscured via commitments |
+| **Anti-Double-Spend** | nullifierHash is unique per payment; contract rejects reuse |
+| **On-chain Verification** | PlonkVerifierV2 ensures proof validity without revealing inputs |
+| **Proof Soundness** | PLONK guarantees computational soundness |
+
+### 7.4 V1 vs V2 Comparison
+
+| Feature | V1 (Groth16) | V2 (PLONK + Nullifier) |
+|---|---|---|
+| Proving System | Groth16 | PLONK |
+| Inputs | `Poseidon(adminSecret, amount, recipient)` | `Poseidon(secret, nullifier, amount, recipient)` |
+| Double-Spend Protection | None | Nullifier tracking on-chain |
+| Trusted Setup | Required (ceremony) | Universal (no per-circuit ceremony) |
+| Public Signals | 1 (commitment) | 3 (commitment, nullifierHash, recipient) |
 
 ### 7.5 Files
 
 | File | Location | Purpose |
 |---|---|---|
-| Circuit | `packages/circuits/` | Circom ZK circuit definition |
-| WASM | `apps/dashboard/public/zk/paypol_shield.wasm` | Client-side proof computation |
-| Proving Key | `apps/dashboard/public/zk/paypol_shield_final.zkey` | Groth16 proving key |
-| Verifier | `packages/contracts/src/PlonkVerifier.sol` | On-chain proof verification |
-| Daemon | `services/daemon/` | Server-side proof generation service |
+| Circuit V1 | `packages/circuits/paypol_shield.circom` | Original Groth16 circuit |
+| Circuit V2 | `packages/circuits/paypol_shield_v2.circom` | PLONK circuit with nullifier |
+| Verifier V2 | `packages/contracts/src/PlonkVerifier.sol` | On-chain PLONK verification |
+| ShieldVault V2 | `packages/contracts/src/PayPolShieldVaultV2.sol` | Vault with nullifier registry |
+| Daemon | `services/daemon/` | Server-side proof generation |
 
 ---
 
-## 8. Agent Marketplace (A2A)
+## 8. Agent-to-Agent (A2A) Economy
 
 ### 8.1 Overview
 
-The Neural Agent Marketplace enables enterprises to discover, negotiate, and hire AI agents for task execution, with guaranteed payment through on-chain escrow.
+The A2A Economy enables agents to autonomously hire other agents through NexusV2 escrow. A Coordinator Agent decomposes complex tasks into sub-tasks, creates individual escrows for each, and settles all upon completion.
 
-### 8.2 Agent Discovery
-
-AI-powered matching via the `/api/marketplace/discover` endpoint:
-
-1. User describes task in natural language
-2. AI Brain analyzes task requirements
-3. Agents are scored by relevance, rating, and availability
-4. Top matches returned with reasoning
-
-### 8.3 Dynamic Negotiation Engine
-
-The negotiation engine simulates multi-round price negotiation:
-
-**Pricing Factors:**
-
-| Factor | Logic |
-|---|---|
-| Demand Multiplier | > 100 jobs: 1.12x, > 50: 1.05x, > 20: 1.0x, < 20: 0.92x |
-| Rating Premium | >= 4.8 stars: 1.08x, >= 4.5: 1.03x |
-| Verification Floor | Verified: 85% of base, Unverified: 70% of base |
-
-**Negotiation Rounds:**
-
-1. **Round 1** --- PayPol opens with aggressive anchor (65% of budget)
-2. **Round 2** --- Agent counters at 97% of calculated ask
-3. **Round 3** --- PayPol improves to midpoint
-4. **Round 4** --- Final agreement (split remaining difference)
-
-### 8.4 Escrow Lifecycle
+### 8.2 How It Works
 
 ```
-CREATED --> MATCHED --> ESCROW_LOCKED --> EXECUTING --> COMPLETED
-                                                          |
-                                                     SETTLED (8% fee)
-                                                          |
-                                            DISPUTED --> SETTLED (8% + 3% penalty)
-                                                    --> REFUNDED (3% penalty)
+User: "Audit my contract and deploy if safe"
+  |
+  v
+Coordinator Agent (receives complex prompt)
+  |
+  v
+Claude AI (decomposes into CoordinatorPlan)
+  |
+  +---> Step 1: Hire contract-auditor → NexusV2.createJob() → Audit
+  |
+  +---> Step 2: If audit passed → Hire contract-deploy-pro → NexusV2.createJob() → Deploy
+  |
+  v
+Aggregated result with all TX hashes
 ```
 
-### 8.5 Agent Registration
+### 8.3 On-Chain TX Flow
 
-Agents are registered in the `MarketplaceAgent` model:
+Each A2A chain creates multiple real transactions on Tempo:
+
+1. `NexusV2.createJob(coordinator)` --- TX 1 (parent escrow)
+2. `NexusV2.createJob(auditor)` --- TX 2 (child escrow)
+3. `NexusV2.settleJob(auditor)` --- TX 3
+4. `NexusV2.createJob(deployer)` --- TX 4 (child escrow)
+5. `NexusV2.settleJob(deployer)` --- TX 5
+6. `NexusV2.settleJob(coordinator)` --- TX 6
+
+**= 6 real on-chain transactions per A2A flow**
+
+### 8.4 Available Agents for A2A
+
+| Agent | Price | Capability |
+|---|---|---|
+| `contract-auditor` | 10 aUSD | Audit Solidity contracts for vulnerabilities |
+| `contract-deploy-pro` | 280 aUSD | Compile and deploy contracts on Tempo L1 |
+| `token-deployer` | 350 aUSD | Deploy ERC-20 tokens with tokenomics |
+| `payroll-planner` | 3 aUSD | Batch payroll via MultisendVault |
+| `escrow-manager` | 5 aUSD | Create/settle NexusV2 escrow jobs |
+| `shield-executor` | 10 aUSD | Execute ZK-SNARK shielded payments |
+| `yield-optimizer` | 50 aUSD | DeFi APY strategy optimization |
+| `gas-predictor` | 2 aUSD | Optimal gas timing for transactions |
+| `risk-analyzer` | 30 aUSD | DeFi portfolio risk assessment |
+| `compliance-advisor` | 25 aUSD | Crypto regulatory compliance check |
+
+### 8.5 Dashboard Visualization
+
+The EscrowTracker component shows A2A chains as a tree view:
+- Parent job at top with overall status
+- Child jobs indented below with individual escrow status
+- Each node shows TX hash linking to Tempo Explorer
+- AI Proof badge shows commitment verification status
+
+---
+
+## 9. Verifiable AI Proofs
+
+### 9.1 Overview
+
+The AIProofRegistry creates an immutable, on-chain audit trail for AI agent reasoning. Before execution, agents commit a hash of their planned approach. After execution, the result hash is compared on-chain.
+
+### 9.2 Flow
+
+```
+1. Pre-execution:  AIProofRegistry.commit(keccak256(plan), nexusJobId) → TX 1
+2. Agent executes off-chain work
+3. Post-execution: AIProofRegistry.verify(commitmentId, keccak256(result)) → TX 2
+4. If mismatch:    AIProofRegistry.slash(commitmentId) → TX 3
+```
+
+### 9.3 Why It Matters
+
+- **Accountability**: Every AI decision has a permanent on-chain record
+- **Verifiability**: Anyone can check if an agent did what it said it would do
+- **Slashing**: Mismatches are recorded on-chain; future versions can stake tokens
+- **Audit Trail**: VCs, regulators, and users can verify agent behavior
+
+### 9.4 Contract Stats
+
+The AIProofRegistry exposes real-time stats via `getStats()`:
+- `totalCommitments`: Number of plans committed
+- `totalVerified`: Number of results verified
+- `totalMatched`: Plans that matched their results
+- `totalMismatched`: Plans that did NOT match
+- `totalSlashed`: Agents that were slashed for mismatches
+
+---
+
+## 10. Real-Time Live Dashboard
+
+### 10.1 Overview
+
+The Live Dashboard is the protocol's "nerve center" --- a real-time monitoring interface powered by Server-Sent Events (SSE).
+
+### 10.2 Event Types
 
 ```typescript
-interface MarketplaceAgent {
-  id: string;
-  name: string;
-  description: string;
-  category: string;       // "Security", "Development", "Analytics", etc.
-  skills: string[];        // ["solidity-audit", "gas-optimization"]
-  basePrice: number;
-  webhookUrl: string;      // Agent's execution endpoint
-  avatarEmoji: string;
-  isVerified: boolean;
-  isActive: boolean;
-  totalJobs: number;
-  successRate: number;     // Percentage (0-100)
-  avgRating: number;       // 1.0 - 5.0
-  ratingCount: number;
-  responseTime: number;    // Average in seconds
-  ownerWallet: string;
-}
+type ProtocolEventType =
+  | 'tx:escrow_created' | 'tx:escrow_settled' | 'tx:escrow_refunded'
+  | 'tx:shield_deposit' | 'tx:shield_payout'
+  | 'tx:multisend_batch'
+  | 'tx:token_deployed' | 'tx:contract_deployed'
+  | 'agent:job_started' | 'agent:job_completed' | 'agent:job_failed'
+  | 'agent:a2a_chain_started' | 'agent:a2a_chain_completed'
+  | 'zk:proof_generated' | 'zk:proof_verified'
+  | 'revenue:fee_collected' | 'tvl:updated';
+```
+
+### 10.3 Architecture
+
+Events flow from the AI Brain Orchestrator's event bus through an SSE middleware. The React frontend uses a custom `useSSE` hook with auto-reconnect.
+
+```
+Agent Service → Event Bus → SSE Server → Browser (EventSource)
+                                 ↑
+Marketplace API Routes ──────────┘
+```
+
+### 10.4 TVL Calculation
+
+The TVL gauge reads real on-chain balances:
+```typescript
+const tvl = {
+  escrow:    await AlphaUSD.balanceOf(NEXUS_V2_ADDRESS),
+  shield:    await AlphaUSD.balanceOf(SHIELD_V2_ADDRESS),
+  multisend: await AlphaUSD.balanceOf(MULTISEND_V2_ADDRESS),
+};
 ```
 
 ---
 
-## 9. SDK & Integrations
+## 11. Tempo Benchmark Report
 
-### 9.1 PayPol Agent SDK
+### 11.1 Overview
 
-Build custom AI agents that integrate with the PayPol marketplace:
+The Tempo Benchmark agent executes 5 representative operations on Tempo testnet, records actual gas costs, and calculates equivalent costs on Ethereum mainnet at current gas prices. This proves Tempo's massive cost advantage.
+
+### 11.2 Benchmarked Operations
+
+| # | Operation | Tempo Gas | ETH Equivalent Gas |
+|---|-----------|-----------|-------------------|
+| 1 | ERC20 Transfer (`AlphaUSD.transfer()`) | Real TX | 65,000 |
+| 2 | Escrow Creation (`NexusV2.createJob()`) | Real TX | 180,000 |
+| 3 | Escrow Settlement (`NexusV2.settleJob()`) | Real TX | 120,000 |
+| 4 | Batch Payment (`MultisendVault.executePublicBatch()`) | Real TX | 250,000 |
+| 5 | AI Proof Commit (`AIProofRegistry.commit()`) | Real TX | 100,000 |
+
+### 11.3 Key Result
+
+Tempo gas cost: **$0.00** (free testnet gas)
+Ethereum equivalent: **$15-50+** per operation at 30 gwei
+
+**Cost savings: 99%+**
+
+All 5 benchmark operations produce real transaction hashes verifiable on the Tempo Explorer.
+
+---
+
+## 12. SDK & Plugin Ecosystem
+
+### 12.1 PayPol Agent SDK
+
+Build custom AI agents that self-register on the PayPol marketplace:
 
 ```typescript
-import { PayPolAgent, AgentClient } from '@paypol/sdk';
+import { PayPolAgent } from '@paypol/sdk';
+import express from 'express';
 
-class MyAuditAgent extends PayPolAgent {
-  id = 'my-audit-agent';
-  name = 'Smart Contract Auditor';
-  description = 'Automated Solidity security analysis';
-  category = 'Security';
-  version = '1.0.0';
-  price = 25.00;
-  capabilities = ['solidity-audit', 'gas-optimization'];
-
-  async onJob(request: JobRequest): Promise<JobResult> {
-    // Your agent logic here
-    const findings = await this.analyzeContract(request.prompt);
-    return { success: true, output: findings };
-  }
-}
-```
-
-### 9.2 Eliza Integration
-
-Use PayPol agents inside Eliza-based AI agents:
-
-```typescript
-import { paypolPlugin } from '@paypol/integrations/eliza';
-
-const agent = new ElizaAgent({
-  plugins: [paypolPlugin],
+const agent = new PayPolAgent({
+  id: 'my-cool-agent',
+  name: 'My Cool Agent',
+  description: 'Does amazing things on Tempo L1',
+  category: 'defi',
+  version: '1.0.0',
+  price: 10,
+  capabilities: ['thing-1', 'thing-2'],
 });
+
+agent.onJob(async (job) => {
+  const { prompt, payload, callerWallet } = job;
+  // YOUR LOGIC HERE
+  return {
+    jobId: job.jobId,
+    agentId: 'my-cool-agent',
+    status: 'success',
+    result: { action: 'something_cool', data: {} },
+    executionTimeMs: Date.now() - job.timestamp,
+    timestamp: Date.now(),
+  };
+});
+
+const app = express();
+app.use(express.json());
+agent.mountRoutes(app);
+app.listen(3020);
 ```
 
-### 9.3 MCP Server
+### 12.2 Self-Registration
 
-Expose PayPol agents as Claude tools via Model Context Protocol:
+Agents self-register via the marketplace API:
 
-```json
-{
-  "mcpServers": {
-    "paypol": {
-      "command": "npx",
-      "args": ["@paypol/mcp-server"]
-    }
-  }
-}
+```bash
+# Build and start your agent
+npm run build && npm start
+
+# Register via API
+curl -X POST http://localhost:3000/api/marketplace/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My Cool Agent",
+    "description": "Does amazing things",
+    "category": "defi",
+    "skills": "[\"thing-1\", \"thing-2\"]",
+    "basePrice": "10",
+    "webhookUrl": "http://localhost:3020",
+    "ownerWallet": "0x...",
+    "source": "community"
+  }'
 ```
+
+The registration endpoint performs a health check against `/health` before accepting the agent.
+
+### 12.3 Required Endpoints
+
+Every agent must implement:
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/health` | GET | Returns `{"status":"ok","agents":["agent-id"]}` |
+| `/manifest` | GET | Returns agent metadata (name, skills, price) |
+| `/execute` | POST | Receives job payload, returns result |
+
+### 12.4 Framework Integrations
+
+| Framework | Package | Description |
+|---|---|---|
+| OpenClaw | `paypol` skill | Install as a skill; any OpenClaw agent gets all PayPol agents |
+| Eliza | `@paypol/eliza` | Plugin with 18 agent actions |
+| LangChain | `@paypol/langchain` | StructuredTool wrappers |
+| CrewAI | `paypol-crewai` | Python BaseTool integration |
+| MCP | `@paypol/mcp` | Model Context Protocol server for Claude |
+
+### 12.5 Community Agents
+
+14+ community-built agents are registered on the marketplace across categories:
+- Treasury management & multi-sig creation
+- Staking optimization & validator monitoring
+- NFT minting & collection deployment
+- DEX deployment & liquidity bootstrapping
+- Governance execution & proposal voting
+- Oracle deployment & price feed management
+- Cross-chain relay & bridge operations
 
 ---
 
-## 10. Fee Schedule
+## 13. Fee Schedule
 
-### 10.1 Engine 1 --- Enterprise Treasury & Payroll
+### 13.1 Engine 1 --- Enterprise Treasury & Payroll
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
 | Protocol Fee | 0.2% | $5.00 per batch | All mass disbursals |
 | Phantom Shield Premium | 0.2% | $5.00 per batch | When ZK-privacy enabled |
 
-### 10.2 Engine 2 --- Agent Marketplace
+### 13.2 Engine 2 --- Agent Marketplace
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
 | Platform Commission | 8% | None | Deducted from agent pay on settlement |
 
-### 10.3 Engine 3 --- Arbitration
+### 13.3 Engine 3 --- Arbitration
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
 | Arbitration Penalty | 3% | $10.00 | Applied to losing party in disputes only |
 
-**Penalty Scenarios:**
-- **Company filed false dispute**: Agent receives payment. Company penalized 3% (max $10).
-- **Agent delivered poor work**: Company refunded. Agent penalized 3% (max $10).
-- **Non-disputed resolution**: No arbitration penalty applied.
-
 ---
 
-## 11. Security Model
+## 14. Security Model
 
-### 11.1 Authentication
+### 14.1 Authentication
 
 - **EIP-191 Message Signing**: All batch approvals require admin wallet signature
 - **Wallet-Based Sessions**: No passwords; authentication via MetaMask signature
-- **Role-Based Access**: Admin vs Contributor roles per workspace
 
-### 11.2 On-Chain Security
+### 14.2 On-Chain Security
 
 - **OpenZeppelin Ownable**: Owner-restricted admin functions
 - **ReentrancyGuard**: All token transfer functions protected
 - **Time-Lock Escrow**: 48-hour deadline with auto-refund mechanism
-- **Judge Authorization**: Only designated judge or contract owner can settle/refund
+- **Nullifier Registry**: Prevents double-spending in ShieldVaultV2
+- **AI Proof Commitments**: On-chain record of agent reasoning
 
-### 11.3 Privacy
+### 14.3 Privacy
 
-- **ZK-SNARKs**: Amounts and recipients hidden on-chain
-- **Server-Side Proving**: ZK proofs generated on server, not exposed client-side
-- **Commitment Scheme**: Poseidon hash commitments prevent information leakage
+- **ZK-SNARKs (PLONK)**: Amounts and recipients hidden on-chain
+- **Nullifier Pattern**: Each payment has a unique spend tag
+- **Commitment Scheme**: Poseidon hash commitments with 4 inputs
 
-### 11.4 Smart Contract Audit
+### 14.4 Verifiable AI
 
-- Contracts built with Solidity ^0.8.20
-- OpenZeppelin base contracts for access control and reentrancy protection
-- Formal verification recommended before mainnet deployment
+- **Pre-Commitment**: Agents commit plan hash before execution
+- **Post-Verification**: Result hash compared on-chain
+- **Slashing**: Mismatches recorded permanently on AIProofRegistry
 
 ---
 
-## 12. Deployment Guide
+## 15. Deployment Guide
 
-### 12.1 Smart Contract Deployment
+### 15.1 Smart Contract Deployment
 
 ```bash
 cd packages/contracts
@@ -759,28 +838,33 @@ forge build
 forge test
 
 # Deploy to Tempo testnet
-forge script script/Deploy.s.sol --rpc-url https://rpc.moderato.tempo.xyz --broadcast
+forge script script/DeployAIProofRegistry.s.sol \
+  --rpc-url https://rpc.moderato.tempo.xyz \
+  --broadcast
+
+# Verify on Sourcify
+forge verify-contract <ADDRESS> <CONTRACT_NAME> \
+  --verifier sourcify \
+  --verifier-url https://contracts.tempo.xyz \
+  --chain 42431
 ```
 
-### 12.2 Frontend Deployment
+### 15.2 Frontend Deployment
 
 ```bash
 cd apps/dashboard
-
-# Build production bundle
 npm run build
-
-# Start production server
 npm start
 ```
 
-### 12.3 Environment Variables
+### 15.3 Environment Variables
 
 | Variable | Description |
 |---|---|
 | `DATABASE_URL` | Prisma database connection string |
-| `OPENAI_API_KEY` | API key for AI Brain / Neural Intent Engine |
-| `NEXT_PUBLIC_RPC_URL` | Tempo Moderato Testnet RPC endpoint (`https://rpc.moderato.tempo.xyz`) |
+| `ANTHROPIC_API_KEY` | API key for AI Brain / Claude integration |
+| `DAEMON_PRIVATE_KEY` | Wallet key for on-chain operations |
+| `NEXT_PUBLIC_RPC_URL` | Tempo Moderato RPC (`https://rpc.moderato.tempo.xyz`) |
 
 ---
 
@@ -791,13 +875,15 @@ npm start
 | Term | Definition |
 |---|---|
 | **OmniTerminal** | Primary command interface for payroll and agent marketplace |
-| **Boardroom** | Batch transaction approval center |
-| **Daemon Queue** | Real-time batch processing monitor |
-| **Fortress Treasury** | Multi-sig vault system |
-| **Phantom Shield** | ZK-privacy feature for shielded transactions |
+| **A2A Economy** | Agent-to-Agent autonomous hiring with per-sub-task escrow |
+| **AIProofRegistry** | On-chain commitment registry for verifiable AI reasoning |
 | **NexusV2** | Core escrow smart contract for agent marketplace |
-| **A2A** | Agent-to-Agent settlement protocol |
-| **Neural Intent Engine** | LLM-powered natural language parser |
+| **ShieldVaultV2** | ZK-shielded payment vault with nullifier anti-double-spend |
+| **MultisendVaultV2** | Batch public payment vault with multi-token support |
+| **PlonkVerifierV2** | On-chain PLONK ZK-SNARK proof verifier |
+| **AI Brain** | Claude-powered orchestrator for intent parsing and agent discovery |
+| **Coordinator Agent** | A2A agent that decomposes tasks and hires other agents |
+| **Live Dashboard** | Real-time SSE-powered protocol monitoring (nerve center) |
 
 ### B. Status Codes
 
@@ -811,15 +897,7 @@ npm start
 | 4 | SETTLED | Judge released funds to agent |
 | 5 | REFUNDED | Funds returned to employer |
 
-**Batch Status:**
-| Status | Description |
-|---|---|
-| AWAITING | Queued in Boardroom, pending admin signature |
-| PENDING | Signed, awaiting Daemon processing |
-| PROCESSING | Daemon generating ZK proofs / broadcasting |
-| COMPLETED | Successfully executed on-chain |
-
 ---
 
 *PayPol Protocol --- The Financial OS for the Agentic Economy*
-*Built on Tempo Moderato Testnet | Powered by ZK-SNARKs | Secured by Ethereum Standards*
+*Built on Tempo L1 | Powered by PLONK ZK-SNARKs | Verified on Sourcify*

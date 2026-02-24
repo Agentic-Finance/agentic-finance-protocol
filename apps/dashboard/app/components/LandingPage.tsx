@@ -122,7 +122,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     {[
                         { label: 'Overview', href: '#overview' },
                         { label: 'Protocol', href: '#protocol' },
-                        { label: 'Ecosystem', href: '#ecosystem' },
+                        { label: 'Phase 2', href: '#phase2' },
                         { label: 'Developers', href: '/developers' },
                     ].map((item) => (
                         <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
@@ -352,7 +352,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Nash-equilibrium negotiation and autonomous task execution with on-chain escrow</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>24</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>38+</span>
                                 <span style={{ fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>AGENTS</span>
                             </div>
                         </div>
@@ -383,7 +383,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Zero-Knowledge proofs obscure amounts, identities, and settlement details</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#818cf8', fontWeight: '800', fontFamily: 'monospace' }}>ZK-SNARKs</span>
+                                <span style={{ fontSize: '0.75rem', color: '#818cf8', fontWeight: '800', fontFamily: 'monospace' }}>PLONK + Nullifier</span>
                             </div>
                         </div>
 
@@ -505,7 +505,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             </p>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                 <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>M2M Payments</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>24 AI Agents</span>
+                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>38+ AI Agents</span>
                                 <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>A2A Escrow</span>
                             </div>
                         </div>
@@ -559,19 +559,87 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         {/* Protocol Numbers */}
                         <div style={{ backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '24px', padding: '36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>24</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>38+</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>AI Agents</div>
                             </div>
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#34d399', letterSpacing: '-0.02em' }}>7</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Protocol Layers</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#34d399', letterSpacing: '-0.02em' }}>5</div>
+                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Verified Contracts</div>
                             </div>
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>6</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Framework Integrations</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>8</div>
+                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Phase 2 Features</div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ════════════════════════════════════════════════════════════ */}
+            {/* PHASE 2 — LIVE ON TEMPO L1                                  */}
+            {/* ════════════════════════════════════════════════════════════ */}
+            <section id="phase2" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0A0E14', borderTop: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: '10%', right: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '10%', left: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(168,85,247,0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+
+                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
+                            <span className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
+                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
+                        </div>
+                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+                            8 Features.<br />
+                            <span className="gradient-text">All Real. All On-Chain.</span>
+                        </h2>
+                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
+                            Every feature executes real transactions on Tempo L1. 5 source-verified smart contracts. 38+ AI agents. Zero mocks.
+                        </p>
+                    </div>
+
+                    {/* Phase 2 Feature Grid — 4x2 */}
+                    <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+                        {[
+                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Circuit V2', desc: 'PLONK proving system with Poseidon nullifier pattern. Anti-double-spend protection for private payments.', color: '#818cf8', stat: 'PLONK + Nullifier' },
+                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '5+ Flagship Agents', desc: 'Contract auditor, deployer, payroll, escrow manager, shield executor — all with real Tempo L1 transactions.', color: '#22d3ee', stat: '24+ Native' },
+                            { icon: <SparklesIcon style={{ width: '28px', height: '28px' }} />, title: 'AI Brain Orchestrator', desc: 'Claude-powered natural language parsing into deterministic NexusV2 escrow operations. Real AI, not mock.', color: '#c084fc', stat: 'Claude Sonnet' },
+                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents autonomously hire agents. Coordinator decomposes tasks, creates per-sub-task NexusV2 escrow chains.', color: '#a855f7', stat: '6 TXs/chain' },
+                            { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Dashboard', desc: 'Real-time SSE streaming: transaction feed, agent heatmap, ZK proof counter, TVL gauge, revenue ticker.', color: '#10b981', stat: 'SSE Real-time' },
+                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'Verifiable AI Proofs', desc: 'On-chain keccak256 commitment before execution. Verification after. Mismatch triggers slashing event.', color: '#f59e0b', stat: 'AIProofRegistry' },
+                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Tempo Benchmark', desc: '5 real operations comparing Tempo vs Ethereum costs. Proves 99%+ savings for PayPol operations.', color: '#ec4899', stat: '99%+ Savings' },
+                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
+                        ].map((f, i) => (
+                            <div key={i} className="reveal-child" style={{ backgroundColor: '#111827', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
+                                <div style={{ color: f.color, marginBottom: '16px' }}>{f.icon}</div>
+                                <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '800', marginBottom: '8px' }}>{f.title}</h3>
+                                <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>{f.desc}</p>
+                                <span style={{ fontSize: '0.65rem', fontWeight: '800', color: f.color, backgroundColor: `${f.color}15`, border: `1px solid ${f.color}25`, padding: '3px 10px', borderRadius: '9999px', letterSpacing: '0.05em' }}>{f.stat}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Deployed Contracts Strip */}
+                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
+                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>5 Source-Verified Contracts on Tempo Moderato</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                            {[
+                                { name: 'NexusV2', addr: '0x6A46...2Fab', color: '#10b981' },
+                                { name: 'ShieldVaultV2', addr: '0x3B4b...0055', color: '#818cf8' },
+                                { name: 'MultisendV2', addr: '0x25f4...4575', color: '#22d3ee' },
+                                { name: 'PlonkVerifier', addr: '0x9FB9...50B', color: '#c084fc' },
+                                { name: 'AIProofRegistry', addr: '0x8fDB...a014', color: '#f59e0b' },
+                            ].map((c) => (
+                                <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.color, flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontSize: '0.8rem', color: '#fff', fontWeight: '700' }}>{c.name}</div>
+                                        <div style={{ fontSize: '0.65rem', color: '#64748b', fontFamily: 'monospace' }}>{c.addr}</div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

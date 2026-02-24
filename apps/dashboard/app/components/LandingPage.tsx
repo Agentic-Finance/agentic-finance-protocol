@@ -1,5 +1,5 @@
 'use client';
-
+// PayPol Protocol — Landing Page v2.1
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     CommandLineIcon, CubeTransparentIcon, CpuChipIcon,

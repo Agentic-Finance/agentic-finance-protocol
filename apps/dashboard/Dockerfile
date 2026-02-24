@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # ═══════════════════════════════════════════════════════════
 # PayPol Protocol — Production Dockerfile
-# Next.js 16 (Standalone) + Prisma + SQLite
+# Next.js 16 (Standalone) + Prisma + PostgreSQL
 # Optimized with BuildKit layer caching
 # ═══════════════════════════════════════════════════════════
 
@@ -67,5 +67,5 @@ USER nextjs
 
 EXPOSE 3000
 
-# Migrate SQLite schema then start standalone server
-CMD ["sh", "-c", "node_modules/.bin/prisma db push --skip-generate 2>/dev/null; node server.js"]
+# Migrate PostgreSQL schema, seed agents if empty, then start standalone server
+CMD ["sh", "-c", "node_modules/.bin/prisma db push --skip-generate 2>/dev/null; node prisma/seed.js 2>/dev/null; node server.js"]

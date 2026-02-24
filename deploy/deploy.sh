@@ -135,6 +135,9 @@ NODE_ENV=production
 PORT=3000
 HOSTNAME=0.0.0.0
 
+# Database (set by docker-compose.prod.yml environment — override here if using external DB)
+# DATABASE_URL=postgresql://paypol:paypol_production_2024@db:5432/paypol_core
+
 # OpenAI (for AI-powered agent discovery)
 OPENAI_API_KEY=sk-proj-YOUR_KEY_HERE
 

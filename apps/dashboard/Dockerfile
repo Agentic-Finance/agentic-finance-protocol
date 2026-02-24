@@ -14,8 +14,9 @@ COPY package.json package-lock.json* ./
 COPY prisma ./prisma/
 
 # Cache npm downloads — survives across builds even if package.json changes
+# --force: skip platform checks (package-lock.json may contain macOS-specific optional deps)
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci && npx prisma generate
+    npm ci --force && npx prisma generate
 
 # ── Stage 2: Build the application ──────────────────────────
 FROM node:20-alpine AS builder

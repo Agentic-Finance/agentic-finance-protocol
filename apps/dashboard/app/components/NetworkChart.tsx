@@ -42,8 +42,8 @@ function NetworkChart() {
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                     
                     {/* Axis Configuration */}
-                    <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={11} tickMargin={10} />
-                    <YAxis stroke="rgba(255,255,255,0.2)" fontSize={11} tickFormatter={(value) => `$${value}`} />
+                    <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 11 }} tickMargin={10} />
+                    <YAxis stroke="rgba(255,255,255,0.2)" tick={{ fontSize: 11 }} tickFormatter={(value: number) => `$${value}`} />
                     
                     {/* Hover state Tooltip */}
                     <Tooltip 

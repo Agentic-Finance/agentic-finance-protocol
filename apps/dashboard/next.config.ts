@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // Exclude ZK cryptography + native modules from bundling
   serverExternalPackages: [
     "snarkjs", "circomlibjs", "ffjavascript",
-    "sqlite3", "@noir-lang/backend_barretenberg", "@noir-lang/noir_js",
+    "@noir-lang/backend_barretenberg", "@noir-lang/noir_js",
   ],
 
   // Image optimization - auto WebP/AVIF conversion

@@ -1,52 +1,72 @@
-// schema.prisma
+// schema.prisma — PayPol Protocol (PostgreSQL)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./paypol_saas.db" 
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// 🏢 Multi-tenant Workspace
+// ==========================================
+// 🏢 WORKSPACE & PAYROLL (Phase 1)
+// ==========================================
+
+// Multi-tenant Workspace
 model Workspace {
   id              String   @id @default(uuid())
-  name            String
+  name            String   @unique
   adminWallet     String   @unique
+  type            String?
   createdAt       DateTime @default(now())
   payloads        TimeVaultPayload[]
+  employees       Employee[]
 }
 
-// 🛡️ Shielded Transaction Ledger
+// Shielded Transaction Ledger
 model TimeVaultPayload {
   id              String   @id @default(uuid())
   workspaceId     String
-  
-  // --- [NEW FIELDS ADDED] ---
-  name            String?  
+  name            String?
   token           String   @default("AlphaUSD")
-  note            String?  
-  isDiscovery     Boolean  @default(false) 
-  // --------------------------
-
+  note            String?
+  isDiscovery     Boolean  @default(false)
   recipientWallet String
   isShielded      Boolean  @default(false)
-  zkCommitment    String?  
-  zkProof         String?  
-  amount          Float?   
+  zkCommitment    String?
+  zkProof         String?
+  amount          Float?
   status          String   @default("Draft")
   createdAt       DateTime @default(now())
   workspace       Workspace @relation(fields: [workspaceId], references: [id])
 }
 
-// ZK Payroll History Storage Table
+// Employee Payroll (replaces legacy sqlite employees table)
+model Employee {
+  id            String   @id @default(uuid())
+  workspaceId   String?
+  name          String   @default("Anonymous")
+  walletAddress String
+  amount        Float
+  token         String   @default("AlphaUSD")
+  note          String?
+  status        String   @default("Awaiting_Approval") // Awaiting_Approval, Pending, Vaulted, Cancel_Requested, Paid
+  createdAt     DateTime @default(now())
+  workspace     Workspace? @relation(fields: [workspaceId], references: [id])
+
+  @@index([status])
+  @@index([walletAddress])
+}
+
+// ZK Payroll Payout History
 model PayoutRecord {
   id        String   @id @default(cuid())
-  recipient String   // Employee wallet address
-  amount    Float    // Amount (AlphaUSD)
-  txHash    String   @unique // Blockchain transaction hash
-  createdAt DateTime @default(now()) // Timestamp of transfer
+  recipient String
+  amount    Float
+  token     String   @default("AlphaUSD")
+  txHash    String   @unique
+  createdAt DateTime @default(now())
 }
 
 // 🤖 Autopilot Agent Rules (Recurring Payouts)

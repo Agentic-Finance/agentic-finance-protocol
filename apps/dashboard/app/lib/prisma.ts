@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-// Prevent Next.js Hot-Reload from creating multiple Prisma instances and locking SQLite
+// Singleton: Prevent Next.js Hot-Reload from creating multiple Prisma connections
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-const prisma = globalForPrisma.prisma || new PrismaClient();
+const prisma = globalForPrisma.prisma || new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
+});
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 

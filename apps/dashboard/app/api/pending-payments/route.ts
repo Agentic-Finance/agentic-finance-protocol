@@ -1,31 +1,23 @@
 import { NextResponse } from 'next/server';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
+import prisma from '../../lib/prisma';
 
-// Force Next.js to NEVER cache this API response
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        const dbPath = path.resolve(process.cwd(), '../../../payroll.db');
-        const db = await open({
-            filename: dbPath,
-            driver: sqlite3.Database
+        const employees = await prisma.employee.findMany({
+            where: { status: 'Pending' },
+            orderBy: { createdAt: 'desc' },
         });
 
-        // Fetch raw data from database
-        const employees = await db.all('SELECT * FROM employees WHERE status = "Pending"');
-        await db.close();
-
-        // MAPPING FIX: Map database column 'wallet_address' to 'address' for the frontend
+        // Map walletAddress → address for frontend compatibility
         const formattedEmployees = employees.map(emp => ({
             id: emp.id,
             name: emp.name,
-            address: emp.wallet_address, // <- This connects the DB to the UI
+            address: emp.walletAddress,
             amount: emp.amount,
             token: emp.token || 'AlphaUSD',
-            status: emp.status
+            status: emp.status,
         }));
 
         return NextResponse.json(formattedEmployees);

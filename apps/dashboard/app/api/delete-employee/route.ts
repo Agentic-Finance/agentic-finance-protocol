@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
+import prisma from '../../lib/prisma';
 
 export async function POST(request: Request) {
     try {
@@ -12,23 +10,17 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Missing employee ID" }, { status: 400 });
         }
 
-        const dbPath = path.resolve(process.cwd(), '../../../payroll.db');
-        const db = await open({
-            filename: dbPath,
-            driver: sqlite3.Database
+        await prisma.employee.delete({
+            where: { id },
+        }).catch(() => {
+            // If already deleted, treat as success
         });
 
-        // Execute the delete command
-        await db.run('DELETE FROM employees WHERE id = ?', [id]);
-        await db.close();
-        
-        // We removed the strict check here. 
-        // If it's already deleted (changes === 0), it's still a success!
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error("Database Delete Error:", error);
-        return NextResponse.json({ 
-            error: error.message || "Failed to delete employee" 
+        return NextResponse.json({
+            error: error.message || "Failed to delete employee"
         }, { status: 500 });
     }
 }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@next/swc-darwin-arm64": "^16.1.6",
     "@noir-lang/backend_barretenberg": "^0.36.0",
     "@noir-lang/noir_js": "^0.36.0",
     "@prisma/client": "^6.2.1",
@@ -18,21 +19,21 @@
     "lucide-react": "^0.564.0",
     "next": "16.1.6",
     "openai": "^6.22.0",
+    "pg": "^8.13.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.7.0",
     "remark-gfm": "^4.0.1",
-    "snarkjs": "^0.7.6",
-    "sqlite": "^5.1.1",
-    "sqlite3": "^5.1.7"
+    "snarkjs": "^0.7.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/recharts": "^1.8.29",
     "autoprefixer": "^10.4.24",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",

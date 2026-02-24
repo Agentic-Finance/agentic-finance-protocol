@@ -54,14 +54,15 @@ PayPol Protocol is a **decentralized payroll and agent infrastructure** that com
               │                                                │
               └──────────────────┬─────────────────────────────┘
                                  │
-                       ┌─────────▼──────────┐
-                       │    Tempo L1        │
-                       │    (EVM Chain)     │
-                       │                    │
-                       │  PayPolShieldVault │
-                       │  AgentRegistry     │
-                       │  AgentWallet       │
-                       └────────────────────┘
+                       ┌──────────────────────────┐
+                       │      Tempo L1 (42431)    │
+                       │      (EVM Chain)         │
+                       │                          │
+                       │  PlonkVerifier           │
+                       │  PayPolShieldVault       │
+                       │  PayPolMultisendVault    │
+                       │  PayPolNexusV2           │
+                       └──────────────────────────┘
 ```
 
 ---
@@ -340,19 +341,25 @@ crew = Crew(agents=[Agent(tools=[audit_tool])], tasks=[...])
 
 ## Smart Contracts
 
-### Deployed contracts
+### Deployed & Verified Contracts (Tempo Moderato — Chain 42431)
 
-| Contract | Network | Address |
-|----------|---------|---------|
-| `PayPolShieldVault` | Tempo L1 (AlphaNet) | `0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1` |
-| `AgentRegistry` | Tempo L1 | _pending deployment_ |
-| `AgentWallet` | Tempo L1 | _pending deployment_ |
+All contracts are **source-verified** on the [Tempo Explorer](https://explore.tempo.xyz).
+
+| Contract | Address | Status | Description |
+|----------|---------|--------|-------------|
+| `PlonkVerifier` | [`0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964`](https://explore.tempo.xyz/address/0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964) | ✅ Verified | ZK-SNARK on-chain proof verifier (PLONK) |
+| `PayPolShieldVault` | [`0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1`](https://explore.tempo.xyz/address/0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1) | ✅ Verified | ZK-shielded private payroll vault |
+| `PayPolMultisendVault` | [`0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69`](https://explore.tempo.xyz/address/0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69) | ✅ Verified | Batch payroll (up to 100 recipients) |
+| `PayPolNexusV2` | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | ✅ Verified | Full-lifecycle escrow (dispute, settlement, timeout, rating) |
+
+> **Network:** Tempo Moderato Testnet &bull; **Chain ID:** 42431 &bull; **RPC:** `https://rpc.moderato.tempo.xyz` &bull; **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz)
 
 ### Contract highlights
 
-- **PayPolShieldVault** &mdash; Dual-mode vault supporting both public and ZK-shielded ERC-20 payouts. Integrates a PLONK verifier for on-chain proof verification.
-- **AgentRegistry** &mdash; On-chain marketplace with agent registration, escrow-backed job execution, platform fee deduction, and rating system. Built with OpenZeppelin Ownable + ReentrancyGuard.
-- **AgentWallet** &mdash; Secure agent wallet with a "Lobster Trap" mechanism: 15-minute mandatory delay before any execution. Dual authorization (owner + AI agent), proposal-based system, and pause functionality.
+- **PlonkVerifier** &mdash; Auto-generated PLONK verifier from snarkJS. Validates ZK proofs on-chain for privacy-preserving payroll transactions.
+- **PayPolShieldVault** &mdash; Dual-mode vault supporting both public and ZK-shielded ERC-20 payouts. Integrates PlonkVerifier for on-chain proof verification. Constructor: `(verifier, paymentToken, masterDaemon)`.
+- **PayPolMultisendVault** &mdash; Gas-optimized batch payment vault. Sends payroll to up to 100 recipients in a single transaction using SafeERC20. Constructor: `(paymentToken, masterDaemon)`.
+- **PayPolNexusV2** &mdash; Full-lifecycle escrow for the Agent Marketplace. Supports job creation, execution, completion, dispute resolution, settlement with platform fee (8%), arbitration penalty (3% capped at $10), timeout refunds, and on-chain worker ratings. Built with OpenZeppelin Ownable + ReentrancyGuard.
 
 ### Build & test
 
@@ -360,6 +367,17 @@ crew = Crew(agents=[Agent(tools=[audit_tool])], tasks=[...])
 cd packages/contracts
 forge build
 forge test -vvv
+```
+
+### Verify a contract
+
+```bash
+forge verify-contract \
+  --verifier sourcify \
+  --verifier-url https://contracts.tempo.xyz \
+  --chain 42431 \
+  <CONTRACT_ADDRESS> \
+  src/MyContract.sol:MyContract
 ```
 
 ---

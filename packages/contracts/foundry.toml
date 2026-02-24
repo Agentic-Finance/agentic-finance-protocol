@@ -11,4 +11,4 @@ evm_version = "paris"
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
 
 [rpc_endpoints]
-tempo = "https://rpc.testnet.tempo.xyz"
+tempo = "https://rpc.moderato.tempo.xyz"

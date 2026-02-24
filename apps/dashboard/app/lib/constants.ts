@@ -6,8 +6,8 @@ export const PAYPOL_MULTISEND_ADDRESS = "0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4c
 export const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
 
 // V2 Escrow Contract — full lifecycle (dispute, refund, timeout, settlement)
-// TODO: Update this address after deploying PayPolNexusV2 to Tempo testnet
-export const PAYPOL_NEXUS_V2_ADDRESS = "0x3Bc01ecc428Ca0Ff76c433F8B3B46D00edE15837";
+// Deployed & verified on Tempo Moderato (chain 42431)
+export const PAYPOL_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 
 // Legacy ABI — kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;

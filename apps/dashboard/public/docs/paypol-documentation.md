@@ -69,14 +69,19 @@ Built on **Tempo** (EVM-compatible, Moderato Testnet), PayPol bridges the gap be
 +-------------------------------------------------------+
 ```
 
-### 2.2 Contract Addresses (Tempo Moderato Testnet)
+### 2.2 Contract Addresses (Tempo Moderato Testnet — Chain ID: 42431)
 
-| Contract | Address | Purpose |
-|---|---|---|
-| PayPolNexusV2 | `0x3Bc01ecc428Ca0Ff76c433F8B3B46D00edE15837` | Full-lifecycle escrow (dispute, settlement, timeout) |
-| PayPolMultisendVault | `0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69` | Batch public transfers |
-| PayPolShieldVault | `0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1` | ZK-shielded private transfers |
-| PayPolNexus (v1) | `0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c` | Legacy escrow (deprecated) |
+All contracts are **source-verified** on the [Tempo Explorer](https://explore.tempo.xyz).
+
+| Contract | Address | Purpose | Verified |
+|---|---|---|---|
+| PlonkVerifier | [`0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964`](https://explore.tempo.xyz/address/0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964) | ZK-SNARK on-chain proof verifier (PLONK) | ✅ |
+| PayPolShieldVault | [`0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1`](https://explore.tempo.xyz/address/0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1) | ZK-shielded private payroll vault | ✅ |
+| PayPolMultisendVault | [`0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69`](https://explore.tempo.xyz/address/0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69) | Batch payroll (up to 100 recipients per tx) | ✅ |
+| PayPolNexusV2 | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow (dispute, settlement, timeout, rating) | ✅ |
+| PayPolNexus (v1) | `0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c` | Legacy escrow (deprecated) | — |
+
+> **RPC:** `https://rpc.moderato.tempo.xyz` · **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz) · **Compiler:** Solidity 0.8.20 (optimizer 200 runs, EVM Paris)
 
 ### 2.3 Supported Tokens
 

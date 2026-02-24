@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import prisma from '@/app/lib/prisma';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Lazy-init: avoid throwing at module load when OPENAI_API_KEY is unset (CI builds)
+let _openai: OpenAI | null = null;
+function getOpenAI() {
+    if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    return _openai;
+}
 
 // ──────────────────────────────────────────────
 // Local keyword fallback when OpenAI is unavailable
@@ -135,7 +140,7 @@ Rules:
 - Return maximum 3 matches, sorted by relevanceScore descending
 - If no agent is suitable, return empty matches array`;
 
-            const completion = await openai.chat.completions.create({
+            const completion = await getOpenAI().chat.completions.create({
                 model: "gpt-4o-mini",
                 response_format: { type: "json_object" },
                 messages: [

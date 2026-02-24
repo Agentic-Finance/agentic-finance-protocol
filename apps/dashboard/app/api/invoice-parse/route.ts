@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy-init: avoid throwing at module load when OPENAI_API_KEY is unset (CI builds)
+let _openai: OpenAI | null = null;
+function getOpenAI() {
+    if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    return _openai;
+}
 
 export async function POST(req: Request) {
     try {
@@ -110,7 +113,7 @@ IMPORTANT:
             return NextResponse.json({ error: 'Invalid request format.' }, { status: 400 });
         }
 
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             model: 'gpt-4o-mini',
             response_format: { type: 'json_object' },
             messages,

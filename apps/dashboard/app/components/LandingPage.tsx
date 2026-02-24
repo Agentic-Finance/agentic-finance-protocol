@@ -569,7 +569,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             </div>
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>8</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>9</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Phase 2 Features</div>
                             </div>
                         </div>
@@ -591,11 +591,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            8 Features.<br />
+                            9 Features.<br />
                             <span className="gradient-text">All Real. All On-Chain.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            Every feature executes real transactions on Tempo L1. 5 source-verified smart contracts. 38+ AI agents. Zero mocks.
+                            Every feature executes real transactions on Tempo L1. 6 source-verified smart contracts. 38+ AI agents. Zero mocks.
                         </p>
                     </div>
 
@@ -610,6 +610,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'Verifiable AI Proofs', desc: 'On-chain keccak256 commitment before execution. Verification after. Mismatch triggers slashing event.', color: '#f59e0b', stat: 'AIProofRegistry' },
                             { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Tempo Benchmark', desc: '5 real operations comparing Tempo vs Ethereum costs. Proves 99%+ savings for PayPol operations.', color: '#ec4899', stat: '99%+ Savings' },
                             { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
+                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'Stream Settlement', desc: 'Progressive milestone-based escrow. Client approves each deliverable, payment releases incrementally. Real-time notifications.', color: '#06b6d4', stat: 'StreamV1' },
                         ].map((f, i) => (
                             <div key={i} className="reveal-child" style={{ backgroundColor: '#111827', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
@@ -623,7 +624,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
                     {/* Deployed Contracts Strip */}
                     <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
-                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>5 Source-Verified Contracts on Tempo Moderato</p>
+                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>6 Source-Verified Contracts on Tempo Moderato</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                             {[
                                 { name: 'NexusV2', addr: '0x6A46...2Fab', color: '#10b981' },
@@ -631,6 +632,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 { name: 'MultisendV2', addr: '0x25f4...4575', color: '#22d3ee' },
                                 { name: 'PlonkVerifier', addr: '0x9FB9...50B', color: '#c084fc' },
                                 { name: 'AIProofRegistry', addr: '0x8fDB...a014', color: '#f59e0b' },
+                                { name: 'StreamV1', addr: '0x2808...B8fd', color: '#06b6d4' },
                             ].map((c) => (
                                 <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
                                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.color, flexShrink: 0 }} />

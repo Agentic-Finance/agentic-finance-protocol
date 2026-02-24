@@ -179,6 +179,66 @@ model AgentReview {
 }
 
 // ==========================================
+// 🔄 STREAM SETTLEMENT (Feature 7)
+// ==========================================
+
+// Progressive milestone-based escrow (PayPolStreamV1 contract)
+model StreamJob {
+  id              String       @id @default(uuid())
+  agentJobId      String?      @unique          // Links to AgentJob if originated from marketplace
+  clientWallet    String
+  agentWallet     String
+  agentName       String?
+  totalBudget     Float
+  releasedAmount  Float        @default(0)
+  status          String       @default("ACTIVE")  // ACTIVE, COMPLETED, CANCELLED
+  onChainStreamId Int?
+  streamTxHash    String?
+  deadline        DateTime?
+  createdAt       DateTime     @default(now())
+  milestones      Milestone[]
+
+  @@index([clientWallet])
+  @@index([agentWallet])
+}
+
+// Individual milestone within a stream
+model Milestone {
+  id            String    @id @default(uuid())
+  streamJobId   String
+  streamJob     StreamJob @relation(fields: [streamJobId], references: [id])
+  index         Int
+  amount        Float
+  deliverable   String
+  proofHash     String?
+  status        String    @default("PENDING")  // PENDING, SUBMITTED, APPROVED, REJECTED
+  submitTxHash  String?
+  approveTxHash String?
+  rejectReason  String?
+  submittedAt   DateTime?
+  reviewedAt    DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@unique([streamJobId, index])
+}
+
+// In-app notification system
+model Notification {
+  id          String   @id @default(uuid())
+  wallet      String
+  type        String   // stream:milestone_submitted, stream:milestone_approved, etc.
+  title       String
+  message     String
+  streamJobId String?
+  milestoneId String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([wallet, isRead])
+  @@index([wallet, createdAt])
+}
+
+// ==========================================
 // ⚡ CONDITIONAL PAYROLL
 // ==========================================
 

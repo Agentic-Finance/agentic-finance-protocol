@@ -27,6 +27,7 @@ export const CONTRACTS = {
   MULTISEND_V2:      '0x25f4d3f12C579002681a52821F3a6251c46D4575',
   NEXUS_V1:          '0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c',
   AI_PROOF_REGISTRY: '0x8fDB8E871c9eaF2955009566F41490Bbb128a014',
+  STREAM_V1:         '0x280842e90B850b4E08688177632EC9561862B8fd',
 } as const;
 
 // ── Supported Tokens ─────────────────────────────────────────

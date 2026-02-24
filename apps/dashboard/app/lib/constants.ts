@@ -20,6 +20,10 @@ export const PAYPOL_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052F
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const AI_PROOF_REGISTRY_ADDRESS = "0x8fDB8E871c9eaF2955009566F41490Bbb128a014";
 
+// Stream Settlement V1 — Progressive milestone-based escrow
+// Deployed & verified on Tempo Moderato (chain 42431)
+export const STREAM_V1_ADDRESS = "0x280842e90B850b4E08688177632EC9561862B8fd";
+
 // Legacy ABI — kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 
@@ -90,6 +94,27 @@ export const AI_PROOF_REGISTRY_ABI = [
     "event CommitmentMade(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId, bytes32 planHash)",
     "event CommitmentVerified(bytes32 indexed commitmentId, bool matched, bytes32 resultHash)",
     "event AgentSlashed(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId)",
+] as const;
+
+// StreamV1 ABI — Progressive milestone-based escrow
+export const STREAM_V1_ABI = [
+    "function createStream(address _agent, address _token, uint256[] calldata _milestoneAmounts, uint256 _deadlineDuration) external returns (uint256)",
+    "function submitMilestone(uint256 _streamId, uint256 _milestoneIndex, bytes32 _proofHash) external",
+    "function approveMilestone(uint256 _streamId, uint256 _milestoneIndex) external",
+    "function rejectMilestone(uint256 _streamId, uint256 _milestoneIndex) external",
+    "function cancelStream(uint256 _streamId) external",
+    "function claimTimeout(uint256 _streamId) external",
+    "function getStream(uint256 _streamId) external view returns (address client, address agent, address token, uint256 totalBudget, uint256 releasedAmount, uint256 milestoneCount, uint256 approvedCount, uint256 deadline, uint8 status)",
+    "function getMilestone(uint256 _streamId, uint256 _milestoneIndex) external view returns (uint256 amount, bytes32 proofHash, uint8 status)",
+    "function isTimedOut(uint256 _streamId) external view returns (bool)",
+    "function getRemainingBalance(uint256 _streamId) external view returns (uint256)",
+    "function streamCount() external view returns (uint256)",
+    "event StreamCreated(uint256 indexed streamId, address indexed client, address indexed agent, uint256 totalBudget, uint256 milestoneCount, uint256 deadline)",
+    "event MilestoneSubmitted(uint256 indexed streamId, uint256 indexed milestoneIndex, bytes32 proofHash)",
+    "event MilestoneApproved(uint256 indexed streamId, uint256 indexed milestoneIndex, uint256 agentPayout, uint256 fee)",
+    "event MilestoneRejected(uint256 indexed streamId, uint256 indexed milestoneIndex)",
+    "event StreamCompleted(uint256 indexed streamId, uint256 totalReleased, uint256 totalFees)",
+    "event StreamCancelled(uint256 indexed streamId, uint256 refundedAmount)",
 ] as const;
 
 export const RPC_URL = "https://rpc.moderato.tempo.xyz";

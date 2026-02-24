@@ -28,7 +28,13 @@ export type ProtocolEventType =
   | 'zk:proof_generated'
   | 'zk:proof_verified'
   | 'revenue:fee_collected'
-  | 'tvl:updated';
+  | 'tvl:updated'
+  | 'stream:created'
+  | 'stream:milestone_submitted'
+  | 'stream:milestone_approved'
+  | 'stream:milestone_rejected'
+  | 'stream:completed'
+  | 'stream:cancelled';
 
 export interface ProtocolEvent {
   id: string;
@@ -71,6 +77,9 @@ class ProtocolEventBus extends EventEmitter {
     totalZKProofs: 0,
     totalFeesCollected: 0, // in USD
     totalTokensDeployed: 0,
+    totalStreamsCreated: 0,
+    totalMilestonesApproved: 0,
+    totalStreamPayouts: 0, // in USD
   };
 
   constructor() {
@@ -156,6 +165,24 @@ class ProtocolEventBus extends EventEmitter {
         break;
       case 'revenue:fee_collected':
         if (event.data.feeAmount) this.stats.totalFeesCollected += event.data.feeAmount;
+        break;
+      case 'stream:created':
+        this.stats.totalTxs++;
+        this.stats.totalStreamsCreated++;
+        break;
+      case 'stream:milestone_approved':
+        this.stats.totalTxs++;
+        this.stats.totalMilestonesApproved++;
+        if (event.data.amount) this.stats.totalStreamPayouts += event.data.amount;
+        if (event.data.feeAmount) this.stats.totalFeesCollected += event.data.feeAmount;
+        break;
+      case 'stream:milestone_submitted':
+      case 'stream:milestone_rejected':
+        this.stats.totalTxs++;
+        break;
+      case 'stream:completed':
+      case 'stream:cancelled':
+        this.stats.totalTxs++;
         break;
     }
   }

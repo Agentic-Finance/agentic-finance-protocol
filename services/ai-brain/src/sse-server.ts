@@ -87,3 +87,32 @@ sseRouter.get('/api/live/stats', (_req: Request, res: Response) => {
     timestamp: Date.now(),
   });
 });
+
+/**
+ * POST /api/notify — Push a notification event into the SSE bus
+ *
+ * Called by the dashboard backend (notify.ts) to broadcast
+ * stream events to connected SSE clients in real-time.
+ *
+ * Body: { type: string, data: { wallet, title, message, ... } }
+ */
+sseRouter.post('/api/notify', (req: Request, res: Response) => {
+  try {
+    const { type, data } = req.body;
+    if (!type || !data) {
+      return res.status(400).json({ error: 'Missing type or data' });
+    }
+
+    eventBus.emitEvent({
+      type: type as any,
+      data: {
+        ...data,
+        source: 'notification',
+      },
+    });
+
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});

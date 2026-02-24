@@ -56,7 +56,10 @@ export async function POST(req: Request) {
     // ── Validate webhook is reachable ──
     let webhookOk = false;
     try {
-      const healthRes = await fetch(`${webhookUrl}/health`, {
+      // Extract base URL (protocol + host + port) for health check
+      const parsedUrl = new URL(webhookUrl);
+      const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
+      const healthRes = await fetch(`${baseUrl}/health`, {
         method: 'GET',
         signal: AbortSignal.timeout(5000),
       });
@@ -64,7 +67,7 @@ export async function POST(req: Request) {
       webhookOk = healthData?.status === 'ok';
     } catch {
       // Webhook not reachable — warn but still allow registration
-      console.warn(`[register] Webhook not reachable: ${webhookUrl}/health`);
+      console.warn(`[register] Webhook not reachable: ${webhookUrl}`);
     }
 
     // ── Check for duplicate agent name ──

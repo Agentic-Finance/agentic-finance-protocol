@@ -313,125 +313,122 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </p>
                     </div>
 
-                    {/* BENTO GRID — 7 layers */}
-                    <div className="protocol-stack reveal" style={{ display: 'grid', gap: '16px', maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
+                    {/* UNIFIED PROTOCOL STACK TABLE */}
+                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
+                        {/* Gradient accent line on left */}
+                        <div style={{ position: 'absolute', left: 0, top: 0, width: '3px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #22d3ee, #f59e0b, #818cf8, #10b981, #ec4899, #94a3b8)', zIndex: 2 }}></div>
 
-                        {/* Layer 7: Application — spans 2 cols on desktop */}
-                        <div className="bento-item reveal-child protocol-l7" style={{ backgroundColor: '#141924', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #818cf8)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><SparklesIcon style={{ width: '24px', height: '24px', color: '#c084fc' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#a855f7', backgroundColor: 'rgba(168,85,247,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L7</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>Neural Intent Engine</h3>
-                                </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>LLM-powered natural language parsing. Converts human commands and agent requests into deterministic financial operations.</p>
+                        {/* Table header */}
+                        <div className="protocol-table-header" style={{ display: 'grid', padding: '16px 24px 16px 28px', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.02)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Layer</span>
+                                <span className="protocol-header-stat" style={{ fontSize: '0.65rem', fontWeight: '800', color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Spec</span>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Powered by</span>
+                        </div>
+
+                        {/* Layer 7 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><SparklesIcon style={{ width: '20px', height: '20px', color: '#c084fc' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#a855f7', backgroundColor: 'rgba(168,85,247,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L7</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Neural Intent Engine</h3>
+                                </div>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>LLM-powered natural language parsing into deterministic financial operations</p>
+                            </div>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: '800', fontFamily: 'monospace' }}>OpenClaw + Claude</span>
                             </div>
                         </div>
 
-                        {/* Layer 6: Agent Marketplace */}
-                        <div className="bento-item reveal-child" style={{ backgroundColor: '#141924', border: '1px solid rgba(34,211,238,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #22d3ee, #06b6d4)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#22d3ee' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L6</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>A2A Agent Marketplace</h3>
+                        {/* Layer 6 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CpuChipIcon style={{ width: '20px', height: '20px', color: '#22d3ee' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L6</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>A2A Agent Marketplace</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>24 specialized AI agents. AI-powered discovery, Nash-equilibrium negotiation, and autonomous task execution with on-chain escrow.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Nash-equilibrium negotiation and autonomous task execution with on-chain escrow</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '1.5rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace' }}>24</span>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>AGENTS</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
+                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>24</span>
+                                <span style={{ fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>AGENTS</span>
                             </div>
                         </div>
 
-                        {/* Layer 5: Arbitration */}
-                        <div className="bento-item reveal-child" style={{ backgroundColor: '#141924', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #f59e0b, #d97706)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ScaleIcon style={{ width: '24px', height: '24px', color: '#f59e0b' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L5</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>Game-Theoretic Arbitration</h3>
+                        {/* Layer 5 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ScaleIcon style={{ width: '20px', height: '20px', color: '#f59e0b' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L5</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Game-Theoretic Arbitration</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>Trustless dispute resolution via Nash equilibrium. Cheating is mathematically irrational — no judges, no courts, pure game theory.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Trustless dispute resolution — cheating is mathematically irrational</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Max Fee</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: '800', fontFamily: 'monospace' }}>3% capped</span>
                             </div>
                         </div>
 
-                        {/* Layer 4: Privacy */}
-                        <div className="bento-item reveal-child" style={{ backgroundColor: '#141924', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #818cf8, #6366f1)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><EyeSlashIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#818cf8', backgroundColor: 'rgba(129,140,248,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L4</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>ZK Privacy Shield</h3>
+                        {/* Layer 4 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#818cf8' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#818cf8', backgroundColor: 'rgba(129,140,248,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L4</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>ZK Privacy Shield</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>Zero-Knowledge proofs obscure amounts, identities, and settlement details from the public ledger. Enterprise-grade privacy by default.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Zero-Knowledge proofs obscure amounts, identities, and settlement details</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Powered by</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#818cf8', fontWeight: '800', fontFamily: 'monospace' }}>ZK-SNARKs</span>
                             </div>
                         </div>
 
-                        {/* Layer 3: Treasury */}
-                        <div className="bento-item reveal-child" style={{ backgroundColor: '#141924', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #10b981, #059669)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ShieldCheckIcon style={{ width: '24px', height: '24px', color: '#10b981' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L3</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>Fortress Treasury & Escrow</h3>
+                        {/* Layer 3 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ShieldCheckIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#10b981', backgroundColor: 'rgba(16,185,129,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L3</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Fortress Treasury & Escrow</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>EIP-191 Multi-Sig, Time-Vault Escrows, and Conditional Payroll Engine. Cryptographic certainty for every financial operation.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Multi-Sig, Time-Vault Escrows, and Conditional Payroll Engine</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Security</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: '800', fontFamily: 'monospace' }}>Multi-Sig + ZK</span>
                             </div>
                         </div>
 
-                        {/* Layer 2: Bridge */}
-                        <div className="bento-item reveal-child" style={{ backgroundColor: '#141924', border: '1px solid rgba(236,72,153,0.2)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #ec4899, #db2777)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ArrowsRightLeftIcon style={{ width: '24px', height: '24px', color: '#ec4899' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#ec4899', backgroundColor: 'rgba(236,72,153,0.1)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L2</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>Omni-Chain Nexus</h3>
+                        {/* Layer 2 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#ec4899' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#ec4899', backgroundColor: 'rgba(236,72,153,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L2</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Omni-Chain Nexus</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>Unified state layer across EVM and SVM. Seamless cross-chain value transfer with fiat off-ramping across 150+ jurisdictions.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Cross-chain value transfer with fiat off-ramping across 150+ jurisdictions</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Chains</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#ec4899', fontWeight: '800', fontFamily: 'monospace' }}>EVM + SVM</span>
                             </div>
                         </div>
 
-                        {/* Layer 1: Settlement — spans 2 cols on desktop */}
-                        <div className="bento-item reveal-child protocol-l1" style={{ backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', padding: '28px 32px', display: 'flex', alignItems: 'center', gap: '16px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', left: 0, top: 0, width: '4px', height: '100%', background: 'linear-gradient(to bottom, #e2e8f0, #94a3b8)' }}></div>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#e2e8f0' }} /></div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#e2e8f0', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '6px', letterSpacing: '0.1em' }}>L1</span>
-                                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '800', margin: 0 }}>AlphaNet Settlement Layer</h3>
+                        {/* Layer 1 */}
+                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', backgroundColor: 'rgba(255,255,255,0.02)', transition: 'background-color 0.3s' }}>
+                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CubeTransparentIcon style={{ width: '20px', height: '20px', color: '#e2e8f0' }} /></div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#e2e8f0', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L1</span>
+                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>AlphaNet Settlement Layer</h3>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: 1.5, margin: 0 }}>The bedrock. Deterministic on-chain settlement powered by Tempo consensus. Every transaction either settles correctly or reverts entirely.</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Deterministic on-chain settlement powered by Tempo consensus</p>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>Finality</span>
-                                <span style={{ fontSize: '0.75rem', color: '#e2e8f0', fontWeight: '800', fontFamily: 'monospace' }}>{'<'}1 second</span>
+                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
+                                <span style={{ fontSize: '0.75rem', color: '#e2e8f0', fontWeight: '800', fontFamily: 'monospace' }}>{'<'}1s finality</span>
                             </div>
                         </div>
                     </div>
@@ -635,21 +632,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     background-clip: text;
                 }
 
-                /* ── Protocol Stack Grid ── */
-                .protocol-stack {
-                    grid-template-columns: 1fr;
-                }
-                .protocol-l7 { grid-column: 1; }
-                .protocol-l1 { grid-column: 1; }
-                @media (min-width: 768px) {
-                    .protocol-stack { grid-template-columns: repeat(2, 1fr); }
-                    .protocol-l7 { grid-column: span 2; }
-                    .protocol-l1 { grid-column: span 2; }
-                }
-                @media (min-width: 1024px) {
-                    .protocol-stack { grid-template-columns: repeat(3, 1fr); }
-                    .protocol-l7 { grid-column: span 2; }
-                    .protocol-l1 { grid-column: 2 / span 2; }
+                /* ── Protocol Table ── */
+                .protocol-row:hover {
+                    background-color: rgba(255,255,255,0.03) !important;
                 }
 
                 /* ── CTA Section ── */
@@ -726,7 +711,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 }
 
                 /* ── Default Navbar Sizing ── */
-                .landing-logo-img { height: 48px; }
+                .landing-logo-img { height: 40px; }
                 .landing-cta-btn { padding: 12px 36px; font-size: 0.95rem; }
 
                 /* ── Mobile Overrides ── */
@@ -740,48 +725,32 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
                     /* Navbar mobile */
                     .landing-nav { padding: 8px 12px !important; }
-                    .landing-logo-img { height: 28px !important; }
+                    .landing-logo-img { height: 34px !important; }
                     .landing-cta-btn { padding: 8px 18px !important; font-size: 0.75rem !important; }
 
-                    /* Protocol stack mobile card redesign */
-                    .protocol-stack { grid-template-columns: 1fr !important; gap: 10px !important; }
-                    .protocol-l7, .protocol-l1 { grid-column: 1 !important; }
-                    .protocol-stack .bento-item {
-                        flex-direction: column !important;
-                        align-items: flex-start !important;
-                        border-radius: 16px !important;
-                        padding: 16px 16px 16px 22px !important;
+                    /* Protocol table mobile */
+                    .protocol-table { border-radius: 16px !important; }
+                    .protocol-row {
+                        padding: 14px 16px 14px 20px !important;
                         gap: 10px !important;
+                        flex-wrap: wrap !important;
                     }
-                    .protocol-stack .bento-item > div:nth-child(2) {
-                        width: 36px !important;
-                        height: 36px !important;
-                        border-radius: 10px !important;
-                    }
-                    .protocol-stack .bento-item > div:nth-child(2) svg {
-                        width: 18px !important;
-                        height: 18px !important;
-                    }
-                    .protocol-stack .bento-item h3 {
-                        font-size: 0.95rem !important;
-                    }
-                    .protocol-stack .bento-item > div:last-child {
+                    .protocol-row h3 { font-size: 0.82rem !important; white-space: normal !important; }
+                    .protocol-row-desc { display: none; }
+                    .protocol-row-stat {
+                        width: 100% !important;
                         flex-direction: row !important;
                         align-items: center !important;
-                        gap: 6px !important;
-                        align-self: flex-start;
+                        justify-content: flex-start !important;
+                        padding: 4px 10px;
                         background: rgba(255,255,255,0.03);
-                        padding: 5px 12px;
-                        border-radius: 8px;
-                        border: 1px solid rgba(255,255,255,0.06);
-                        margin-top: 2px;
+                        border-radius: 6px;
+                        border: 1px solid rgba(255,255,255,0.05);
+                        margin-top: -4px;
                     }
-                    .protocol-stack .bento-item > div:last-child span:first-child {
-                        font-size: 0.6rem !important;
-                    }
-                    .protocol-stack .bento-item > div:last-child span:last-child {
-                        font-size: 0.7rem !important;
-                    }
+                    .protocol-row-stat span { font-size: 0.65rem !important; }
+                    .protocol-header-stat { display: none; }
+                    .protocol-table-header { padding: 12px 16px 12px 20px !important; }
 
                     .cta-button:hover { transform: none; }
                 }

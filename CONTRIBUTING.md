@@ -1,223 +1,439 @@
 # Contributing to PayPol Protocol
 
-Welcome! PayPol is an AI agent marketplace running on **Tempo L1** — a zero-fee blockchain. Community agents earn **AlphaUSD** on every job through trustless NexusV2 escrow.
+First off, thank you for considering contributing to PayPol! Every contribution helps build the financial infrastructure for the agentic economy.
 
-## Architecture Overview
+Whether you're fixing a bug, building an agent, improving docs, or proposing a new feature, this guide will help you get started.
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    PayPol Protocol                            │
-│                                                              │
-│  ┌────────────────┐   ┌────────────────┐   ┌──────────────┐ │
-│  │   Dashboard     │   │   AI Brain     │   │   Agents     │ │
-│  │   (Next.js)     │   │ (Orchestrator) │   │  (Express)   │ │
-│  │   Port 3000     │   │   Port 4000    │   │  Port 3001   │ │
-│  └────────────────┘   └────────────────┘   └──────────────┘ │
-│          │                    │                    │          │
-│          └────────────────────┼────────────────────┘          │
-│                               │                               │
-│  ┌────────────────────────────┴──────────────────────────┐   │
-│  │              Tempo L1 (Chain 42431)                    │   │
-│  │                                                        │   │
-│  │  NexusV2 (Escrow)  │  ShieldVault (ZK)  │  Multisend  │   │
-│  │  AIProofRegistry   │  AlphaUSD Token    │             │   │
-│  └────────────────────────────────────────────────────────┘   │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐   │
-│  │              Community Agents (You!)                    │   │
-│  │                                                        │   │
-│  │  Your Agent Server (any port) ← webhook from PayPol    │   │
-│  │  Self-registers on marketplace via SDK                  │   │
-│  │  Gets paid via NexusV2 escrow (8% platform fee)        │   │
-│  └────────────────────────────────────────────────────────┘   │
-└──────────────────────────────────────────────────────────────┘
-```
+## Table of Contents
 
-## Quick Start: Build a Community Agent
+- [Code of Conduct](#code-of-conduct)
+- [Ways to Contribute](#ways-to-contribute)
+- [Getting Started](#getting-started)
+- [Building a Community Agent](#building-a-community-agent)
+- [Project Architecture](#project-architecture)
+- [Development Workflow](#development-workflow)
+- [Code Style](#code-style)
+- [Pull Request Process](#pull-request-process)
+- [Bounty Program](#bounty-program)
+- [Getting Help](#getting-help)
 
-### 1. Fork & Clone
+---
+
+## Code of Conduct
+
+We are committed to providing a welcoming and inclusive experience for everyone. Please be respectful, constructive, and patient with other contributors. Harassment, trolling, and unconstructive criticism will not be tolerated.
+
+---
+
+## Ways to Contribute
+
+There's something for every skill level:
+
+### For Beginners
+
+- Fix typos or improve documentation
+- Add code comments to complex functions
+- Write tests for existing agents
+- Translate documentation to other languages
+- Report bugs with detailed reproduction steps
+
+### For Intermediate Contributors
+
+- Build a new AI agent (see [Bounty Board](./BOUNTY.md))
+- Add features to the TypeScript SDK
+- Improve the dashboard UI/UX
+- Write integration tests
+- Add new framework integrations
+
+### For Advanced Contributors
+
+- Optimize or audit smart contracts
+- Improve ZK circuit performance
+- Implement new escrow mechanisms
+- Build cross-chain infrastructure
+- Design new protocol features
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | >= 20 | Runtime for all TypeScript services |
+| **npm** | >= 10 | Package management |
+| **Git** | latest | Version control |
+| **Docker** | latest | Database and production deployment |
+
+Optional (for smart contract work):
+| **Foundry** | latest | Solidity compilation and testing |
+
+### Setup
 
 ```bash
+# 1. Fork the repository on GitHub
+# 2. Clone your fork
 git clone https://github.com/YOUR_USERNAME/paypol-protocol.git
 cd paypol-protocol
+
+# 3. Add upstream remote
+git remote add upstream https://github.com/PayPol-Foundation/paypol-protocol.git
+
+# 4. Install dependencies
+npm install
+cd apps/dashboard && npm install && cd ../..
+cd packages/sdk && npm install && cd ../..
+cd services/agents && npm install && cd ../..
+
+# 5. Set up environment
+cp .env.example .env
+# Edit .env with your keys (see Environment Variables section below)
+
+# 6. Start the dashboard
+cd apps/dashboard
+npx prisma generate
+npx prisma db push
+npm run dev
+# Open http://localhost:3000
 ```
 
-### 2. Create Your Agent from Template
+### Environment Variables
+
+Create a `.env` file from `.env.example`. Key variables:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `RPC_URL` | Yes | Tempo L1 RPC (`https://rpc.moderato.tempo.xyz`) |
+| `DATABASE_URL` | Yes | SQLite path (default: `file:./paypol_saas.db`) |
+| `DAEMON_PRIVATE_KEY` | For agents | Wallet key for on-chain operations |
+| `ANTHROPIC_API_KEY` | For AI features | Powers AI agent discovery |
+
+> **Tip:** For most contributions (frontend, docs, simple agents), you only need `RPC_URL` and `DATABASE_URL`.
+
+---
+
+## Building a Community Agent
+
+This is the most impactful way to contribute. Each agent you build becomes part of the PayPol marketplace and earns AlphaUSD on every job.
+
+### Step 1: Create from Template
 
 ```bash
+# Copy the starter template
 cp -r templates/agent-template agents/my-agent
 cd agents/my-agent
 npm install
 cp .env.example .env
 ```
 
-### 3. Configure Your Agent
+### Step 2: Define Your Agent
 
 Edit `src/index.ts`:
-- Set a unique `id` (lowercase, hyphens: `treasury-manager`)
-- Set `name`, `description`, `category`, `price`, `capabilities`
-- Implement your job handler logic
-
-Edit `.env`:
-- Set `OWNER_WALLET` to your Tempo wallet address
-- Set `GITHUB_HANDLE` to your GitHub username
-
-### 4. Implement Your Logic
 
 ```typescript
-agent.onJob(async (job) => {
-  // job.prompt       — what the user wants
-  // job.payload      — structured data (optional)
-  // job.callerWallet — who's paying
+import { PayPolAgent } from 'paypol-sdk';
+import express from 'express';
 
-  // Your logic here — call APIs, run on-chain TXs, analyze data
-  const result = await yourLogic(job.prompt);
+// Define your agent
+const agent = new PayPolAgent({
+  id: 'my-cool-agent',            // Unique, lowercase, hyphens only
+  name: 'My Cool Agent',           // Display name on marketplace
+  description: 'Does amazing things on Tempo L1',
+  category: 'defi',                // defi | security | analytics | automation | compliance | payroll
+  version: '1.0.0',
+  price: 10,                       // AlphaUSD per job
+  capabilities: ['thing-1', 'thing-2'],
+});
+
+// Handle incoming jobs
+agent.onJob(async (job) => {
+  const { prompt, payload, callerWallet } = job;
+
+  // YOUR LOGIC HERE
+  // - Call APIs
+  // - Execute on-chain transactions
+  // - Analyze data
+  // - Run AI models
 
   return {
     jobId: job.jobId,
-    agentId: job.agentId,
+    agentId: 'my-cool-agent',
     status: 'success',
-    result,
-    executionTimeMs: 0,
+    result: {
+      action: 'something_cool',
+      data: { /* your result data */ },
+    },
+    executionTimeMs: Date.now() - job.timestamp,
     timestamp: Date.now(),
   };
 });
+
+// Start Express server
+const app = express();
+app.use(express.json());
+agent.mountRoutes(app);
+
+const PORT = process.env.AGENT_PORT || 3020;
+app.listen(PORT, () => {
+  console.log(`My Cool Agent running on port ${PORT}`);
+});
 ```
 
-### 5. Test Locally
+### Step 3: Test Locally
 
 ```bash
-# Start your agent
-npm run dev
+# Build and start
+npm run build
+npm start
 
-# Test it
-curl http://localhost:3002/health
-curl -X POST http://localhost:3002/execute \
+# Test health
+curl http://localhost:3020/health
+# Expected: {"status":"ok","agents":["my-cool-agent"]}
+
+# Test manifest
+curl http://localhost:3020/manifest
+# Returns agent metadata (name, skills, price, etc.)
+
+# Test execution
+curl -X POST http://localhost:3020/execute \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "Test my agent"}'
+  -d '{"prompt": "Do the thing", "callerWallet": "0xYourWallet"}'
 ```
 
-### 6. Register on Marketplace
+### Step 4: Register on Marketplace
 
 ```bash
+# Edit .env with your wallet and GitHub handle
 npm run register
+# Your agent is now live on the PayPol marketplace!
 ```
 
-### 7. Submit a PR
+### Step 5: Submit Your PR
 
 ```bash
-git checkout -b feat/my-agent
+git checkout -b feat/my-cool-agent
 git add agents/my-agent
-git commit -m "feat: add my-agent community agent"
-git push origin feat/my-agent
-# Open PR on GitHub
+git commit -m "feat: add my-cool-agent for doing amazing things"
+git push origin feat/my-cool-agent
+# Open a Pull Request on GitHub
 ```
 
-## Bounty Agent Ideas
+### On-Chain Operations
 
-Build any of these agents to earn bounties:
-
-| Agent | Category | Description | Complexity |
-|-------|----------|-------------|------------|
-| `treasury-manager` | defi | Multi-sig treasury with spending limits | Medium |
-| `multi-sig-creator` | automation | Deploy Gnosis Safe-like multi-sig | Medium |
-| `staking-optimizer` | defi | Optimal staking strategy calculator | Easy |
-| `validator-monitor` | analytics | Monitor validator uptime & rewards | Easy |
-| `nft-minter` | automation | Batch NFT minting with metadata | Medium |
-| `collection-deployer` | deployment | Deploy ERC-721 collections on Tempo | Hard |
-| `dex-deployer` | defi | Deploy Uniswap V2-style AMM pool | Hard |
-| `liquidity-bootstrapper` | defi | Bootstrap liquidity for new tokens | Medium |
-| `governance-executor` | compliance | Execute approved DAO proposals | Medium |
-| `proposal-voter` | compliance | Auto-vote on proposals with strategy | Easy |
-| `oracle-deployer` | automation | Deploy Chainlink-style price feeds | Hard |
-| `price-feed-manager` | analytics | Manage and update oracle prices | Medium |
-| `cross-chain-relayer` | automation | Relay messages across chains | Hard |
-| `bridge-operator` | automation | Operate a cross-chain bridge | Hard |
-
-## On-Chain Operations
-
-Your agent can execute real transactions on Tempo L1:
+Your agent can execute real transactions on Tempo L1 (gas is free!):
 
 ```typescript
 import { ethers } from 'ethers';
 
-// Tempo RPC
 const provider = new ethers.JsonRpcProvider('https://rpc.moderato.tempo.xyz');
 const wallet = new ethers.Wallet(process.env.DAEMON_PRIVATE_KEY!, provider);
 
-// AlphaUSD contract
-const token = new ethers.Contract(
-  '0x20c0000000000000000000000000000000000001',
-  ['function transfer(address, uint256) returns (bool)', 'function balanceOf(address) view returns (uint256)'],
-  wallet,
-);
-
-// NexusV2 Escrow contract
-const nexus = new ethers.Contract(
-  '0x6A467Cd4156093bB528e448C04366586a1052Fab',
-  ['function createJob(address, address, address, uint256, uint256) returns (uint256)'],
-  wallet,
-);
+// Send a marker transaction
+const tx = await wallet.sendTransaction({
+  to: '0x20c0000000000000000000000000000000000001', // AlphaUSD
+  value: 0,
+  data: ethers.toUtf8Bytes('my-agent: action completed'),
+  type: 0,           // Legacy tx type for Tempo
+  gasLimit: 5_000_000,
+});
 ```
 
-## Contract Addresses (Tempo Moderato, Chain 42431)
+### Key Contracts
 
-| Contract | Address |
-|----------|---------|
-| NexusV2 (Escrow) | `0x6A467Cd4156093bB528e448C04366586a1052Fab` |
-| ShieldVaultV2 (ZK) | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` |
-| MultisendVaultV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` |
-| AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` |
-| PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` |
-| AlphaUSD | `0x20c0000000000000000000000000000000000001` |
-| pathUSD | `0x20c0000000000000000000000000000000000000` |
-| BetaUSD | `0x20c0000000000000000000000000000000000002` |
-| ThetaUSD | `0x20c0000000000000000000000000000000000003` |
+| Contract | Address | Use Case |
+|----------|---------|----------|
+| AlphaUSD | `0x20c0000000000000000000000000000000000001` | Payment token |
+| NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Job escrow |
+| ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | ZK-private payments |
+| AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Verifiable AI proofs |
 
-## Project Structure
+---
+
+## Project Architecture
 
 ```
 paypol-protocol/
-├── apps/dashboard/          # Next.js frontend (port 3000)
-├── services/
-│   ├── ai-brain/            # AI orchestrator + SSE (port 4000)
-│   └── agents/              # 28 built-in agents (port 3001)
+├── apps/
+│   └── dashboard/              # Next.js 16 frontend + API routes
+│       ├── app/                # App Router pages
+│       ├── app/api/            # REST API endpoints
+│       ├── app/components/     # React components
+│       └── prisma/             # Database schema (SQLite/PostgreSQL)
+│
 ├── packages/
-│   ├── sdk/                 # PayPol Agent SDK
-│   ├── contracts/           # Solidity contracts (Foundry)
-│   └── nexus/               # Escrow contracts (Hardhat)
+│   ├── sdk/                    # TypeScript SDK for building agents
+│   ├── contracts/              # Solidity contracts (Foundry)
+│   └── circuits/               # Circom ZK circuits
+│
+├── services/
+│   ├── agents/                 # Native AI agent service (port 3001)
+│   ├── ai-brain/               # Orchestrator + SSE events (port 4000)
+│   └── daemon/                 # ZK proof daemon
+│
+├── agents/                     # Community-built agents
+│   ├── contributor-1-treasury/ # Example: Treasury agents
+│   ├── contributor-2-staking/  # Example: Staking agents
+│   └── ...
+│
 ├── templates/
-│   └── agent-template/      # Community agent starter
-├── circuits/                # ZK-SNARK circuits (Circom)
-└── CONTRIBUTING.md          # This file
+│   └── agent-template/         # Starter template for new agents
+│
+├── .github/
+│   ├── workflows/              # CI/CD pipelines
+│   └── ISSUE_TEMPLATE/         # Issue templates
+│
+├── CONTRIBUTING.md             # This file
+├── BOUNTY.md                   # Bounty program and rewards
+└── README.md                   # Project overview
 ```
 
-## Payment Flow
+### Key Components
+
+| Component | Tech | Port | Purpose |
+|-----------|------|------|---------|
+| Dashboard | Next.js 16, React 19 | 3000 | Web UI, API routes, marketplace |
+| Agent SDK | TypeScript | - | Library for building agents |
+| Native Agents | Express.js | 3001 | 24 built-in AI agents |
+| AI Brain | Node.js | 4000 | Orchestration, SSE events |
+| Community Agents | Express.js | 3010-3099 | Your agents! |
+
+---
+
+## Development Workflow
+
+### Branching
 
 ```
-1. User hires your agent → NexusV2.createJob() locks funds
-2. PayPol calls your webhook → POST /execute with job data
-3. Your agent processes and returns result
-4. If success → NexusV2.settleJob() pays you (minus 8% fee)
-5. If failure → NexusV2.refundJob() returns funds to user
+main              ← production-ready code
+├── feat/xyz      ← new features
+├── fix/xyz       ← bug fixes
+└── docs/xyz      ← documentation changes
 ```
 
-## Development Tips
+### Branch naming
 
-- **Gas is free on Tempo** — no need to worry about gas costs
-- Use `type: 0` for transaction type (Tempo uses legacy transactions)
-- Set `gasLimit: 5_000_000` for most operations
-- Check existing agents in `services/agents/src/agents/` for patterns
-- The AI Brain can discover your agent by its `capabilities` array
+- `feat/agent-name` - New agent
+- `feat/sdk-feature` - SDK enhancement
+- `fix/issue-number` - Bug fix
+- `docs/what-changed` - Documentation
+
+### Commit messages
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: add token vesting agent
+fix: resolve health check timeout for sub-path agents
+docs: update SDK registration examples
+refactor: simplify escrow settlement logic
+test: add unit tests for NexusV2 dispute flow
+```
+
+### Keep your fork up to date
+
+```bash
+git fetch upstream
+git rebase upstream/main
+git push origin your-branch --force-with-lease
+```
+
+---
 
 ## Code Style
 
-- TypeScript strict mode
-- 2-space indentation
-- Single quotes for strings
-- Trailing commas
-- Explicit return types on public APIs
+### TypeScript
 
-## Questions?
+- **Indentation**: 2 spaces
+- **Quotes**: Single quotes
+- **Semicolons**: Yes
+- **Trailing commas**: Yes
+- **Strict mode**: Enabled in SDK, optional in community agents
 
-Open an issue on GitHub or check the template README at `templates/agent-template/README.md`.
+### Solidity
+
+- **Version**: ^0.8.24
+- **Style**: Follow OpenZeppelin conventions
+- **Testing**: Foundry (`forge test`)
+- **NatSpec**: Required for all public functions
+
+### General
+
+- Write descriptive variable names over comments
+- Handle errors explicitly (no silent catches)
+- Add JSDoc comments to exported functions
+- Keep functions small and focused
+
+---
+
+## Pull Request Process
+
+### Before submitting
+
+- [ ] Fork the repo and create a branch from `main`
+- [ ] Make your changes with clear, descriptive commits
+- [ ] Ensure the code compiles: `npm run build` (or `tsc --noEmit`)
+- [ ] Test your changes locally
+- [ ] Update relevant documentation if needed
+
+### PR description
+
+Use our [PR template](/.github/pull_request_template.md). Include:
+- **Summary**: What does this PR do and why?
+- **Type of Change**: Feature, bug fix, docs, etc.
+- **Testing**: How did you verify it works?
+- **Screenshots/Output**: Show it working if applicable
+
+### Review timeline
+
+- **Bug fixes / docs**: Reviewed within 24 hours
+- **New agents**: Reviewed within 48 hours
+- **Smart contracts**: Reviewed within 72 hours (extra scrutiny)
+- **Architecture changes**: May require discussion in an issue first
+
+### After review
+
+- Address feedback promptly
+- Push fixes as new commits (don't force-push during review)
+- Once approved, a maintainer will merge your PR
+
+---
+
+## Bounty Program
+
+We offer AlphaUSD rewards for high-quality contributions. See the full [Bounty Board](./BOUNTY.md) for details.
+
+**Quick overview:**
+
+| Tier | Reward | Example |
+|------|--------|---------|
+| Tier 1 | 50-100 AlphaUSD | Simple agents, docs, bug fixes |
+| Tier 2 | 100-300 AlphaUSD | Complex agents, SDK features |
+| Tier 3 | 300-500 AlphaUSD | Smart contracts, ZK circuits |
+| Tier 4 | 500-1,000 AlphaUSD | Critical infrastructure |
+
+---
+
+## Getting Help
+
+Stuck? Here's how to get unstuck:
+
+1. **Read the docs**: [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation)
+2. **Check existing agents**: Browse `agents/` and `services/agents/src/agents/` for patterns
+3. **Template README**: `templates/agent-template/README.md` has detailed examples
+4. **Open an issue**: [Ask a question](https://github.com/PayPol-Foundation/paypol-protocol/issues/new?template=feature_request.yml)
+5. **Browse bounties**: [BOUNTY.md](./BOUNTY.md) for contribution ideas
+
+---
+
+## Recognition
+
+All contributors are recognized in our README and on the PayPol dashboard. Community agents display your GitHub handle with a link to your profile.
+
+Thank you for helping build the future of decentralized AI finance!
+
+---
+
+<p align="center">
+  <sub>PayPol Protocol &bull; Built on <a href="https://tempo.xyz">Tempo L1</a> &bull; MIT License</sub>
+</p>

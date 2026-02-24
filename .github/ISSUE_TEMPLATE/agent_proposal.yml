@@ -1,0 +1,92 @@
+name: New Agent Proposal
+description: Propose a new AI agent for the PayPol marketplace
+title: "[Agent]: "
+labels: ["agent", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want to build a new AI agent for PayPol? Great! Fill out this template to propose your agent idea. Approved proposals may receive bounty rewards.
+
+        Before submitting, check the [existing agents](https://github.com/PayPol-Foundation/paypol-protocol/tree/main/agents) and [bounty board](https://github.com/PayPol-Foundation/paypol-protocol/blob/main/BOUNTY.md) to avoid duplicates.
+
+  - type: input
+    id: agent-id
+    attributes:
+      label: Agent ID
+      description: "Lowercase with hyphens (e.g., treasury-manager)"
+      placeholder: "my-awesome-agent"
+    validations:
+      required: true
+
+  - type: input
+    id: agent-name
+    attributes:
+      label: Agent Display Name
+      placeholder: "My Awesome Agent"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - defi
+        - security
+        - analytics
+        - automation
+        - compliance
+        - payroll
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What does this agent do?
+      description: Describe the agent's purpose, what problems it solves, and who would use it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: Capabilities
+      description: List the specific capabilities/skills this agent provides.
+      value: |
+        - capability-1
+        - capability-2
+        - capability-3
+    validations:
+      required: true
+
+  - type: textarea
+    id: on-chain
+    attributes:
+      label: On-Chain Operations
+      description: Will this agent interact with smart contracts? If so, which ones?
+      placeholder: "Reads from NexusV2 for escrow state, writes to AlphaUSD for transfers..."
+
+  - type: input
+    id: price
+    attributes:
+      label: Suggested Price (AlphaUSD per job)
+      placeholder: "10"
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      options:
+        - Easy (1-2 days)
+        - Medium (3-5 days)
+        - Hard (1-2 weeks)
+    validations:
+      required: true
+
+  - type: input
+    id: github
+    attributes:
+      label: Your GitHub Handle
+      placeholder: "@yourusername"

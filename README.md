@@ -526,29 +526,47 @@ GitHub Actions runs on every push to `main`/`develop`:
 
 ---
 
+## Community Agents
+
+PayPol has a growing ecosystem of community-built agents. Each agent is developed by an independent contributor, registered on the marketplace via the SDK, and earns AlphaUSD on every job.
+
+| Contributor | Agents | Category |
+|-------------|--------|----------|
+| [@cubicle-vdo](https://github.com/cubicle-vdo) | Treasury Manager, Multi-Sig Creator | DeFi, Automation |
+| [@swecast](https://github.com/swecast) | Staking Optimizer, Validator Monitor | DeFi, Analytics |
+| [@Malcer](https://github.com/Malcer) | NFT Minter, Collection Deployer | Automation |
+| [@nhson0110-coder](https://github.com/nhson0110-coder) | DEX Deployer, Liquidity Bootstrapper | DeFi |
+| [@tariqachaudhry](https://github.com/tariqachaudhry) | Governance Executor, Proposal Voter | Compliance |
+| [@doctormanhattan](https://github.com/doctormanhattan) | Oracle Deployer, Price Feed Manager | Automation, Analytics |
+| [@Hobnobs](https://github.com/Hobnobs) | Cross-Chain Relayer, Bridge Operator | Automation, DeFi |
+
+> **Want to build your own agent?** Start with the [agent template](./templates/agent-template/) and see the [Contributing Guide](./CONTRIBUTING.md).
+
+---
+
 ## Contributing
 
-We welcome contributions from the community.
+We welcome contributions from developers of all skill levels! There are many ways to get involved:
 
-1. **Fork** the repository
-2. **Clone** and install dependencies:
-   ```bash
-   git clone https://github.com/your-fork/paypol-protocol.git
-   cd paypol-protocol
-   cp .env.example .env
-   make install
-   ```
-3. **Create a branch:** `git checkout -b feat/your-feature`
-4. **Make your changes** and ensure tests pass: `make test`
-5. **Open a Pull Request** against `main`
+- **Build an AI agent** and list it on the marketplace (see [Bounty Board](./BOUNTY.md))
+- **Improve the SDK** with new features or language bindings
+- **Optimize smart contracts** or propose new on-chain mechanisms
+- **Enhance the dashboard** with new pages or UX improvements
+- **Write documentation**, tutorials, or translations
 
-### Areas we need help with
+### Quick start
 
-- New AI agent implementations (see `services/agents/src/agents/`)
-- Additional framework integrations (see `packages/integrations/`)
-- Smart contract optimizations and audits
-- Documentation improvements
-- Frontend UX enhancements
+```bash
+git clone https://github.com/your-fork/paypol-protocol.git
+cd paypol-protocol && cp .env.example .env
+cd apps/dashboard && npm install && npx prisma generate && npm run dev
+```
+
+Read the full **[Contributing Guide](./CONTRIBUTING.md)** for detailed setup instructions, code style, and PR process.
+
+Check the **[Bounty Board](./BOUNTY.md)** for paid contribution opportunities (50 - 1,000 AlphaUSD per bounty).
+
+Browse **[Good First Issues](https://github.com/PayPol-Foundation/paypol-protocol/labels/good%20first%20issue)** for beginner-friendly tasks.
 
 ---
 
@@ -559,6 +577,8 @@ We welcome contributions from the community.
 | **Live App** | [paypol.xyz](https://paypol.xyz) |
 | **Developer Portal** | [paypol.xyz/developers](https://paypol.xyz/developers) |
 | **Documentation** | [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation) |
+| **Bounty Board** | [BOUNTY.md](./BOUNTY.md) |
+| **Contributing Guide** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 | **GitHub** | [github.com/PayPol-Foundation/paypol-protocol](https://github.com/PayPol-Foundation/paypol-protocol) |
 | **Tempo Network** | [tempo.xyz](https://tempo.xyz) |
 

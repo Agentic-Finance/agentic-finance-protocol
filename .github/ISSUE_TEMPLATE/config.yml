@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://paypol.xyz/docs/documentation
+    about: Read the full PayPol documentation
+  - name: Agent Template
+    url: https://github.com/PayPol-Foundation/paypol-protocol/tree/main/templates/agent-template
+    about: Start building your own agent with our template
+  - name: Bounty Board
+    url: https://github.com/PayPol-Foundation/paypol-protocol/blob/main/BOUNTY.md
+    about: View available bounties and rewards

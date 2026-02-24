@@ -461,11 +461,12 @@ export default function Dashboard() {
     if (!currentWorkspace) { return (<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} /></Suspense>); }
 
     return (
-        <div className="min-h-screen bg-[#0F1319] text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-x-hidden pb-32">
-            {/* Global styles moved to globals.css (Phase 5) */}
+        <div className="min-h-screen bg-[#0B1120] text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-x-hidden pb-32">
+            {/* Global styles moved to globals.css */}
 
-            <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.20)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
-            <div className="fixed bottom-[-10%] right-[-5%] w-[40%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(192,38,211,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
+            <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.25)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
+            <div className="fixed bottom-[-10%] right-[-5%] w-[40%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(192,38,211,0.15)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
+            <div className="fixed top-[20%] right-[-5%] w-[30%] h-[40%] rounded-full bg-[radial-gradient(circle,_rgba(6,182,212,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
 
             <div className={`fixed bottom-10 right-0 left-0 md:left-auto md:right-10 z-[500] transition-all duration-500 ease-out transform flex justify-center md:justify-end pointer-events-none ${toast.show ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}>
                 <div className={`relative overflow-hidden flex items-start gap-4 p-5 pr-12 rounded-2xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] pointer-events-auto max-w-sm w-11/12 md:w-[400px] will-change-transform ${toast.type === 'success' ? 'bg-[#061A11]/95 border-emerald-500/40' : 'bg-[#1A060A]/95 border-rose-500/40'}`}>

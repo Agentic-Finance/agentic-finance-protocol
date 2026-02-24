@@ -29,7 +29,7 @@ function Navbar({
     disconnectWallet
 }: NavbarProps) {
     return (
-        <nav className="border-b border-white/[0.08] sticky top-0 z-50" style={{ background: 'radial-gradient(ellipse at top, rgba(15,19,25,0.85) 0%, rgba(15,19,25,0.75) 100%)' }}>
+        <nav className="border-b border-white/[0.10] sticky top-0 z-50" style={{ background: 'radial-gradient(ellipse at top, rgba(11,17,32,0.92) 0%, rgba(11,17,32,0.85) 100%)', backdropFilter: 'blur(20px) saturate(180%)' }}>
             <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
 
                 <div className="flex items-center gap-4">

@@ -100,30 +100,31 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
     ];
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#0F1319', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#0B1120', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
 
-            {/* BACKGROUND — Animated gradient mesh */}
+            {/* BACKGROUND — Vibrant gradient mesh */}
             <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '-15%', left: '10%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.10) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', bottom: '-25%', right: '-5%', width: '55vw', height: '55vw', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', top: '40%', left: '50%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.06) 0%, transparent 70%)', borderRadius: '50%' }}></div>
+                <div style={{ position: 'absolute', top: '-15%', left: '10%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)', borderRadius: '50%' }}></div>
+                <div style={{ position: 'absolute', bottom: '-25%', right: '-5%', width: '55vw', height: '55vw', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)', borderRadius: '50%' }}></div>
+                <div style={{ position: 'absolute', top: '40%', left: '50%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)', borderRadius: '50%' }}></div>
+                <div style={{ position: 'absolute', top: '10%', right: '20%', width: '30vw', height: '30vw', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.10) 0%, transparent 70%)', borderRadius: '50%' }}></div>
                 {/* Subtle grid overlay */}
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('/grid.svg')", backgroundPosition: 'center', opacity: 0.03 }}></div>
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('/grid.svg')", backgroundPosition: 'center', opacity: 0.04 }}></div>
                 {/* Noise texture */}
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.015, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '128px 128px' }}></div>
+                <div style={{ position: 'absolute', inset: 0, opacity: 0.02, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '128px 128px' }}></div>
             </div>
 
             {/* NAVBAR */}
-            <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(15, 19, 25, 0.97)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none', transition: 'all 0.3s ease' }}>
+            <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(11, 17, 32, 0.95)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.10)' : 'none', backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none', transition: 'all 0.3s ease' }}>
                 <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                     <Image src="/logo.png" alt="PayPol Logo" width={192} height={48} className="landing-logo-img" style={{ width: 'auto', objectFit: 'contain' }} priority />
                 </div>
-                <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '40px', padding: '12px 48px', backgroundColor: 'rgba(15, 19, 25, 0.9)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', height: '52px' }}>
+                <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '40px', padding: '12px 48px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
                     {[
                         { label: 'Overview', href: '#overview' },
                         { label: 'Protocol', href: '#protocol' },
-                        { label: 'Phase 2', href: '#phase2' },
-                        { label: 'Developers', href: '/developers' },
+                        { label: 'Features', href: '#features' },
+                        { label: 'Developers', href: '#resources' },
                     ].map((item) => (
                         <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
                     ))}
@@ -221,8 +222,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '36px', height: '36px', backgroundColor: '#000', border: '2px solid #a855f7', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '18px', height: '18px', color: '#a855f7' }} /></div><div><p style={{ fontSize: '0.65rem', color: '#a855f7', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Nexus Vault</p><p style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>500.0 <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>USDC</span></p></div></div>
                                     <div style={{ backgroundColor: 'rgba(168,85,247,0.1)', padding: '5px 10px', borderRadius: '8px', border: '1px solid rgba(168,85,247,0.3)' }}><span style={{ fontSize: '0.7rem', color: '#c084fc', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><ClockIcon style={{ width: '13px', height: '13px' }} /> In Escrow</span></div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#94a3b8' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Dev Agent</span><span style={{ color: '#64748b', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{agentData ? `${agentData.devAddress.slice(0, 6)}...` : "..."}</span></div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: '#14203A', border: '1px solid #374151', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#94a3b8' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Dev Agent</span><span style={{ color: '#64748b', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{agentData ? `${agentData.devAddress.slice(0, 6)}...` : "..."}</span></div>
                                     <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                                         {outputStep >= 3 && (<div style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '999px', marginBottom: '6px', zIndex: 10 }}><span style={{ fontSize: '0.6rem', color: '#c084fc', fontWeight: '900', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckBadgeIcon style={{ width: '11px', height: '11px' }} /> AI IS JUDGE</span></div>)}
                                         <div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_2s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#a855f7', boxShadow: '0 0 10px #a855f7' }}></div></div><span style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', marginTop: '6px', fontFamily: 'monospace' }}>+$5.00 Stream</span>
@@ -235,7 +236,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         {activeTab === 2 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(129, 140, 248, 0.3)', borderRadius: '16px', overflow: 'hidden' }}><div style={{ display: 'flex', backgroundColor: 'rgba(129, 140, 248, 0.1)', padding: '12px 20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#a5b4fc', textTransform: 'uppercase' }}><div style={{ flex: 1 }}>Employee</div><div style={{ flex: 1 }}>Wallet</div><div style={{ width: '100px', textAlign: 'right' }}>Amount</div></div>{[{ name: "Alice", wallet: "0x71C...9A", amount: "5k" }, { name: "Bob", wallet: "0x3F2...8B", amount: "4.5k" }, { name: "Charlie", wallet: "0x9E1...1C", amount: "4.5k" }].map((row, i) => (<div key={i} style={{ display: 'flex', padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem' }}><div style={{ flex: 1, color: '#fff', fontWeight: 'bold' }}>{row.name}</div><div style={{ flex: 1, color: '#64748b', fontFamily: 'monospace' }}>{row.wallet}</div><div style={{ width: '100px', textAlign: 'right', color: '#10b981', fontWeight: 'bold' }}>{row.amount}</div></div>))}</div></div>)}
                         {activeTab === 3 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(236, 72, 153, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1e1b4b', borderRadius: '50%', border: '1px solid #4338ca', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><GlobeAltIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Ethereum</span></div><div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}><span style={{ fontSize: '0.7rem', color: '#ec4899', marginBottom: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>50,000 USDC</span><div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_1.5s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#ec4899' }}></div></div><span style={{ fontSize: '0.65rem', color: '#64748b', marginTop: '4px' }}>LayerZero Bridge</span></div><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#064e3b', borderRadius: '50%', border: '1px solid #059669', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#34d399' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Arbitrum</span></div></div></div>)}
                         {activeTab === 4 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(234, 179, 8, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><ChartBarIcon style={{ width: '24px', height: '24px', color: '#eab308' }} /><span style={{ color: '#fff', fontWeight: 'bold' }}>Portfolio Rebalancing</span></div><span style={{ fontSize: '0.75rem', color: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(234, 179, 8, 0.2)', fontWeight: 'bold' }}>AUTO-EXECUTED</span></div><div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}><div style={{ textAlign: 'center', opacity: 0.6 }}><p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '4px' }}>Previous Split</p><p style={{ fontSize: '1.1rem', color: '#cbd5e1', fontWeight: 'bold', fontFamily: 'monospace' }}>BTC:52% / ETH:48%</p></div><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /><div style={{ textAlign: 'center' }}><p style={{ fontSize: '0.8rem', color: '#eab308', marginBottom: '4px' }}>New Target Split</p><p style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>BTC:60% / ETH:40%</p></div></div></div></div>)}
-                        {activeTab === 5 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}><div style={{ width: '100%', backgroundColor: '#05070A', border: '1px solid rgba(6, 182, 212, 0.3)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}><ServerStackIcon style={{ width: '32px', height: '32px', color: '#06b6d4' }} /><span style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold' }}>Uptime API Oracle</span></div><div style={{ width: '2px', height: '40px', backgroundColor: '#06b6d4', opacity: 0.5 }}></div><div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>{[1, 2, 3, 4, 5].map((id) => (<div key={id} style={{ width: '40px', height: '40px', backgroundColor: '#141924', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><SignalIcon style={{ width: '20px', height: '20px', color: '#06b6d4' }} /><div className="animate-pulse" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div></div>))}<div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>...</div></div><div style={{ marginTop: '32px', backgroundColor: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '10px 20px', borderRadius: '999px' }}><span style={{ fontSize: '0.85rem', color: '#22d3ee', fontWeight: 'bold', fontFamily: 'monospace' }}>Verifying 5,000 active nodes...</span></div></div></div>)}
+                        {activeTab === 5 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}><div style={{ width: '100%', backgroundColor: '#05070A', border: '1px solid rgba(6, 182, 212, 0.3)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}><ServerStackIcon style={{ width: '32px', height: '32px', color: '#06b6d4' }} /><span style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold' }}>Uptime API Oracle</span></div><div style={{ width: '2px', height: '40px', backgroundColor: '#06b6d4', opacity: 0.5 }}></div><div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>{[1, 2, 3, 4, 5].map((id) => (<div key={id} style={{ width: '40px', height: '40px', backgroundColor: '#162036', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><SignalIcon style={{ width: '20px', height: '20px', color: '#06b6d4' }} /><div className="animate-pulse" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div></div>))}<div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>...</div></div><div style={{ marginTop: '32px', backgroundColor: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '10px 20px', borderRadius: '999px' }}><span style={{ fontSize: '0.85rem', color: '#22d3ee', fontWeight: 'bold', fontFamily: 'monospace' }}>Verifying 5,000 active nodes...</span></div></div></div>)}
 
                         {/* Agent Execution Logs */}
                         <div className={`transition-all duration-700 mt-auto ${outputStep >= 1 ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: '#030407', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '14px', fontFamily: 'monospace', fontSize: '0.72rem', color: '#64748b' }}>
@@ -252,12 +253,12 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
             </section>
 
-            <div style={{ width: '100%', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.02)', backgroundColor: 'rgba(0,0,0,0.2)', padding: '12px 0', position: 'relative', zIndex: 10 }}>
+            <div style={{ width: '100%', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(11,17,32,0.6)', padding: '12px 0', position: 'relative', zIndex: 10 }}>
                 <div className="animate-ticker" style={{ display: 'flex', whiteSpace: 'nowrap', gap: '40px', width: 'max-content' }}>{[...Array(3)].map((_, i) => (<div key={i} style={{ display: 'flex', gap: '40px', fontFamily: 'monospace', fontSize: '0.8rem', color: '#64748b' }}><span><span style={{ color: '#10b981' }}>[SUCCESS]</span> Agent-03 verified PR. Vault released 5k.</span><span><span style={{ color: '#a855f7' }}>[NEXUS]</span> AuditAgent signed tx. $5 streamed.</span><span><span style={{ color: '#ec4899' }}>[BRIDGE]</span> 50k USDC bridged to Arb.</span></div>))}</div>
             </div>
 
             {/* --- SECTION: THE THESIS (SYMMETRICAL LAYOUT) --- */}
-            <section id="overview" style={{ padding: '120px 20px', backgroundColor: '#0F1319', position: 'relative', zIndex: 10 }}>
+            <section id="overview" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10 }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div className="reveal" style={{ textAlign: 'center', marginBottom: '100px' }}><h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>The Thesis. <br /><span className="gradient-text">The Inevitable Shift.</span></h2></div>
                     <div className="thesis-grid" style={{ display: 'grid', gap: '60px', alignItems: 'start' }}>
@@ -293,10 +294,10 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* PROTOCOL STACK — Replacing old Architecture section */}
-            <section id="protocol" style={{ padding: '120px 20px', backgroundColor: '#0C1016', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+            <section id="protocol" style={{ padding: '120px 20px', backgroundColor: '#0B1222', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                 {/* Ambient glow */}
-                <div style={{ position: 'absolute', top: '20%', left: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
-                <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+                <div style={{ position: 'absolute', top: '20%', left: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+                <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
 
                 <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
                     <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
@@ -314,7 +315,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* UNIFIED PROTOCOL STACK TABLE */}
-                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
+                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#14203A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
                         {/* Gradient accent line on left */}
                         <div style={{ position: 'absolute', left: 0, top: 0, width: '3px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #22d3ee, #f59e0b, #818cf8, #10b981, #ec4899, #94a3b8)', zIndex: 2 }}></div>
 
@@ -454,10 +455,10 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* ECOSYSTEM */}
-            <section id="ecosystem" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0D1118', borderTop: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+            <section id="ecosystem" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0E1428', borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                 {/* Ambient background glows */}
-                <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-                <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
                 <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
                     {/* Title */}
@@ -477,7 +478,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     {/* Top row — 2 large cards */}
                     <div className="eco-grid-2 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Protocol Treasuries */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #10b981, transparent)' }} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
                                 <UserGroupIcon style={{ width: '36px', height: '36px', color: '#10b981' }} />
@@ -494,7 +495,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Autonomous AI Swarms */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #22d3ee, transparent)' }} />
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
                                 <ServerStackIcon style={{ width: '36px', height: '36px', color: '#22d3ee' }} />
@@ -514,7 +515,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     {/* Middle row — 3 medium cards */}
                     <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Institutional Finance */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
                             <BriefcaseIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Institutional Finance</h3>
@@ -522,7 +523,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* DePIN Networks */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(236,72,153,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(236,72,153,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #ec4899, transparent)' }} />
                             <BoltIcon style={{ width: '32px', height: '32px', color: '#ec4899', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>DePIN Networks</h3>
@@ -530,7 +531,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* DeFi Vaults */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(168,85,247,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(168,85,247,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #a855f7, transparent)' }} />
                             <ChartBarIcon style={{ width: '32px', height: '32px', color: '#a855f7', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>DeFi Algorithmic Vaults</h3>
@@ -541,7 +542,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     {/* Bottom row — 2 cards + stats panel */}
                     <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px' }}>
                         {/* Gaming */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
                             <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Gaming & Metaverse</h3>
@@ -549,7 +550,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Cross-Chain Commerce */}
-                        <div className="bento-item" style={{ backgroundColor: '#141924', border: '1px solid rgba(244,114,182,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(244,114,182,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f472b6, transparent)' }} />
                             <GlobeAltIcon style={{ width: '32px', height: '32px', color: '#f472b6', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Cross-Chain Commerce</h3>
@@ -557,7 +558,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
 
                         {/* Protocol Numbers */}
-                        <div style={{ backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '24px', padding: '36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
+                        <div style={{ backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '24px', padding: '36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
                             <div style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>38+</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>AI Agents</div>
@@ -570,7 +571,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>9</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Phase 2 Features</div>
+                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Core Features</div>
                             </div>
                         </div>
                     </div>
@@ -578,11 +579,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* ════════════════════════════════════════════════════════════ */}
-            {/* PHASE 2 — LIVE ON TEMPO L1                                  */}
+            {/* FEATURES — LIVE ON TEMPO L1                                 */}
             {/* ════════════════════════════════════════════════════════════ */}
-            <section id="phase2" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0A0E14', borderTop: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '10%', right: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-                <div style={{ position: 'absolute', bottom: '10%', left: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(168,85,247,0.05) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+            <section id="features" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: '10%', right: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '10%', left: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
                 <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
                     <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
@@ -612,7 +613,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
                             { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'Stream Settlement', desc: 'Progressive milestone-based escrow. Client approves each deliverable, payment releases incrementally. Real-time notifications.', color: '#06b6d4', stat: 'StreamV1' },
                         ].map((f, i) => (
-                            <div key={i} className="reveal-child" style={{ backgroundColor: '#111827', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
+                            <div key={i} className="reveal-child" style={{ backgroundColor: '#14203A', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
                                 <div style={{ color: f.color, marginBottom: '16px' }}>{f.icon}</div>
                                 <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '800', marginBottom: '8px' }}>{f.title}</h3>
@@ -623,7 +624,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* Deployed Contracts Strip */}
-                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
+                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#14203A', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
                         <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>6 Source-Verified Contracts on Tempo Moderato</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                             {[
@@ -648,20 +649,20 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* RESOURCES */}
-            <section id="resources" style={{ padding: '120px 20px', backgroundColor: '#0F1319', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <section id="resources" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: '80px' }}><h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>Developer <span style={{ color: '#10b981' }}>Resources.</span></h2></div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-                        <a href="/docs/documentation" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><DocumentTextIcon style={{ width: '36px', height: '36px', color: '#10b981', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Documentation</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Comprehensive guides, API references, and smart contract integration.</p></a>
-                        <a href="https://github.com/PayPol-Foundation/paypol-protocol" target="_blank" rel="noopener noreferrer" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><CodeBracketIcon style={{ width: '36px', height: '36px', color: '#fff', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>GitHub</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Audit our open-source contracts and contribute to the PayPol core.</p></a>
-                        <a href="#" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><ChatBubbleLeftRightIcon style={{ width: '36px', height: '36px', color: '#818cf8', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Community</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Join the Discord. Connect with other builders in the Agentic Economy.</p></a>
-                        <a href="/docs/research-paper" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><BookOpenIcon style={{ width: '36px', height: '36px', color: '#f59e0b', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Research Paper</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Deep dive into the economic models and ZK mechanics of PayPol.</p></a>
+                        <a href="/docs/documentation" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><DocumentTextIcon style={{ width: '36px', height: '36px', color: '#10b981', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Documentation</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Comprehensive guides, API references, and smart contract integration.</p></a>
+                        <a href="https://github.com/PayPol-Foundation/paypol-protocol" target="_blank" rel="noopener noreferrer" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><CodeBracketIcon style={{ width: '36px', height: '36px', color: '#fff', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>GitHub</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Audit our open-source contracts and contribute to the PayPol core.</p></a>
+                        <a href="#" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><ChatBubbleLeftRightIcon style={{ width: '36px', height: '36px', color: '#818cf8', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Community</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Join the Discord. Connect with other builders in the Agentic Economy.</p></a>
+                        <a href="/docs/research-paper" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><BookOpenIcon style={{ width: '36px', height: '36px', color: '#f59e0b', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Research Paper</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Deep dive into the economic models and ZK mechanics of PayPol.</p></a>
                     </div>
                 </div>
             </section>
 
             {/* CTA */}
-            <section className="reveal" style={{ padding: '160px 20px', textAlign: 'center', backgroundColor: '#111720', position: 'relative', overflow: 'hidden' }}>
+            <section className="reveal" style={{ padding: '160px 20px', textAlign: 'center', backgroundColor: '#0F1730', position: 'relative', overflow: 'hidden' }}>
                 <div className="cta-glow" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '60vw', height: '60vw', borderRadius: '50%', zIndex: 0 }}></div>
                 <div style={{ position: 'relative', zIndex: 10 }}>
                     <p style={{ fontSize: '0.8rem', fontWeight: '800', color: '#34d399', letterSpacing: '0.2em', textTransform: 'uppercase' as const, marginBottom: '24px' }}>The Future Is Autonomous</p>
@@ -671,7 +672,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
             </section>
 
-            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '50px 0', textAlign: 'center', backgroundColor: '#0D1118', width: '100%' }}>
+            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '50px 0', textAlign: 'center', backgroundColor: '#0B1120', width: '100%' }}>
                 <Image src="/logo.png" alt="PayPol" width={160} height={40} style={{ height: '40px', width: 'auto', opacity: 0.5, margin: '0 auto 20px' }} />
                 <p style={{ color: '#5a6a80', fontSize: '0.9rem', fontWeight: 'bold' }}>© 2026 PayPol Foundation.</p>
             </footer>
@@ -709,7 +710,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
                 /* ── CTA Section ── */
                 .cta-glow {
-                    background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, rgba(99,102,241,0.06) 40%, transparent 70%);
+                    background: radial-gradient(circle, rgba(16,185,129,0.20) 0%, rgba(99,102,241,0.12) 40%, transparent 70%);
                 }
                 .cta-button {
                     box-shadow: 0 0 40px rgba(255,255,255,0.25), 0 0 80px rgba(16,185,129,0.15);
@@ -734,10 +735,10 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 /* ── Card Hover Effects ── */
                 .bento-item, .resource-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
                 .bento-item:hover, .resource-card:hover {
-                    border-color: rgba(255,255,255,0.2) !important;
+                    border-color: rgba(255,255,255,0.25) !important;
                     transform: translateY(-6px);
-                    background-color: rgba(25, 32, 45, 1) !important;
-                    box-shadow: 0 24px 48px rgba(0,0,0,0.4), 0 0 1px rgba(255,255,255,0.1) !important;
+                    background-color: rgba(30, 42, 66, 1) !important;
+                    box-shadow: 0 24px 48px rgba(0,0,0,0.3), 0 0 1px rgba(255,255,255,0.15), 0 0 40px rgba(99,102,241,0.08) !important;
                 }
 
                 /* ── Existing Animations ── */

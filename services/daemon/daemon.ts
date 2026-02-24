@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import * as crypto from "crypto";
 // @ts-ignore
 import * as snarkjs from "snarkjs";
 import * as path from "path";
@@ -21,6 +22,8 @@ dotenv.config();
 // ==========================================
 const RPC_URL = "https://rpc.moderato.tempo.xyz";
 const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
+// V2 Shield Vault (set after deployment — falls back to V1 if not deployed)
+const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "";
 
 // NexusV2 — A2A Escrow Lifecycle (deployed to Tempo testnet)
 const PAYPOL_NEXUS_V2_ADDRESS = "0x3Bc01ecc428Ca0Ff76c433F8B3B46D00edE15837";
@@ -30,8 +33,17 @@ if (!process.env.DAEMON_PRIVATE_KEY) {
 }
 const PRIVATE_KEY = process.env.DAEMON_PRIVATE_KEY;
 
-const SHIELD_ABI = [
+// V1 Shield ABI (2 pubSignals)
+const SHIELD_ABI_V1 = [
     "function executeShieldedPayout(uint256[24] calldata proof, uint256[2] calldata pubSignals, uint256 exactAmount) external"
+];
+
+// V2 Shield ABI (3 pubSignals — commitment, nullifierHash, recipient)
+const SHIELD_ABI_V2 = [
+    "function deposit(uint256 commitment, uint256 amount) external",
+    "function executeShieldedPayout(uint256[24] calldata proof, uint256[3] calldata pubSignals, uint256 exactAmount) external",
+    "function isNullifierUsed(uint256 nullifierHash) external view returns (bool)",
+    "function isCommitmentRegistered(uint256 commitment) external view returns (bool)"
 ];
 
 const NEXUS_V2_ABI = [
@@ -41,26 +53,45 @@ const NEXUS_V2_ABI = [
     "function getJob(uint256 _jobId) external view returns (address employer, address worker, address judge, address token, uint256 budget, uint256 platformFee, uint256 deadline, uint8 status, bool rated)",
 ];
 
+/**
+ * Generate a cryptographically secure random field element for ZK circuits.
+ * Returns a BigInt string safe for Poseidon hashing (< BN254 field order).
+ */
+function generateRandomSecret(): string {
+    const bytes = crypto.randomBytes(31); // 31 bytes = 248 bits (safe for BN254)
+    return BigInt("0x" + bytes.toString("hex")).toString();
+}
+
 class PayPolDaemon {
     private provider: ethers.JsonRpcProvider;
     private wallet: ethers.Wallet;
-    private shieldContract: ethers.Contract;
+    private shieldContractV1: ethers.Contract;
+    private shieldContractV2: ethers.Contract | null;
     private nexusV2Contract: ethers.Contract;
     private prisma: PrismaClient;
     private isRunning: boolean = false;
+    private useV2Circuit: boolean = false;
 
     constructor() {
         this.provider = new ethers.JsonRpcProvider(RPC_URL);
         this.wallet = new ethers.Wallet(PRIVATE_KEY, this.provider);
-        this.shieldContract = new ethers.Contract(PAYPOL_SHIELD_ADDRESS, SHIELD_ABI, this.wallet);
+        this.shieldContractV1 = new ethers.Contract(PAYPOL_SHIELD_ADDRESS, SHIELD_ABI_V1, this.wallet);
+        this.shieldContractV2 = PAYPOL_SHIELD_V2_ADDRESS
+            ? new ethers.Contract(PAYPOL_SHIELD_V2_ADDRESS, SHIELD_ABI_V2, this.wallet)
+            : null;
         this.nexusV2Contract = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, this.wallet);
         this.prisma = new PrismaClient();
+
+        // Auto-detect V2 circuit files
+        const v2WasmPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_v2.wasm");
+        this.useV2Circuit = fs.existsSync(v2WasmPath) && !!PAYPOL_SHIELD_V2_ADDRESS;
     }
 
     public async start() {
         if (this.isRunning) return;
         this.isRunning = true;
         console.log(`[DAEMON] 🟢 Master Daemon initialized. Wallet: ${this.wallet.address}`);
+        console.log(`[DAEMON] 🛡️ ZK Circuit: ${this.useV2Circuit ? 'V2 (Nullifier Anti-Double-Spend)' : 'V1 (Legacy)'}`);
 
         try {
             const totalRecords = await this.prisma.timeVaultPayload.count();
@@ -114,22 +145,37 @@ class PayPolDaemon {
                 const scaledAmountWei = ethers.parseUnits(amountString, 6);
 
                 console.log(`[DAEMON] 🛡️ Generating REAL ZK-SNARK Proof for ${amountString} AlphaUSD...`);
-                
-                // TRUE ZK PROOF (No try-catch mock block anymore)
-                const { proofArray, pubSignals } = await this.generateZKProof(job.recipientWallet, scaledAmountWei.toString());
 
-                console.log(`[DAEMON] 🚀 Broadcasting ZK Transaction to L1 Tempo...`);
-                
-                // 🌟 FIX NONCE: Always fetch the exact pending nonce from the blockchain right before TX
-                const currentNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
+                let tx: any;
 
-                // REAL EXECUTION ON SMART CONTRACT
-                const tx = await this.shieldContract.executeShieldedPayout(
-                    proofArray, 
-                    pubSignals, 
-                    scaledAmountWei,
-                    { nonce: currentNonce, gasLimit: 3000000, type: 0 }
-                );
+                if (this.useV2Circuit && this.shieldContractV2) {
+                    // ═══ V2 PATH: Nullifier Anti-Double-Spend ═══
+                    const { proofArray, pubSignals, secret, nullifier, commitment } =
+                        await this.generateZKProofV2(job.recipientWallet, scaledAmountWei.toString());
+
+                    console.log(`[DAEMON] 🔐 V2 Proof generated. Commitment: ${commitment.slice(0, 20)}...`);
+                    console.log(`[DAEMON] 🚀 Broadcasting V2 ZK Transaction to L1 Tempo...`);
+
+                    const currentNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
+                    tx = await this.shieldContractV2.executeShieldedPayout(
+                        proofArray,
+                        pubSignals,
+                        scaledAmountWei,
+                        { nonce: currentNonce, gasLimit: 3000000, type: 0 }
+                    );
+                } else {
+                    // ═══ V1 PATH: Legacy (backward compatible) ═══
+                    const { proofArray, pubSignals } = await this.generateZKProofV1(job.recipientWallet, scaledAmountWei.toString());
+
+                    console.log(`[DAEMON] 🚀 Broadcasting V1 ZK Transaction to L1 Tempo...`);
+                    const currentNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
+                    tx = await this.shieldContractV1.executeShieldedPayout(
+                        proofArray,
+                        pubSignals,
+                        scaledAmountWei,
+                        { nonce: currentNonce, gasLimit: 3000000, type: 0 }
+                    );
+                }
 
                 console.log(`[DAEMON] ⏳ TX Sent. Hash: ${tx.hash}. Waiting for block confirmation...`);
                 await tx.wait(1); 
@@ -152,19 +198,18 @@ class PayPolDaemon {
         }
     }
 
-    private async generateZKProof(recipient: string, amount: string) {
+    // ═══════════════════════════════════════════════════════════
+    // ZK PROOF GENERATION — V1 (Legacy: hardcoded adminSecret)
+    // ═══════════════════════════════════════════════════════════
+    private async generateZKProofV1(recipient: string, amount: string) {
         let cleanRecipient = recipient.toLowerCase().trim();
         if (cleanRecipient.includes('...') || cleanRecipient.length !== 42) {
             cleanRecipient = "0x0000000000000000000000000000000000000001";
         }
 
-        const adminSecretStr = "123456789"; 
+        const adminSecretStr = "123456789";
         const recipientBigIntStr = BigInt(cleanRecipient).toString();
-        
-        // ==============================================================
-        // 🌟 ZK CIRCUIT ASSERT (LINE 21) FIX
-        // Exactly matches the mathematical constraint: commitment === Poseidon(adminSecret)
-        // ==============================================================
+
         const poseidon = await buildPoseidon();
         const secretHash = poseidon([BigInt(adminSecretStr), BigInt(amount), BigInt(recipientBigIntStr)]);
         const commitmentStr = poseidon.F.toObject(secretHash).toString();
@@ -172,25 +217,21 @@ class PayPolDaemon {
         const circuitInputs = {
             commitment: commitmentStr,
             recipient: recipientBigIntStr,
-            amount: amount, 
+            amount: amount,
             adminSecret: adminSecretStr
         };
 
-        // services/daemon/ is 2 levels deep → go up 2 to reach project root
         const wasmPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield.wasm");
         const zkeyPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_final.zkey");
 
         if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
-            throw new Error(`ZK circuits not found. Looked at: ${wasmPath}`);
+            throw new Error(`ZK V1 circuits not found at: ${wasmPath}`);
         }
 
-        // TRUE CIRCOM CALCULATION
         const { proof, publicSignals } = await snarkjs.plonk.fullProve(circuitInputs, wasmPath, zkeyPath);
         const calldata = await snarkjs.plonk.exportSolidityCallData(proof, publicSignals);
-
         const calldataStr = String(calldata);
 
-        // snarkjs PLONK format: [proof_24_hex_fields][pub_signals] — two adjacent arrays, no separator
         const splitIndex = calldataStr.indexOf('][');
         if (splitIndex === -1) throw new Error("Invalid PLONK calldata format from snarkjs.");
 
@@ -198,6 +239,67 @@ class PayPolDaemon {
         const pubSignalsArray: string[] = JSON.parse(calldataStr.substring(splitIndex + 1));
 
         return { proofArray: proofArrayForContract, pubSignals: pubSignalsArray };
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ZK PROOF GENERATION — V2 (Random secrets + Nullifier)
+    // ═══════════════════════════════════════════════════════════
+    private async generateZKProofV2(recipient: string, amount: string) {
+        let cleanRecipient = recipient.toLowerCase().trim();
+        if (cleanRecipient.includes('...') || cleanRecipient.length !== 42) {
+            cleanRecipient = "0x0000000000000000000000000000000000000001";
+        }
+
+        const recipientBigIntStr = BigInt(cleanRecipient).toString();
+
+        // 🔐 Generate random secrets per payment (NOT hardcoded anymore)
+        const secret = generateRandomSecret();
+        const nullifier = generateRandomSecret();
+
+        const poseidon = await buildPoseidon();
+
+        // V2 Commitment: Poseidon(secret, nullifier, amount, recipient) — 4 inputs
+        const commitHash = poseidon([BigInt(secret), BigInt(nullifier), BigInt(amount), BigInt(recipientBigIntStr)]);
+        const commitment = poseidon.F.toObject(commitHash).toString();
+
+        // V2 NullifierHash: Poseidon(nullifier, secret) — 2 inputs
+        const nullHash = poseidon([BigInt(nullifier), BigInt(secret)]);
+        const nullifierHash = poseidon.F.toObject(nullHash).toString();
+
+        const circuitInputs = {
+            commitment,
+            nullifierHash,
+            recipient: recipientBigIntStr,
+            amount,
+            secret,
+            nullifier,
+        };
+
+        const wasmPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_v2.wasm");
+        const zkeyPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_v2_final.zkey");
+
+        if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
+            throw new Error(`ZK V2 circuits not found at: ${wasmPath}. Run: circom paypol_shield_v2.circom --r1cs --wasm && snarkjs plonk setup`);
+        }
+
+        const { proof, publicSignals } = await snarkjs.plonk.fullProve(circuitInputs, wasmPath, zkeyPath);
+        const calldata = await snarkjs.plonk.exportSolidityCallData(proof, publicSignals);
+        const calldataStr = String(calldata);
+
+        const splitIndex = calldataStr.indexOf('][');
+        if (splitIndex === -1) throw new Error("Invalid PLONK calldata format from snarkjs.");
+
+        const proofArrayForContract: string[] = JSON.parse(calldataStr.substring(0, splitIndex + 1));
+        const pubSignalsArray: string[] = JSON.parse(calldataStr.substring(splitIndex + 1));
+
+        return {
+            proofArray: proofArrayForContract,
+            pubSignals: pubSignalsArray,
+            secret,
+            nullifier,
+            commitment,
+            nullifierHash,
+        };
     }
 
     // ═══════════════════════════════════════════════════════════

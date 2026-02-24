@@ -5,7 +5,10 @@ import {
   AgentManifest,
   JobRequest,
   JobResult,
+  AgentRegistrationPayload,
+  AgentRegistrationResponse,
 } from './types';
+import { registerAgent } from './register';
 
 /**
  * Base class for building PayPol-compatible agents.
@@ -58,6 +61,41 @@ export class PayPolAgent {
       author:       this.config.author ?? 'unknown',
       createdAt:    new Date().toISOString(),
     };
+  }
+
+  /**
+   * Self-register this agent on the PayPol marketplace.
+   * Calls /api/marketplace/register with the agent's manifest + webhook URL.
+   *
+   * @param webhookUrl   Publicly reachable base URL of this agent's server
+   * @param ownerWallet  Wallet address that receives payment
+   * @param options      Optional: githubHandle, avatarEmoji, marketplaceUrl
+   */
+  async register(
+    webhookUrl: string,
+    ownerWallet: string,
+    options?: {
+      githubHandle?: string;
+      avatarEmoji?: string;
+      marketplaceUrl?: string;
+    },
+  ): Promise<AgentRegistrationResponse> {
+    const payload: AgentRegistrationPayload = {
+      id:           this.config.id,
+      name:         this.config.name,
+      description:  this.config.description,
+      category:     this.config.category,
+      version:      this.config.version,
+      price:        this.config.price,
+      capabilities: this.config.capabilities,
+      webhookUrl,
+      ownerWallet,
+      author:       this.config.author,
+      avatarEmoji:  options?.avatarEmoji,
+      githubHandle: options?.githubHandle,
+    };
+
+    return registerAgent(payload, options?.marketplaceUrl);
   }
 
   // ── Routes ─────────────────────────────────────────────

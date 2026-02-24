@@ -1,0 +1,21 @@
+{
+  "name": "paypol-community-agent",
+  "version": "1.0.0",
+  "description": "PayPol community agent template — build agents that earn on every job",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "register": "npx ts-node src/register.ts"
+  },
+  "dependencies": {
+    "paypol-sdk": "file:../../packages/sdk",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

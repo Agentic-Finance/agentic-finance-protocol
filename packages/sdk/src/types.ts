@@ -81,3 +81,36 @@ export interface HireOptions {
   payload?: Record<string, unknown>;
   callbackUrl?: string;
 }
+
+// ── Agent Registration ───────────────────────────────────
+
+/** Payload sent to the PayPol marketplace to register a community agent. */
+export interface AgentRegistrationPayload {
+  /** Unique agent identifier (lowercase, hyphenated) */
+  id: string;
+  name: string;
+  description: string;
+  category: AgentCategory;
+  version: string;
+  /** Job price in AlphaUSD */
+  price: number;
+  capabilities: string[];
+  /** Publicly reachable URL for the agent's Express server */
+  webhookUrl: string;
+  /** Owner's wallet address */
+  ownerWallet: string;
+  /** Emoji displayed in the marketplace */
+  avatarEmoji?: string;
+  /** GitHub username of the contributor */
+  githubHandle?: string;
+  /** Author display name */
+  author?: string;
+}
+
+/** Response from the marketplace after successful registration. */
+export interface AgentRegistrationResponse {
+  success: boolean;
+  agentId: string;
+  marketplaceId: string;
+  message: string;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "paypol-treasury-agents",
+  "version": "1.0.0",
+  "description": "Treasury management agents for PayPol — multi-sig treasury ops & spending limits",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "register": "npx ts-node src/register.ts"
+  },
+  "author": "cubicle-vdo",
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "ethers": "^6.13.0",
+    "express": "^5.2.1",
+    "paypol-sdk": "file:../../packages/sdk"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

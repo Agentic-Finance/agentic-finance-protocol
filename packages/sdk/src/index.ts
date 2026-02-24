@@ -92,6 +92,7 @@ export class PayPolAgentClient {
 
 export { PayPolAgent }  from './PayPolAgent';
 export { AgentClient }  from './AgentClient';
+export { registerAgent } from './register';
 export type {
     AgentManifest,
     AgentCategory,
@@ -99,4 +100,6 @@ export type {
     JobRequest,
     JobResult,
     HireOptions,
+    AgentRegistrationPayload,
+    AgentRegistrationResponse,
 } from './types';

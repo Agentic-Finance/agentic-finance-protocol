@@ -101,6 +101,7 @@ model MarketplaceAgent {
   responseTime  Int      @default(30) // avg seconds
   source        String   @default("native")  // native | community | eliza | crewai | langchain | olas
   sourceUrl     String?                       // GitHub repo or framework docs URL
+  githubHandle  String?                       // Contributor's GitHub username (for community agents)
   createdAt     DateTime @default(now())
   jobs          AgentJob[]
   reviews       AgentReview[]
@@ -129,6 +130,20 @@ model AgentJob {
   createdAt       DateTime  @default(now())
   completedAt     DateTime?
   reviews         AgentReview[]
+
+  // ── A2A (Agent-to-Agent) Fields ──
+  parentJobId     String?   // Points to parent AgentJob.id for A2A chains
+  parentAgentId   String?   // Which agent spawned this sub-task (e.g. "coordinator")
+  a2aChainId      String?   // Groups all jobs in the same A2A chain
+  depth           Int       @default(0) // Recursion depth in A2A chain
+
+  // ── AI Proof Fields ──
+  planHash        String?   // keccak256 of agent's planned approach
+  resultHash      String?   // keccak256 of actual result
+  commitmentId    String?   // On-chain AIProofRegistry commitment ID
+  commitTxHash    String?   // TX hash of on-chain commitment
+  verifyTxHash    String?   // TX hash of on-chain verification
+  proofMatched    Boolean?  // Did planHash match resultHash?
 }
 
 // Post-job reviews and ratings

@@ -31,6 +31,10 @@
  *   - defi-insurance        → DeFi insurance coverage
  *   - contract-deploy-pro   → Production contract deployment
  *
+ * WAVE 3 (On-Chain Execution — Real Tempo L1 Transactions):
+ *   - escrow-manager        → NexusV2 escrow lifecycle (create/settle/refund)
+ *   - shield-executor       → ZK-SNARK shielded payments via ShieldVault
+ *
  * Routes:
  *   GET  /agents                       → list all agent manifests
  *   GET  /agents/:id                   → single agent manifest
@@ -70,7 +74,17 @@ import * as vestingPlanner     from './agents/vesting-planner';
 import * as defiInsurance      from './agents/defi-insurance';
 import * as contractDeployPro  from './agents/contract-deploy-pro';
 
-import { AgentDescriptor, AgentHandler, JobRequest } from './types';
+// Wave 3: On-Chain Execution Agents (real transactions on Tempo L1)
+import * as escrowManager      from './agents/escrow-manager';
+import * as shieldExecutor     from './agents/shield-executor';
+
+// Wave 4: A2A (Agent-to-Agent) Coordination
+import * as coordinatorAgent   from './agents/coordinator-agent';
+
+// Wave 5: Benchmark & Analytics
+import * as tempoBenchmark     from './agents/tempo-benchmark';
+
+import { AgentDescriptor, AgentHandler, JobRequest, A2AJobRequest } from './types';
 
 // ── Registry ──────────────────────────────────────────────
 
@@ -101,6 +115,13 @@ const registry = new Map<string, { manifest: AgentDescriptor; handler: AgentHand
   [vestingPlanner.manifest.id,     { manifest: vestingPlanner.manifest,     handler: vestingPlanner.handler     }],
   [defiInsurance.manifest.id,      { manifest: defiInsurance.manifest,      handler: defiInsurance.handler      }],
   [contractDeployPro.manifest.id,  { manifest: contractDeployPro.manifest,  handler: contractDeployPro.handler  }],
+  // Wave 3: On-Chain Execution
+  [escrowManager.manifest.id,     { manifest: escrowManager.manifest,     handler: escrowManager.handler     }],
+  [shieldExecutor.manifest.id,    { manifest: shieldExecutor.manifest,    handler: shieldExecutor.handler    }],
+  // Wave 4: A2A Coordination
+  [coordinatorAgent.manifest.id,  { manifest: coordinatorAgent.manifest,  handler: coordinatorAgent.handler  }],
+  // Wave 5: Benchmark
+  [tempoBenchmark.manifest.id,    { manifest: tempoBenchmark.manifest,    handler: tempoBenchmark.handler    }],
 ]);
 
 // ── Server ────────────────────────────────────────────────
@@ -153,6 +174,56 @@ app.post('/agents/:id/execute', async (req, res) => {
       error:           err.message ?? String(err),
       executionTimeMs: 0,
       timestamp:       Date.now(),
+    });
+  }
+});
+
+// POST /agents/:id/a2a-execute — A2A sub-task execution with parent tracking
+app.post('/agents/:id/a2a-execute', async (req, res) => {
+  const entry = registry.get(req.params.id);
+  if (!entry) return res.status(404).json({ error: `Agent '${req.params.id}' not found` });
+
+  const a2aJob: A2AJobRequest = {
+    jobId:            req.body.jobId        ?? crypto.randomUUID(),
+    agentId:          req.params.id,
+    prompt:           req.body.prompt       ?? '',
+    payload:          req.body.payload,
+    callerWallet:     req.body.callerWallet ?? '',
+    timestamp:        Date.now(),
+    parentJobId:      req.body.parentJobId,
+    parentAgentId:    req.body.parentAgentId,
+    a2aChainId:       req.body.a2aChainId   ?? `chain-${Date.now()}`,
+    depth:            req.body.depth         ?? 0,
+    budgetAllocation: req.body.budgetAllocation ?? 0,
+  };
+
+  console.log(`[agents] A2A execute: ${req.params.id} (parent: ${a2aJob.parentAgentId}, chain: ${a2aJob.a2aChainId}, depth: ${a2aJob.depth})`);
+
+  try {
+    const result = await entry.handler(a2aJob);
+    res.json({
+      ...result,
+      _a2a: {
+        parentJobId: a2aJob.parentJobId,
+        parentAgentId: a2aJob.parentAgentId,
+        a2aChainId: a2aJob.a2aChainId,
+        depth: a2aJob.depth,
+      },
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      jobId:           a2aJob.jobId,
+      agentId:         req.params.id,
+      status:          'error',
+      error:           err.message ?? String(err),
+      executionTimeMs: 0,
+      timestamp:       Date.now(),
+      _a2a: {
+        parentJobId: a2aJob.parentJobId,
+        parentAgentId: a2aJob.parentAgentId,
+        a2aChainId: a2aJob.a2aChainId,
+        depth: a2aJob.depth,
+      },
     });
   }
 });

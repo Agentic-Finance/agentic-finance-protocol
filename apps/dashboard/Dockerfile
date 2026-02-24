@@ -61,12 +61,12 @@ COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/prisma ./prisma
 
-# Ensure data directory writable
-RUN chown -R nextjs:nodejs /app
+# Make startup script executable + ensure writable
+RUN chmod +x ./prisma/start.sh && chown -R nextjs:nodejs /app
 
 USER nextjs
 
 EXPOSE 3000
 
-# Migrate PostgreSQL schema, seed agents if empty, then start standalone server
-CMD ["sh", "-c", "node_modules/.bin/prisma db push --skip-generate 2>/dev/null; node prisma/seed.js 2>/dev/null; node server.js"]
+# Startup: wait for PostgreSQL, migrate schema, seed agents, start server
+CMD ["./prisma/start.sh"]

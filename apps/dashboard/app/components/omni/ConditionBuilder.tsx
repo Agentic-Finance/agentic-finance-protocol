@@ -150,7 +150,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                 <button
                                     key={idx}
                                     onClick={() => applyPreset(preset)}
-                                    className="group text-left p-3.5 rounded-xl bg-[#0A0D14]/60 border border-white/5 hover:border-amber-500/25 hover:bg-amber-500/[0.04] transition-all duration-200"
+                                    className="group text-left p-3.5 rounded-xl bg-[#141924]/60 border border-white/5 hover:border-amber-500/25 hover:bg-amber-500/[0.04] transition-all duration-200"
                                 >
                                     <div className="flex items-start gap-2.5">
                                         <span className="text-lg shrink-0 mt-0.5">{preset.icon}</span>
@@ -191,7 +191,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                     </div>
                                 )}
 
-                                <div className="flex flex-wrap items-center gap-2 p-3.5 rounded-xl bg-[#0A0D14]/80 border border-white/5 hover:border-amber-500/10 transition-colors">
+                                <div className="flex flex-wrap items-center gap-2 p-3.5 rounded-xl bg-[#141924]/80 border border-white/5 hover:border-amber-500/10 transition-colors">
                                     {/* Condition number */}
                                     <span className="text-[9px] font-black text-amber-500/40 w-5 shrink-0">#{idx + 1}</span>
 

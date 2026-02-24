@@ -15,8 +15,8 @@ function ActiveAgents(props: ActiveAgentsProps) {
             <div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-fuchsia-400/80 rounded-tr-xl z-10 pointer-events-none"></div>
             <div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-fuchsia-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#0B0F17]/90 shadow-inner backdrop-blur-3xl overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/10 blur-[80px] pointer-events-none"></div>
+            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
+                <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, rgba(217,70,239,0.1) 0%, transparent 70%)' }}></div>
                 <div className="flex items-center justify-between mb-6 border-b border-white/[0.05] pb-6 relative z-10">
                     <h2 className="text-2xl font-bold text-white flex items-center gap-3"><span className="p-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl shadow-[0_0_15px_rgba(217,70,239,0.2)]">🤖</span>Active Agents</h2>
                     <span className="px-4 py-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl text-sm font-bold border border-fuchsia-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)]">{props.autopilotRules.length} Online</span>

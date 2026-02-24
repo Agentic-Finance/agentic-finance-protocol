@@ -349,7 +349,7 @@ function EscrowTracker({ walletAddress }: EscrowTrackerProps) {
             {/* Gradient glow border */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-emerald-500/20 via-teal-500/10 to-emerald-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-6 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#0B0F17]/95 shadow-inner backdrop-blur-3xl overflow-hidden">
+            <div className="p-6 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
                 {/* Header */}
                 <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-5">
                     <h3 className="text-lg font-bold text-white flex items-center gap-2.5">

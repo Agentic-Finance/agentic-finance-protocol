@@ -86,8 +86,8 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
     if (!isOpen) return null;
 
     return createPortal(
-        <div style={{ zIndex: 2147483647 }} className="fixed inset-0 flex items-center justify-center bg-[#07090E]/85 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#0B0F17] border border-cyan-500/20 shadow-[0_0_100px_rgba(6,182,212,0.08)] rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 relative">
+        <div style={{ zIndex: 2147483647, background: 'rgba(15,19,25,0.88)' }} className="fixed inset-0 flex items-center justify-center animate-in fade-in duration-200">
+            <div className="bg-[#151B27] border border-cyan-500/20 shadow-[0_0_100px_rgba(6,182,212,0.08)] rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 relative">
                 {/* Close */}
                 <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-rose-400 transition-colors">
                     <XMarkIcon className="w-6 h-6" />

@@ -33,7 +33,7 @@ function IntentCards({
                     : (intent.name.charAt(0).toUpperCase() || '?');
 
                 return (
-                    <div key={i} className="relative min-w-[340px] p-5 rounded-2xl border backdrop-blur-xl flex flex-col bg-[#061214]/90 border-emerald-500/40 shadow-lg">
+                    <div key={i} className="relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 border-emerald-500/40 shadow-lg">
                         <div className="text-[10px] font-bold mb-4 tracking-widest flex items-center gap-2 uppercase text-emerald-500">
                             <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-emerald-500"></span>
                             Target Locked

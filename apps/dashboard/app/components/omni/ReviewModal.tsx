@@ -46,8 +46,8 @@ function ReviewModal({ isOpen, agentName, jobId, agentId, onClose, onSubmitted }
     const displayRating = hoveredRating || rating;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-            <div className="bg-[#0B0F17] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center animate-in fade-in duration-200" style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.60) 100%)' }} onClick={onClose}>
+            <div className="bg-[#151B27] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300" onClick={(e) => e.stopPropagation()}>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-white font-bold text-lg">Rate {agentName}</h3>

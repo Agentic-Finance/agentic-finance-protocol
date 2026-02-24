@@ -172,11 +172,11 @@ export default function PayPolAdminPage() {
     const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
-        <div className="min-h-screen bg-[#06080C] text-slate-200 font-sans flex">
+        <div className="min-h-screen bg-[#0F1319] text-slate-200 font-sans flex">
             {/* ════════════════════════════════════════════ */}
             {/* SIDEBAR                                      */}
             {/* ════════════════════════════════════════════ */}
-            <aside className={`fixed top-0 left-0 h-screen bg-[#0A0D14] border-r border-white/[0.06] z-50 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'}`}>
+            <aside className={`fixed top-0 left-0 h-screen bg-[#141924] border-r border-white/[0.06] z-50 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'}`}>
                 {/* Logo */}
                 <div className={`h-20 flex items-center border-b border-white/[0.06] px-5 ${sidebarCollapsed ? 'justify-center' : ''}`}>
                     {sidebarCollapsed ? (
@@ -258,7 +258,7 @@ export default function PayPolAdminPage() {
             {/* ════════════════════════════════════════════ */}
             <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-[72px]' : 'ml-[260px]'}`}>
                 {/* Top Bar */}
-                <header className="h-20 border-b border-white/[0.06] bg-[#06080C]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
+                <header className="h-20 border-b border-white/[0.06] bg-[#0F1319]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
                     <div>
                         <h1 className="text-lg font-bold text-white">
                             {activeSection === 'overview' && 'Command Center'}
@@ -320,7 +320,7 @@ export default function PayPolAdminPage() {
                             {/* Quick Actions Row */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                                 {/* Recent Activity */}
-                                <div className="lg:col-span-2 bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-6">
+                                <div className="lg:col-span-2 bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
                                     <div className="flex items-center justify-between mb-5">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <ClockIcon className="w-4 h-4 text-indigo-400" />
@@ -369,7 +369,7 @@ export default function PayPolAdminPage() {
                                 </div>
 
                                 {/* Conditional Rules Summary */}
-                                <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-6">
+                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
                                     <div className="flex items-center justify-between mb-5">
                                         <h3 className="text-sm font-bold text-white flex items-center gap-2">
                                             <BoltIcon className="w-4 h-4 text-amber-400" />
@@ -410,7 +410,7 @@ export default function PayPolAdminPage() {
                             </div>
 
                             {/* Workspace Info */}
-                            <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-6">
+                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
                                 <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
                                     <UsersIcon className="w-4 h-4 text-fuchsia-400" />
                                     Registered Workspaces
@@ -467,7 +467,7 @@ export default function PayPolAdminPage() {
 
                             {/* Rules Table */}
                             {rules.length === 0 ? (
-                                <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-12 text-center">
+                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
                                     <BoltIcon className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
                                     <h3 className="text-lg font-bold text-white mb-2">No Conditional Rules Yet</h3>
                                     <p className="text-sm text-slate-500 max-w-md mx-auto">
@@ -478,7 +478,7 @@ export default function PayPolAdminPage() {
                             ) : (
                                 <div className="space-y-4">
                                     {rules.map(rule => (
-                                        <div key={rule.id} className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-6 hover:border-amber-500/15 transition-all">
+                                        <div key={rule.id} className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6 hover:border-amber-500/15 transition-all">
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -522,7 +522,7 @@ export default function PayPolAdminPage() {
                                                         {idx > 0 && (
                                                             <span className="text-[9px] font-black text-amber-500/50 self-center px-1">{rule.conditionLogic}</span>
                                                         )}
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#06080C] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0F1319] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
                                                             <span className="text-amber-400/70">{cond.type}</span>
                                                             <span className="text-slate-600">|</span>
                                                             {cond.param && <span>{cond.param}</span>}
@@ -603,13 +603,13 @@ export default function PayPolAdminPage() {
                             </div>
 
                             {transactions.length === 0 ? (
-                                <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-12 text-center">
+                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
                                     <ClockIcon className="w-12 h-12 text-indigo-500/30 mx-auto mb-4" />
                                     <h3 className="text-lg font-bold text-white mb-2">No Transactions</h3>
                                     <p className="text-sm text-slate-500">Transactions will appear here once payrolls are deployed.</p>
                                 </div>
                             ) : (
-                                <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl overflow-hidden">
+                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl overflow-hidden">
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b border-white/[0.06] bg-white/[0.01]">
@@ -663,7 +663,7 @@ export default function PayPolAdminPage() {
                             </div>
 
                             {/* API Endpoints */}
-                            <div className="bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-6">
+                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
                                 <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
                                     <ServerStackIcon className="w-4 h-4 text-indigo-400" />
                                     API Endpoints
@@ -717,7 +717,7 @@ function KpiCard({ title, value, subtitle, icon, accent }: {
     };
     const c = colors[accent];
     return (
-        <div className={`bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-5 ${c.glow} hover:border-white/[0.1] transition-all`}>
+        <div className={`bg-[#141924] border border-white/[0.06] rounded-2xl p-5 ${c.glow} hover:border-white/[0.1] transition-all`}>
             <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{title}</span>
                 <div className={`w-9 h-9 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center ${c.text}`}>
@@ -743,7 +743,7 @@ function SystemCard({ title, status, detail, icon }: {
     };
     const s = statusConfig[status];
     return (
-        <div className={`bg-[#0A0D14] border border-white/[0.06] rounded-2xl p-5 hover:border-white/[0.1] transition-all`}>
+        <div className={`bg-[#141924] border border-white/[0.06] rounded-2xl p-5 hover:border-white/[0.1] transition-all`}>
             <div className="flex items-center gap-3 mb-4">
                 <div className={`w-10 h-10 rounded-xl ${s.bg} border ${s.border} flex items-center justify-center ${s.color}`}>
                     {icon}

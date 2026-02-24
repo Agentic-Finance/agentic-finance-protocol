@@ -17,7 +17,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
             {/* Ambient Background Glow */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-indigo-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
             
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#0B0F17]/95 shadow-inner backdrop-blur-3xl overflow-hidden min-h-[500px]">
+            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[500px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
                 
                 {/* Header Section */}
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-center border-b border-white/10 pb-6 mb-6 gap-4">

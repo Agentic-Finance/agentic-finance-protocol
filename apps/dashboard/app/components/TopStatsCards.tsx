@@ -28,7 +28,7 @@ function TopStatsCards(props: TopStatsProps) {
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-emerald-500/40 to-teal-500/10 rounded-[1.4rem] opacity-70 blur-[2px] pointer-events-none group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-emerald-400/80 rounded-tl-lg z-10 pointer-events-none"></div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-emerald-400/80 rounded-br-lg z-10 pointer-events-none"></div>
-                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 bg-[#0B0F17]/90 shadow-inner backdrop-blur-xl h-full">
+                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 shadow-inner h-full" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">📊</div>
                         <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20 tracking-widest">GLOBAL</span>
@@ -43,7 +43,7 @@ function TopStatsCards(props: TopStatsProps) {
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-cyan-500/40 to-blue-500/10 rounded-[1.4rem] opacity-70 blur-[2px] pointer-events-none group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-cyan-400/80 rounded-tl-lg z-10 pointer-events-none"></div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-cyan-400/80 rounded-br-lg z-10 pointer-events-none"></div>
-                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 bg-[#0B0F17]/90 shadow-inner backdrop-blur-xl h-full">
+                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 shadow-inner h-full" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.2)]">🏦</div>
                         <select value={props.activeVaultToken.symbol} onChange={(e) => props.setActiveVaultToken(props.SUPPORTED_TOKENS.find((t: any) => t.symbol === e.target.value))} className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/30 outline-none cursor-pointer hover:bg-cyan-500/20 transition-colors">
@@ -74,7 +74,7 @@ function TopStatsCards(props: TopStatsProps) {
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-fuchsia-500/40 to-purple-500/10 rounded-[1.4rem] opacity-70 blur-[2px] pointer-events-none group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-fuchsia-400/80 rounded-tl-lg z-10 pointer-events-none"></div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-fuchsia-400/80 rounded-br-lg z-10 pointer-events-none"></div>
-                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 bg-[#0B0F17]/90 shadow-inner backdrop-blur-xl h-full">
+                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 shadow-inner h-full" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 flex items-center justify-center text-fuchsia-400 border border-fuchsia-500/20 shadow-[0_0_10px_rgba(217,70,239,0.2)]">🤖</div>
                         <span className="text-[10px] font-mono text-fuchsia-400 bg-fuchsia-500/10 px-2 py-1 rounded border border-fuchsia-500/20 tracking-widest">AUTOPILOT</span>
@@ -89,7 +89,7 @@ function TopStatsCards(props: TopStatsProps) {
                 <div className={`absolute -inset-[1px] bg-gradient-to-r rounded-[1.4rem] opacity-70 blur-[2px] pointer-events-none group-hover:opacity-100 transition-opacity ${props.agentStatus === 'ACTIVE' ? 'from-amber-500/40 to-orange-500/10' : 'from-rose-500/40 to-red-500/10'}`}></div>
                 <div className={`absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 rounded-tl-lg z-10 pointer-events-none ${props.agentStatus === 'ACTIVE' ? 'border-amber-400/80' : 'border-rose-400/80'}`}></div>
                 <div className={`absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 rounded-br-lg z-10 pointer-events-none ${props.agentStatus === 'ACTIVE' ? 'border-amber-400/80' : 'border-rose-400/80'}`}></div>
-                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 bg-[#0B0F17]/90 shadow-inner backdrop-blur-xl h-full">
+                <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 shadow-inner h-full" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                     <div className="flex justify-between items-start mb-4">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-[0_0_10px_rgba(0,0,0,0.2)] ${props.agentStatus === 'ACTIVE' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
                             {props.agentStatus === 'ACTIVE' ? '⚡' : '⏸'}

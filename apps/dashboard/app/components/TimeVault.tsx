@@ -20,7 +20,7 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
             {/* Background ambient glows */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-cyan-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#0B0F17]/95 shadow-inner backdrop-blur-3xl overflow-hidden min-h-[400px]">
+            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[400px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
 
                 {/* Header */}
                 <div className="flex justify-between items-center border-b border-white/10 pb-5 mb-6">
@@ -51,7 +51,7 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
                             const isZK = batch.isShielded;
 
                             return (
-                                <div key={batch.id || idx} className={`p-5 rounded-2xl border backdrop-blur-md relative overflow-hidden transition-all duration-500 ${isZK ? 'bg-[#1a0b1f]/80 border-fuchsia-500/30 shadow-[0_0_30px_rgba(217,70,239,0.05)]' : 'bg-[#0b131f]/80 border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.05)]'}`}>
+                                <div key={batch.id || idx} className={`p-5 rounded-2xl border relative overflow-hidden transition-all duration-500 ${isZK ? 'border-fuchsia-500/30 shadow-[0_0_30px_rgba(217,70,239,0.05)]' : 'border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.05)]'}`} style={{ background: isZK ? 'radial-gradient(ellipse at top, rgba(26,11,31,0.85) 0%, rgba(26,11,31,0.80) 100%)' : 'radial-gradient(ellipse at top, rgba(11,19,31,0.85) 0%, rgba(11,19,31,0.80) 100%)' }}>
 
                                     {/* Top Progress Bar */}
                                     <div className="absolute top-0 left-0 h-1.5 w-full bg-black/50">

@@ -135,10 +135,10 @@ export default function Dashboard({ onBack }: { onBack: () => void }) {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#05080C', color: '#e2e8f0', fontFamily: 'sans-serif', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#0F1319', color: '#e2e8f0', fontFamily: 'sans-serif', display: 'flex', flexDirection: 'column' }}>
             
             {/* Header */}
-            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0A0D14' }}>
+            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#141924' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                     <button onClick={onBack} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.9rem' }}>
                         <ArrowLeftOnRectangleIcon style={{ width: '20px', height: '20px' }} /> Back to Dashboard
@@ -170,7 +170,7 @@ export default function Dashboard({ onBack }: { onBack: () => void }) {
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#fff', margin: 0 }}>Define Intent</h2>
                     
-                    <div style={{ backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px' }}>
+                    <div style={{ backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
                             <div>
                                 <label style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '8px', display: 'block', fontWeight: 'bold' }}>Job Intention (Natural Language)</label>
@@ -226,7 +226,7 @@ export default function Dashboard({ onBack }: { onBack: () => void }) {
                 </div>
 
                 {/* Right: Terminal */}
-                <div style={{ flex: 1.5, backgroundColor: '#0A0D14', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <div style={{ flex: 1.5, backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                     <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#05070A' }}>
                         <span style={{ fontSize: '0.9rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}><CommandLineIcon style={{ width: '20px', height: '20px' }} /> On-Chain Execution Logs</span>
                         {step === 3 && <span className="animate-fade-in-up" style={{ color: '#10b981', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckBadgeIcon style={{ width: '16px', height: '16px'}} /> SETTLED</span>}

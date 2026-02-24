@@ -27,8 +27,8 @@ interface GatewayProps {
 export default function GatewayScreen(props: GatewayProps) {
     if (props.currentWorkspace === null && props.walletAddress) {
         return (
-            <div className="min-h-screen bg-[#07090E] flex flex-col items-center justify-center relative overflow-hidden font-sans">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none mix-blend-screen"></div>
+            <div className="min-h-screen bg-[#0F1319] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
 
                 <div className="relative z-10 w-full max-w-2xl px-8">
                     <div className="text-center mb-10">
@@ -37,7 +37,7 @@ export default function GatewayScreen(props: GatewayProps) {
                         <p className="text-slate-400 text-sm">Welcome to PayPol. Please select your operational protocol.</p>
                     </div>
 
-                    <div className="bg-[#11141D]/80 border border-white/[0.08] rounded-3xl p-8 shadow-2xl backdrop-blur-xl transition-all duration-300">
+                    <div className="bg-[#151B27]/95 border border-white/[0.08] rounded-3xl p-8 shadow-2xl transition-all duration-300">
                         {props.gatewayMode === 'Select' && (
                             <div className="animate-in fade-in zoom-in-95">
                                 <div className="grid grid-cols-2 gap-5 mb-6">
@@ -157,8 +157,8 @@ export default function GatewayScreen(props: GatewayProps) {
     // Connect Screen
     if (props.currentWorkspace === undefined && props.walletAddress === null) {
         return (
-            <div className="min-h-screen bg-[#07090E] flex flex-col items-center justify-center relative overflow-hidden font-sans">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none mix-blend-screen"></div>
+            <div className="min-h-screen bg-[#0F1319] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
                 <div className="relative z-10 text-center w-full px-8">
                     <div className="flex justify-center items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
                         <Image src="/logo.png" alt="PayPol Logo" width={448} height={112} className="h-20 md:h-28 w-auto object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.4)] mx-auto" priority />
@@ -167,7 +167,7 @@ export default function GatewayScreen(props: GatewayProps) {
                         The Financial OS for the Agentic Economy.
                     </p>
                     <div className="flex justify-center">
-                        <button onClick={props.connectWallet} className="px-12 py-6 bg-white/[0.05] hover:bg-white/[0.1] text-white text-xl font-bold rounded-3xl transition-all duration-300 border border-white/[0.1] shadow-2xl backdrop-blur-md hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] hover:-translate-y-1 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+                        <button onClick={props.connectWallet} className="px-12 py-6 bg-white/[0.05] hover:bg-white/[0.1] text-white text-xl font-bold rounded-3xl transition-all duration-300 border border-white/[0.1] shadow-2xl hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] hover:-translate-y-1 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
                             Connect Web3 Wallet →
                         </button>
                     </div>

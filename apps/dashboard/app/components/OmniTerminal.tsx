@@ -436,7 +436,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             )}
 
             <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700">
-                <div className={`bg-[#0A0D14]/90 rounded-3xl backdrop-blur-3xl relative overflow-visible group transition-all duration-700 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
+                <div className={`rounded-3xl relative overflow-visible group transition-all duration-700 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''}`} style={{ background: 'radial-gradient(ellipse at top, rgba(10,13,20,0.95) 0%, rgba(10,13,20,0.90) 100%)' }} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
                     <div className={`absolute -inset-[1px] bg-gradient-to-r ${themeGlow} rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none transition-all duration-700`}></div>
                     <div className={`absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 ${themeBorder} rounded-tl-xl z-10 pointer-events-none`}></div>
@@ -444,7 +444,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     <div className={`absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 ${themeBorder} rounded-tr-xl z-10 pointer-events-none`}></div>
                     <div className={`absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 ${themeBorder} rounded-bl-xl z-10 pointer-events-none`}></div>
 
-                    <div className="p-6 md:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#0B0F17]/90 shadow-inner">
+                    <div className="p-6 md:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#151B27]/90 shadow-inner">
 
                         {/* Header */}
                         <div className="flex flex-wrap justify-between items-center mb-6 gap-4 border-b border-white/[0.05] pb-4">
@@ -520,7 +520,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                         {/* Chat Answer (Payroll) */}
                         {chatAnswer && (
-                            <div className="mt-4 p-5 rounded-2xl bg-indigo-900/10 border border-indigo-500/30 backdrop-blur-xl animate-in fade-in slide-in-from-top-4">
+                            <div className="mt-4 p-5 rounded-2xl border border-indigo-500/30 animate-in fade-in slide-in-from-top-4" style={{ background: 'radial-gradient(ellipse at top, rgba(49,46,129,0.12) 0%, rgba(21,27,39,0.95) 100%)' }}>
                                 <div className="text-slate-200 font-sans text-lg leading-relaxed whitespace-pre-wrap">{chatAnswer}</div>
                             </div>
                         )}

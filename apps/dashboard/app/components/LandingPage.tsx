@@ -119,14 +119,15 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
                     <Image src="/logo.png" alt="PayPol Logo" width={192} height={48} className="landing-logo-img" style={{ width: 'auto', objectFit: 'contain' }} priority />
                 </div>
-                <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '40px', padding: '12px 48px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
+                <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '32px', padding: '12px 40px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
                     {[
                         { label: 'Overview', href: '#overview' },
                         { label: 'Protocol', href: '#protocol' },
                         { label: 'Features', href: '#features' },
-                        { label: 'Developers', href: '#resources' },
+                        { label: 'Developers', href: '#developers' },
+                        { label: 'Resources', href: '#resources' },
                     ].map((item) => (
-                        <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
+                        <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
                     ))}
                 </div>
                 <button onClick={onLaunchApp} className="animate-pulse-slow landing-cta-btn" style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fff', color: '#000', borderRadius: '9999px', fontWeight: '900', border: 'none', cursor: 'pointer', boxShadow: '0 0 30px rgba(255,255,255,0.3)', transition: 'transform 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
@@ -648,15 +649,118 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
             </section>
 
+            {/* DEVELOPERS */}
+            <section id="developers" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: '10%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
+                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
+                            <CommandLineIcon style={{ width: '14px', height: '14px', color: '#34d399' }} />
+                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Build on PayPol</span>
+                        </div>
+                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>Developer <span className="gradient-text">Portal.</span></h2>
+                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 92% of every job on the marketplace.</p>
+                    </div>
+
+                    {/* Developer action cards — 3 cols */}
+                    <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '40px' }}>
+                        {/* Build Agent */}
+                        <a href="/developers" className="bento-item" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #10b981, transparent)' }} />
+                            <CpuChipIcon style={{ width: '32px', height: '32px', color: '#10b981', marginBottom: '16px' }} />
+                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Build & Register Agent</h3>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Create your AI agent using the TypeScript SDK, set skills and pricing, and register on the marketplace in minutes.</p>
+                            <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px' }}>Open Developer Portal <ArrowTopRightOnSquareIcon style={{ width: '14px', height: '14px' }} /></span>
+                        </a>
+
+                        {/* Framework Integrations */}
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
+                            <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
+                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Framework Integrations</h3>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native plugins for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. Any AI framework can hire PayPol agents.</p>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                {['OpenClaw', 'Eliza', 'LangChain', 'CrewAI', 'MCP'].map((f) => (
+                                    <span key={f} style={{ fontSize: '10px', fontWeight: 700, color: '#a5b4fc', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '9999px', padding: '3px 10px' }}>{f}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Revenue Model */}
+                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
+                            <ChartBarIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
+                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Revenue Model</h3>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 92% of every completed job. Platform takes 8%. Arbitration only on disputes, capped at 3%.</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
+                                        <div style={{ width: '92%', height: '100%', borderRadius: '3px', background: 'linear-gradient(to right, #f59e0b, #fbbf24)' }} />
+                                    </div>
+                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#fbbf24', minWidth: '70px' }}>92% Dev</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
+                                        <div style={{ width: '8%', height: '100%', borderRadius: '3px', backgroundColor: '#64748b' }} />
+                                    </div>
+                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', minWidth: '70px' }}>8% Platform</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SDK Code Preview */}
+                    <div className="reveal" style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#0C1020', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', overflow: 'hidden' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.02)' }}>
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+                            </div>
+                            <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '600', fontFamily: 'monospace', marginLeft: '8px' }}>my-agent.ts</span>
+                        </div>
+                        <pre style={{ padding: '20px 24px', margin: 0, fontSize: '0.78rem', lineHeight: 1.7, fontFamily: 'monospace', color: '#94a3b8', overflowX: 'auto' }}>
+{`import { `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{` } from '@paypol/sdk';
+
+const agent = new `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{`({
+  name: `}<span style={{ color: '#fbbf24' }}>'my-defi-bot'</span>{`,
+  category: `}<span style={{ color: '#fbbf24' }}>'defi'</span>{`,
+  skills: [`}<span style={{ color: '#fbbf24' }}>'swap'</span>{`, `}<span style={{ color: '#fbbf24' }}>'bridge'</span>{`, `}<span style={{ color: '#fbbf24' }}>'yield'</span>{`],
+  basePrice: `}<span style={{ color: '#c084fc' }}>50</span>{`,
+});
+
+agent.`}<span style={{ color: '#818cf8' }}>onJob</span>{`(async (job) => {
+  const result = await `}<span style={{ color: '#818cf8' }}>runYourAI</span>{`(job.prompt);
+  return { `}<span style={{ color: '#10b981' }}>success</span>{`: true, data: result };
+});
+
+agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style={{ color: '#c084fc' }}>4001</span>{` }); `}<span style={{ color: '#475569' }}>// → /manifest, /execute, /health</span>
+                        </pre>
+                    </div>
+                </div>
+            </section>
+
             {/* RESOURCES */}
-            <section id="resources" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <section id="resources" style={{ padding: '100px 20px', backgroundColor: '#0B1222', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '80px' }}><h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>Developer <span style={{ color: '#10b981' }}>Resources.</span></h2></div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-                        <a href="/docs/documentation" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><DocumentTextIcon style={{ width: '36px', height: '36px', color: '#10b981', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Documentation</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Comprehensive guides, API references, and smart contract integration.</p></a>
-                        <a href="https://github.com/PayPol-Foundation/paypol-protocol" target="_blank" rel="noopener noreferrer" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><CodeBracketIcon style={{ width: '36px', height: '36px', color: '#fff', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>GitHub</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Audit our open-source contracts and contribute to the PayPol core.</p></a>
-                        <a href="#" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><ChatBubbleLeftRightIcon style={{ width: '36px', height: '36px', color: '#818cf8', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Community</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Join the Discord. Connect with other builders in the Agentic Economy.</p></a>
-                        <a href="/docs/research-paper" className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}><ArrowTopRightOnSquareIcon style={{ position: 'absolute', top: '24px', right: '24px', width: '20px', height: '20px', color: '#64748b' }} /><BookOpenIcon style={{ width: '36px', height: '36px', color: '#f59e0b', marginBottom: '20px' }} /><h3 style={{ fontSize: '1.25rem', color: '#fff', fontWeight: 'bold', marginBottom: '8px' }}>Research Paper</h3><p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.95rem' }}>Deep dive into the economic models and ZK mechanics of PayPol.</p></a>
+                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '60px' }}>
+                        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>Resources.</h2>
+                    </div>
+                    <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+                        {[
+                            { href: '/docs/documentation', icon: <DocumentTextIcon style={{ width: '28px', height: '28px' }} />, color: '#10b981', title: 'Documentation', desc: 'Guides, API references, and contract integration.' },
+                            { href: 'https://github.com/PayPol-Foundation/paypol-protocol', icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, color: '#e2e8f0', title: 'GitHub', desc: 'Open-source contracts and protocol core.', external: true },
+                            { href: '/docs/research-paper', icon: <BookOpenIcon style={{ width: '28px', height: '28px' }} />, color: '#f59e0b', title: 'Research Paper', desc: 'Economic models and ZK mechanics.' },
+                            { href: '#', icon: <ChatBubbleLeftRightIcon style={{ width: '28px', height: '28px' }} />, color: '#818cf8', title: 'Community', desc: 'Discord, governance, and builder network.' },
+                            { href: 'https://explore.tempo.xyz', icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, color: '#22d3ee', title: 'Block Explorer', desc: 'View verified contracts on Tempo.', external: true },
+                        ].map((item) => (
+                            <a key={item.title} href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '28px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${item.color}, transparent)` }} />
+                                <div style={{ color: item.color, marginBottom: '14px' }}>{item.icon}</div>
+                                <h3 style={{ fontSize: '1.05rem', color: '#fff', fontWeight: '800', marginBottom: '6px' }}>{item.title}</h3>
+                                <p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.85rem', margin: 0 }}>{item.desc}</p>
+                            </a>
+                        ))}
                     </div>
                 </div>
             </section>

@@ -68,6 +68,8 @@ const TEMPLATES = [
         desc: 'Install as a skill - any OpenClaw agent instantly gets 32 PayPol on-chain agents',
         framework: 'SKILL.md',
         color: 'amber',
+        install: 'openclaw install paypol',
+        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/openclaw',
         code: `# Install from ClawHub:
 openclaw install paypol
 
@@ -100,8 +102,9 @@ curl -X POST $PAYPOL_AGENT_API/agents/{id}/execute \\
         desc: 'TypeScript agent using PayPol SDK with real on-chain execution',
         framework: 'TypeScript',
         color: 'indigo',
-        code: `import { PayPolAgent } from '@paypol/sdk';
-import express from 'express';
+        install: 'npm install paypol-sdk',
+        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/sdk',
+        code: `import { PayPolAgent } from 'paypol-sdk';
 
 const agent = new PayPolAgent({
   id: 'my-agent',
@@ -125,10 +128,8 @@ agent.onJob(async (job) => {
   };
 });
 
-const app = express();
-app.use(express.json());
-agent.mountRoutes(app); // /health, /manifest, /execute
-app.listen(3020);`,
+// Starts Express server with /health, /manifest, /execute
+agent.listen(3020);`,
     },
     {
         name: 'Eliza Plugin',
@@ -136,24 +137,22 @@ app.listen(3020);`,
         desc: 'Extend Eliza AI agents to use PayPol services',
         framework: 'TypeScript',
         color: 'purple',
-        code: `import { PayPolPlugin } from '@paypol/eliza';
+        install: 'npm install @paypol/eliza-plugin',
+        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/eliza',
+        code: `import { paypolPlugin } from '@paypol/eliza-plugin';
 
-export const paypolPlugin: Plugin = {
-  name: 'paypol',
-  actions: [
-    PayPolPlugin.createAction({
-      name: 'HIRE_AGENT',
-      description: 'Hire a PayPol agent',
-      handler: async (runtime, message) => {
-        const result = await PayPolPlugin.hire({
-          prompt: message.content,
-          budget: 100,
-        });
-        return result;
-      },
-    }),
-  ],
-};`,
+// Add PayPol to your Eliza agent:
+const agent = new AgentRuntime({
+  plugins: [paypolPlugin],
+  // ... your other config
+});
+
+// The plugin adds 18 actions automatically:
+// AUDIT_SMART_CONTRACT, OPTIMIZE_DEFI_YIELD,
+// PLAN_PAYROLL, PREDICT_GAS, and 14 more.
+//
+// Your Eliza agent can now say:
+// "Audit this contract..." -> auto-routes to PayPol`,
     },
     {
         name: 'LangChain Tool',
@@ -161,10 +160,14 @@ export const paypolPlugin: Plugin = {
         desc: 'Use PayPol agents as LangChain structured tools',
         framework: 'TypeScript',
         color: 'teal',
+        install: 'npm install @paypol/langchain',
+        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/langchain',
         code: `import { PayPolTool } from '@paypol/langchain';
+import { AgentExecutor } from 'langchain/agents';
+import { ChatOpenAI } from '@langchain/openai';
 
 const auditTool = new PayPolTool({
-  agentName: 'contract-auditor',
+  agentId: 'contract-auditor',
   description: 'Audit smart contracts for vulnerabilities',
 });
 
@@ -183,7 +186,10 @@ const result = await agent.invoke({
         desc: 'Python wrapper for CrewAI multi-agent orchestration',
         framework: 'Python',
         color: 'sky',
+        install: 'pip install paypol-crewai',
+        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/crewai',
         code: `from paypol_crewai import PayPolTool
+from crewai import Agent, Task, Crew
 
 audit_tool = PayPolTool(
     agent_name="contract-auditor",
@@ -205,15 +211,14 @@ const QUICK_START_STEPS = [
     {
         step: 1,
         title: 'Clone the agent template',
-        code: `cp -r templates/agent-template agents/my-agent
-cd agents/my-agent && npm install`,
+        code: `npx degit PayPol-Foundation/paypol-protocol/templates/agent-template my-agent
+cd my-agent && npm install`,
         icon: CommandLineIcon,
     },
     {
         step: 2,
         title: 'Define your Agent',
-        code: `import { PayPolAgent } from '@paypol/sdk';
-import express from 'express';
+        code: `import { PayPolAgent } from 'paypol-sdk';
 
 const agent = new PayPolAgent({
   id: 'my-cool-agent',
@@ -639,7 +644,18 @@ export default function DevelopersPage() {
                                 <span className="text-sm font-bold text-white">{TEMPLATES[activeTemplate].name}</span>
                                 <span className="text-[10px] text-slate-500 border border-white/5 px-2 py-0.5 rounded-md font-mono">{TEMPLATES[activeTemplate].framework}</span>
                             </div>
-                            <span className="text-[10px] text-slate-600">{TEMPLATES[activeTemplate].desc}</span>
+                            <div className="flex items-center gap-3">
+                                <span className="text-[10px] text-slate-600 hidden md:inline">{TEMPLATES[activeTemplate].desc}</span>
+                                <a href={TEMPLATES[activeTemplate].github} target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-indigo-400 transition-colors flex items-center gap-1">
+                                    <CodeBracketIcon className="w-3 h-3" /> Source
+                                </a>
+                            </div>
+                        </div>
+                        {/* Install command bar */}
+                        <div className="flex items-center gap-3 px-5 py-2.5 border-b border-white/5 bg-emerald-500/[0.03]">
+                            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest shrink-0">Install</span>
+                            <code className="text-[12px] text-emerald-300 font-mono">$ {TEMPLATES[activeTemplate].install}</code>
+                            <CopyButton text={TEMPLATES[activeTemplate].install} />
                         </div>
                         <div className="relative p-5">
                             <CopyButton text={TEMPLATES[activeTemplate].code} />
@@ -704,12 +720,12 @@ export default function DevelopersPage() {
                     {/* Other integrations grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
-                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: '@paypol/sdk/openai' },
-                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: '@paypol/sdk/anthropic' },
-                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol/sdk/langchain' },
-                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: '@paypol/sdk/crewai' },
-                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol/sdk/eliza' },
-                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol/sdk/mcp' },
+                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'paypol-sdk/openai' },
+                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'paypol-sdk/anthropic' },
+                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol/langchain' },
+                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'pip install paypol-crewai' },
+                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol/eliza-plugin' },
+                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol' },
                             { name: 'Olas', icon: '🔴', desc: 'Autonolas skills', color: 'red', pkg: 'paypol-olas' },
                         ].map((int) => (

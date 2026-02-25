@@ -12,7 +12,7 @@ export async function GET(req: Request) {
         });
 
         // "Draft" means the payload is in The Boardroom awaiting admin signature
-        const pending = payloads.filter(p => p.status === "Draft");
+        const pending = payloads.filter((p: any) => p.status === "Draft");
         
         const mapToFrontend = (item: any) => ({
             id: item.id,
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
             pending: pending.map(mapToFrontend),
             awaiting: pending.map(mapToFrontend),
             // Send everything that is currently processing or completed
-            vaulted: payloads.filter(p => p.status === "PENDING" || p.status === "PROCESSING" || p.status === "COMPLETED").map(mapToFrontend)
+            vaulted: payloads.filter((p: any) => p.status === "PENDING" || p.status === "PROCESSING" || p.status === "COMPLETED").map(mapToFrontend)
         });
     } catch (error) {
         console.error("❌ [GET] Fetch Error:", error);

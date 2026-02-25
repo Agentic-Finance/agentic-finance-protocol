@@ -13,7 +13,7 @@ export async function GET() {
         });
 
         // Parse JSON fields for frontend consumption
-        const parsed = rules.map(rule => ({
+        const parsed = rules.map((rule: any) => ({
             ...rule,
             recipients: JSON.parse(rule.recipients),
             conditions: JSON.parse(rule.conditions),

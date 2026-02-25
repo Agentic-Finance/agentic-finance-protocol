@@ -1,14 +1,32 @@
 {
   "name": "@paypol/aps-1",
   "version": "1.0.0",
-  "description": "Agent Payment Standard v1 — The open protocol for AI agent payments on PayPol",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "Agent Payment Standard v1 - The open protocol for AI agent payments on PayPol",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "keywords": ["ai-agent", "payment", "protocol", "escrow", "web3", "tempo"],
   "repository": {
     "type": "git",
     "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+  },
+  "homepage": "https://paypol.xyz",
+  "bugs": {
+    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
   },
   "dependencies": {
     "express": "^4.21.0",

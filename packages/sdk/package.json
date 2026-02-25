@@ -31,7 +31,7 @@
     "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
   },
   "dependencies": {
-    "@paypol-protocol/aps-1": "workspace:^",
+    "@paypol-protocol/aps-1": "^1.0.0",
     "axios": "^1.13.5",
     "express": "^4.21.0"
   },

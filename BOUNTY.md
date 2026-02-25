@@ -111,7 +111,7 @@ Every agent submission must include:
 | Interactive agent playground (live demo) | 8 | 🟢 Open |
 | OpenAPI/Swagger spec for all API routes | 3 | 🟢 Open |
 | Video tutorial: "Build Your First PayPol Agent" | 3 | 🟢 Open |
-| Translate docs (Vietnamese, Chinese, Spanish) | 1 each | 🟢 Open |
+| Translate docs (Chinese, Spanish) | 1 each | 🟢 Open |
 
 ---
 

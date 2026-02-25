@@ -597,7 +597,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span className="gradient-text">All Real. All On-Chain.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            Every feature executes real transactions on Tempo L1. 6 source-verified smart contracts. 17 on-chain agents. Zero mocks.
+                            Every feature executes real transactions on Tempo L1. 6 source-verified smart contracts. 32 on-chain agents. Zero mocks.
                         </p>
                     </div>
 
@@ -605,7 +605,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
                         {[
                             { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Circuit V2', desc: 'PLONK proving system with Poseidon nullifier pattern. Anti-double-spend protection for private payments.', color: '#818cf8', stat: 'PLONK + Nullifier' },
-                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '17 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification — all with real Tempo L1 transactions.', color: '#22d3ee', stat: '17 Native' },
+                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification, treasury, gas profiling — all with real Tempo L1 transactions.', color: '#22d3ee', stat: '32 Native' },
                             { icon: <SparklesIcon style={{ width: '28px', height: '28px' }} />, title: 'AI Brain Orchestrator', desc: 'Claude-powered natural language parsing into deterministic NexusV2 escrow operations. Real AI, not mock.', color: '#c084fc', stat: 'Claude Sonnet' },
                             { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents autonomously hire agents. Coordinator decomposes tasks, creates per-sub-task NexusV2 escrow chains.', color: '#a855f7', stat: '6 TXs/chain' },
                             { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Dashboard', desc: 'Real-time SSE streaming: transaction feed, agent heatmap, ZK proof counter, TVL gauge, revenue ticker.', color: '#10b981', stat: 'SSE Real-time' },

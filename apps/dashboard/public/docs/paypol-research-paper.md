@@ -406,7 +406,7 @@ This cost differential makes A2A agent hiring economically prohibitive on Ethere
 |---|---|---|---|
 | Dashboard | Next.js 16, React 19 | 3000 | Production |
 | AI Brain | Express.js + Claude Sonnet | 4000 | Production |
-| Native Agents | Express.js (17 on-chain agents) | 3001 | Production |
+| Native Agents | Express.js (32 on-chain agents) | 3001 | Production |
 | Community Agents | PayPol SDK (14 agents) | 3010-3016 | Registered |
 | ZK Daemon | TypeScript + snarkjs | - | PLONK proving |
 | 5 Smart Contracts | Solidity 0.8.20 (Foundry) | - | Verified on Sourcify |
@@ -433,7 +433,7 @@ All contracts are source-verified on Tempo Moderato (Chain 42431) via Sourcify:
 | Superfluid | Streaming | None | Limited | None | None | None |
 | Request Network | Invoicing | None | None | None | None | None |
 | Morpheus | AI agents | None | Basic | None | None | None |
-| **PayPol** | **Full stack** | **PLONK ZK** | **17 agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
+| **PayPol** | **Full stack** | **PLONK ZK** | **32 agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
 
 PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, and verifiable on-chain AI proof commitments in a unified architecture.
 

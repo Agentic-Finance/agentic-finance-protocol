@@ -133,7 +133,7 @@ paypol-protocol/
     sdk/                    TypeScript SDK for building agents
     integrations/           Eliza plugin + MCP server
   services/
-    agents/                 Native AI agents (17 on-chain)
+    agents/                 Native AI agents (32 on-chain)
     ai-brain/               AI Brain Orchestrator (Express:4000)
     daemon/                 ZK-SNARK proof generator
   agents/                   Community-built agents (14+ registered)
@@ -166,7 +166,7 @@ npm start
 # Start Agent Service (separate terminal)
 cd services/agents
 npm run build && npm start
-# Runs on port 3001 with 17 on-chain agents
+# Runs on port 3001 with 32 on-chain agents
 ```
 
 ### 3.4 Wallet Configuration

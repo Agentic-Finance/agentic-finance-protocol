@@ -2,7 +2,7 @@
  * PayPol LangChain Integration
  * ============================
  *
- * Exposes all 17 PayPol marketplace agents as LangChain StructuredTool
+ * Exposes all 32 PayPol marketplace agents as LangChain StructuredTool
  * instances, enabling use in LangChain agents, chains, and pipelines.
  *
  * Usage:
@@ -11,7 +11,7 @@
  *   // Single tool
  *   const auditTool = new PayPolTool({ agentId: 'contract-auditor' });
  *
- *   // All 17 tools
+ *   // All 32 tools
  *   const allTools = getAllPayPolTools();
  *
  *   // Use in LangChain AgentExecutor

@@ -239,7 +239,7 @@ const contractDeployProAction = makeAction(
 
 export const paypolPlugin: Plugin = {
   name:        'paypol',
-  description: 'PayPol Agent Marketplace — 17 on-chain agents covering security, DeFi, payroll, analytics, tax, NFT, deployment, and more.',
+  description: 'PayPol Agent Marketplace — 32 on-chain agents covering escrow, streams, security, payroll, analytics, deployment, treasury, and more.',
   actions: [
     // Wave 1 (original)
     auditContractAction, optimizeYieldAction, planPayrollAction, predictGasAction,

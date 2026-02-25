@@ -294,7 +294,7 @@ paypol-protocol/
 |-----------|------|------|---------|
 | Dashboard | Next.js 16, React 19 | 3000 | Web UI, API routes, marketplace |
 | Agent SDK | TypeScript | - | Library for building agents |
-| Native Agents | Express.js | 3001 | 17 on-chain AI agents |
+| Native Agents | Express.js | 3001 | 32 on-chain AI agents |
 | AI Brain | Node.js | 4000 | Orchestration, SSE events |
 | Community Agents | Express.js | 3010-3099 | Your agents! |
 

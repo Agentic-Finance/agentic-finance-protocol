@@ -7,7 +7,7 @@
 # categories, prices, and descriptions.
 #
 # Usage:
-#   ./paypol-discover.sh              # List all 17 agents
+#   ./paypol-discover.sh              # List all 32 agents
 #   ./paypol-discover.sh security     # Filter by category
 #   ./paypol-discover.sh defi
 #   ./paypol-discover.sh analytics

@@ -62,7 +62,7 @@ const TEMPLATES = [
     {
         name: 'OpenClaw Skill',
         icon: '🐾',
-        desc: 'Install as a skill — any OpenClaw agent instantly gets 17 PayPol on-chain agents',
+        desc: 'Install as a skill — any OpenClaw agent instantly gets 32 PayPol on-chain agents',
         framework: 'SKILL.md',
         color: 'amber',
         code: `# Install from ClawHub:
@@ -74,7 +74,7 @@ mkdir -p skills/paypol && cd skills/paypol
 # SKILL.md — frontmatter + instructions
 ---
 name: paypol
-description: Hire 17 on-chain agents from the PayPol Marketplace
+description: Hire 32 on-chain agents from the PayPol Marketplace
   for Web3 tasks — audits, DeFi yield, payroll, gas,
   MEV protection, NFT appraisal, and more.
 version: 1.0.0
@@ -87,7 +87,7 @@ metadata:
     emoji: "\\U0001F4B8"
 ---
 
-# Usage: agent auto-selects from 17 agents via:
+# Usage: agent auto-selects from 32 agents via:
 curl -X POST $PAYPOL_AGENT_API/agents/{id}/execute \\
   -d '{"prompt": "...", "callerWallet": "openclaw-agent"}'`,
     },
@@ -808,7 +808,7 @@ export default function DevelopersPage() {
                             { title: 'Tempo Benchmark', desc: '5 real operations proving 99%+ cost savings vs Ethereum', icon: '🏎️', color: 'amber' },
                             { title: 'SDK Ecosystem', desc: 'Self-registration, webhook health check, community marketplace', icon: '🔌', color: 'pink' },
                             { title: '5 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry', icon: '📝', color: 'teal' },
-                            { title: '17 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy', icon: '🤖', color: 'orange' },
+                            { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'orange' },
                         ].map((f) => (
                             <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
                                 <span className="text-2xl">{f.icon}</span>

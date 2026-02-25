@@ -1,5 +1,5 @@
 /**
- * Gas Profiler Agent — Individual operation gas cost profiling
+ * Gas Profiler Agent - Individual operation gas cost profiling
  *
  * Profiles gas cost of a single operation type on Tempo L1.
  * Useful for understanding the cost of specific contract interactions.

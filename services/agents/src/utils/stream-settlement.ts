@@ -1,5 +1,5 @@
 /**
- * Stream Settlement Utility — On-Chain Progressive Milestone Escrow
+ * Stream Settlement Utility - On-Chain Progressive Milestone Escrow
  *
  * Wraps PayPolStreamV1 contract interactions. Clients lock budgets,
  * agents submit milestones with AI proofs, clients approve/reject,

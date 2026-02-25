@@ -1,5 +1,5 @@
 /**
- * Agent Router — Maps parsed intents to available agents
+ * Agent Router - Maps parsed intents to available agents
  *
  * Responsibilities:
  * - Discover available agents from the agents service
@@ -105,7 +105,7 @@ export class AgentRouter {
         payload,
         callerWallet: callerWallet || '',
       }, {
-        timeout: 120_000, // 2 minutes — agents can take time (ZK proof gen, etc.)
+        timeout: 120_000, // 2 minutes - agents can take time (ZK proof gen, etc.)
       });
 
       console.log(`[router] Agent '${agentId}' returned: ${res.data.status} (${res.data.executionTimeMs}ms)`);

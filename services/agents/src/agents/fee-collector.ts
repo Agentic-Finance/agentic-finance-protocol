@@ -1,5 +1,5 @@
 /**
- * Fee Collector Agent — Platform fee withdrawal from PayPol contracts
+ * Fee Collector Agent - Platform fee withdrawal from PayPol contracts
  *
  * Collects accumulated platform fees from NexusV2, MultisendV2,
  * and StreamV1 contracts. Admin-only operation.

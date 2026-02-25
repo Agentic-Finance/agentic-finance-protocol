@@ -1,5 +1,5 @@
 /**
- * Multisend Batch Agent — Batch token transfers via MultisendVaultV2
+ * Multisend Batch Agent - Batch token transfers via MultisendVaultV2
  *
  * Execute batch payments to multiple recipients in a single transaction.
  * Deposits funds into MultisendV2 vault, then executes a public batch.
@@ -127,7 +127,7 @@ export const handler: AgentHandler = async (job) => {
     const provider = getProvider();
     const wallet = getWallet();
 
-    console.log(`[multisend-batch] Phase 2: Batch payment — ${recipients.length} recipients, ${totalAmount} AlphaUSD total...`);
+    console.log(`[multisend-batch] Phase 2: Batch payment - ${recipients.length} recipients, ${totalAmount} AlphaUSD total...`);
 
     // Step 1: Approve MultisendV2
     const approvalTx = await ensureApproval(DEFAULT_TOKEN.address, CONTRACTS.MULTISEND_V2, totalWei);

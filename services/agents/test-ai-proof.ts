@@ -1,5 +1,5 @@
 /**
- * Test AI Proof System — commit, verify, and mismatch scenarios
+ * Test AI Proof System - commit, verify, and mismatch scenarios
  */
 
 import 'dotenv/config';

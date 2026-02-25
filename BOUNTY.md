@@ -1,6 +1,6 @@
 # PayPol Open Contributor Program
 
-> PayPol is an early-stage, community-driven protocol. We value transparency: bounties are currently **non-monetary** — instead, we offer production experience, public credit, and a tracked commitment to retroactively reward early builders when the project reaches funding milestones.
+> PayPol is an early-stage, community-driven protocol. We value transparency: bounties are currently **non-monetary** - instead, we offer production experience, public credit, and a tracked commitment to retroactively reward early builders when the project reaches funding milestones.
 >
 > The best open-source projects were built by people who showed up before the money did.
 
@@ -9,13 +9,13 @@
 ## Why Contribute (Without Getting Paid Yet)
 
 ### 1. Your code ships to production
-PayPol has **9 verified smart contracts** on Tempo L1, a live dashboard at [paypol.xyz](https://paypol.xyz), and 32 agents in the marketplace. Your contribution goes live — not into a side project graveyard.
+PayPol has **9 verified smart contracts** on Tempo L1, a live dashboard at [paypol.xyz](https://paypol.xyz), and 32 agents in the marketplace. Your contribution goes live - not into a side project graveyard.
 
 ### 2. Portfolio proof
 Every merged PR is a public, verifiable record. Smart contract work is verified on-chain via Sourcify. Agent work is deployed and callable. Recruiters can see it. Investors can see it.
 
 ### 3. Early Builder Equity
-We maintain a **Contributor Ledger** (below). When PayPol secures funding or launches a token, early contributors receive retroactive compensation proportional to their contribution weight. This is not a vague promise — it's tracked, timestamped, and public.
+We maintain a **Contributor Ledger** (below). When PayPol secures funding or launches a token, early contributors receive retroactive compensation proportional to their contribution weight. This is not a vague promise - it's tracked, timestamped, and public.
 
 ### 4. Architecture influence
 Active contributors get invited to architecture discussions, roadmap input, and co-authorship on protocol decisions. Your opinion shapes the protocol.
@@ -31,7 +31,7 @@ Active contributors get invited to architecture discussions, roadmap input, and 
 ## How It Works
 
 1. **Pick a task** from the tables below (or propose your own)
-2. **Comment on the GitHub Issue** — say what you plan to build and your estimated timeline
+2. **Comment on the GitHub Issue** - say what you plan to build and your estimated timeline
 3. **Submit a PR** that meets the acceptance criteria
 4. **Get reviewed** within 48 hours
 5. **Get merged** → added to Contributor Ledger with weight points
@@ -63,10 +63,10 @@ Build agents that run on the PayPol marketplace. Each agent becomes a permanent 
 | [#4](https://github.com/PayPol-Foundation/paypol-protocol/issues/4) | Airdrop Distribution Agent | DeFi | 3 | 🔄 In Review |
 | [#7](https://github.com/PayPol-Foundation/paypol-protocol/issues/7) | Gas Estimation Agent (Multi-chain) | Analytics | 3 | 🟢 Open |
 | [#10](https://github.com/PayPol-Foundation/paypol-protocol/issues/10) | Portfolio Rebalancer | DeFi | 5 | 🟢 Open |
-| — | DAO Treasury Reporter | DeFi | 5 | 🟢 Open |
-| — | Liquidation Monitor | Security | 5 | 🟢 Open |
-| — | Smart Contract Fuzzer | Security | 8 | 🟢 Open |
-| — | Cross-chain Arbitrage Scanner | DeFi | 8 | 🟢 Open |
+| - | DAO Treasury Reporter | DeFi | 5 | 🟢 Open |
+| - | Liquidation Monitor | Security | 5 | 🟢 Open |
+| - | Smart Contract Fuzzer | Security | 8 | 🟢 Open |
+| - | Cross-chain Arbitrage Scanner | DeFi | 8 | 🟢 Open |
 
 ### Agent Requirements
 

@@ -5,7 +5,7 @@ import { notify } from '../../../lib/notify';
 export const dynamic = 'force-dynamic';
 
 /**
- * POST /api/stream/cancel — Cancel a stream and refund unreleased funds
+ * POST /api/stream/cancel - Cancel a stream and refund unreleased funds
  *
  * Body: { streamJobId: string, cancelTxHash?: string }
  */

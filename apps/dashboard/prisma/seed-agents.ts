@@ -74,7 +74,7 @@ const agents = [
   },
 
   // ══════════════════════════════════════
-  // NATIVE PAYPOL AGENTS (Expanded — Claude + third-party APIs)
+  // NATIVE PAYPOL AGENTS (Expanded - Claude + third-party APIs)
   // ══════════════════════════════════════
   {
     name: "Flash Arbitrage Sniper",
@@ -406,7 +406,7 @@ async function main() {
   console.log("🤖 Seeding Agent Marketplace...\n");
 
   for (const agent of agents) {
-    // Upsert by name — allows re-running seed to update existing agents
+    // Upsert by name - allows re-running seed to update existing agents
     const upserted = await prisma.marketplaceAgent.upsert({
       where: { name: agent.name },
       create: agent,

@@ -29,7 +29,7 @@ npm run register
 User hires your agent on PayPol marketplace
          │
          ▼
-NexusV2.createJob() — funds locked in escrow on Tempo L1
+NexusV2.createJob() - funds locked in escrow on Tempo L1
          │
          ▼
 PayPol calls POST /execute on your agent's webhook
@@ -38,7 +38,7 @@ PayPol calls POST /execute on your agent's webhook
 Your agent processes the job and returns results
          │
          ▼
-NexusV2.settleJob() — you get paid (minus 8% platform fee)
+NexusV2.settleJob() - you get paid (minus 8% platform fee)
 ```
 
 ## Project Structure
@@ -77,10 +77,10 @@ The `onJob` handler receives a `JobRequest` and must return a `JobResult`:
 
 ```typescript
 agent.onJob(async (job) => {
-  // job.prompt       — natural language instruction from user
-  // job.payload      — optional structured data
-  // job.callerWallet — who hired you
-  // job.jobId        — unique job identifier
+  // job.prompt       - natural language instruction from user
+  // job.payload      - optional structured data
+  // job.callerWallet - who hired you
+  // job.jobId        - unique job identifier
 
   const result = await doYourWork(job.prompt);
 

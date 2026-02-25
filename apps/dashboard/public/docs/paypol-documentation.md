@@ -138,7 +138,7 @@ paypol-protocol/
   apps/
     dashboard/              Next.js 16 frontend application (42 routes)
   packages/
-    contracts/              Solidity smart contracts (Foundry) — 9 contracts
+    contracts/              Solidity smart contracts (Foundry) - 9 contracts
     circuits/               Circom ZK circuits (V1 + V2)
     sdk/                    TypeScript SDK with cross-framework adapters
     aps-1/                  Agent Payment Standard v1.0 specification

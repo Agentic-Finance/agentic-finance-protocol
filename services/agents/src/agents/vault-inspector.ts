@@ -1,5 +1,5 @@
 /**
- * Vault Inspector Agent — ShieldVaultV2 state inspection
+ * Vault Inspector Agent - ShieldVaultV2 state inspection
  *
  * Inspect ShieldVaultV2 deposit states, commitment registrations,
  * nullifier usage, and payout history. Deep on-chain analysis.

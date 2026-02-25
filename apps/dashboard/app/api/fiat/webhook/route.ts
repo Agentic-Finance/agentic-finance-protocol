@@ -1,5 +1,5 @@
 /**
- * POST /api/fiat/webhook — Stripe Webhook Handler
+ * POST /api/fiat/webhook - Stripe Webhook Handler
  *
  * Processes Stripe webhook events:
  *   - checkout.session.completed → transfer stablecoin → create escrow
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          console.log(`[fiat/webhook] Transferred ${payment.amountUSD} ${FIAT_CONFIG.defaultToken} to ${payment.userWallet} — tx: ${txHash}`);
+          console.log(`[fiat/webhook] Transferred ${payment.amountUSD} ${FIAT_CONFIG.defaultToken} to ${payment.userWallet} - tx: ${txHash}`);
         } catch (transferErr: any) {
           console.error(`[fiat/webhook] Transfer failed:`, transferErr);
           await prisma.fiatPayment.update({

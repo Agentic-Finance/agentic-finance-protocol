@@ -334,7 +334,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                         disabled={loading === 'cancel'}
                         className="text-[11px] font-bold px-4 py-2 rounded-lg bg-red-500/[0.07] text-red-400/80 border border-red-500/15 hover:bg-red-500/15 transition-colors disabled:opacity-50 w-full"
                     >
-                        {loading === 'cancel' ? 'Cancelling...' : `Cancel Stream — Refund $${(stream.totalBudget - stream.releasedAmount).toFixed(2)}`}
+                        {loading === 'cancel' ? 'Cancelling...' : `Cancel Stream - Refund $${(stream.totalBudget - stream.releasedAmount).toFixed(2)}`}
                     </button>
                 </div>
             )}

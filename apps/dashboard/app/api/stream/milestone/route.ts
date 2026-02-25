@@ -5,7 +5,7 @@ import { notify } from '../../../lib/notify';
 export const dynamic = 'force-dynamic';
 
 /**
- * POST /api/stream/milestone — Submit, Approve, or Reject a milestone
+ * POST /api/stream/milestone - Submit, Approve, or Reject a milestone
  *
  * Body: {
  *   action: 'submit' | 'approve' | 'reject',

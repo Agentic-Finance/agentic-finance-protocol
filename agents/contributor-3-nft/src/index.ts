@@ -3,8 +3,8 @@
  * Author: @Malcer
  *
  * Two agents:
- *   1. nft-minter         — Batch mint NFTs with metadata on Tempo L1
- *   2. collection-deployer — Deploy ERC-721 collections on Tempo
+ *   1. nft-minter         - Batch mint NFTs with metadata on Tempo L1
+ *   2. collection-deployer - Deploy ERC-721 collections on Tempo
  */
 
 import 'dotenv/config';
@@ -166,4 +166,4 @@ const route = (agent: any, id: string) => {
 route(nftMinter, 'nft-minter');
 route(collectionDeployer, 'collection-deployer');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['nft-minter', 'collection-deployer'] }));
-app.listen(PORT, () => console.log(`[contributor-3] NFT agents on port ${PORT} — @Malcer`));
+app.listen(PORT, () => console.log(`[contributor-3] NFT agents on port ${PORT} - @Malcer`));

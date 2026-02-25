@@ -1,5 +1,5 @@
 /**
- * State Tracker — Job state machine & request logging
+ * State Tracker - Job state machine & request logging
  *
  * Tracks all orchestrator requests, their workflows, and execution history.
  * In production, this would use Prisma/PostgreSQL. For now, in-memory with

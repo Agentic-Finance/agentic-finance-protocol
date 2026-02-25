@@ -1,4 +1,4 @@
-# PayPol Protocol — Slither Static Analysis Report
+# PayPol Protocol - Slither Static Analysis Report
 
 **Date:** February 25, 2026
 **Tool:** Slither v0.11.4 (Trail of Bits)
@@ -15,7 +15,7 @@
 | **High** | 31 | **3** | 28 |
 | **Medium** | 5 | **3** | 2 |
 | **Low** | 65 | ~15 | ~50 |
-| **Informational** | 403 | — | — |
+| **Informational** | 403 | - | - |
 | **Optimization** | 9 | 9 | 0 |
 
 ### Verdicts
@@ -35,17 +35,17 @@
 | 2 | PayPolShieldVaultV2 | 8 | Token interaction | ~120 |
 | 3 | PayPolMultisendVaultV2 | 12 | Token interaction | ~180 |
 | 4 | PlonkVerifierV2 | 23 | Assembly (ZK) | ~750 |
-| 5 | AIProofRegistry | 7 | — | ~180 |
+| 5 | AIProofRegistry | 7 | - | ~180 |
 | 6 | PayPolStreamV1 | 30 | Token interaction | ~350 |
 | 7 | ReputationRegistry | 12 | Complex code | ~200 |
 | 8 | SecurityDepositVault | 13 | Token interaction | ~180 |
 | 9 | PlonkVerifier | 23 | Assembly (ZK) | ~700 |
-| — | AgentRegistry | 27 | Send/Receive ETH | ~200 |
-| — | AgentWallet | 8 | Send/Receive ETH | ~110 |
-| — | PayPolMultisendVault (V1) | 13 | — | ~150 |
-| — | PayPolShieldVault (V1) | 3 | Token interaction | ~50 |
-| — | SimpleERC20 | 4 | ERC20 | ~30 |
-| — | MockUltraVerifier | 1 | — | ~10 |
+| - | AgentRegistry | 27 | Send/Receive ETH | ~200 |
+| - | AgentWallet | 8 | Send/Receive ETH | ~110 |
+| - | PayPolMultisendVault (V1) | 13 | - | ~150 |
+| - | PayPolShieldVault (V1) | 3 | Token interaction | ~50 |
+| - | SimpleERC20 | 4 | ERC20 | ~30 |
+| - | MockUltraVerifier | 1 | - | ~10 |
 
 **Total:** 21 contracts, 2,726 SLOC analyzed
 
@@ -57,14 +57,14 @@
 **Detector:** `unchecked-transfer`
 **Severity:** High
 **Contract:** `SecurityDepositVault.sol`
-**Status:** ✅ Fixed — SafeERC20 applied (commit TBD)
+**Status:** ✅ Fixed - SafeERC20 applied (commit TBD)
 
 **Description:**
 Three functions in `SecurityDepositVault` do not check the return value of ERC-20 `transfer` and `transferFrom` calls:
 
-1. `deposit()` — Line 96: `IERC20(token).transferFrom(msg.sender, address(this), _amount)`
-2. `withdraw()` — Line 127: `IERC20(token).transfer(msg.sender, _amount)`
-3. `insurancePayout()` — Line 174: `IERC20(token).transfer(_claimant, _amount)`
+1. `deposit()` - Line 96: `IERC20(token).transferFrom(msg.sender, address(this), _amount)`
+2. `withdraw()` - Line 127: `IERC20(token).transfer(msg.sender, _amount)`
+3. `insurancePayout()` - Line 174: `IERC20(token).transfer(_claimant, _amount)`
 
 **Impact:** If the token returns `false` instead of reverting on failure, the contract state would update without actual token movement. On Tempo Moderato Testnet with AlphaUSD (which reverts on failure), this is not exploitable, but it would be dangerous with non-standard ERC-20 tokens.
 
@@ -81,9 +81,9 @@ using SafeERC20 for IERC20;
 
 ---
 
-### H-02: False Positives — PlonkVerifier Assembly Returns (28 findings)
+### H-02: False Positives - PlonkVerifier Assembly Returns (28 findings)
 **Detector:** `incorrect-return`
-**Severity:** Reported as High — **Actually False Positive**
+**Severity:** Reported as High - **Actually False Positive**
 **Contracts:** `PlonkVerifier.sol`, `PlonkVerifierV2.sol`
 
 **Description:**
@@ -112,9 +112,9 @@ The `commit()` function uses strict equality checks:
 require(commitments[commitmentHash].commitBlock == 0, "Already committed");
 ```
 
-**Impact:** Low — this is a standard pattern for checking if a mapping entry exists. The use of `== 0` to check for non-existence is correct in this context.
+**Impact:** Low - this is a standard pattern for checking if a mapping entry exists. The use of `== 0` to check for non-existence is correct in this context.
 
-**Status:** Acknowledged — intentional pattern, no fix needed.
+**Status:** Acknowledged - intentional pattern, no fix needed.
 
 > **Note (M-02):** PayPolStreamV1 now uses SafeERC20 for all token operations. Combined with the existing `nonReentrant` modifier, reentrancy risk is fully mitigated.
 
@@ -152,11 +152,11 @@ IERC20Stream(s.token).transfer(s.worker, milestoneAmount);
 
 | Detector | Count | Description | Action |
 |----------|-------|-------------|--------|
-| `timestamp` | 28 | Uses `block.timestamp` for comparisons | Expected — deadlines need timestamps |
+| `timestamp` | 28 | Uses `block.timestamp` for comparisons | Expected - deadlines need timestamps |
 | `reentrancy-events` | 12 | Events emitted after external calls | Best practice fix for mainnet |
 | `missing-zero-check` | 8 | Missing zero-address validation in constructors | Good practice fix |
 | `reentrancy-benign` | 7 | Benign reentrancy (no state impact) | Informational |
-| `calls-loop` | 5 | External calls inside loops (MultisendV2) | Expected — batch payments |
+| `calls-loop` | 5 | External calls inside loops (MultisendV2) | Expected - batch payments |
 | `dangerous-strict-equalities` | 5 | Strict == comparisons | Intentional patterns |
 
 ---
@@ -223,5 +223,5 @@ For a comprehensive security review before mainnet deployment, we recommend enga
 
 ---
 
-*Report generated for PayPol Protocol — Tempo Moderato Testnet*
+*Report generated for PayPol Protocol - Tempo Moderato Testnet*
 *PayPol Foundation, February 2026*

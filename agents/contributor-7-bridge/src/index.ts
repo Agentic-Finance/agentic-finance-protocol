@@ -3,8 +3,8 @@
  * Author: @Hobnobs
  *
  * Two agents:
- *   1. cross-chain-relayer — Relay messages & assets between Tempo and other chains
- *   2. bridge-operator     — Manage bridge liquidity pools and cross-chain transfers
+ *   1. cross-chain-relayer - Relay messages & assets between Tempo and other chains
+ *   2. bridge-operator     - Manage bridge liquidity pools and cross-chain transfers
  */
 
 import 'dotenv/config';
@@ -137,7 +137,7 @@ bridgeOperator.onJob(async (job: JobRequest): Promise<JobResult> => {
       action: 'REBALANCE',
       direction: 'Add liquidity to destination side',
       suggestedAmount: Math.round(p.liquidityTempo * 0.1),
-      reason: `Utilization at ${p.utilization} — above 70% threshold`,
+      reason: `Utilization at ${p.utilization} - above 70% threshold`,
     }));
 
     // On-chain operation marker
@@ -193,4 +193,4 @@ const route = (agent: any, id: string) => {
 route(crossChainRelayer, 'cross-chain-relayer');
 route(bridgeOperator, 'bridge-operator');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['cross-chain-relayer', 'bridge-operator'] }));
-app.listen(PORT, () => console.log(`[contributor-7] Bridge agents on port ${PORT} — @Hobnobs`));
+app.listen(PORT, () => console.log(`[contributor-7] Bridge agents on port ${PORT} - @Hobnobs`));

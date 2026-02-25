@@ -1,5 +1,5 @@
 /**
- * Recurring Payment Agent — Create multiple streams for recurring payments
+ * Recurring Payment Agent - Create multiple streams for recurring payments
  *
  * Sets up recurring payment schedules by creating multiple payment streams,
  * each representing a payment period. Each stream has single milestones.

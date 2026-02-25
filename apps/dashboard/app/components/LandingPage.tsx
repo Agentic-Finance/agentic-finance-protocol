@@ -1,5 +1,5 @@
 'use client';
-// PayPol Protocol — Landing Page v2.1
+// PayPol Protocol - Landing Page v2.1
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     CommandLineIcon, CubeTransparentIcon, CpuChipIcon,
@@ -62,7 +62,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             const t3 = setTimeout(() => setOutputStep(3), 1000);
             return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
         } else {
-            // Nexus A2A — Simulated demo for landing page
+            // Nexus A2A - Simulated demo for landing page
             const runSimulatedDemo = async () => {
                 setOutputStep(1);
                 setNexusLog(prev => [...prev, "> Initializing Nexus Protocol..."]);
@@ -102,7 +102,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#0B1120', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
 
-            {/* BACKGROUND — Vibrant gradient mesh */}
+            {/* BACKGROUND - Vibrant gradient mesh */}
             <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: '-15%', left: '10%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)', borderRadius: '50%' }}></div>
                 <div style={{ position: 'absolute', bottom: '-25%', right: '-5%', width: '55vw', height: '55vw', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)', borderRadius: '50%' }}></div>
@@ -136,7 +136,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </div>
 
             {/* ════════════════════════════════════════════════════════════ */}
-            {/* HERO — Headline + Floating Terminal Showcase               */}
+            {/* HERO - Headline + Floating Terminal Showcase               */}
             {/* ════════════════════════════════════════════════════════════ */}
             <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 10, padding: '90px 20px 24px' }}>
 
@@ -149,7 +149,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </h1>
                 </div>
 
-                {/* FLOATING TERMINAL — iPhone Edge-to-Edge */}
+                {/* FLOATING TERMINAL - iPhone Edge-to-Edge */}
                 <div className="animate-fade-in-up terminal-tilt" style={{
                     width: '96%', maxWidth: '1200px', flex: 1, minHeight: '420px',
                     backgroundColor: 'rgba(12, 16, 22, 0.95)',
@@ -171,7 +171,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
                     </div>
 
-                    {/* Terminal Header — Tab Pills */}
+                    {/* Terminal Header - Tab Pills */}
                     <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', padding: '8px 20px', backgroundColor: 'rgba(4, 6, 10, 0.95)', flexShrink: 0, gap: '12px' }}>
                         {/* Traffic lights */}
                         <div style={{ display: 'flex', gap: '7px', flexShrink: 0 }}>
@@ -267,12 +267,12 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         {/* COLUMN 1: Why Agents? */}
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><LightBulbIcon style={{ width: '32px', height: '32px', color: '#f59e0b' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>The World Is Changing.</h3></div>
-                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>By 2028, autonomous AI agents will manage more capital than most hedge funds. The question is not <span style={{ color: '#fff' }}>whether</span> this shift happens — it is <span style={{ color: '#f59e0b' }}>who builds the financial rails</span>.</p>
+                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>By 2028, autonomous AI agents will manage more capital than most hedge funds. The question is not <span style={{ color: '#fff' }}>whether</span> this shift happens - it is <span style={{ color: '#f59e0b' }}>who builds the financial rails</span>.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><GlobeAltIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>$47T Addressable Market</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Global payroll, treasury management, and cross-border settlement — every dollar that moves will eventually move through an agent.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><GlobeAltIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>$47T Addressable Market</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Global payroll, treasury management, and cross-border settlement - every dollar that moves will eventually move through an agent.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(34,211,238,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClockIcon style={{ width: '20px', height: '20px', color: '#22d3ee' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Always-On Execution</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Agents never sleep, never miss deadlines, never fat-finger transactions. They execute 24/7/365 with sub-second precision.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(168,85,247,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BoltIcon style={{ width: '20px', height: '20px', color: '#a855f7' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Infinite Parallelism</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>A single agent swarm can process millions of micro-settlements simultaneously — something no human treasury team can replicate.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(236,72,153,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '20px', height: '20px', color: '#ec4899' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Zero Trust Required</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Cryptographic proofs replace human trust. No more "I'll pay after delivery" — escrow-backed, ZK-verified settlements eliminate counterparty risk.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(168,85,247,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BoltIcon style={{ width: '20px', height: '20px', color: '#a855f7' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Infinite Parallelism</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>A single agent swarm can process millions of micro-settlements simultaneously - something no human treasury team can replicate.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(236,72,153,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '20px', height: '20px', color: '#ec4899' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Zero Trust Required</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Cryptographic proofs replace human trust. No more "I'll pay after delivery" - escrow-backed, ZK-verified settlements eliminate counterparty risk.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(234,179,8,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CodeBracketIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Composable Intelligence</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Agents hire other agents. An audit agent verifies work, a treasury agent funds the escrow, a settlement agent distributes payment. The economy compounds itself.</p></div></div>
                             </div>
                         </div>
@@ -282,8 +282,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>PayPol Is The Answer.</h3></div>
                             <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>Every AI agent needs a bank account. Every agent economy needs a central bank. PayPol is <span style={{ color: '#fff', textDecoration: 'underline', textDecorationColor: '#10b981' }}>the settlement infrastructure</span> for this entire new economy.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. PayPol bridges this gap — every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Privacy by Default</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>ZK-SNARKs protect every salary, every vendor payment, every agent settlement from public view. Enterprise-grade privacy is not a feature — it is the foundation.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. PayPol bridges this gap - every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Privacy by Default</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>ZK-SNARKs protect every salary, every vendor payment, every agent settlement from public view. Enterprise-grade privacy is not a feature - it is the foundation.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Omni-Chain, One Protocol</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Capital flows to where it is needed most. PayPol abstracts away bridge complexities across EVM and SVM, so agents operate on any chain through one unified interface.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ScaleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Game-Theoretic Security</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Our arbitration protocol makes cheating mathematically irrational. Nash equilibrium ensures honest behavior without human judges or centralized courts.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><KeyIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Sovereign Infrastructure</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Self-custodial vaults, programmable multi-sig, and time-locked escrows. No single points of failure. No permission needed. The protocol IS the trust layer.</p></div></div>
@@ -294,7 +294,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
             </section>
 
-            {/* PROTOCOL STACK — Replacing old Architecture section */}
+            {/* PROTOCOL STACK - Replacing old Architecture section */}
             <section id="protocol" style={{ padding: '120px 20px', backgroundColor: '#0B1222', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                 {/* Ambient glow */}
                 <div style={{ position: 'absolute', top: '20%', left: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
@@ -311,7 +311,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span className="gradient-text">One Unstoppable Stack.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            From raw neural intent to settled on-chain value — every layer is purpose-built for the agent economy.
+                            From raw neural intent to settled on-chain value - every layer is purpose-built for the agent economy.
                         </p>
                     </div>
 
@@ -367,7 +367,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                     <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L5</span>
                                     <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Game-Theoretic Arbitration</h3>
                                 </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Trustless dispute resolution — cheating is mathematically irrational</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Trustless dispute resolution - cheating is mathematically irrational</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: '800', fontFamily: 'monospace' }}>3% capped</span>
@@ -473,11 +473,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span className="gradient-text">Every Financial Frontier.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                            From DAO treasuries to autonomous AI swarms — PayPol is the settlement layer powering the next generation of programmable finance.
+                            From DAO treasuries to autonomous AI swarms - PayPol is the settlement layer powering the next generation of programmable finance.
                         </p>
                     </div>
 
-                    {/* Top row — 2 large cards */}
+                    {/* Top row - 2 large cards */}
                     <div className="eco-grid-2 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Protocol Treasuries */}
                         <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
@@ -504,7 +504,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 <h3 style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900' }}>Autonomous AI Swarms</h3>
                             </div>
                             <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: '24px' }}>
-                                Machine-to-machine micropayments with automated API budget provisioning. Agents hire agents — trustlessly, at scale.
+                                Machine-to-machine micropayments with automated API budget provisioning. Agents hire agents - trustlessly, at scale.
                             </p>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                 <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>M2M Payments</span>
@@ -514,7 +514,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
                     </div>
 
-                    {/* Middle row — 3 medium cards */}
+                    {/* Middle row - 3 medium cards */}
                     <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
                         {/* Institutional Finance */}
                         <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
@@ -541,7 +541,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </div>
                     </div>
 
-                    {/* Bottom row — 2 cards + stats panel */}
+                    {/* Bottom row - 2 cards + stats panel */}
                     <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px' }}>
                         {/* Gaming */}
                         <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
@@ -581,7 +581,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* ════════════════════════════════════════════════════════════ */}
-            {/* FEATURES — LIVE ON TEMPO L1                                 */}
+            {/* FEATURES - LIVE ON TEMPO L1                                 */}
             {/* ════════════════════════════════════════════════════════════ */}
             <section id="features" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: '10%', right: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
@@ -602,11 +602,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         </p>
                     </div>
 
-                    {/* Phase 2 Feature Grid — 4x2 */}
+                    {/* Phase 2 Feature Grid - 4x2 */}
                     <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
                         {[
                             { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Circuit V2', desc: 'PLONK proving system with Poseidon nullifier pattern. Anti-double-spend protection for private payments.', color: '#818cf8', stat: 'PLONK + Nullifier' },
-                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification, treasury, gas profiling — all with real Tempo L1 transactions.', color: '#22d3ee', stat: '32 Native' },
+                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification, treasury, gas profiling - all with real Tempo L1 transactions.', color: '#22d3ee', stat: '32 Native' },
                             { icon: <SparklesIcon style={{ width: '28px', height: '28px' }} />, title: 'AI Brain Orchestrator', desc: 'Claude-powered natural language parsing into deterministic NexusV2 escrow operations. Real AI, not mock.', color: '#c084fc', stat: 'Claude Sonnet' },
                             { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents autonomously hire agents. Coordinator decomposes tasks, creates per-sub-task NexusV2 escrow chains.', color: '#a855f7', stat: '6 TXs/chain' },
                             { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Dashboard', desc: 'Real-time SSE streaming: transaction feed, agent heatmap, ZK proof counter, TVL gauge, revenue ticker.', color: '#10b981', stat: 'SSE Real-time' },
@@ -617,7 +617,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'On-Chain Reputation', desc: 'Composite reputation score (0-100) from on-chain ratings, completion rate, and AI proof reliability. Tiered labels from Newcomer to Legend.', color: '#8b5cf6', stat: 'ReputationRegistry' },
                             { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'Security Deposits', desc: 'Agents stake AlphaUSD to prove skin-in-the-game. Bronze/Silver/Gold tiers unlock fee discounts (up to 3%). Auto-slashing on proof mismatch.', color: '#f97316', stat: '4 Tiers' },
                             { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Revenue Dashboard', desc: 'Live TVL tracking, fee accumulation, volume charts, and top agent leaderboards. Real-time protocol analytics with SSE updates.', color: '#14b8a6', stat: 'Live Analytics' },
-                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard — formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v1.0' },
+                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard - formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v1.0' },
                             { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '6 Adapters' },
                         ].map((f, i) => (
                             <div key={i} className="reveal-child" style={{ backgroundColor: '#14203A', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
@@ -671,7 +671,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 92% of every job on the marketplace.</p>
                     </div>
 
-                    {/* Developer action cards — 3 cols */}
+                    {/* Developer action cards - 3 cols */}
                     <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '40px' }}>
                         {/* Build Agent */}
                         <a href="/developers" className="bento-item" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>

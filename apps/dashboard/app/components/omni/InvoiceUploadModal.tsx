@@ -178,7 +178,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
                                 <span className={`text-sm font-medium ${isDragOver ? 'text-cyan-300' : 'text-slate-400'}`}>
                                     Drop your invoice here
                                 </span>
-                                <p className="text-[10px] text-slate-600 mt-1.5 font-mono">PDF • PNG • JPG • TXT — Max 10MB</p>
+                                <p className="text-[10px] text-slate-600 mt-1.5 font-mono">PDF • PNG • JPG • TXT - Max 10MB</p>
                             </div>
                         </div>
                     )}
@@ -195,7 +195,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
                 <textarea
                     value={invoiceText}
                     onChange={(e) => { setInvoiceText(e.target.value); setAttachedFile(null); }}
-                    placeholder={`Paste invoice content here...\n\ne.g.\nInvoice #INV-2026-042\nFrom: Acme Corp\n\n1. Web Development — $5,000 — 0xA1b2...\n2. Smart Contract Audit — $3,000 — 0xC3d4...\n3. UI/UX Design — $2,500 — 0xE5f6...`}
+                    placeholder={`Paste invoice content here...\n\ne.g.\nInvoice #INV-2026-042\nFrom: Acme Corp\n\n1. Web Development - $5,000 - 0xA1b2...\n2. Smart Contract Audit - $3,000 - 0xC3d4...\n3. UI/UX Design - $2,500 - 0xE5f6...`}
                     disabled={!!attachedFile}
                     className={`w-full h-36 bg-[#06080C] border border-white/10 rounded-xl p-4 text-sm text-white font-mono resize-none focus:outline-none focus:border-cyan-500/30 placeholder:text-slate-700 transition-all leading-relaxed ${attachedFile ? 'opacity-30 cursor-not-allowed' : ''}`}
                 />

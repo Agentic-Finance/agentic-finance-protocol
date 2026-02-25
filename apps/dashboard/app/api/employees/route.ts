@@ -107,7 +107,7 @@ export async function PUT(req: Request) {
                 console.log("✅ [API] Boardroom approved (ZK Shield) → PENDING for Daemon ZK execution.");
             } else {
                 // Public mode → On-chain TX already confirmed by frontend (transfer/createJob)
-                // Skip daemon — mark as COMPLETED immediately (no ZK proof needed)
+                // Skip daemon - mark as COMPLETED immediately (no ZK proof needed)
                 await prisma.timeVaultPayload.updateMany({
                     where: { status: "Draft" },
                     data: {

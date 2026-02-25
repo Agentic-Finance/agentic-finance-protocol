@@ -1,5 +1,5 @@
 /**
- * SSE Server — Server-Sent Events for Real-Time Dashboard
+ * SSE Server - Server-Sent Events for Real-Time Dashboard
  *
  * Subscribes to the protocol event bus and pushes events to
  * connected dashboard clients via SSE. Includes heartbeat keepalive.
@@ -16,7 +16,7 @@ export const sseRouter = Router();
 let connectionCount = 0;
 
 /**
- * GET /api/live/stream — SSE event stream
+ * GET /api/live/stream - SSE event stream
  */
 sseRouter.get('/api/live/stream', (req: Request, res: Response) => {
   // SSE headers
@@ -66,7 +66,7 @@ sseRouter.get('/api/live/stream', (req: Request, res: Response) => {
 });
 
 /**
- * GET /api/live/events — Get recent events (REST fallback)
+ * GET /api/live/events - Get recent events (REST fallback)
  */
 sseRouter.get('/api/live/events', (_req: Request, res: Response) => {
   const limit = Number(_req.query.limit) || 50;
@@ -78,7 +78,7 @@ sseRouter.get('/api/live/events', (_req: Request, res: Response) => {
 });
 
 /**
- * GET /api/live/stats — Get protocol stats
+ * GET /api/live/stats - Get protocol stats
  */
 sseRouter.get('/api/live/stats', (_req: Request, res: Response) => {
   res.json({
@@ -89,7 +89,7 @@ sseRouter.get('/api/live/stats', (_req: Request, res: Response) => {
 });
 
 /**
- * POST /api/notify — Push a notification event into the SSE bus
+ * POST /api/notify - Push a notification event into the SSE bus
  *
  * Called by the dashboard backend (notify.ts) to broadcast
  * stream events to connected SSE clients in real-time.

@@ -322,7 +322,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         setSuggestedBudget(0);
         setError(null);
         setActiveCategory(null);
-        // Note: do NOT clear allAgents — they are cached
+        // Note: do NOT clear allAgents - they are cached
     }, []);
 
     return {

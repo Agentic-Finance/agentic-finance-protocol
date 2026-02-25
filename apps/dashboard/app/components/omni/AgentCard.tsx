@@ -41,7 +41,7 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
 
     return (
         <div className={`relative bg-white/[0.04] border ${rank === 0 && !isBrowseMode ? 'border-indigo-500/40 shadow-[0_0_30px_rgba(99,102,241,0.1)]' : 'border-white/[0.08]'} rounded-2xl p-5 flex flex-col hover:border-indigo-500/40 hover:bg-white/[0.06] hover:shadow-[0_0_20px_rgba(99,102,241,0.08)] transition-all duration-300 group`}>
-            {/* Best Match badge — only in AI search results */}
+            {/* Best Match badge - only in AI search results */}
             {rank === 0 && !isBrowseMode && (
                 <div className="absolute -top-2.5 -right-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg flex items-center gap-1 z-10">
                     <BoltIcon className="w-3 h-3" /> Best Match

@@ -9,14 +9,14 @@
  * 5. Tracks state and provides monitoring
  *
  * API:
- *   POST /api/orchestrate    — Main entry: parse + route + execute
- *   POST /api/workflow        — Create multi-step workflow (dry run)
- *   GET  /api/workflow/:id    — Get workflow status
- *   POST /api/settle/:id      — Manual settlement trigger
- *   GET  /api/agents          — Proxy to agents service
- *   GET  /api/stats           — System statistics
- *   GET  /api/requests        — Recent requests
- *   GET  /health              — Health check
+ *   POST /api/orchestrate    - Main entry: parse + route + execute
+ *   POST /api/workflow        - Create multi-step workflow (dry run)
+ *   GET  /api/workflow/:id    - Get workflow status
+ *   POST /api/settle/:id      - Manual settlement trigger
+ *   GET  /api/agents          - Proxy to agents service
+ *   GET  /api/stats           - System statistics
+ *   GET  /api/requests        - Recent requests
+ *   GET  /health              - Health check
  */
 
 import express from 'express';
@@ -69,7 +69,7 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// ── POST /api/orchestrate — Main Entry Point ─────────────────
+// ── POST /api/orchestrate - Main Entry Point ─────────────────
 
 app.post('/api/orchestrate', async (req, res) => {
   const { prompt, callerWallet } = req.body;
@@ -206,7 +206,7 @@ app.post('/api/orchestrate', async (req, res) => {
   }
 });
 
-// ── POST /api/workflow — Create workflow (dry run) ───────────
+// ── POST /api/workflow - Create workflow (dry run) ───────────
 
 app.post('/api/workflow', async (req, res) => {
   const { prompt, callerWallet } = req.body;
@@ -242,7 +242,7 @@ app.post('/api/workflow', async (req, res) => {
   }
 });
 
-// ── GET /api/workflow/:id — Get workflow status ──────────────
+// ── GET /api/workflow/:id - Get workflow status ──────────────
 
 app.get('/api/workflow/:id', (req, res) => {
   const workflow = workflowEngine.getWorkflow(req.params.id);
@@ -266,7 +266,7 @@ app.get('/api/workflow/:id', (req, res) => {
   });
 });
 
-// ── POST /api/settle/:id — Manual settlement trigger ─────────
+// ── POST /api/settle/:id - Manual settlement trigger ─────────
 
 app.post('/api/settle/:id', async (req, res) => {
   const workflow = workflowEngine.getWorkflow(req.params.id);
@@ -285,7 +285,7 @@ app.post('/api/settle/:id', async (req, res) => {
   res.json({ settled: results.length, results });
 });
 
-// ── GET /api/agents — Proxy to agents service ────────────────
+// ── GET /api/agents - Proxy to agents service ────────────────
 
 app.get('/api/agents', async (_req, res) => {
   try {
@@ -296,7 +296,7 @@ app.get('/api/agents', async (_req, res) => {
   }
 });
 
-// ── GET /api/stats — System statistics ───────────────────────
+// ── GET /api/stats - System statistics ───────────────────────
 
 app.get('/api/stats', (_req, res) => {
   res.json({
@@ -305,7 +305,7 @@ app.get('/api/stats', (_req, res) => {
   });
 });
 
-// ── POST /api/events — Ingest events from external services ──
+// ── POST /api/events - Ingest events from external services ──
 
 app.post('/api/events', (req, res) => {
   const { type, data } = req.body;
@@ -314,7 +314,7 @@ app.post('/api/events', (req, res) => {
   res.json({ success: true, eventId: event.id });
 });
 
-// ── GET /api/live/tvl — Real on-chain TVL from Tempo ─────────
+// ── GET /api/live/tvl - Real on-chain TVL from Tempo ─────────
 
 app.get('/api/live/tvl', async (_req, res) => {
   try {
@@ -355,7 +355,7 @@ app.get('/api/live/tvl', async (_req, res) => {
   }
 });
 
-// ── GET /api/requests — Recent requests ──────────────────────
+// ── GET /api/requests - Recent requests ──────────────────────
 
 app.get('/api/requests', (req, res) => {
   const limit = Number(req.query.limit) || 20;
@@ -386,7 +386,7 @@ app.post('/api/work', async (_req, res) => {
     success: true,
     status: 'APPROVED',
     signature: '0x' + 'a'.repeat(130),
-    message: 'Orchestrator v2 — use /api/orchestrate for full workflow execution.',
+    message: 'Orchestrator v2 - use /api/orchestrate for full workflow execution.',
   });
 });
 

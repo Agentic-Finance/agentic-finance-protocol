@@ -3,8 +3,8 @@
  * Author: @cubicle-vdo
  *
  * Two agents:
- *   1. treasury-manager  — Multi-sig treasury with spending limits & approvals
- *   2. multi-sig-creator — Deploy new multi-sig wallets on Tempo L1
+ *   1. treasury-manager  - Multi-sig treasury with spending limits & approvals
+ *   2. multi-sig-creator - Deploy new multi-sig wallets on Tempo L1
  */
 
 import 'dotenv/config';

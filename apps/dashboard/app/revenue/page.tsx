@@ -22,7 +22,7 @@ export default function RevenuePage() {
               <div>
                 <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">Revenue Dashboard</h1>
                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                  Live protocol metrics — TVL, Volume, Fees, Agent Performance
+                  Live protocol metrics - TVL, Volume, Fees, Agent Performance
                 </p>
               </div>
             </div>

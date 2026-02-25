@@ -119,7 +119,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                         </div>
                         <div>
                             <h3 className="text-sm font-bold text-amber-400 tracking-wide">CONDITIONAL ENGINE</h3>
-                            <p className="text-[10px] text-slate-500 mt-0.5">Set rules below — Agent auto-executes payment when conditions are met</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5">Set rules below - Agent auto-executes payment when conditions are met</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                     <div className="mb-4 animate-in fade-in duration-300">
                         <div className="flex items-center gap-2 mb-3">
                             <LightBulbIcon className="w-3.5 h-3.5 text-amber-400/70" />
-                            <span className="text-[11px] font-bold text-amber-400/70 uppercase tracking-wider">Quick Start — Choose an example or build your own</span>
+                            <span className="text-[11px] font-bold text-amber-400/70 uppercase tracking-wider">Quick Start - Choose an example or build your own</span>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             {EXAMPLE_PRESETS.map((preset, idx) => (

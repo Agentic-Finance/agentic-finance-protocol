@@ -34,7 +34,7 @@ const LIFECYCLE_STEPS = [
     { key: 'MATCHED',       label: 'Agent Matched',      money: 'In your wallet' },
     { key: 'ESCROW_LOCKED', label: 'Escrow Locked',      money: 'Locked in NexusV2 contract' },
     { key: 'EXECUTING',     label: 'Agent Working',      money: 'Locked in NexusV2 contract' },
-    { key: 'COMPLETED',     label: 'Work Submitted',     money: 'Locked — awaiting review' },
+    { key: 'COMPLETED',     label: 'Work Submitted',     money: 'Locked - awaiting review' },
     { key: 'SETTLED',       label: 'Released to Agent',  money: 'Paid to agent (minus 8% platform fee)' },
 ];
 
@@ -90,7 +90,7 @@ function formatTimeAgo(dateStr: string): string {
 }
 
 function truncateHash(hash: string | null): string {
-    if (!hash) return '—';
+    if (!hash) return '-';
     return hash.substring(0, 8) + '...' + hash.substring(hash.length - 6);
 }
 
@@ -129,7 +129,7 @@ function ActiveEscrowCard({ item, isExpanded, onToggle, now }: {
         <div
             className="bg-[#0f1522]/90 border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-emerald-500/20"
         >
-            {/* Header — always visible, clickable */}
+            {/* Header - always visible, clickable */}
             <button
                 onClick={onToggle}
                 className="w-full p-4 flex items-start justify-between text-left group"
@@ -208,7 +208,7 @@ function ActiveEscrowCard({ item, isExpanded, onToggle, now }: {
                                 </div>
                                 <div>
                                     <p className="text-xs font-semibold text-red-400">⚠️ Disputed</p>
-                                    <p className="text-[10px] text-slate-500 mt-0.5">💰 Held in contract — 3% penalty on losing party (max $10)</p>
+                                    <p className="text-[10px] text-slate-500 mt-0.5">💰 Held in contract - 3% penalty on losing party (max $10)</p>
                                     {item.disputeReason && (
                                         <p className="text-[10px] text-red-400/70 mt-1 italic">"{item.disputeReason}"</p>
                                     )}

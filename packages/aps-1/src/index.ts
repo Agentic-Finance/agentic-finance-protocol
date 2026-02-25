@@ -1,5 +1,5 @@
 /**
- * @paypol/aps-1 — Agent Payment Standard v1.0
+ * @paypol/aps-1 - Agent Payment Standard v1.0
  *
  * The open protocol standard for AI agent payments on Tempo L1.
  *

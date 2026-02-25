@@ -1,5 +1,5 @@
 /**
- * Multi-Token Batch Agent — Batch payments with different token types
+ * Multi-Token Batch Agent - Batch payments with different token types
  *
  * Execute batch transfers using MultisendV2.executeMultiTokenBatch(),
  * allowing payments in any supported token (not just the default).

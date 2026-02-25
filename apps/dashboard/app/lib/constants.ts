@@ -3,31 +3,31 @@
 // ==========================================
 export const PAYPOL_NEXUS_ADDRESS = "0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c";
 export const PAYPOL_MULTISEND_ADDRESS = "0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69";
-// V2 Multisend — Multi-token, batch registry, per-transfer events
+// V2 Multisend - Multi-token, batch registry, per-transfer events
 export const PAYPOL_MULTISEND_V2_ADDRESS = "0x25f4d3f12C579002681a52821F3a6251c46D4575";
 export const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
 
-// V2 Shield Vault — Nullifier Anti-Double-Spend (ZK-SNARK PLONK)
+// V2 Shield Vault - Nullifier Anti-Double-Spend (ZK-SNARK PLONK)
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const PAYPOL_SHIELD_V2_ADDRESS = "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
 export const PLONK_VERIFIER_V2_ADDRESS = "0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B";
 
-// V2 Escrow Contract — full lifecycle (dispute, refund, timeout, settlement)
+// V2 Escrow Contract - full lifecycle (dispute, refund, timeout, settlement)
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const PAYPOL_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 
-// AI Proof Registry — Verifiable on-chain AI commitments
+// AI Proof Registry - Verifiable on-chain AI commitments
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const AI_PROOF_REGISTRY_ADDRESS = "0x8fDB8E871c9eaF2955009566F41490Bbb128a014";
 
-// Stream Settlement V1 — Progressive milestone-based escrow
+// Stream Settlement V1 - Progressive milestone-based escrow
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const STREAM_V1_ADDRESS = "0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C";
 
-// Legacy ABI — kept for backward compatibility
+// Legacy ABI - kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 
-// NexusV2 ABI — full escrow lifecycle
+// NexusV2 ABI - full escrow lifecycle
 export const NEXUS_V2_ABI = [
     "function createJob(address _worker, address _judge, address _token, uint256 _amount, uint256 _deadlineDuration) external returns (uint256)",
     "function startJob(uint256 _jobId) external",
@@ -47,7 +47,7 @@ export const NEXUS_V2_ABI = [
     "event WorkerRated(uint256 indexed jobId, address indexed worker, uint256 rating)",
 ] as const;
 
-// ShieldVault V2 ABI — Nullifier + Commitment registry
+// ShieldVault V2 ABI - Nullifier + Commitment registry
 export const SHIELD_V2_ABI = [
     "function deposit(uint256 commitment, uint256 amount) external",
     "function executeShieldedPayout(uint256[24] calldata proof, uint256[3] calldata pubSignals, uint256 exactAmount) external",
@@ -60,7 +60,7 @@ export const SHIELD_V2_ABI = [
     "event PublicPayoutExecuted(address indexed recipient, uint256 amount)",
 ] as const;
 
-// MultisendVault V2 ABI — Multi-token batch payments with tracking
+// MultisendVault V2 ABI - Multi-token batch payments with tracking
 export const MULTISEND_V2_ABI = [
     "function depositFunds(uint256 amount) external",
     "function depositToken(address token, uint256 amount) external",
@@ -83,7 +83,7 @@ export const ERC20_ABI = [
     "function balanceOf(address account) view returns (uint256)"
 ] as const;
 
-// AIProofRegistry ABI — Verifiable AI execution commitments
+// AIProofRegistry ABI - Verifiable AI execution commitments
 export const AI_PROOF_REGISTRY_ABI = [
     "function commit(bytes32 planHash, uint256 nexusJobId) external returns (bytes32)",
     "function verify(bytes32 commitmentId, bytes32 resultHash) external",
@@ -96,7 +96,7 @@ export const AI_PROOF_REGISTRY_ABI = [
     "event AgentSlashed(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId)",
 ] as const;
 
-// StreamV1 ABI — Progressive milestone-based escrow
+// StreamV1 ABI - Progressive milestone-based escrow
 export const STREAM_V1_ABI = [
     "function createStream(address _agent, address _token, uint256[] calldata _milestoneAmounts, uint256 _deadlineDuration) external returns (uint256)",
     "function submitMilestone(uint256 _streamId, uint256 _milestoneIndex, bytes32 _proofHash) external",
@@ -117,7 +117,7 @@ export const STREAM_V1_ABI = [
     "event StreamCancelled(uint256 indexed streamId, uint256 refundedAmount)",
 ] as const;
 
-// Reputation Registry — On-chain AI agent reputation scoring
+// Reputation Registry - On-chain AI agent reputation scoring
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const REPUTATION_REGISTRY_ADDRESS = "0x9332c1B2bb94C96DA2D729423f345c76dB3494D0";
 
@@ -132,7 +132,7 @@ export const REPUTATION_REGISTRY_ABI = [
     "event ReputationUpdated(address indexed agent, uint256 compositeScore, uint256 timestamp)",
 ] as const;
 
-// Security Deposit Vault — Agent staking alternative with tiered fee discounts
+// Security Deposit Vault - Agent staking alternative with tiered fee discounts
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const SECURITY_DEPOSIT_ADDRESS = "0x8C1d4da4034FFEB5E3809aa017785cB70B081A80";
 

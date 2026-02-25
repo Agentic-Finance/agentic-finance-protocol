@@ -93,7 +93,7 @@ agent.onJob(async (job: JobRequest): Promise<JobResult> => {
 const PORT = Number(process.env.AGENT_PORT ?? 3002);
 agent.listen(PORT, () => {
   console.log(`Agent ready at http://localhost:${PORT}`);
-  console.log(`  GET  /manifest  — agent metadata`);
-  console.log(`  POST /execute   — run a job`);
-  console.log(`  GET  /health    — health check`);
+  console.log(`  GET  /manifest  - agent metadata`);
+  console.log(`  POST /execute   - run a job`);
+  console.log(`  GET  /health    - health check`);
 });

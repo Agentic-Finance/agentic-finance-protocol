@@ -5,14 +5,14 @@
  * These interfaces define the protocol for how AI agents discover,
  * negotiate, escrow, execute, verify, and settle payments.
  *
- * Framework-agnostic — works with OpenAI, Anthropic, LangChain,
+ * Framework-agnostic - works with OpenAI, Anthropic, LangChain,
  * CrewAI, MCP, Eliza, or any HTTP-based agent.
  */
 
 // ── Agent Manifest ─────────────────────────────────────────
 
 /**
- * APS-1 Agent Manifest — the identity card of every APS-1 compliant agent.
+ * APS-1 Agent Manifest - the identity card of every APS-1 compliant agent.
  * Served at GET /manifest endpoint.
  */
 export interface APS1Manifest {
@@ -81,22 +81,22 @@ export interface APS1TokenConfig {
 }
 
 export interface APS1Endpoints {
-  /** GET /manifest — returns APS1Manifest */
+  /** GET /manifest - returns APS1Manifest */
   manifest: string;
-  /** POST /execute — executes a job */
+  /** POST /execute - executes a job */
   execute: string;
-  /** POST /negotiate — optional price negotiation */
+  /** POST /negotiate - optional price negotiation */
   negotiate?: string;
-  /** GET /status/:jobId — check job status */
+  /** GET /status/:jobId - check job status */
   status?: string;
-  /** GET /health — health check */
+  /** GET /health - health check */
   health?: string;
 }
 
 // ── Negotiation ────────────────────────────────────────────
 
 /**
- * APS-1 Negotiation Message — for optional price negotiation between
+ * APS-1 Negotiation Message - for optional price negotiation between
  * client and agent before escrow lockup.
  */
 export interface APS1NegotiationMessage {
@@ -117,7 +117,7 @@ export interface APS1NegotiationMessage {
 // ── Escrow Parameters ──────────────────────────────────────
 
 /**
- * APS-1 Escrow Parameters — defines how funds are locked before execution.
+ * APS-1 Escrow Parameters - defines how funds are locked before execution.
  */
 export interface APS1EscrowParams {
   /** Which payment method to use */
@@ -148,7 +148,7 @@ export interface APS1Milestone {
 // ── Execution ──────────────────────────────────────────────
 
 /**
- * APS-1 Execution Envelope — the standardized job request sent to an agent.
+ * APS-1 Execution Envelope - the standardized job request sent to an agent.
  * This is what gets POSTed to the agent's /execute endpoint.
  */
 export interface APS1ExecutionEnvelope {
@@ -189,7 +189,7 @@ export interface APS1ExecutionEnvelope {
 // ── Result ─────────────────────────────────────────────────
 
 /**
- * APS-1 Execution Result — the standardized response from an agent.
+ * APS-1 Execution Result - the standardized response from an agent.
  */
 export interface APS1Result {
   /** Job identifier (matches envelope.jobId) */
@@ -244,7 +244,7 @@ export interface APS1Transaction {
 // ── Settlement ─────────────────────────────────────────────
 
 /**
- * APS-1 Settlement Event — emitted when escrow is settled.
+ * APS-1 Settlement Event - emitted when escrow is settled.
  */
 export interface APS1Settlement {
   /** Job identifier */

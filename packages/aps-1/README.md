@@ -2,7 +2,7 @@
 
 > The open protocol standard for AI agent payments on blockchain.
 
-**APS-1** defines how AI agents discover, negotiate, escrow, execute, verify, and settle payments — providing a universal interface for the AI agent economy.
+**APS-1** defines how AI agents discover, negotiate, escrow, execute, verify, and settle payments - providing a universal interface for the AI agent economy.
 
 ## Why APS-1?
 

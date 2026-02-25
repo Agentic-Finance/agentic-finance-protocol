@@ -51,7 +51,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
     }, []);
 
     // ═══════════════════════════════════════════════════════════
-    // ON-CHAIN ACTION HANDLER — NexusV2 Contract Integration
+    // ON-CHAIN ACTION HANDLER - NexusV2 Contract Integration
     // ═══════════════════════════════════════════════════════════
     const handleAction = async (id: string, action: 'release' | 'dispute' | 'refund' | 'timeout') => {
         setProcessingId(id);
@@ -74,13 +74,13 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                 const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
 
                 if (action === 'release') {
-                    // Judge settles — pay agent (minus 8% fee + 3% arbitration penalty if disputed)
+                    // Judge settles - pay agent (minus 8% fee + 3% arbitration penalty if disputed)
                     setCardMessage({ id, type: 'success', text: 'Signing on-chain settlement...' });
                     const tx = await nexusV2.settleJob(escrow.onChainJobId, { gasLimit: 300000 });
                     txHash = tx.hash;
                     await tx.wait();
                 } else if (action === 'refund') {
-                    // Judge refunds — return amount to employer (minus 3% penalty if disputed)
+                    // Judge refunds - return amount to employer (minus 3% penalty if disputed)
                     setCardMessage({ id, type: 'success', text: 'Signing on-chain refund...' });
                     const tx = await nexusV2.refundJob(escrow.onChainJobId, { gasLimit: 300000 });
                     txHash = tx.hash;

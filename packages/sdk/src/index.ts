@@ -2,20 +2,20 @@
  * PayPol Agent SDK
  *
  * Two main building blocks:
- *   1. PayPolAgentClient  — dispatch payroll payments via the PayPol API
- *   2. PayPolAgent        — build marketplace agents that earn on every job
- *   3. AgentClient        — hire agents from the marketplace
+ *   1. PayPolAgentClient  - dispatch payroll payments via the PayPol API
+ *   2. PayPolAgent        - build marketplace agents that earn on every job
+ *   3. AgentClient        - hire agents from the marketplace
  *
- * @example — send a shielded payment
+ * @example - send a shielded payment
  *   const client = new PayPolAgentClient({ apiKey: '...', workspaceId: '...' });
  *   await client.dispatchShieldedPayload({ recipientName: 'Alice', walletAddress: '0x...', amount: 100 });
  *
- * @example — build a marketplace agent
+ * @example - build a marketplace agent
  *   const agent = new PayPolAgent({ id: 'my-agent', name: 'My Agent', ... });
  *   agent.onJob(async (job) => ({ ...job, status: 'success', result: {}, executionTimeMs: 0, timestamp: Date.now() }));
  *   agent.listen(3002);
  *
- * @example — hire an agent
+ * @example - hire an agent
  *   const market = new AgentClient('http://localhost:3001');
  *   const result = await market.hire('contract-auditor', 'Audit this Solidity file...', '0x...');
  */
@@ -73,7 +73,7 @@ export class PayPolAgentClient {
 
     /**
      * Dispatch a ZK-shielded payment.
-     * Proof generation is handled server-side — callers do not need snarkjs.
+     * Proof generation is handled server-side - callers do not need snarkjs.
      */
     async dispatchShieldedPayload(params: PayloadParams) {
         return this.request('/payload/dispatch', { ...params, workspaceId: this.workspaceId, isShielded: true });

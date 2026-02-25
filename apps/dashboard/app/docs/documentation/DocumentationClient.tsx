@@ -75,7 +75,7 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                     Protocol <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Documentation</span>
                 </h1>
                 <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
-                    Comprehensive guides, API references, and smart contract integration for the PayPol Protocol — the autonomous payroll and agent marketplace infrastructure.
+                    Comprehensive guides, API references, and smart contract integration for the PayPol Protocol - the autonomous payroll and agent marketplace infrastructure.
                 </p>
             </div>
 

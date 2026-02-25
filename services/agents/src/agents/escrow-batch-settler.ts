@@ -1,7 +1,7 @@
 /**
- * Escrow Batch Settler Agent — Settle/refund multiple escrows at once
+ * Escrow Batch Settler Agent - Settle/refund multiple escrows at once
  *
- * Batch process multiple NexusV2 escrow jobs — settle or refund them
+ * Batch process multiple NexusV2 escrow jobs - settle or refund them
  * in a single operation. Real on-chain execution on Tempo L1.
  */
 

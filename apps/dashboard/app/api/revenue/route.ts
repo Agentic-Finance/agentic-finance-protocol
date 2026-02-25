@@ -1,5 +1,5 @@
 /**
- * GET /api/revenue — Revenue & TVL Dashboard Data
+ * GET /api/revenue - Revenue & TVL Dashboard Data
  *
  * Returns:
  *   - TVL: Total Value Locked across all contracts

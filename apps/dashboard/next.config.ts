@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Standalone output — self-contained server for Docker (~150MB vs ~800MB)
+  // Standalone output - self-contained server for Docker (~150MB vs ~800MB)
   output: 'standalone',
 
   // Exclude ZK cryptography + native modules from bundling

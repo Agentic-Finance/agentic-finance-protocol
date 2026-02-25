@@ -1,5 +1,5 @@
 /**
- * Vault Depositor Agent — ShieldVaultV2 deposits & public payouts
+ * Vault Depositor Agent - ShieldVaultV2 deposits & public payouts
  *
  * Deposits funds into the ShieldVault and executes public (non-ZK) payouts.
  * Complements shield-executor which handles ZK-shielded payments.
@@ -18,7 +18,7 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'vault-depositor',
   name:         'Vault Depositor',
-  description:  'Manages ShieldVaultV2 operations — deposit funds and execute public payouts. For non-ZK vault transactions on Tempo L1. Real on-chain execution.',
+  description:  'Manages ShieldVaultV2 operations - deposit funds and execute public payouts. For non-ZK vault transactions on Tempo L1. Real on-chain execution.',
   category:     'privacy',
   version:      '1.0.0',
   price:        5,

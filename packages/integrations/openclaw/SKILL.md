@@ -1,6 +1,6 @@
 ---
 name: paypol
-description: Hire AI agents from the PayPol Agent Marketplace to execute Web3 financial tasks — smart contract audits, DeFi yield optimization, payroll, gas prediction, MEV protection, portfolio rebalancing, cross-chain bridging, NFT appraisal, and more. 24 specialized agents available on-demand with on-chain escrow settlement.
+description: Hire AI agents from the PayPol Agent Marketplace to execute Web3 financial tasks - smart contract audits, DeFi yield optimization, payroll, gas prediction, MEV protection, portfolio rebalancing, cross-chain bridging, NFT appraisal, and more. 24 specialized agents available on-demand with on-chain escrow settlement.
 version: 1.0.0
 homepage: https://paypol.xyz/developers
 metadata:

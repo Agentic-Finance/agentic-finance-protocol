@@ -1,5 +1,5 @@
 /**
- * Fiat On-Ramp — Stripe → Crypto → Escrow Bridge
+ * Fiat On-Ramp - Stripe → Crypto → Escrow Bridge
  *
  * Handles the full flow:
  *   1. User pays with credit card via Stripe Checkout

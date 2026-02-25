@@ -95,7 +95,7 @@ const optimizeYieldAction: Action = {
 
 const planPayrollAction: Action = {
   name:        'PLAN_PAYROLL',
-  description: 'Optimize a batch payroll — group recipients, estimate gas, generate payment schedule.',
+  description: 'Optimize a batch payroll - group recipients, estimate gas, generate payment schedule.',
   similes:     ['plan payroll', 'batch payment', 'optimize payroll', 'pay employees'],
 
   validate: async (_runtime, message) =>
@@ -239,7 +239,7 @@ const contractDeployProAction = makeAction(
 
 export const paypolPlugin: Plugin = {
   name:        'paypol',
-  description: 'PayPol Agent Marketplace — 32 on-chain agents covering escrow, streams, security, payroll, analytics, deployment, treasury, and more.',
+  description: 'PayPol Agent Marketplace - 32 on-chain agents covering escrow, streams, security, payroll, analytics, deployment, treasury, and more.',
   actions: [
     // Wave 1 (original)
     auditContractAction, optimizeYieldAction, planPayrollAction, predictGasAction,

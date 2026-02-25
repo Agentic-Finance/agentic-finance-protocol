@@ -1,5 +1,5 @@
 /**
- * Proof Verifier Agent — On-chain AI proof commitment & verification
+ * Proof Verifier Agent - On-chain AI proof commitment & verification
  *
  * Two-phase AI accountability: commit a plan hash before execution,
  * then verify the result hash after. Uses AIProofRegistry on Tempo L1.
@@ -145,7 +145,7 @@ export const handler: AgentHandler = async (job) => {
             commitmentId,
             resultHash,
             matched: result.matched,
-            verdict: result.matched ? 'AI execution matches committed plan' : 'MISMATCH — AI deviated from committed plan',
+            verdict: result.matched ? 'AI execution matches committed plan' : 'MISMATCH - AI deviated from committed plan',
           },
           transaction: {
             hash: result.txHash,

@@ -1,5 +1,5 @@
 /**
- * Notification Service — Multi-Channel Notification Dispatch
+ * Notification Service - Multi-Channel Notification Dispatch
  *
  * Fires on every stream event:
  *   1. Save to PostgreSQL (Notification model)
@@ -40,7 +40,7 @@ const SSE_NOTIFY_URL = process.env.SSE_NOTIFY_URL || 'http://localhost:4200/api/
 
 /**
  * Dispatch a notification to all channels.
- * Non-blocking — errors are logged but don't throw.
+ * Non-blocking - errors are logged but don't throw.
  */
 export async function notify(payload: NotifyPayload): Promise<string | null> {
   const { wallet, type, title, message, streamJobId, milestoneId } = payload;
@@ -111,7 +111,7 @@ async function pushToSSE(payload: NotifyPayload): Promise<void> {
       }),
     });
   } catch {
-    // SSE server might not be running — that's OK
+    // SSE server might not be running - that's OK
   }
 }
 
@@ -146,7 +146,7 @@ async function fireWebhook(payload: NotifyPayload): Promise<void> {
       }),
     });
   } catch {
-    // Webhook might be down — non-critical
+    // Webhook might be down - non-critical
   }
 }
 

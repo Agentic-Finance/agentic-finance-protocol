@@ -1,5 +1,5 @@
 /**
- * Stream Creator Agent — Create milestone payment streams on StreamV1
+ * Stream Creator Agent - Create milestone payment streams on StreamV1
  *
  * Parses job descriptions into milestone breakdowns and creates
  * progressive payment streams on-chain. Real Tempo L1 execution.
@@ -105,7 +105,7 @@ export const handler: AgentHandler = async (job) => {
     const totalBudget = milestoneAmounts.reduce((s: number, a: number) => s + a, 0);
     const deadlineSeconds = (deadlineHours || 168) * 3600;
 
-    console.log(`[stream-creator] Phase 2: Creating stream — ${milestones.length} milestones, ${totalBudget} AlphaUSD, ${deadlineHours || 168}h deadline...`);
+    console.log(`[stream-creator] Phase 2: Creating stream - ${milestones.length} milestones, ${totalBudget} AlphaUSD, ${deadlineHours || 168}h deadline...`);
 
     const result = await createStreamOnChain(
       agentWallet,
@@ -115,7 +115,7 @@ export const handler: AgentHandler = async (job) => {
       DEFAULT_TOKEN.decimals,
     );
 
-    console.log(`[stream-creator] Stream created: #${result.streamId} — TX: ${result.txHash}`);
+    console.log(`[stream-creator] Stream created: #${result.streamId} - TX: ${result.txHash}`);
 
     return {
       jobId: job.jobId, agentId: job.agentId, status: 'success',

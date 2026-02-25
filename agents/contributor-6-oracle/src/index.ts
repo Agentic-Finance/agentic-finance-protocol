@@ -3,8 +3,8 @@
  * Author: @doctormanhattan
  *
  * Two agents:
- *   1. oracle-deployer    — Deploy price oracle contracts on Tempo L1
- *   2. price-feed-manager — Manage and update price feeds from multiple sources
+ *   1. oracle-deployer    - Deploy price oracle contracts on Tempo L1
+ *   2. price-feed-manager - Manage and update price feeds from multiple sources
  */
 
 import 'dotenv/config';
@@ -182,4 +182,4 @@ const route = (agent: any, id: string) => {
 route(oracleDeployer, 'oracle-deployer');
 route(priceFeedManager, 'price-feed-manager');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['oracle-deployer', 'price-feed-manager'] }));
-app.listen(PORT, () => console.log(`[contributor-6] Oracle agents on port ${PORT} — @doctormanhattan`));
+app.listen(PORT, () => console.log(`[contributor-6] Oracle agents on port ${PORT} - @doctormanhattan`));

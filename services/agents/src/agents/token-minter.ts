@@ -1,5 +1,5 @@
 /**
- * Token Minter Agent — Deploy ERC20 with detailed parameters
+ * Token Minter Agent - Deploy ERC20 with detailed parameters
  *
  * Advanced token deployment with customizable supply, name, symbol,
  * and initial distribution. Deploys real ERC20 contracts on Tempo L1.
@@ -73,7 +73,7 @@ export const handler: AgentHandler = async (job) => {
     const { name, symbol, decimals = 18, initialSupply, description } = intent;
     if (!name || !symbol || !initialSupply) return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'name, symbol, and initialSupply are required.', executionTimeMs: Date.now() - start, timestamp: Date.now() };
 
-    console.log(`[token-minter] Phase 2: Deploying ${name} (${symbol}) — ${initialSupply} tokens, ${decimals} decimals...`);
+    console.log(`[token-minter] Phase 2: Deploying ${name} (${symbol}) - ${initialSupply} tokens, ${decimals} decimals...`);
 
     const wallet = getWallet();
     const provider = getProvider();

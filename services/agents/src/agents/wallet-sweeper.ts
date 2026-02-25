@@ -1,5 +1,5 @@
 /**
- * Wallet Sweeper Agent — Emergency token sweep to safe address
+ * Wallet Sweeper Agent - Emergency token sweep to safe address
  *
  * Scans all supported token balances and transfers them to a specified
  * safe wallet address. Useful for emergency fund recovery or wallet migration.
@@ -16,7 +16,7 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'wallet-sweeper',
   name:         'Wallet Sweeper',
-  description:  'Emergency token sweep — transfers all supported token balances to a safe wallet address. Scans AlphaUSD, pathUSD, BetaUSD, ThetaUSD and sweeps non-zero balances. Real on-chain execution on Tempo L1.',
+  description:  'Emergency token sweep - transfers all supported token balances to a safe wallet address. Scans AlphaUSD, pathUSD, BetaUSD, ThetaUSD and sweeps non-zero balances. Real on-chain execution on Tempo L1.',
   category:     'security',
   version:      '1.0.0',
   price:        5,
@@ -71,7 +71,7 @@ export const handler: AgentHandler = async (job) => {
       totalSweptUSD += Number(formatted);
     }
 
-    console.log(`[wallet-sweeper] Sweep complete — $${totalSweptUSD.toFixed(2)} total`);
+    console.log(`[wallet-sweeper] Sweep complete - $${totalSweptUSD.toFixed(2)} total`);
 
     return { jobId: job.jobId, agentId: job.agentId, status: 'success', result: {
       phase: 'sweep-complete', onChain: true, network: 'Tempo Moderato Testnet', chainId: TEMPO_CHAIN_ID,

@@ -1,5 +1,5 @@
 /**
- * Workflow Engine — Manages multi-step agent workflows
+ * Workflow Engine - Manages multi-step agent workflows
  *
  * Supports:
  * - Single-agent execution
@@ -92,7 +92,7 @@ export class WorkflowEngine {
       // Check condition (if any)
       if (step.condition && !this.evaluateCondition(step.condition, workflow)) {
         step.status = 'skipped';
-        console.log(`[workflow] Step ${step.stepId} (${step.agentId}) skipped — condition not met`);
+        console.log(`[workflow] Step ${step.stepId} (${step.agentId}) skipped - condition not met`);
         continue;
       }
 
@@ -109,7 +109,7 @@ export class WorkflowEngine {
           step.escrow = escrow;
         } catch (err: any) {
           console.warn(`[workflow] Escrow lock failed for step ${step.stepId}: ${err.message}`);
-          // Continue without escrow — not blocking
+          // Continue without escrow - not blocking
         }
       }
 

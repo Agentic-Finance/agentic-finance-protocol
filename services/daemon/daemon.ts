@@ -22,10 +22,10 @@ dotenv.config();
 // ==========================================
 const RPC_URL = "https://rpc.moderato.tempo.xyz";
 const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
-// V2 Shield Vault (set after deployment — falls back to V1 if not deployed)
+// V2 Shield Vault (set after deployment - falls back to V1 if not deployed)
 const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "";
 
-// NexusV2 — A2A Escrow Lifecycle (deployed to Tempo testnet)
+// NexusV2 - A2A Escrow Lifecycle (deployed to Tempo testnet)
 const PAYPOL_NEXUS_V2_ADDRESS = "0x3Bc01ecc428Ca0Ff76c433F8B3B46D00edE15837";
 
 if (!process.env.DAEMON_PRIVATE_KEY) {
@@ -38,7 +38,7 @@ const SHIELD_ABI_V1 = [
     "function executeShieldedPayout(uint256[24] calldata proof, uint256[2] calldata pubSignals, uint256 exactAmount) external"
 ];
 
-// V2 Shield ABI (3 pubSignals — commitment, nullifierHash, recipient)
+// V2 Shield ABI (3 pubSignals - commitment, nullifierHash, recipient)
 const SHIELD_ABI_V2 = [
     "function deposit(uint256 commitment, uint256 amount) external",
     "function executeShieldedPayout(uint256[24] calldata proof, uint256[3] calldata pubSignals, uint256 exactAmount) external",
@@ -199,7 +199,7 @@ class PayPolDaemon {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // ZK PROOF GENERATION — V1 (Legacy: hardcoded adminSecret)
+    // ZK PROOF GENERATION - V1 (Legacy: hardcoded adminSecret)
     // ═══════════════════════════════════════════════════════════
     private async generateZKProofV1(recipient: string, amount: string) {
         let cleanRecipient = recipient.toLowerCase().trim();
@@ -242,7 +242,7 @@ class PayPolDaemon {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // ZK PROOF GENERATION — V2 (Random secrets + Nullifier)
+    // ZK PROOF GENERATION - V2 (Random secrets + Nullifier)
     // ═══════════════════════════════════════════════════════════
     private async generateZKProofV2(recipient: string, amount: string) {
         let cleanRecipient = recipient.toLowerCase().trim();
@@ -258,11 +258,11 @@ class PayPolDaemon {
 
         const poseidon = await buildPoseidon();
 
-        // V2 Commitment: Poseidon(secret, nullifier, amount, recipient) — 4 inputs
+        // V2 Commitment: Poseidon(secret, nullifier, amount, recipient) - 4 inputs
         const commitHash = poseidon([BigInt(secret), BigInt(nullifier), BigInt(amount), BigInt(recipientBigIntStr)]);
         const commitment = poseidon.F.toObject(commitHash).toString();
 
-        // V2 NullifierHash: Poseidon(nullifier, secret) — 2 inputs
+        // V2 NullifierHash: Poseidon(nullifier, secret) - 2 inputs
         const nullHash = poseidon([BigInt(nullifier), BigInt(secret)]);
         const nullifierHash = poseidon.F.toObject(nullHash).toString();
 
@@ -303,7 +303,7 @@ class PayPolDaemon {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // A2A ESCROW — Timeout Auto-Refund
+    // A2A ESCROW - Timeout Auto-Refund
     // ═══════════════════════════════════════════════════════════
     private async processA2ATimeouts() {
         try {
@@ -364,7 +364,7 @@ class PayPolDaemon {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // A2A ESCROW — Auto-Settle Completed Jobs
+    // A2A ESCROW - Auto-Settle Completed Jobs
     // ═══════════════════════════════════════════════════════════
     private async processCompletedJobs() {
         try {

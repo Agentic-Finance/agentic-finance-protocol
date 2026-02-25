@@ -165,7 +165,7 @@ export default function SecurityDeposit({ walletAddress }: SecurityDepositProps)
               <div className="flex items-center gap-2 text-rose-400 text-xs">
                 <ExclamationTriangleIcon className="w-4 h-4" />
                 <span className="font-bold">{deposit.slashCount} slash event(s)</span>
-                <span className="text-rose-300">— ${deposit.totalSlashed.toFixed(2)} slashed</span>
+                <span className="text-rose-300"> - ${deposit.totalSlashed.toFixed(2)} slashed</span>
               </div>
             </div>
           )}

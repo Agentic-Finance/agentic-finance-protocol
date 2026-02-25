@@ -40,7 +40,7 @@ export interface A2AJobRequest extends JobRequest {
   parentJobId?: string;
   /** Which agent is hiring (e.g. 'coordinator') */
   parentAgentId?: string;
-  /** Recursion depth — max 5 to prevent runaway chains */
+  /** Recursion depth - max 5 to prevent runaway chains */
   depth: number;
   /** Budget allocated by the parent for this sub-task (USD) */
   budgetAllocation: number;

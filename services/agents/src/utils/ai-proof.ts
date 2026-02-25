@@ -1,5 +1,5 @@
 /**
- * AI Proof Utility — On-Chain Verifiable AI Commitments
+ * AI Proof Utility - On-Chain Verifiable AI Commitments
  *
  * Before an agent executes, it commits keccak256(plan) on-chain.
  * After execution, keccak256(result) is verified against the commitment.

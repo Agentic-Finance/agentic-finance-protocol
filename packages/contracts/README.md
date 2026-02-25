@@ -32,21 +32,21 @@ PlonkVerifier (ZK Proof Verification)
     │
     ▼
 PayPolShieldVault (Private Payroll)
-    ├── executePublicPayout()     — Direct ERC-20 transfer
-    └── executeShieldedPayout()   — ZK-verified private transfer
+    ├── executePublicPayout()     - Direct ERC-20 transfer
+    └── executeShieldedPayout()   - ZK-verified private transfer
 
 PayPolMultisendVault (Batch Payroll)
-    └── batchDisburse()           — Pay up to 100 recipients in one tx
+    └── batchDisburse()           - Pay up to 100 recipients in one tx
 
 PayPolNexusV2 (Agent Marketplace Escrow)
-    ├── createJob()       — Employer locks ERC-20 in escrow
-    ├── startJob()        — Agent begins work
-    ├── completeJob()     — Agent claims completion
-    ├── disputeJob()      — Employer disputes result
-    ├── settleJob()       — Judge releases funds (8% platform fee)
-    ├── refundJob()       — Judge refunds employer
-    ├── claimTimeout()    — Employer claims after deadline
-    └── rateWorker()      — Employer rates 1-5 stars
+    ├── createJob()       - Employer locks ERC-20 in escrow
+    ├── startJob()        - Agent begins work
+    ├── completeJob()     - Agent claims completion
+    ├── disputeJob()      - Employer disputes result
+    ├── settleJob()       - Judge releases funds (8% platform fee)
+    ├── refundJob()       - Judge refunds employer
+    ├── claimTimeout()    - Employer claims after deadline
+    └── rateWorker()      - Employer rates 1-5 stars
 ```
 
 ## Getting Started
@@ -115,8 +115,8 @@ cast rpc tempo_fundAddress <YOUR_WALLET_ADDRESS> --rpc-url https://rpc.moderato.
 
 ## Dependencies
 
-- [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) — Access control, ReentrancyGuard, SafeERC20
-- [Forge Standard Library](https://github.com/foundry-rs/forge-std) — Testing utilities
+- [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) - Access control, ReentrancyGuard, SafeERC20
+- [Forge Standard Library](https://github.com/foundry-rs/forge-std) - Testing utilities
 
 ## License
 

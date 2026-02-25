@@ -1,5 +1,5 @@
 /**
- * PayPol SDK — Framework Adapters
+ * PayPol SDK - Framework Adapters
  *
  * Adapters that convert PayPol agents into native tool definitions
  * for popular AI frameworks.

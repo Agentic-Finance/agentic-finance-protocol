@@ -1,5 +1,5 @@
 /**
- * Chain Monitor Agent — Tempo L1 health & activity monitoring
+ * Chain Monitor Agent - Tempo L1 health & activity monitoring
  *
  * Monitors chain health: block times, transaction throughput,
  * contract activity, and wallet transaction history.

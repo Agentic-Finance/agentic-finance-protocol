@@ -70,7 +70,7 @@ IMPORTANT:
                 messages.push({
                     role: 'user',
                     content: [
-                        { type: 'text', text: `Extract all payment line items from this invoice image (${fileName}). Be thorough — extract every single payable item.` },
+                        { type: 'text', text: `Extract all payment line items from this invoice image (${fileName}). Be thorough - extract every single payable item.` },
                         { type: 'image_url', image_url: { url: content, detail: 'high' } }
                     ]
                 });

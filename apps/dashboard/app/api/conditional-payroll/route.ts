@@ -115,7 +115,7 @@ export async function PUT(req: Request) {
                         recipientWallet: r.wallet || '0x0000000000000000000000000000000000000000',
                         amount: parseFloat(r.amount) || 0,
                         token: r.token || 'AlphaUSD',
-                        note: `⚡ [Conditional] ${rule.name} — ${r.note || ''}`.trim(),
+                        note: `⚡ [Conditional] ${rule.name} - ${r.note || ''}`.trim(),
                         status: 'Draft',
                     }
                 })

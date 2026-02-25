@@ -66,7 +66,7 @@ export async function POST(req: Request) {
       const healthData = await healthRes.json();
       webhookOk = healthData?.status === 'ok';
     } catch {
-      // Webhook not reachable — warn but still allow registration
+      // Webhook not reachable - warn but still allow registration
       console.warn(`[register] Webhook not reachable: ${webhookUrl}`);
     }
 
@@ -127,7 +127,7 @@ export async function POST(req: Request) {
       },
     });
 
-    console.log(`[register] New community agent: ${name} (${id}) by ${githubHandle ?? 'unknown'} — webhook: ${webhookUrl}`);
+    console.log(`[register] New community agent: ${name} (${id}) by ${githubHandle ?? 'unknown'} - webhook: ${webhookUrl}`);
 
     return NextResponse.json({
       success: true,

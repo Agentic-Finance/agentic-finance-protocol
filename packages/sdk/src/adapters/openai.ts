@@ -95,7 +95,7 @@ const AGENT_CATALOG: { id: string; name: string; description: string; category: 
  * Convert PayPol agents to OpenAI function-calling tools.
  *
  * @param client  AgentClient instance (used for dynamic agent list)
- * @param agentIds  Optional filter — only include these agent IDs
+ * @param agentIds  Optional filter - only include these agent IDs
  */
 export async function toOpenAITools(
   client?: AgentClient,

@@ -1,5 +1,5 @@
 /**
- * Bulk Escrow Agent — Create multiple NexusV2 escrow jobs at once
+ * Bulk Escrow Agent - Create multiple NexusV2 escrow jobs at once
  *
  * Batch-create escrow jobs for hiring multiple workers simultaneously.
  * Each job gets its own on-chain escrow with independent lifecycle.

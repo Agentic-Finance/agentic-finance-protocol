@@ -1,5 +1,5 @@
 /**
- * Escrow Dispute Agent — NexusV2 dispute resolution
+ * Escrow Dispute Agent - NexusV2 dispute resolution
  *
  * Handles escrow disputes as the judge (daemon wallet). Can dispute jobs,
  * check timeout status, and claim timed-out escrows.

@@ -1,5 +1,5 @@
 /**
- * Balance Scanner Agent — On-chain portfolio analysis
+ * Balance Scanner Agent - On-chain portfolio analysis
  *
  * Scans wallet balances across all PayPol-supported tokens,
  * checks contract allowances, and provides a comprehensive
@@ -104,7 +104,7 @@ export const handler: AgentHandler = async (job) => {
     const blockNumber = await provider.getBlockNumber();
     const block = await provider.getBlock(blockNumber);
 
-    console.log(`[balance-scanner] Scan complete — ${tokenBalances.length} tokens, $${totalValueUSD.toFixed(2)} total`);
+    console.log(`[balance-scanner] Scan complete - ${tokenBalances.length} tokens, $${totalValueUSD.toFixed(2)} total`);
 
     return {
       jobId: job.jobId, agentId: job.agentId, status: 'success',

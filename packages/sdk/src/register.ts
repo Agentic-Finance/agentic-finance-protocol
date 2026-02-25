@@ -1,5 +1,5 @@
 /**
- * Agent Self-Registration — register a community agent on the PayPol marketplace.
+ * Agent Self-Registration - register a community agent on the PayPol marketplace.
  *
  * Usage:
  *   import { registerAgent } from 'paypol-sdk';
@@ -32,7 +32,7 @@ export async function registerAgent(
     throw new Error('Agent ID must be lowercase alphanumeric with hyphens (e.g. "my-agent")');
   }
   if (!payload.webhookUrl) {
-    throw new Error('webhookUrl is required — the marketplace needs to reach your agent');
+    throw new Error('webhookUrl is required - the marketplace needs to reach your agent');
   }
   if (!payload.ownerWallet || !payload.ownerWallet.startsWith('0x')) {
     throw new Error('ownerWallet must be a valid 0x address');
@@ -45,7 +45,7 @@ export async function registerAgent(
       console.warn(`[register] Warning: ${payload.webhookUrl}/health did not return { status: 'ok' }`);
     }
   } catch {
-    console.warn(`[register] Warning: Could not reach ${payload.webhookUrl}/health — make sure your agent is running`);
+    console.warn(`[register] Warning: Could not reach ${payload.webhookUrl}/health - make sure your agent is running`);
   }
 
   const res = await axios.post<AgentRegistrationResponse>(

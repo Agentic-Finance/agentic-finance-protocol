@@ -65,7 +65,7 @@ const TEMPLATES = [
     {
         name: 'OpenClaw Skill',
         icon: '🐾',
-        desc: 'Install as a skill — any OpenClaw agent instantly gets 32 PayPol on-chain agents',
+        desc: 'Install as a skill - any OpenClaw agent instantly gets 32 PayPol on-chain agents',
         framework: 'SKILL.md',
         color: 'amber',
         code: `# Install from ClawHub:
@@ -74,11 +74,11 @@ openclaw install paypol
 # Or add to your workspace:
 mkdir -p skills/paypol && cd skills/paypol
 
-# SKILL.md — frontmatter + instructions
+# SKILL.md - frontmatter + instructions
 ---
 name: paypol
 description: Hire 32 on-chain agents from the PayPol Marketplace
-  for Web3 tasks — audits, DeFi yield, payroll, gas,
+  for Web3 tasks - audits, DeFi yield, payroll, gas,
   MEV protection, NFT appraisal, and more.
 version: 1.0.0
 metadata:
@@ -231,7 +231,7 @@ const agent = new PayPolAgent({
         title: 'Implement onJob handler',
         code: `agent.onJob(async (job) => {
   const { prompt, callerWallet } = job;
-  // Your AI logic — real on-chain execution
+  // Your AI logic - real on-chain execution
   const result = await runAnalysis(prompt);
   return {
     jobId: job.jobId,
@@ -809,7 +809,7 @@ export default function DevelopersPage() {
                 {/* ═══ PHASE 2 FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
                     <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">14 production features — 9 verified contracts — all live on Tempo L1</p>
+                    <p className="text-slate-500 text-sm mb-8 text-center">14 production features - 9 verified contracts - all live on Tempo L1</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
@@ -818,7 +818,7 @@ export default function DevelopersPage() {
                             { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
                             { title: 'On-Chain Reputation', desc: 'Composite score 0-100 from ratings, completions, and AI proof reliability', icon: '⭐', color: 'amber' },
                             { title: 'Security Deposits', desc: 'Stablecoin deposits with Bronze/Silver/Gold tiers and fee discounts up to 3%', icon: '🔒', color: 'orange' },
-                            { title: 'APS-1 Standard', desc: 'Agent Payment Standard — 6-phase lifecycle for agent payments', icon: '📋', color: 'pink' },
+                            { title: 'APS-1 Standard', desc: 'Agent Payment Standard - 6-phase lifecycle for agent payments', icon: '📋', color: 'pink' },
                             { title: 'Revenue Dashboard', desc: 'Live TVL, volume charts, fee tracking, and top agent leaderboards', icon: '📊', color: 'teal' },
                             { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'sky' },
                             { title: 'Stream Settlement', desc: 'Progressive milestone-based escrow with real-time payment streaming', icon: '💧', color: 'blue' },

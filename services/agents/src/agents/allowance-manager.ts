@@ -1,5 +1,5 @@
 /**
- * Allowance Manager Agent — ERC20 approval management for PayPol contracts
+ * Allowance Manager Agent - ERC20 approval management for PayPol contracts
  *
  * Check, approve, and revoke token allowances for all PayPol smart contracts.
  * Helps users manage which contracts can spend their tokens.

@@ -1,5 +1,5 @@
 /**
- * Tempo Benchmark Agent — Cost Comparison vs Ethereum
+ * Tempo Benchmark Agent - Cost Comparison vs Ethereum
  *
  * Executes 5 representative operations on Tempo testnet,
  * records actual gas costs, then calculates equivalent costs
@@ -145,7 +145,7 @@ export const handler: AgentHandler = async (job) => {
     const ethEstimate2 = ETH_GAS_ESTIMATES['Escrow Creation'];
     operations.push({
       name: 'Escrow Creation',
-      description: 'NexusV2.createJob() — trustless fund locking',
+      description: 'NexusV2.createJob() - trustless fund locking',
       tempoGasUsed: Number(receipt2.gasUsed),
       tempoTxHash: receipt2.hash,
       tempoBlockTime: Date.now() - opStart2,
@@ -166,7 +166,7 @@ export const handler: AgentHandler = async (job) => {
     const ethEstimate3 = ETH_GAS_ESTIMATES['Escrow Settlement'];
     operations.push({
       name: 'Escrow Settlement',
-      description: 'NexusV2.settleJob() — trustless payout with 8% fee',
+      description: 'NexusV2.settleJob() - trustless payout with 8% fee',
       tempoGasUsed: Number(receipt3.gasUsed),
       tempoTxHash: receipt3.hash,
       tempoBlockTime: Date.now() - opStart3,
@@ -203,7 +203,7 @@ export const handler: AgentHandler = async (job) => {
     const ethEstimate4 = ETH_GAS_ESTIMATES['Batch Payment (5)'];
     operations.push({
       name: 'Batch Payment (5 recipients)',
-      description: 'MultisendVaultV2.executePublicBatch() — 5 recipients in 1 TX',
+      description: 'MultisendVaultV2.executePublicBatch() - 5 recipients in 1 TX',
       tempoGasUsed: Number(receipt4.gasUsed),
       tempoTxHash: receipt4.hash,
       tempoBlockTime: Date.now() - opStart4,
@@ -223,7 +223,7 @@ export const handler: AgentHandler = async (job) => {
     const ethEstimate5 = ETH_GAS_ESTIMATES['AI Proof Commit'];
     operations.push({
       name: 'AI Proof Commit',
-      description: 'AIProofRegistry.commit() — verifiable AI commitment',
+      description: 'AIProofRegistry.commit() - verifiable AI commitment',
       tempoGasUsed: 0, // Will be estimated
       tempoTxHash: commitResult.txHash,
       tempoBlockTime: Date.now() - opStart5,
@@ -256,7 +256,7 @@ export const handler: AgentHandler = async (job) => {
         operationsExecuted: operations.length,
         totalTransactions: operations.length + 1, // +1 for deposit
       },
-      conclusion: `Running PayPol's 5 core operations costs $${totalEthCost.toFixed(2)} on Ethereum at ${ethGasPriceGwei} gwei. On Tempo, the same operations cost $0.00 — a 100% savings of $${totalSavings.toFixed(2)}. Tempo's zero-fee L1 makes PayPol's agent economy viable for micro-transactions that would be prohibitively expensive on Ethereum.`,
+      conclusion: `Running PayPol's 5 core operations costs $${totalEthCost.toFixed(2)} on Ethereum at ${ethGasPriceGwei} gwei. On Tempo, the same operations cost $0.00 - a 100% savings of $${totalSavings.toFixed(2)}. Tempo's zero-fee L1 makes PayPol's agent economy viable for micro-transactions that would be prohibitively expensive on Ethereum.`,
     };
 
     console.log(`\n[tempo-benchmark] ✅ Benchmark complete!`);

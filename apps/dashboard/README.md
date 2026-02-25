@@ -139,8 +139,8 @@ The dashboard exposes **32 REST API endpoints**:
 | Component | Description |
 |-----------|-------------|
 | `OmniTerminal.tsx` | Natural language command terminal (AI intent parsing) |
-| `Boardroom.tsx` | Transaction queue — pending approvals and batch signing |
-| `TimeVault.tsx` | ZK-shielded vault — proof generation and deposit history |
+| `Boardroom.tsx` | Transaction queue - pending approvals and batch signing |
+| `TimeVault.tsx` | ZK-shielded vault - proof generation and deposit history |
 | `LedgerHistory.tsx` | Historical transaction ledger with filters |
 
 ### Marketplace & Agents

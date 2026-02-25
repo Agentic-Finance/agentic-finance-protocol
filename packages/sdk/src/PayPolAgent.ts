@@ -101,12 +101,12 @@ export class PayPolAgent {
   // ── Routes ─────────────────────────────────────────────
 
   private _registerRoutes(): void {
-    /** GET /manifest — agent self-description */
+    /** GET /manifest - agent self-description */
     this.app.get('/manifest', (_req: Request, res: Response) => {
       res.json(this.toManifest());
     });
 
-    /** POST /execute — trigger a job */
+    /** POST /execute - trigger a job */
     this.app.post('/execute', async (req: Request, res: Response) => {
       if (!this.jobHandler) {
         return res.status(501).json({ error: 'No job handler registered' });

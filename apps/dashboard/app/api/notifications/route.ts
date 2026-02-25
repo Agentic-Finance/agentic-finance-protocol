@@ -4,7 +4,7 @@ import { getNotifications, markAsRead } from '../../lib/notify';
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/notifications — Fetch notifications for a wallet
+ * GET /api/notifications - Fetch notifications for a wallet
  *
  * Query: ?wallet=0x...&unreadOnly=true&limit=50&offset=0
  */
@@ -29,7 +29,7 @@ export async function GET(req: Request) {
 }
 
 /**
- * PUT /api/notifications — Mark notifications as read
+ * PUT /api/notifications - Mark notifications as read
  *
  * Body: { wallet: string, ids?: string[], markAllRead?: boolean }
  */

@@ -1,5 +1,5 @@
 /**
- * Token Transfer Agent — Direct ERC20 transfers on Tempo L1
+ * Token Transfer Agent - Direct ERC20 transfers on Tempo L1
  *
  * Parses natural language to transfer AlphaUSD, pathUSD, BetaUSD, or ThetaUSD
  * between wallets. Real on-chain execution with tx hash confirmation.

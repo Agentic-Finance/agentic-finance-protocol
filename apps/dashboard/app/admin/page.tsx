@@ -439,8 +439,8 @@ export default function PayPolAdminPage() {
                                                                 {ws.type}
                                                             </span>
                                                         </td>
-                                                        <td className="py-3 px-3 font-mono text-xs text-slate-400">{ws.admin_wallet ? `${ws.admin_wallet.slice(0, 10)}...${ws.admin_wallet.slice(-6)}` : '—'}</td>
-                                                        <td className="py-3 px-3 text-xs text-slate-500">{ws.created_at ? new Date(ws.created_at).toLocaleDateString() : '—'}</td>
+                                                        <td className="py-3 px-3 font-mono text-xs text-slate-400">{ws.admin_wallet ? `${ws.admin_wallet.slice(0, 10)}...${ws.admin_wallet.slice(-6)}` : '-'}</td>
+                                                        <td className="py-3 px-3 text-xs text-slate-500">{ws.created_at ? new Date(ws.created_at).toLocaleDateString() : '-'}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -539,7 +539,7 @@ export default function PayPolAdminPage() {
                                                 <div className="flex items-center gap-2 flex-wrap">
                                                     {rule.recipients.slice(0, 3).map((r: any, idx: number) => (
                                                         <span key={idx} className="text-xs text-slate-300 bg-indigo-500/5 border border-indigo-500/10 px-2 py-0.5 rounded-md">
-                                                            {r.name || r.wallet?.slice(0, 8) + '...'} — {r.amount} {r.token}
+                                                            {r.name || r.wallet?.slice(0, 8) + '...'} - {r.amount} {r.token}
                                                         </span>
                                                     ))}
                                                     {rule.recipients.length > 3 && (
@@ -636,11 +636,11 @@ export default function PayPolAdminPage() {
                                                             {tx.status}
                                                         </span>
                                                     </td>
-                                                    <td className="py-3.5 px-5 font-medium text-white">{tx.recipientName || '—'}</td>
-                                                    <td className="py-3.5 px-5 font-mono text-xs text-slate-400">{tx.recipientAddress ? `${tx.recipientAddress.slice(0, 8)}...${tx.recipientAddress.slice(-6)}` : '—'}</td>
+                                                    <td className="py-3.5 px-5 font-medium text-white">{tx.recipientName || '-'}</td>
+                                                    <td className="py-3.5 px-5 font-mono text-xs text-slate-400">{tx.recipientAddress ? `${tx.recipientAddress.slice(0, 8)}...${tx.recipientAddress.slice(-6)}` : '-'}</td>
                                                     <td className="py-3.5 px-5 text-right font-mono font-bold text-white tabular-nums">{parseFloat(tx.amount).toFixed(2)}</td>
                                                     <td className="py-3.5 px-5 text-xs text-slate-400">{tx.token}</td>
-                                                    <td className="py-3.5 px-5 text-xs text-slate-500 truncate max-w-[200px]">{tx.note || '—'}</td>
+                                                    <td className="py-3.5 px-5 text-xs text-slate-500 truncate max-w-[200px]">{tx.note || '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

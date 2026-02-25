@@ -5,7 +5,7 @@ import { notify } from '../../lib/notify';
 export const dynamic = 'force-dynamic';
 
 /**
- * POST /api/stream — Create a new stream job
+ * POST /api/stream - Create a new stream job
  *
  * Body: {
  *   clientWallet, agentWallet, agentName?, totalBudget,
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 }
 
 /**
- * GET /api/stream — List streams for a wallet
+ * GET /api/stream - List streams for a wallet
  *
  * Query: ?wallet=0x...&role=client|agent&status=ACTIVE
  */

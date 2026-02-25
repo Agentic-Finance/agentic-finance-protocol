@@ -1,5 +1,5 @@
 /**
- * Escrow Manager — On-chain escrow integration for orchestrator workflows
+ * Escrow Manager - On-chain escrow integration for orchestrator workflows
  *
  * Creates NexusV2 escrow jobs for each workflow step, providing:
  * - Trustless fund locking before agent execution
@@ -113,7 +113,7 @@ export class EscrowManager {
       const deadlineSeconds = 3600; // 1 hour deadline for agent tasks
 
       const tx = await nexus.createJob(
-        wallet.address,    // worker (self for demo — in prod this would be agent wallet)
+        wallet.address,    // worker (self for demo - in prod this would be agent wallet)
         wallet.address,    // judge (daemon)
         DEFAULT_TOKEN,
         amountWei,

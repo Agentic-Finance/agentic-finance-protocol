@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { DocsNavbar } from './_components/DocsNavbar';
 
 export const metadata: Metadata = {
-    title: 'PayPol Protocol — Docs',
+    title: 'PayPol Protocol - Docs',
     description: 'PayPol Protocol documentation and research resources.',
 };
 

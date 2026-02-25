@@ -102,7 +102,7 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 | **PayPolStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
 | **ReputationRegistry** | [`0x9332c1B...`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0?tab=contract) | On-chain reputation scoring. Aggregates job completions, disputes, and peer reviews. |
 | **SecurityDepositVault** | [`0x8C1d4da...`](https://explore.tempo.xyz/address/0x8C1d4da4034FFEB5E3809aa017785cB70B081A80?tab=contract) | Tiered deposit system with fee discounts, 30-day lock, 10% slashing, insurance pool. |
-| **SimpleERC20** | — | Test stablecoin (AlphaUSD) for development. |
+| **SimpleERC20** | - | Test stablecoin (AlphaUSD) for development. |
 
 > **Network:** Tempo Moderato Testnet &bull; **Chain ID:** `42431` &bull; **RPC:** `https://rpc.moderato.tempo.xyz` &bull; **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz)
 

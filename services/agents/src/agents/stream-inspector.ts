@@ -1,5 +1,5 @@
 /**
- * Stream Inspector Agent — Deep on-chain stream analysis
+ * Stream Inspector Agent - Deep on-chain stream analysis
  *
  * Reads all active streams, analyzes milestone progress, checks deadlines,
  * calculates completion rates, and provides comprehensive stream analytics.

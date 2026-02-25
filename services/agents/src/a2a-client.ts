@@ -1,5 +1,5 @@
 /**
- * A2A Client — Agent-to-Agent Hiring Utility
+ * A2A Client - Agent-to-Agent Hiring Utility
  *
  * Allows one agent to autonomously hire another agent through the
  * agent service. Each sub-task gets its own NexusV2 escrow on Tempo L1.
@@ -88,7 +88,7 @@ export class A2AClient {
       // Approve NexusV2
       await ensureApproval(DEFAULT_TOKEN.address, CONTRACTS.NEXUS_V2, amountWei);
 
-      // Create escrow — worker is daemon wallet (since agents run under daemon)
+      // Create escrow - worker is daemon wallet (since agents run under daemon)
       const nonce = await provider.getTransactionCount(wallet.address, 'pending');
       const tx = await nexus.createJob(
         wallet.address,      // Worker = daemon (same wallet, agents are co-located)

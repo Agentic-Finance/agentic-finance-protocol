@@ -1,5 +1,5 @@
 /**
- * Protocol Event Bus — Central event system for PayPol
+ * Protocol Event Bus - Central event system for PayPol
  *
  * EventEmitter-based bus that all services emit to. The SSE endpoint
  * subscribes to this bus and pushes events to connected dashboard clients.
@@ -116,7 +116,7 @@ class ProtocolEventBus extends EventEmitter {
     // Emit to listeners (SSE clients)
     this.emit('protocol-event', fullEvent);
 
-    console.log(`[event-bus] 📡 ${fullEvent.type} — ${fullEvent.data.agentId || fullEvent.data.txHash || 'system'}`);
+    console.log(`[event-bus] 📡 ${fullEvent.type} - ${fullEvent.data.agentId || fullEvent.data.txHash || 'system'}`);
     return fullEvent;
   }
 

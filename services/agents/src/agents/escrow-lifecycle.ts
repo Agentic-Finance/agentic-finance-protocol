@@ -1,5 +1,5 @@
 /**
- * Escrow Lifecycle Agent — NexusV2 job progression
+ * Escrow Lifecycle Agent - NexusV2 job progression
  *
  * Handles the middle stages of NexusV2 escrow lifecycle:
  * start jobs, mark complete, and rate workers.
@@ -18,7 +18,7 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'escrow-lifecycle',
   name:         'Escrow Lifecycle',
-  description:  'Manages NexusV2 escrow job progression — start execution, mark jobs complete, and rate workers. Handles the mid-lifecycle steps complementing the Escrow Manager. Real on-chain execution on Tempo L1.',
+  description:  'Manages NexusV2 escrow job progression - start execution, mark jobs complete, and rate workers. Handles the mid-lifecycle steps complementing the Escrow Manager. Real on-chain execution on Tempo L1.',
   category:     'escrow',
   version:      '1.0.0',
   price:        3,

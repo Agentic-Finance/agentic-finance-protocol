@@ -1,5 +1,5 @@
 /**
- * Contract Reader Agent — Read all PayPol contract states
+ * Contract Reader Agent - Read all PayPol contract states
  *
  * Comprehensive on-chain state reader. Reads NexusV2 job count,
  * MultisendV2 batch history, StreamV1 stream count, worker ratings,
@@ -71,7 +71,7 @@ export const handler: AgentHandler = async (job) => {
 
     const blockNumber = await provider.getBlockNumber();
 
-    console.log(`[contract-reader] Read complete — ${nextJobId} jobs, ${batchCount} batches, ${streamCount} streams`);
+    console.log(`[contract-reader] Read complete - ${nextJobId} jobs, ${batchCount} batches, ${streamCount} streams`);
 
     return { jobId: job.jobId, agentId: job.agentId, status: 'success', result: {
       phase: 'contracts-read', onChain: true, network: 'Tempo Moderato Testnet', chainId: TEMPO_CHAIN_ID,

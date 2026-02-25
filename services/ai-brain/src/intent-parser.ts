@@ -1,5 +1,5 @@
 /**
- * Intent Parser — Claude-powered natural language understanding
+ * Intent Parser - Claude-powered natural language understanding
  *
  * Converts user prompts into structured intents with:
  * - Action classification (pay, audit, deploy, bridge, analyze, hire_agent)

@@ -1,5 +1,5 @@
 /**
- * Coordinator Agent — A2A Task Decomposer & Orchestrator
+ * Coordinator Agent - A2A Task Decomposer & Orchestrator
  *
  * The coordinator agent receives complex prompts, uses Claude to decompose them
  * into sub-tasks, and autonomously hires other agents to execute each sub-task.
@@ -205,7 +205,7 @@ export const handler: AgentHandler = async (job) => {
         console.log(`[coordinator] ✅ Step ${step.stepIndex} (${step.agentId}) completed`);
       } else {
         console.error(`[coordinator] ❌ Step ${step.stepIndex} (${step.agentId}) failed: ${result.error}`);
-        // Don't break — let dependent steps be skipped naturally
+        // Don't break - let dependent steps be skipped naturally
       }
     }
 

@@ -89,7 +89,7 @@ export class APS1Client {
   // ── Phase 2: Negotiation ───────────────────────────────
 
   /**
-   * Propose a price for a job (optional — only if agent supports negotiation).
+   * Propose a price for a job (optional - only if agent supports negotiation).
    */
   async negotiate(
     agentId: string,

@@ -1,5 +1,5 @@
 /**
- * Treasury Manager Agent — Comprehensive treasury operations
+ * Treasury Manager Agent - Comprehensive treasury operations
  *
  * All-in-one treasury management: scan balances across all tokens,
  * check vault deposits, audit allowances, collect fees, and provide
@@ -89,7 +89,7 @@ export const handler: AgentHandler = async (job) => {
     // 7. Block info
     const blockNumber = await provider.getBlockNumber();
 
-    console.log(`[treasury-manager] Scan complete — $${totalUSD.toFixed(2)} wallet, $${totalContractHoldings.toFixed(2)} in contracts`);
+    console.log(`[treasury-manager] Scan complete - $${totalUSD.toFixed(2)} wallet, $${totalContractHoldings.toFixed(2)} in contracts`);
 
     return { jobId: job.jobId, agentId: job.agentId, status: 'success', result: {
       phase: 'treasury-report', onChain: true, network: 'Tempo Moderato Testnet', chainId: TEMPO_CHAIN_ID,

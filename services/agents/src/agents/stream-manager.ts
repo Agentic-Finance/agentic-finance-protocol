@@ -1,5 +1,5 @@
 /**
- * Stream Manager Agent — Manage stream lifecycle on StreamV1
+ * Stream Manager Agent - Manage stream lifecycle on StreamV1
  *
  * Submit milestones, approve/reject deliverables, cancel streams,
  * and inspect on-chain stream state. Real Tempo L1 execution.
@@ -17,7 +17,7 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'stream-manager',
   name:         'Stream Manager',
-  description:  'Manages PayPolStreamV1 lifecycle — submit milestones with proof hashes, approve/reject deliverables, cancel streams. Full on-chain execution on Tempo L1.',
+  description:  'Manages PayPolStreamV1 lifecycle - submit milestones with proof hashes, approve/reject deliverables, cancel streams. Full on-chain execution on Tempo L1.',
   category:     'streams',
   version:      '1.0.0',
   price:        5,

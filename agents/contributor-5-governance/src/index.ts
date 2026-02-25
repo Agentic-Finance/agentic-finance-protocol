@@ -3,8 +3,8 @@
  * Author: @tariqachaudhry
  *
  * Two agents:
- *   1. governance-executor — Execute DAO proposals on Tempo L1
- *   2. proposal-voter      — Automated voting on governance proposals
+ *   1. governance-executor - Execute DAO proposals on Tempo L1
+ *   2. proposal-voter      - Automated voting on governance proposals
  */
 
 import 'dotenv/config';
@@ -117,7 +117,7 @@ proposalVoter.onJob(async (job: JobRequest): Promise<JobResult> => {
         currentVotes: { for: 62, against: 18, abstain: 20 },
         riskLevel: 'LOW',
         recommendation: 'VOTE_FOR',
-        reasoning: 'Aligns with growth strategy. Low risk — funds come from surplus, not reserves.',
+        reasoning: 'Aligns with growth strategy. Low risk - funds come from surplus, not reserves.',
       },
       {
         id: 'PROP-B2',
@@ -196,4 +196,4 @@ const route = (agent: any, id: string) => {
 route(governanceExecutor, 'governance-executor');
 route(proposalVoter, 'proposal-voter');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['governance-executor', 'proposal-voter'] }));
-app.listen(PORT, () => console.log(`[contributor-5] Governance agents on port ${PORT} — @tariqachaudhry`));
+app.listen(PORT, () => console.log(`[contributor-5] Governance agents on port ${PORT} - @tariqachaudhry`));

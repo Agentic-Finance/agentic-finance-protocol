@@ -272,7 +272,7 @@ const agent = new APS1Agent({
 });
 
 agent.onExecute(async (envelope) => {
-  // Your logic here — envelope includes escrow + proof info
+  // Your logic here - envelope includes escrow + proof info
   return { status: 'success', result: { /* your data */ } };
 });
 

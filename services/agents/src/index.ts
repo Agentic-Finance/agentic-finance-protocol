@@ -1,7 +1,7 @@
 /**
  * PayPol Native Agents Service
  *
- * Express HTTP server exposing 32 built-in PayPol agents — ALL with real
+ * Express HTTP server exposing 32 built-in PayPol agents - ALL with real
  * on-chain execution on Tempo L1 (Chain 42431). No fake/AI-only agents.
  *
  * CORE AGENTS (Original 7):
@@ -54,7 +54,7 @@ import express from 'express';
 import cors    from 'cors';
 import 'dotenv/config';
 
-// Core Agents (original 7 — all real on-chain)
+// Core Agents (original 7 - all real on-chain)
 import * as escrowManager      from './agents/escrow-manager';
 import * as shieldExecutor     from './agents/shield-executor';
 import * as payrollPlanner     from './agents/payroll-planner';
@@ -63,7 +63,7 @@ import * as contractDeployPro  from './agents/contract-deploy-pro';
 import * as coordinatorAgent   from './agents/coordinator-agent';
 import * as tempoBenchmark     from './agents/tempo-benchmark';
 
-// On-Chain Agents Wave 1 (10 — all real on-chain)
+// On-Chain Agents Wave 1 (10 - all real on-chain)
 import * as tokenTransfer      from './agents/token-transfer';
 import * as streamCreator      from './agents/stream-creator';
 import * as streamManager      from './agents/stream-manager';
@@ -75,7 +75,7 @@ import * as balanceScanner     from './agents/balance-scanner';
 import * as feeCollector       from './agents/fee-collector';
 import * as escrowLifecycle    from './agents/escrow-lifecycle';
 
-// On-Chain Agents Wave 2 (15 — all real on-chain)
+// On-Chain Agents Wave 2 (15 - all real on-chain)
 import * as multiTokenSender   from './agents/multi-token-sender';
 import * as escrowDispute      from './agents/escrow-dispute';
 import * as streamInspector    from './agents/stream-inspector';
@@ -147,19 +147,19 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', agents: registry.size, timestamp: Date.now() });
 });
 
-// GET /agents — list all manifests
+// GET /agents - list all manifests
 app.get('/agents', (_req, res) => {
   res.json([...registry.values()].map(e => e.manifest));
 });
 
-// GET /agents/:id — single manifest
+// GET /agents/:id - single manifest
 app.get('/agents/:id', (req, res) => {
   const entry = registry.get(req.params.id);
   if (!entry) return res.status(404).json({ error: `Agent '${req.params.id}' not found` });
   res.json(entry.manifest);
 });
 
-// POST /agents/:id/execute — run a job
+// POST /agents/:id/execute - run a job
 app.post('/agents/:id/execute', async (req, res) => {
   const entry = registry.get(req.params.id);
   if (!entry) return res.status(404).json({ error: `Agent '${req.params.id}' not found` });
@@ -188,7 +188,7 @@ app.post('/agents/:id/execute', async (req, res) => {
   }
 });
 
-// POST /agents/:id/a2a-execute — A2A sub-task execution with parent tracking
+// POST /agents/:id/a2a-execute - A2A sub-task execution with parent tracking
 app.post('/agents/:id/a2a-execute', async (req, res) => {
   const entry = registry.get(req.params.id);
   if (!entry) return res.status(404).json({ error: `Agent '${req.params.id}' not found` });

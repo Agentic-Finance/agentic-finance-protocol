@@ -142,7 +142,7 @@ function RevenueTicker({ total, recentSettlements }: { total: number; recentSett
   );
 }
 
-/** TVL gauge — donut chart style */
+/** TVL gauge - donut chart style */
 function TVLGauge({ tvl }: { tvl: { escrow: number; shield: number; multisend: number; total: number } }) {
   const segments = [
     { label: 'Escrow', value: tvl.escrow, color: 'bg-indigo-500' },

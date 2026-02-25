@@ -3,8 +3,8 @@
  * Author: @swecast
  *
  * Two agents:
- *   1. staking-optimizer   — Optimal staking strategies with APY comparison
- *   2. validator-monitor   — Monitor validator uptime, rewards & slashing risk
+ *   1. staking-optimizer   - Optimal staking strategies with APY comparison
+ *   2. validator-monitor   - Monitor validator uptime, rewards & slashing risk
  */
 
 import 'dotenv/config';
@@ -145,8 +145,8 @@ validatorMonitor.onJob(async (job: JobRequest): Promise<JobResult> => {
         { name: 'HighYield Pro', status: 'WARNING', uptime: '97.50%', blocksProduced: 45678, missedBlocks: 115, rewards: '4,567 TEMPO', slashingRisk: 'MEDIUM' },
       ],
       alerts: [
-        { level: 'WARNING', validator: 'HighYield Pro', message: 'Uptime below 98% threshold — increased slashing risk' },
-        { level: 'INFO', validator: 'NodeRunners', message: 'Missed 5 blocks in last 24h — monitoring' },
+        { level: 'WARNING', validator: 'HighYield Pro', message: 'Uptime below 98% threshold - increased slashing risk' },
+        { level: 'INFO', validator: 'NodeRunners', message: 'Missed 5 blocks in last 24h - monitoring' },
       ],
       summary: {
         totalValidators: 5,
@@ -186,5 +186,5 @@ setupRoutes(validatorMonitor, 'validator-monitor');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['staking-optimizer', 'validator-monitor'] }));
 
 app.listen(PORT, () => {
-  console.log(`[contributor-2] Staking agents on port ${PORT} — @swecast`);
+  console.log(`[contributor-2] Staking agents on port ${PORT} - @swecast`);
 });

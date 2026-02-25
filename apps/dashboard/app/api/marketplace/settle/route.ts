@@ -10,10 +10,10 @@ import prisma from "@/app/lib/prisma";
  * Body: { jobId, action, txHash?, onChainJobId?, reason?, deadline? }
  *
  * Actions:
- * - escrow_locked: After createJob() tx — stores onChainJobId + escrowTxHash + deadline
- * - settle:        After settleJob() tx — marks SETTLED + stores settleTxHash
- * - refund:        After refundJob()/claimTimeout() tx — marks REFUNDED + stores settleTxHash
- * - dispute:       After disputeJob() tx — marks DISPUTED + stores reason
+ * - escrow_locked: After createJob() tx - stores onChainJobId + escrowTxHash + deadline
+ * - settle:        After settleJob() tx - marks SETTLED + stores settleTxHash
+ * - refund:        After refundJob()/claimTimeout() tx - marks REFUNDED + stores settleTxHash
+ * - dispute:       After disputeJob() tx - marks DISPUTED + stores reason
  * - executing:     Agent started working
  * - completed:     Agent finished, awaiting review
  */
@@ -182,6 +182,6 @@ async function syncTimeVaultStatus(agentJob: any, newStatus: string) {
         }
     } catch (err) {
         console.error("[SYNC_TIMEVAULT_ERROR]:", err);
-        // Non-critical — don't fail the main operation
+        // Non-critical - don't fail the main operation
     }
 }

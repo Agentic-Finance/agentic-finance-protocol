@@ -1,5 +1,5 @@
 /**
- * Proof Auditor Agent — AIProofRegistry deep audit
+ * Proof Auditor Agent - AIProofRegistry deep audit
  *
  * Reads commitment history, verification rates, match/mismatch ratios,
  * and provides comprehensive AI accountability audit from on-chain data.

@@ -107,7 +107,7 @@ export class APS1Agent {
 
   /**
    * Register the handler called for every APS-1 execution envelope.
-   * Return a partial APS1Result — jobId, agentId, executionTimeMs, timestamp
+   * Return a partial APS1Result - jobId, agentId, executionTimeMs, timestamp
    * are filled in automatically.
    */
   onExecute(handler: APS1ExecuteHandler): this {
@@ -175,12 +175,12 @@ export class APS1Agent {
   // ── Routes ──────────────────────────────────────────
 
   private _registerRoutes(): void {
-    // GET /manifest — APS-1 manifest
+    // GET /manifest - APS-1 manifest
     this.app.get('/manifest', (_req: Request, res: Response) => {
       res.json(this.toManifest());
     });
 
-    // POST /execute — APS-1 execution
+    // POST /execute - APS-1 execution
     this.app.post('/execute', async (req: Request, res: Response) => {
       if (!this.executeHandler) {
         return res.status(501).json({
@@ -243,7 +243,7 @@ export class APS1Agent {
       }
     });
 
-    // POST /negotiate — optional price negotiation
+    // POST /negotiate - optional price negotiation
     this.app.post('/negotiate', async (req: Request, res: Response) => {
       if (!this.negotiateHandler) {
         return res.status(404).json({
@@ -272,7 +272,7 @@ export class APS1Agent {
       }
     });
 
-    // GET /status/:jobId — job status
+    // GET /status/:jobId - job status
     this.app.get('/status/:jobId', (req: Request, res: Response) => {
       const job = this.jobs.get(req.params.jobId as string);
       if (!job) {
@@ -284,7 +284,7 @@ export class APS1Agent {
       res.json(job);
     });
 
-    // GET /health — health check
+    // GET /health - health check
     this.app.get('/health', (_req: Request, res: Response) => {
       res.json({
         status: 'ok',

@@ -46,7 +46,7 @@ Return ONLY valid JSON.`;
 
 async function compileSolidity(source: string): Promise<{ abi: any[]; bytecode: string } | null> {
   try {
-    // Dynamic require — solc is optional, skip if not installed
+    // Dynamic require - solc is optional, skip if not installed
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     let solc: any;
     try { solc = require('solc'); } catch { solc = null; }

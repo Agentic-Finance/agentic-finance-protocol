@@ -1,5 +1,5 @@
 /**
- * POST /api/fiat/checkout — Create Stripe Checkout Session
+ * POST /api/fiat/checkout - Create Stripe Checkout Session
  *
  * Creates a Stripe Checkout session for fiat-to-crypto conversion.
  * After payment, Stripe webhook triggers stablecoin transfer.
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         sessionId: mockSessionId,
         checkoutUrl: `${returnUrl}?fiat_session=${mockSessionId}&demo=true`,
         demo: true,
-        message: 'Stripe not configured — running in demo mode. In production, this returns a Stripe Checkout URL.',
+        message: 'Stripe not configured - running in demo mode. In production, this returns a Stripe Checkout URL.',
       });
     }
 

@@ -1,5 +1,5 @@
 /**
- * Multi-Token Sender Agent — Send multiple token types to one recipient
+ * Multi-Token Sender Agent - Send multiple token types to one recipient
  *
  * Transfer AlphaUSD, pathUSD, BetaUSD, and/or ThetaUSD to a single
  * recipient in one operation. Executes each as a real ERC20 transfer

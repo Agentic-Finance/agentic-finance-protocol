@@ -3,8 +3,8 @@
  * Author: @nhson0110-coder
  *
  * Two agents:
- *   1. dex-deployer          — Deploy Uniswap V2-style AMM pools on Tempo
- *   2. liquidity-bootstrapper — Bootstrap initial liquidity for new trading pairs
+ *   1. dex-deployer          - Deploy Uniswap V2-style AMM pools on Tempo
+ *   2. liquidity-bootstrapper - Bootstrap initial liquidity for new trading pairs
  */
 
 import 'dotenv/config';
@@ -143,7 +143,7 @@ liquidityBootstrapper.onJob(async (job: JobRequest): Promise<JobResult> => {
           at25PercentPriceChange: '0.62%',
           at50PercentPriceChange: '2.02%',
           at100PercentPriceChange: '5.72%',
-          recommendation: priceRatio === 1 ? 'Stable pair — minimal IL risk' : 'Monitor price divergence closely',
+          recommendation: priceRatio === 1 ? 'Stable pair - minimal IL risk' : 'Monitor price divergence closely',
         },
         gasCost: '$0.00 (Tempo zero-fee)',
         network: 'Tempo Moderato',
@@ -170,4 +170,4 @@ const route = (agent: any, id: string) => {
 route(dexDeployer, 'dex-deployer');
 route(liquidityBootstrapper, 'liquidity-bootstrapper');
 app.get('/health', (_r, res) => res.json({ status: 'ok', agents: ['dex-deployer', 'liquidity-bootstrapper'] }));
-app.listen(PORT, () => console.log(`[contributor-4] DEX agents on port ${PORT} — @nhson0110-coder`));
+app.listen(PORT, () => console.log(`[contributor-4] DEX agents on port ${PORT} - @nhson0110-coder`));

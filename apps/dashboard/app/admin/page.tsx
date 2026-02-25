@@ -172,7 +172,7 @@ export default function PayPolAdminPage() {
     const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
     return (
-        <div className="min-h-screen bg-[#0F1319] text-slate-200 font-sans flex">
+        <div className="min-h-screen bg-[#0B1120] text-slate-200 font-sans flex">
             {/* ════════════════════════════════════════════ */}
             {/* SIDEBAR                                      */}
             {/* ════════════════════════════════════════════ */}
@@ -258,7 +258,7 @@ export default function PayPolAdminPage() {
             {/* ════════════════════════════════════════════ */}
             <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-[72px]' : 'ml-[260px]'}`}>
                 {/* Top Bar */}
-                <header className="h-20 border-b border-white/[0.06] bg-[#0F1319]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
+                <header className="h-20 border-b border-white/[0.06] bg-[#0B1120]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
                     <div>
                         <h1 className="text-lg font-bold text-white">
                             {activeSection === 'overview' && 'Command Center'}
@@ -522,7 +522,7 @@ export default function PayPolAdminPage() {
                                                         {idx > 0 && (
                                                             <span className="text-[9px] font-black text-amber-500/50 self-center px-1">{rule.conditionLogic}</span>
                                                         )}
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0F1319] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0B1120] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
                                                             <span className="text-amber-400/70">{cond.type}</span>
                                                             <span className="text-slate-600">|</span>
                                                             {cond.param && <span>{cond.param}</span>}

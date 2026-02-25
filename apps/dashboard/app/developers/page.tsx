@@ -366,9 +366,9 @@ export default function DevelopersPage() {
     }, [form]);
 
     return (
-        <div className="min-h-screen bg-[#141924] text-white">
+        <div className="min-h-screen bg-[#0B1120] text-white">
             {/* ═══ TOP NAV ═══ */}
-            <nav className="sticky top-0 z-50 bg-[#141924]/80 backdrop-blur-xl border-b border-white/5">
+            <nav className="sticky top-0 z-50 bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
                         <Image src="/logo.png" alt="PayPol" width={120} height={32} className="h-8 w-auto object-contain" />
@@ -456,7 +456,7 @@ export default function DevelopersPage() {
                                     className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500/40 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                 >
                                     {CATEGORIES.map(c => (
-                                        <option key={c} value={c} className="bg-[#141924]">{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                                        <option key={c} value={c} className="bg-[#0B1120]">{c.charAt(0).toUpperCase() + c.slice(1)}</option>
                                     ))}
                                 </select>
                             </div>
@@ -549,7 +549,7 @@ export default function DevelopersPage() {
                                     className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500/40 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                 >
                                     {SOURCE_OPTIONS.map(s => (
-                                        <option key={s.value} value={s.value} className="bg-[#141924]">{s.label}</option>
+                                        <option key={s.value} value={s.value} className="bg-[#0B1120]">{s.label}</option>
                                     ))}
                                 </select>
                             </div>
@@ -629,7 +629,7 @@ export default function DevelopersPage() {
                     </div>
 
                     {/* Template code */}
-                    <div className="bg-[#0B0F19] border border-white/[0.06] rounded-2xl overflow-hidden">
+                    <div className="bg-[#141B2D] border border-white/[0.06] rounded-2xl overflow-hidden">
                         <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-white/[0.02]">
                             <div className="flex items-center gap-2">
                                 <span className="text-lg">{TEMPLATES[activeTemplate].icon}</span>

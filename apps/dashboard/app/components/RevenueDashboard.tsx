@@ -77,8 +77,20 @@ export default function RevenueDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <ArrowPathIcon className="w-8 h-8 text-indigo-400 animate-spin" />
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="pp-card p-5">
+              <div className="pp-skeleton h-3 w-24 mb-3 rounded" />
+              <div className="pp-skeleton h-8 w-20 mb-1 rounded" />
+              <div className="pp-skeleton h-2.5 w-16 rounded" />
+            </div>
+          ))}
+        </div>
+        <div className="pp-card p-6">
+          <div className="pp-skeleton h-5 w-48 mb-6 rounded" />
+          <div className="pp-skeleton h-40 w-full rounded" />
+        </div>
       </div>
     );
   }
@@ -118,7 +130,7 @@ export default function RevenueDashboard() {
       </div>
 
       {/* Volume Chart */}
-      <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+      <div className="pp-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-white font-bold text-lg">Volume & Fees Over Time</h3>
           <div className="flex gap-1">
@@ -177,7 +189,7 @@ export default function RevenueDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* TVL Breakdown */}
-        <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+        <div className="pp-card p-6">
           <h3 className="text-white font-bold text-lg mb-4">TVL Breakdown</h3>
           <div className="space-y-3">
             {(data?.tvl.byContract ?? []).map(c => (
@@ -195,7 +207,7 @@ export default function RevenueDashboard() {
         </div>
 
         {/* Top Agents by Revenue */}
-        <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+        <div className="pp-card p-6">
           <h3 className="text-white font-bold text-lg mb-4">Top Agents by Revenue</h3>
           <div className="space-y-3">
             {(data?.topAgents ?? []).slice(0, 5).map((agent, i) => (
@@ -228,7 +240,7 @@ export default function RevenueDashboard() {
       </div>
 
       {/* Recent Settlements Feed */}
-      <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+      <div className="pp-card p-6">
         <h3 className="text-white font-bold text-lg mb-4">Recent Settlements</h3>
         <div className="space-y-2 max-h-80 overflow-y-auto">
           {(data?.recentSettlements ?? []).map(s => (

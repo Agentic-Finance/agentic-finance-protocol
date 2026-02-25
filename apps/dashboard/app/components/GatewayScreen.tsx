@@ -27,7 +27,7 @@ interface GatewayProps {
 export default function GatewayScreen(props: GatewayProps) {
     if (props.currentWorkspace === null && props.walletAddress) {
         return (
-            <div className="min-h-screen bg-[#0F1319] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+            <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center relative overflow-hidden font-sans">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
 
                 <div className="relative z-10 w-full max-w-2xl px-8">
@@ -157,7 +157,7 @@ export default function GatewayScreen(props: GatewayProps) {
     // Connect Screen
     if (props.currentWorkspace === undefined && props.walletAddress === null) {
         return (
-            <div className="min-h-screen bg-[#0F1319] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+            <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center relative overflow-hidden font-sans">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
                 <div className="relative z-10 text-center w-full px-8">
                     <div className="flex justify-center items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">

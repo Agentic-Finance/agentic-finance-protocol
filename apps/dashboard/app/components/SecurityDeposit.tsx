@@ -116,7 +116,7 @@ export default function SecurityDeposit({ walletAddress }: SecurityDepositProps)
 
       {/* Current Deposit */}
       {deposit && (
-        <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+        <div className="pp-card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-white font-bold">Your Deposit</h3>
             <TierBadge tier={currentTier} />
@@ -174,7 +174,7 @@ export default function SecurityDeposit({ walletAddress }: SecurityDepositProps)
 
       {/* Vault Stats */}
       {stats && (
-        <div className="bg-[#0B1215] border border-white/[0.06] rounded-2xl p-6">
+        <div className="pp-card p-6">
           <h3 className="text-white font-bold mb-4">Vault Statistics</h3>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <div>

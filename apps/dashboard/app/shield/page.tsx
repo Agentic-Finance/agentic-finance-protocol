@@ -1,21 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  TrendingUp, Activity, ShieldCheck, Cpu, 
-  BrainCircuit, Globe, Zap, Users, Factory, 
-  ShoppingCart, HeartPulse, Coins, Briefcase 
+import {
+  TrendingUp, Activity, ShieldCheck, Cpu,
+  BrainCircuit, Globe, Zap, Users, Factory,
+  ShoppingCart, HeartPulse, Coins, Briefcase
 } from "lucide-react";
+import Link from "next/link";
 
-export default function FinancialOSDashboard() {
+export default function ShieldPage() {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [adminSecret, setAdminSecret] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<{ success: boolean; txHash?: string; error?: string } | null>(null);
   const [stats, setStats] = useState<any>(null);
+  const [statsError, setStatsError] = useState(false);
 
-  // Use Case Data for the Agentic Economy
   const useCases = [
     { title: "Autonomous Freelancers", desc: "OpenClaw agents verify GitHub commits & trigger payouts.", icon: <BrainCircuit className="w-5 h-5" /> },
     { title: "Shielded Payroll", desc: "Pay 10,000+ staff without exposing individual salaries.", icon: <ShieldCheck className="w-5 h-5" /> },
@@ -29,19 +30,21 @@ export default function FinancialOSDashboard() {
     { title: "Autonomous VC", desc: "Shielded dividend payments to LPs based on private data.", icon: <Briefcase className="w-5 h-5" /> },
   ];
 
-  // Fetch performance metrics from Prisma via API
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await fetch("/api/stats");
         const data = await res.json();
-        if (data.success) setStats(data.stats);
-      } catch (err) {
-        console.error("Failed to sync stats", err);
+        if (data.success) {
+          setStats(data.stats);
+          setStatsError(false);
+        }
+      } catch {
+        setStatsError(true);
       }
     };
     fetchStats();
-    const interval = setInterval(fetchStats, 10000);
+    const interval = setInterval(fetchStats, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -58,7 +61,7 @@ export default function FinancialOSDashboard() {
       });
       const data = await response.json();
       setResult(data.success ? { success: true, txHash: data.txHash } : { success: false, error: data.error });
-    } catch (error) {
+    } catch {
       setResult({ success: false, error: "Connection to ZK-Node failed." });
     } finally {
       setIsLoading(false);
@@ -66,98 +69,136 @@ export default function FinancialOSDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 font-sans">
+    <div className="min-h-screen bg-[#0B1120] p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-8">
-          <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight">PAYPOL OS</h1>
-            <p className="text-slate-500 font-medium italic">The Financial OS for the Agentic Economy • Powered by Tempo & OpenClaw</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-400">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </Link>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">SHIELD</h1>
+              <p className="text-sm text-slate-400 font-medium">ZK-Privacy Layer for the Agentic Economy</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold ring-1 ring-indigo-200 uppercase tracking-widest animate-pulse">
-            <Activity className="w-4 h-4" /> System Live
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg text-xs font-bold border border-emerald-500/20 uppercase tracking-widest">
+            <Activity className="w-3.5 h-3.5" />
+            <span>System Live</span>
           </div>
         </div>
 
-        {/* 1. System Performance Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <StatCard title="Total Shielded Volume" value={`${stats?.totalShieldedVolume || "0"} αUSD`} icon={<TrendingUp className="text-green-500" />} />
-          <StatCard title="Agent Executions" value={stats?.totalExecutions || "0"} icon={<Cpu className="text-indigo-500" />} />
-          <StatCard title="Network Integrity" value={stats?.networkIntegrity || "100%"} icon={<ShieldCheck className="text-blue-500" />} />
-          <StatCard title="Agent Velocity" value={`${stats?.active24h || "0"} tx/day`} icon={<Activity className="text-orange-500" />} />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <StatCard title="Shielded Volume" value={stats ? `${stats.totalShieldedVolume || '0'} aUSD` : null} icon={<TrendingUp className="w-4 h-4 text-emerald-400" />} error={statsError} />
+          <StatCard title="Executions" value={stats ? `${stats.totalExecutions || '0'}` : null} icon={<Cpu className="w-4 h-4 text-indigo-400" />} error={statsError} />
+          <StatCard title="Integrity" value={stats ? `${stats.networkIntegrity || '100%'}` : null} icon={<ShieldCheck className="w-4 h-4 text-cyan-400" />} error={statsError} />
+          <StatCard title="Velocity" value={stats ? `${stats.active24h || '0'} tx/d` : null} icon={<Activity className="w-4 h-4 text-amber-400" />} error={statsError} />
         </div>
 
-        {/* Main Grid: Use Cases vs Execution Form */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 pt-4">
-          
-          {/* Use Cases Gallery */}
-          <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl font-extrabold text-slate-800 uppercase tracking-tight">Protocol Use Cases</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
+          {/* Use Cases */}
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-base font-bold text-slate-200 uppercase tracking-wide">Protocol Use Cases</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {useCases.map((uc, i) => (
-                <div key={i} className="p-5 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 transition-all hover:shadow-md group">
-                  <div className="mb-3 p-2 bg-slate-50 w-fit rounded-lg group-hover:bg-indigo-50 transition-colors">{uc.icon}</div>
-                  <h3 className="font-bold text-slate-900 text-sm mb-1">{uc.title}</h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">{uc.desc}</p>
+                <div key={i} className="pp-card p-4 hover:bg-white/[0.02] group transition-all">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-white/[0.04] rounded-lg text-indigo-400 group-hover:bg-indigo-500/10 group-hover:text-indigo-300 transition-all flex-shrink-0">
+                      {uc.icon}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-white mb-0.5">{uc.title}</h3>
+                      <p className="text-xs text-slate-400 leading-relaxed">{uc.desc}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Shielded Execution Form */}
+          {/* Execution Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white p-8 rounded-2xl shadow-xl border border-indigo-100 ring-4 ring-indigo-50/50">
-              <h2 className="text-lg font-black text-slate-900 mb-6 uppercase">Shielded Execution</h2>
+            <div className="pp-card p-6 border-indigo-500/20 bg-[#141B2D]">
+              <h2 className="text-base font-bold text-white mb-5 uppercase tracking-wide">Shielded Execution</h2>
               <form onSubmit={handlePayout} className="space-y-4">
-                <InputGroup label="Recipient Address" placeholder="0x..." value={recipient} onChange={setRecipient} />
-                <InputGroup label="Amount (AlphaUSD)" placeholder="150" type="number" value={amount} onChange={setAmount} />
-                <InputGroup label="Admin Secret" placeholder="********" value={adminSecret} onChange={setAdminSecret} />
-                
-                <button 
-                  disabled={isLoading}
-                  className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 disabled:bg-slate-300"
+                <InputField label="Recipient Address" placeholder="0x..." value={recipient} onChange={setRecipient} />
+                <InputField label="Amount (AlphaUSD)" placeholder="150" type="number" value={amount} onChange={setAmount} />
+                <InputField label="Admin Secret" placeholder="********" value={adminSecret} onChange={setAdminSecret} type="password" />
+
+                <button
+                  disabled={isLoading || !recipient || !amount}
+                  className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-sm font-bold rounded-xl hover:from-indigo-400 hover:to-purple-500 transition-all shadow-[0_0_15px_rgba(99,102,241,0.2)] hover:shadow-[0_0_25px_rgba(99,102,241,0.35)] active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                 >
-                  {isLoading ? "Broadcasting ZK-Proof..." : "Execute Shielded Payout"}
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                      Broadcasting ZK-Proof...
+                    </span>
+                  ) : "Execute Shielded Payout"}
                 </button>
               </form>
 
               {result && (
-                <div className={`mt-6 p-4 rounded-xl border text-[10px] break-all ${result.success ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-                  <strong>{result.success ? "✓ SUCCESS" : "✗ FAILED"}:</strong> {result.success ? result.txHash : result.error}
+                <div className={`mt-4 p-3 rounded-xl border text-xs break-all ${
+                  result.success
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                    : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
+                }`}>
+                  <strong>{result.success ? "SUCCESS" : "FAILED"}:</strong>{' '}
+                  {result.success ? result.txHash : result.error}
                 </div>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
 }
 
-// Sub-components for clean code
-function StatCard({ title, value, icon }: any) {
+/* ── Sub-components ── */
+function StatCard({ title, value, icon, error }: { title: string; value: string | null; icon: React.ReactNode; error: boolean }) {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-      <div className="flex items-center justify-between mb-2">
-        <div className="p-2 bg-slate-50 rounded-lg">{icon}</div>
-        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Tempo-L1</span>
+    <div className="pp-card p-4 sm:p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="p-1.5 bg-white/[0.04] rounded-lg">{icon}</div>
+        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Tempo-L1</span>
       </div>
-      <h3 className="text-xl font-black text-slate-900">{value}</h3>
-      <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">{title}</p>
+      {value === null && !error ? (
+        <div className="space-y-2">
+          <div className="pp-skeleton h-6 w-20 rounded" />
+          <div className="pp-skeleton h-3 w-16 rounded" />
+        </div>
+      ) : error ? (
+        <p className="text-xs text-rose-400">Failed to load</p>
+      ) : (
+        <>
+          <h3 className="text-lg sm:text-xl font-black text-white">{value}</h3>
+          <p className="text-[10px] font-bold text-slate-500 uppercase mt-1">{title}</p>
+        </>
+      )}
     </div>
   );
 }
 
-function InputGroup({ label, placeholder, value, onChange, type = "text" }: any) {
+function InputField({ label, placeholder, value, onChange, type = "text" }: {
+  label: string; placeholder: string; value: string; onChange: (v: string) => void; type?: string;
+}) {
   return (
     <div>
-      <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">{label}</label>
+      <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">{label}</label>
       <input
-        type={type} required
-        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-        placeholder={placeholder} value={value}
+        type={type}
+        required
+        className="w-full px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+        placeholder={placeholder}
+        value={value}
         onChange={(e) => onChange(e.target.value)}
       />
     </div>

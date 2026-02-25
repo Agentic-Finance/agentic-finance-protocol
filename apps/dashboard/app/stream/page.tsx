@@ -82,19 +82,19 @@ export default function StreamPage() {
     const selected = selectedStream ? streams.find(s => s.id === selectedStream) : null;
 
     return (
-        <div className="min-h-screen bg-[#0a0d12]">
+        <div className="min-h-screen bg-[#0B1120]">
             {/* Header */}
-            <div className="border-b border-white/[0.06] bg-[#0d1117]/80 backdrop-blur-xl sticky top-0 z-40">
-                <div className="max-w-[1400px] mx-auto px-8 py-5">
-                    <div className="flex items-center justify-between">
+            <div className="border-b border-white/[0.08] pp-glass sticky top-0 z-40">
+                <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-4">
-                            <Link href="/" className="text-slate-500 hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            <Link href="/" className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-400">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                 </svg>
                             </Link>
                             <div>
-                                <h1 className="text-xl font-bold text-white tracking-tight">Stream Settlement</h1>
+                                <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">Stream Settlement</h1>
                                 <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Progressive Milestone Payments</p>
                             </div>
                         </div>
@@ -119,18 +119,18 @@ export default function StreamPage() {
                 </div>
             </div>
 
-            <div className="max-w-[1400px] mx-auto px-8 py-8">
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 {/* Stats Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                     {[
                         { label: 'Total Streams', value: streams.length, color: '#818cf8' },
                         { label: 'Active', value: activeStreams.length, color: '#f59e0b' },
                         { label: 'Completed', value: completedStreams.length, color: '#10b981' },
                         { label: 'Total Volume', value: `$${totalBudget.toFixed(0)}`, color: '#d946ef' },
                     ].map((stat) => (
-                        <div key={stat.label} className="bg-[#111827] border border-white/[0.05] rounded-xl px-5 py-4">
+                        <div key={stat.label} className="pp-card px-4 sm:px-5 py-4">
                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
-                            <p className="text-2xl font-bold tabular-nums" style={{ color: stat.color }}>{stat.value}</p>
+                            <p className="text-xl sm:text-2xl font-bold tabular-nums" style={{ color: stat.color }}>{stat.value}</p>
                         </div>
                     ))}
                 </div>

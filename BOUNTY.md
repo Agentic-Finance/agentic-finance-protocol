@@ -1,8 +1,8 @@
 # PayPol Open Contributor Program
 
-> **Honest disclaimer:** PayPol is bootstrapped — no VC funding, no treasury yet. We can't pay bounties today. What we _can_ offer: real protocol experience, public credit, and a written commitment to reward early builders when funding arrives.
+> PayPol is an early-stage, community-driven protocol. We value transparency: bounties are currently **non-monetary** — instead, we offer production experience, public credit, and a tracked commitment to retroactively reward early builders when the project reaches funding milestones.
 >
-> If that resonates with you, read on.
+> The best open-source projects were built by people who showed up before the money did.
 
 ---
 

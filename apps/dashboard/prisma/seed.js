@@ -58,7 +58,10 @@ async function seed() {
   // Clear old fake agents and reseed with real ones
   console.log(`[seed] Clearing old agents and seeding ${agents.length} real on-chain agents...`);
 
-  // Delete all existing agents first (clean slate)
+  // Delete dependent records first (foreign key constraints)
+  await prisma.agentReview.deleteMany({});
+  await prisma.agentJob.deleteMany({});
+  // Delete all existing agents (clean slate)
   await prisma.marketplaceAgent.deleteMany({});
 
   for (const agent of agents) {

@@ -3,13 +3,8 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-
-/// @dev Minimal ERC20 interface for token interactions
-interface IERC20Stream {
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
  * @title  PayPolStreamV1
@@ -26,6 +21,7 @@ interface IERC20Stream {
  *         makes 10+ micro-transactions per job economically feasible).
  */
 contract PayPolStreamV1 is Ownable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
 
     // ── Enums ────────────────────────────────────────────────
 
@@ -158,8 +154,7 @@ contract PayPolStreamV1 is Ownable, ReentrancyGuard {
         }
 
         // Transfer total budget from client to this contract
-        bool success = IERC20Stream(_token).transferFrom(msg.sender, address(this), total);
-        require(success, "Token transfer failed");
+        IERC20(_token).safeTransferFrom(msg.sender, address(this), total);
 
         // Create stream
         streamId = streamCount;
@@ -255,8 +250,7 @@ contract PayPolStreamV1 is Ownable, ReentrancyGuard {
         accumulatedFees[s.token] += fee;
 
         // Transfer to agent immediately
-        bool success = IERC20Stream(s.token).transfer(s.agent, agentPayout);
-        require(success, "Agent payment failed");
+        IERC20(s.token).safeTransfer(s.agent, agentPayout);
 
         emit MilestoneApproved(_streamId, _milestoneIndex, agentPayout, fee);
 
@@ -307,8 +301,7 @@ contract PayPolStreamV1 is Ownable, ReentrancyGuard {
         uint256 remaining = s.totalBudget - s.releasedAmount;
 
         if (remaining > 0) {
-            bool success = IERC20Stream(s.token).transfer(s.client, remaining);
-            require(success, "Refund transfer failed");
+            IERC20(s.token).safeTransfer(s.client, remaining);
         }
 
         emit StreamCancelled(_streamId, remaining);
@@ -330,8 +323,7 @@ contract PayPolStreamV1 is Ownable, ReentrancyGuard {
         uint256 remaining = s.totalBudget - s.releasedAmount;
 
         if (remaining > 0) {
-            bool success = IERC20Stream(s.token).transfer(s.client, remaining);
-            require(success, "Timeout refund failed");
+            IERC20(s.token).safeTransfer(s.client, remaining);
         }
 
         emit StreamCancelled(_streamId, remaining);
@@ -358,8 +350,7 @@ contract PayPolStreamV1 is Ownable, ReentrancyGuard {
 
         accumulatedFees[_token] = 0;
 
-        bool success = IERC20Stream(_token).transfer(owner(), amount);
-        require(success, "Fee withdrawal failed");
+        IERC20(_token).safeTransfer(owner(), amount);
 
         emit FeesWithdrawn(_token, amount);
     }

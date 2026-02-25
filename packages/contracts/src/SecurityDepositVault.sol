@@ -14,13 +14,11 @@ pragma solidity ^0.8.20;
  * Alternative to token staking when there is no TGE.
  */
 
-interface IERC20 {
-    function transferFrom(address from, address to, uint256 amount) external returns (bool);
-    function transfer(address to, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract SecurityDepositVault {
+    using SafeERC20 for IERC20;
     // ── Tier Thresholds (in token's smallest unit, 6 decimals) ──
     uint256 public constant BRONZE_THRESHOLD = 50_000_000;   // $50
     uint256 public constant SILVER_THRESHOLD = 200_000_000;  // $200
@@ -93,7 +91,7 @@ contract SecurityDepositVault {
     function deposit(uint256 _amount) external {
         require(_amount > 0, "SecurityDepositVault: zero amount");
 
-        IERC20(token).transferFrom(msg.sender, address(this), _amount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
         if (!hasDeposited[msg.sender]) {
             hasDeposited[msg.sender] = true;
@@ -124,7 +122,7 @@ contract SecurityDepositVault {
         info.amount -= _amount;
         totalDeposited -= _amount;
 
-        IERC20(token).transfer(msg.sender, _amount);
+        IERC20(token).safeTransfer(msg.sender, _amount);
 
         emit DepositWithdrawn(msg.sender, _amount, info.amount);
     }
@@ -171,7 +169,7 @@ contract SecurityDepositVault {
         insurancePool -= _amount;
         totalInsurancePaid += _amount;
 
-        IERC20(token).transfer(_claimant, _amount);
+        IERC20(token).safeTransfer(_claimant, _amount);
 
         emit InsurancePayout(_claimant, _amount, _reason);
     }

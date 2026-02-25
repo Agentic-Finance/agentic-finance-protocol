@@ -57,7 +57,7 @@
 **Detector:** `unchecked-transfer`
 **Severity:** High
 **Contract:** `SecurityDepositVault.sol`
-**Status:** Acknowledged — To be fixed before mainnet
+**Status:** ✅ Fixed — SafeERC20 applied (commit TBD)
 
 **Description:**
 Three functions in `SecurityDepositVault` do not check the return value of ERC-20 `transfer` and `transferFrom` calls:
@@ -77,7 +77,7 @@ using SafeERC20 for IERC20;
 ```
 
 **Risk on Testnet:** Low (AlphaUSD reverts on failure)
-**Risk on Mainnet:** High (must fix before mainnet deployment)
+**Risk on Mainnet:** ~~High~~ → Resolved with SafeERC20
 
 ---
 
@@ -116,6 +116,8 @@ require(commitments[commitmentHash].commitBlock == 0, "Already committed");
 
 **Status:** Acknowledged — intentional pattern, no fix needed.
 
+> **Note (M-02):** PayPolStreamV1 now uses SafeERC20 for all token operations. Combined with the existing `nonReentrant` modifier, reentrancy risk is fully mitigated.
+
 ---
 
 ### M-02: Potential Reentrancy in PayPolStreamV1
@@ -142,7 +144,7 @@ IERC20Stream(s.token).transfer(s.worker, milestoneAmount);
 ```
 
 **Risk on Testnet:** None (AlphaUSD has no callbacks)
-**Risk on Mainnet:** Medium (must fix if supporting arbitrary tokens)
+**Risk on Mainnet:** ~~Medium~~ → Resolved with SafeERC20
 
 ---
 
@@ -186,8 +188,8 @@ The following core contracts have **no real high or medium severity issues**:
 ## Recommendations for Mainnet
 
 ### Must Fix (Before Mainnet)
-1. **SecurityDepositVault**: Use `SafeERC20` for all token transfers
-2. **PayPolStreamV1**: Add `ReentrancyGuard` or reorder state updates before external calls
+1. ~~**SecurityDepositVault**: Use `SafeERC20` for all token transfers~~ ✅ Fixed
+2. ~~**PayPolStreamV1**: Add `ReentrancyGuard` or reorder state updates before external calls~~ ✅ Fixed (SafeERC20 + existing ReentrancyGuard)
 3. **All contracts**: Add zero-address checks in constructors
 
 ### Should Fix (Best Practice)

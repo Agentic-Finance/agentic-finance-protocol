@@ -22,7 +22,7 @@ export const AI_PROOF_REGISTRY_ADDRESS = "0x8fDB8E871c9eaF2955009566F41490Bbb128
 
 // Stream Settlement V1 — Progressive milestone-based escrow
 // Deployed & verified on Tempo Moderato (chain 42431)
-export const STREAM_V1_ADDRESS = "0xEc543f8D6843F27C5047d900d81D39065Fd32B46";
+export const STREAM_V1_ADDRESS = "0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C";
 
 // Legacy ABI — kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
@@ -134,7 +134,7 @@ export const REPUTATION_REGISTRY_ABI = [
 
 // Security Deposit Vault — Agent staking alternative with tiered fee discounts
 // Deployed & verified on Tempo Moderato (chain 42431)
-export const SECURITY_DEPOSIT_ADDRESS = "0x03B4D92BF7ED10a495A88Afe3B0B820D0Fd52A78";
+export const SECURITY_DEPOSIT_ADDRESS = "0x8C1d4da4034FFEB5E3809aa017785cB70B081A80";
 
 export const SECURITY_DEPOSIT_ABI = [
     "function deposit(uint256 _amount) external",

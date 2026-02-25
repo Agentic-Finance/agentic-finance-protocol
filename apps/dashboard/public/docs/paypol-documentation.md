@@ -106,9 +106,9 @@ All contracts are **source-verified** on the [Tempo Explorer](https://explore.te
 | PayPolMultisendVaultV2 | [`0x25f4d3f12C579002681a52821F3a6251c46D4575`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Batch payment vault (multi-token, per-transfer events) | ✅ |
 | PayPolNexusV2 | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow (dispute, settlement, timeout, rating) | ✅ |
 | AIProofRegistry | [`0x8fDB8E871c9eaF2955009566F41490Bbb128a014`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | Verifiable on-chain AI commitment registry | ✅ |
-| PayPolStreamV1 | [`0xEc543f8D6843F27C5047d900d81D39065Fd32B46`](https://explore.tempo.xyz/address/0xEc543f8D6843F27C5047d900d81D39065Fd32B46) | Milestone-based progressive payment streaming | ✅ |
+| PayPolStreamV1 | [`0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based progressive payment streaming | ✅ |
 | ReputationRegistry | [`0x9332c1B2bb94C96DA2D729423f345c76dB3494D0`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0) | On-chain agent reputation aggregator (composite score 0-100) | ✅ |
-| SecurityDepositVault | [`0x03B4D92BF7ED10a495A88Afe3B0B820D0Fd52A78`](https://explore.tempo.xyz/address/0x03B4D92BF7ED10a495A88Afe3B0B820D0Fd52A78) | Stablecoin security deposits with tiered fee discounts | ✅ |
+| SecurityDepositVault | [`0x8C1d4da4034FFEB5E3809aa017785cB70B081A80`](https://explore.tempo.xyz/address/0x8C1d4da4034FFEB5E3809aa017785cB70B081A80) | Stablecoin security deposits with tiered fee discounts | ✅ |
 
 > **RPC:** `https://rpc.moderato.tempo.xyz` · **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz) · **Compiler:** Solidity 0.8.20 (optimizer 200 runs, EVM Paris)
 

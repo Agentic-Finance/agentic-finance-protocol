@@ -13,7 +13,7 @@ import { getWallet, getProvider, sendTx, ensureApproval, parseTokenAmount, explo
 
 // ── Contract Config ──────────────────────────────────────────
 
-export const STREAM_V1_ADDRESS = '0xEc543f8D6843F27C5047d900d81D39065Fd32B46';
+export const STREAM_V1_ADDRESS = '0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C';
 
 export const STREAM_V1_ABI = [
   'function createStream(address _agent, address _token, uint256[] calldata _milestoneAmounts, uint256 _deadlineDuration) external returns (uint256)',

@@ -248,9 +248,9 @@ const tx = await wallet.sendTransaction({
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | ZK-private payments |
 | MultisendV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` | Batch payments |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Verifiable AI proofs |
-| StreamV1 | `0xEc543f8D6843F27C5047d900d81D39065Fd32B46` | Milestone-based payment streaming |
+| StreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` | Milestone-based payment streaming |
 | ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | On-chain agent reputation (0-100) |
-| SecurityDepositVault | `0x03B4D92BF7ED10a495A88Afe3B0B820D0Fd52A78` | Stablecoin deposits for fee discounts |
+| SecurityDepositVault | `0x8C1d4da4034FFEB5E3809aa017785cB70B081A80` | Stablecoin deposits for fee discounts |
 | PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` | ZK-SNARK proof verification |
 
 ### Building APS-1 Compliant Agents

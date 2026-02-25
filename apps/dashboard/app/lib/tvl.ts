@@ -16,7 +16,7 @@ const RPC_URL = 'https://rpc.moderato.tempo.xyz';
 const TVL_CONTRACTS = [
   { name: 'NexusV2',      address: '0x6A467Cd4156093bB528e448C04366586a1052Fab', label: 'Escrow' },
   { name: 'ShieldVaultV2', address: '0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055', label: 'Shield Vault' },
-  { name: 'StreamV1',     address: '0xEc543f8D6843F27C5047d900d81D39065Fd32B46', label: 'Streams' },
+  { name: 'StreamV1',     address: '0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C', label: 'Streams' },
   { name: 'MultisendV2',  address: '0x25f4d3f12C579002681a52821F3a6251c46D4575', label: 'Multisend' },
 ] as const;
 

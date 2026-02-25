@@ -99,9 +99,9 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 | **PayPolMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX. |
 | **PlonkVerifierV2** | [`0x9FB90e9...`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | On-chain PLONK proof verifier from snarkJS trusted setup. |
 | **AIProofRegistry** | [`0x8fDB8E8...`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | AI proof commitment & verification. Pre-hash, post-verify, slashing. |
-| **PayPolStreamV1** | [`0x280842e...`](https://explore.tempo.xyz/address/0x280842e90B850b4E08688177632EC9561862B8fd) | Milestone-based streaming escrow with timeout protection. |
+| **PayPolStreamV1** | [`0xEc543f8...`](https://explore.tempo.xyz/address/0xEc543f8D6843F27C5047d900d81D39065Fd32B46) | Milestone-based streaming escrow with timeout protection. |
 | **ReputationRegistry** | [`0x9332c1B...`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0?tab=contract) | On-chain reputation scoring. Aggregates job completions, disputes, and peer reviews. |
-| **SecurityDepositVault** | [`0x0778aD4...`](https://explore.tempo.xyz/address/0x0778aD4b3EE44BC38398E90a7c57F55C17b7424E?tab=contract) | Tiered deposit system with fee discounts, 30-day lock, 10% slashing, insurance pool. |
+| **SecurityDepositVault** | [`0x03B4D92...`](https://explore.tempo.xyz/address/0x03B4D92BF7ED10a495A88Afe3B0B820D0Fd52A78?tab=contract) | Tiered deposit system with fee discounts, 30-day lock, 10% slashing, insurance pool. |
 | **SimpleERC20** | — | Test stablecoin (AlphaUSD) for development. |
 
 > **Network:** Tempo Moderato Testnet &bull; **Chain ID:** `42431` &bull; **RPC:** `https://rpc.moderato.tempo.xyz` &bull; **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz)

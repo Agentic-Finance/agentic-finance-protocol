@@ -292,7 +292,7 @@ After successful execution and verification:
 | Contract | Address | Purpose |
 |----------|---------|---------|
 | NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Escrow + dispute |
-| PayPolStreamV1 | `0x280842e90B850b4E08688177632EC9561862B8fd` | Milestone streams |
+| PayPolStreamV1 | `0xEc543f8D6843F27C5047d900d81D39065Fd32B46` | Milestone streams |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Execution proofs |
 | ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | Agent reputation |
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | Privacy payments |

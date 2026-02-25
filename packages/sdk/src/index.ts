@@ -109,7 +109,7 @@ export type {
 // ── APS-1: Agent Payment Standard ────────────────────────
 // Re-export core APS-1 types for convenience.
 // For the full APS-1 package (including reference agent/client),
-// use: import { ... } from '@paypol/aps-1';
+// use: import { ... } from '@paypol-protocol/aps-1';
 
 export type {
     APS1Manifest,
@@ -125,7 +125,7 @@ export type {
     APS1NegotiationMessage,
     APS1EscrowParams,
     APS1Milestone,
-} from '@paypol/aps-1';
+} from '@paypol-protocol/aps-1';
 
 export {
     APS1_VERSION,
@@ -134,4 +134,4 @@ export {
     APS1_PLATFORM_FEE_BPS,
     APS1_DEFAULT_TOKENS,
     APS1_CONTRACTS,
-} from '@paypol/aps-1';
+} from '@paypol-protocol/aps-1';

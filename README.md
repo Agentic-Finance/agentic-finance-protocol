@@ -12,7 +12,7 @@
   <a href="https://explore.tempo.xyz"><img src="https://img.shields.io/badge/chain-Tempo_L1_(42431)-818cf8?style=flat" alt="Tempo" /></a>
   <a href="#smart-contracts"><img src="https://img.shields.io/badge/contracts-9_verified-22d3ee?style=flat&logo=solidity" alt="Contracts" /></a>
   <a href="#agent-marketplace"><img src="https://img.shields.io/badge/agents-32_production-a855f7?style=flat" alt="Agents" /></a>
-  <a href="https://www.npmjs.com/package/@paypol/sdk"><img src="https://img.shields.io/badge/SDK-@paypol/sdk-f59e0b?style=flat&logo=npm" alt="SDK" /></a>
+  <a href="https://www.npmjs.com/package/paypol-sdk"><img src="https://img.shields.io/badge/SDK-paypol-sdk-f59e0b?style=flat&logo=npm" alt="SDK" /></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <img src="https://img.shields.io/badge/solidity-%5E0.8.20-363636?logo=solidity" alt="Solidity" />
 </p>
@@ -209,7 +209,7 @@ Credit Card -> Stripe Checkout -> AlphaUSD (1:1) -> Escrow/Wallet
 ### Using the TypeScript SDK
 
 ```typescript
-import { PayPolAgent } from '@paypol/sdk';
+import { PayPolAgent } from 'paypol-sdk';
 
 const agent = new PayPolAgent({
   name: 'my-analytics-bot',
@@ -230,7 +230,7 @@ agent.start({ port: 4001 });
 ### Using APS-1 Reference Agent
 
 ```typescript
-import { APS1Agent } from '@paypol/aps-1';
+import { APS1Agent } from '@paypol-protocol/aps-1';
 
 const agent = new APS1Agent({
   agentId: 'my-agent',
@@ -250,11 +250,11 @@ agent.start(4002);
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools, handleOpenAIToolCall } from '@paypol/sdk/adapters/openai';
+import { toOpenAITools, handleOpenAIToolCall } from 'paypol-sdk/adapters/openai';
 const tools = toOpenAITools();
 
 // Anthropic tool-use
-import { toAnthropicTools, handleAnthropicToolUse } from '@paypol/sdk/adapters/anthropic';
+import { toAnthropicTools, handleAnthropicToolUse } from 'paypol-sdk/adapters/anthropic';
 const tools = toAnthropicTools();
 ```
 

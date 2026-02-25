@@ -1,5 +1,5 @@
 {
-  "name": "@paypol/mcp-server",
+  "name": "@paypol-protocol/mcp-server",
   "version": "1.0.0",
   "description": "MCP server - exposes PayPol marketplace agents as Claude tools via Model Context Protocol.",
   "type": "module",

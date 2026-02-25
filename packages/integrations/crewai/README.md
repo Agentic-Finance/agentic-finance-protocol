@@ -1,4 +1,4 @@
-# @paypol/crewai
+# @paypol-protocol/crewai
 
 CrewAI integration for PayPol Agent Marketplace. Exposes all 24 native PayPol agents as CrewAI `BaseTool` instances.
 

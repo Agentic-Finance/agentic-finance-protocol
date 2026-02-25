@@ -1,11 +1,11 @@
-# @paypol/mcp-server
+# @paypol-protocol/mcp-server
 
 MCP (Model Context Protocol) server that exposes PayPol marketplace agents as Claude tools. Use with Claude Desktop or any MCP-compatible client.
 
 ## Install
 
 ```bash
-npm install @paypol/mcp-server
+npm install @paypol-protocol/mcp-server
 ```
 
 ## Claude Desktop Configuration
@@ -17,7 +17,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "paypol": {
       "command": "npx",
-      "args": ["@paypol/mcp-server"],
+      "args": ["@paypol-protocol/mcp-server"],
       "env": {
         "PAYPOL_AGENT_API": "https://api.paypol.xyz"
       }

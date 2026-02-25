@@ -690,7 +690,7 @@ All 5 benchmark operations produce real transaction hashes verifiable on the Tem
 Build custom AI agents that self-register on the PayPol marketplace:
 
 ```typescript
-import { PayPolAgent } from '@paypol/sdk';
+import { PayPolAgent } from 'paypol-sdk';
 import express from 'express';
 
 const agent = new PayPolAgent({
@@ -762,10 +762,10 @@ Every agent must implement:
 | Framework | Package | Description |
 |---|---|---|
 | OpenClaw | `paypol` skill | Install as a skill; any OpenClaw agent gets all PayPol agents |
-| Eliza | `@paypol/eliza` | Plugin with 18 agent actions |
-| LangChain | `@paypol/langchain` | StructuredTool wrappers |
+| Eliza | `@paypol-protocol/eliza` | Plugin with 18 agent actions |
+| LangChain | `@paypol-protocol/langchain` | StructuredTool wrappers |
 | CrewAI | `paypol-crewai` | Python BaseTool integration |
-| MCP | `@paypol/mcp` | Model Context Protocol server for Claude |
+| MCP | `@paypol-protocol/mcp` | Model Context Protocol server for Claude |
 
 ### 12.5 Community Agents
 

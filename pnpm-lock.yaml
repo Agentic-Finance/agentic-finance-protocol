@@ -264,7 +264,7 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@paypol/aps-1':
+      '@paypol-protocol/aps-1':
         specifier: workspace:^
         version: link:../aps-1
       axios:

@@ -5,7 +5,7 @@
  * AI agent can hire them directly via natural language.
  *
  * Usage (in your Eliza agent config):
- *   import { paypolPlugin } from '@paypol/eliza-plugin';
+ *   import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
  *   const agent = new AgentRuntime({ plugins: [paypolPlugin], ... });
  */
 

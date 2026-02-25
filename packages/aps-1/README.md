@@ -47,7 +47,7 @@ APS-1 defines a 6-phase lifecycle for agent payments:
 ## Installation
 
 ```bash
-npm install @paypol/aps-1
+npm install @paypol-protocol/aps-1
 ```
 
 ## Quick Start
@@ -55,7 +55,7 @@ npm install @paypol/aps-1
 ### Build an APS-1 Agent
 
 ```typescript
-import { APS1Agent } from '@paypol/aps-1';
+import { APS1Agent } from '@paypol-protocol/aps-1';
 
 const agent = new APS1Agent({
   id: 'data-analyzer',
@@ -98,7 +98,7 @@ agent.listen(3002);
 ### Hire an APS-1 Agent
 
 ```typescript
-import { APS1Client } from '@paypol/aps-1';
+import { APS1Client } from '@paypol-protocol/aps-1';
 
 const client = new APS1Client({
   agentServiceUrl: 'https://paypol.xyz',
@@ -122,7 +122,7 @@ console.log(result.result);  // { analysis: ... }
 ### Validate APS-1 Data
 
 ```typescript
-import { validateManifest, validateResult } from '@paypol/aps-1';
+import { validateManifest, validateResult } from '@paypol-protocol/aps-1';
 
 // Validate a manifest
 const manifestCheck = validateManifest(someData);
@@ -309,23 +309,23 @@ After successful execution and verification:
 
 ## Framework Compatibility
 
-APS-1 is framework-agnostic. Use the `@paypol/sdk` adapters:
+APS-1 is framework-agnostic. Use the `paypol-sdk` adapters:
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools } from '@paypol/sdk/openai';
+import { toOpenAITools } from 'paypol-sdk/openai';
 
 // Anthropic tool-use
-import { toAnthropicTools } from '@paypol/sdk/anthropic';
+import { toAnthropicTools } from 'paypol-sdk/anthropic';
 
 // LangChain
-import { PayPolToolkit } from '@paypol/sdk/langchain';
+import { PayPolToolkit } from 'paypol-sdk/langchain';
 
 // CrewAI
-import { PayPolCrewAITool } from '@paypol/sdk/crewai';
+import { PayPolCrewAITool } from 'paypol-sdk/crewai';
 
 // MCP
-import { PayPolMCPServer } from '@paypol/sdk/mcp';
+import { PayPolMCPServer } from 'paypol-sdk/mcp';
 ```
 
 ## Contributing

@@ -258,7 +258,7 @@ const tx = await wallet.sendTransaction({
 For the best developer experience, use the **APS-1 (Agent Payment Standard)** to build agents with built-in escrow, negotiation, and verification:
 
 ```typescript
-import { APS1Agent } from '@paypol/aps-1';
+import { APS1Agent } from '@paypol-protocol/aps-1';
 
 const agent = new APS1Agent({
   id: 'my-cool-agent',
@@ -287,14 +287,14 @@ PayPol agents can be hired from any AI framework with native adapters:
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools } from '@paypol/sdk/openai';
+import { toOpenAITools } from 'paypol-sdk/openai';
 const tools = toOpenAITools(client);
 
 // Anthropic tool-use
-import { toAnthropicTools } from '@paypol/sdk/anthropic';
+import { toAnthropicTools } from 'paypol-sdk/anthropic';
 const tools = toAnthropicTools(client);
 
-// Also available: @paypol/sdk/langchain, /crewai, /eliza, /mcp
+// Also available: paypol-sdk/langchain, /crewai, /eliza, /mcp
 ```
 
 ### Security Deposits

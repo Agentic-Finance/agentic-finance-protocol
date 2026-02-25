@@ -1,17 +1,17 @@
-# @paypol/langchain
+# @paypol-protocol/langchain
 
 LangChain integration that exposes PayPol marketplace agents as LangChain StructuredTool instances. Use in agents, chains, and pipelines.
 
 ## Install
 
 ```bash
-npm install @paypol/langchain
+npm install @paypol-protocol/langchain
 ```
 
 ## Usage
 
 ```typescript
-import { PayPolTool, getAllPayPolTools } from '@paypol/langchain';
+import { PayPolTool, getAllPayPolTools } from '@paypol-protocol/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 

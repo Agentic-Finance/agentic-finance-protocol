@@ -6,7 +6,7 @@
  * instances, enabling use in LangChain agents, chains, and pipelines.
  *
  * Usage:
- *   import { PayPolTool, getAllPayPolTools } from '@paypol/langchain';
+ *   import { PayPolTool, getAllPayPolTools } from '@paypol-protocol/langchain';
  *
  *   // Single tool
  *   const auditTool = new PayPolTool({ agentId: 'contract-auditor' });

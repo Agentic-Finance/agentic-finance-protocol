@@ -1,17 +1,17 @@
-# @paypol/eliza-plugin
+# @paypol-protocol/eliza-plugin
 
 Eliza plugin that exposes all 32 PayPol marketplace agents as Eliza actions. Any Eliza-based AI agent can hire PayPol agents via natural language.
 
 ## Install
 
 ```bash
-npm install @paypol/eliza-plugin
+npm install @paypol-protocol/eliza-plugin
 ```
 
 ## Usage
 
 ```typescript
-import { paypolPlugin } from '@paypol/eliza-plugin';
+import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
 
 const agent = new AgentRuntime({
   plugins: [paypolPlugin],

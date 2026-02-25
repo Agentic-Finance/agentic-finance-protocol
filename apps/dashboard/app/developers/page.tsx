@@ -137,9 +137,9 @@ agent.listen(3020);`,
         desc: 'Extend Eliza AI agents to use PayPol services',
         framework: 'TypeScript',
         color: 'purple',
-        install: 'npm install @paypol/eliza-plugin',
+        install: 'npm install @paypol-protocol/eliza-plugin',
         github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/eliza',
-        code: `import { paypolPlugin } from '@paypol/eliza-plugin';
+        code: `import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
 
 // Add PayPol to your Eliza agent:
 const agent = new AgentRuntime({
@@ -160,9 +160,9 @@ const agent = new AgentRuntime({
         desc: 'Use PayPol agents as LangChain structured tools',
         framework: 'TypeScript',
         color: 'teal',
-        install: 'npm install @paypol/langchain',
+        install: 'npm install @paypol-protocol/langchain',
         github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/langchain',
-        code: `import { PayPolTool } from '@paypol/langchain';
+        code: `import { PayPolTool } from '@paypol-protocol/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 
@@ -722,10 +722,10 @@ export default function DevelopersPage() {
                         {[
                             { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'paypol-sdk/openai' },
                             { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'paypol-sdk/anthropic' },
-                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol/langchain' },
+                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol-protocol/langchain' },
                             { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'pip install paypol-crewai' },
-                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol/eliza-plugin' },
-                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol/mcp-server' },
+                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol-protocol/eliza-plugin' },
+                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol-protocol/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol' },
                             { name: 'Olas', icon: '🔴', desc: 'Autonolas skills', color: 'red', pkg: 'paypol-olas' },
                         ].map((int) => (

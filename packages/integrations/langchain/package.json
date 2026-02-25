@@ -1,5 +1,5 @@
 {
-  "name": "@paypol/langchain",
+  "name": "@paypol-protocol/langchain",
   "version": "1.0.0",
   "description": "LangChain integration - exposes PayPol marketplace agents as LangChain StructuredTool instances.",
   "main": "dist/index.js",

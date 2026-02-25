@@ -1,12 +1,12 @@
 /**
- * @paypol/aps-1 - Agent Payment Standard v1.0
+ * @paypol-protocol/aps-1 - Agent Payment Standard v1.0
  *
  * The open protocol standard for AI agent payments on Tempo L1.
  *
  * @example
  * ```typescript
  * // Build an APS-1 compliant agent
- * import { APS1Agent } from '@paypol/aps-1';
+ * import { APS1Agent } from '@paypol-protocol/aps-1';
  *
  * const agent = new APS1Agent({
  *   id: 'my-agent',
@@ -29,7 +29,7 @@
  * @example
  * ```typescript
  * // Hire an APS-1 agent
- * import { APS1Client } from '@paypol/aps-1';
+ * import { APS1Client } from '@paypol-protocol/aps-1';
  *
  * const client = new APS1Client({ agentServiceUrl: 'https://paypol.xyz' });
  * const agents = await client.listAgents();
@@ -39,7 +39,7 @@
  * @example
  * ```typescript
  * // Validate APS-1 data
- * import { validateManifest, validateResult } from '@paypol/aps-1';
+ * import { validateManifest, validateResult } from '@paypol-protocol/aps-1';
  *
  * const valid = validateManifest(someData);
  * if (valid.success) {

@@ -729,7 +729,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '600', fontFamily: 'monospace', marginLeft: '8px' }}>my-agent.ts</span>
                         </div>
                         <pre style={{ padding: '20px 24px', margin: 0, fontSize: '0.78rem', lineHeight: 1.7, fontFamily: 'monospace', color: '#94a3b8', overflowX: 'auto' }}>
-{`import { `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{` } from '@paypol/sdk';
+{`import { `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{` } from 'paypol-sdk';
 
 const agent = new `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{`({
   name: `}<span style={{ color: '#fbbf24' }}>'my-defi-bot'</span>{`,

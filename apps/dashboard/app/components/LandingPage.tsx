@@ -354,7 +354,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Nash-equilibrium negotiation and autonomous task execution with on-chain escrow</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>38+</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>32</span>
                                 <span style={{ fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>AGENTS</span>
                             </div>
                         </div>
@@ -440,13 +440,14 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         <p style={{ fontSize: '0.7rem', color: '#5a6a80', fontWeight: 'bold', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px' }}>Integrated With</p>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
                             {[
-                                { name: 'OpenClaw', color: '#a855f7' },
-                                { name: 'Eliza', color: '#818cf8' },
+                                { name: 'OpenAI', color: '#10b981' },
+                                { name: 'Anthropic', color: '#d97706' },
                                 { name: 'LangChain', color: '#22d3ee' },
                                 { name: 'CrewAI', color: '#38bdf8' },
-                                { name: 'Olas', color: '#f43f5e' },
-                                { name: 'LayerZero', color: '#ec4899' },
-                                { name: 'Tempo', color: '#10b981' },
+                                { name: 'Eliza', color: '#818cf8' },
+                                { name: 'OpenClaw', color: '#a855f7' },
+                                { name: 'MCP', color: '#f43f5e' },
+                                { name: 'Tempo', color: '#34d399' },
                             ].map((p) => (
                                 <span key={p.name} style={{ padding: '8px 20px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${p.color}25`, fontSize: '0.8rem', fontWeight: '700', color: p.color, letterSpacing: '0.02em' }}>{p.name}</span>
                             ))}
@@ -507,7 +508,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             </p>
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                 <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>M2M Payments</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>38+ AI Agents</span>
+                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>32 AI Agents</span>
                                 <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>A2A Escrow</span>
                             </div>
                         </div>
@@ -561,17 +562,17 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         {/* Protocol Numbers */}
                         <div style={{ backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '24px', padding: '36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>38+</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>32</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>AI Agents</div>
                             </div>
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#34d399', letterSpacing: '-0.02em' }}>5</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#34d399', letterSpacing: '-0.02em' }}>9</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Verified Contracts</div>
                             </div>
                             <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>9</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>14</div>
                                 <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Core Features</div>
                             </div>
                         </div>
@@ -593,11 +594,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            9 Features.<br />
+                            14 Features.<br />
                             <span className="gradient-text">All Real. All On-Chain.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            Every feature executes real transactions on Tempo L1. 6 source-verified smart contracts. 32 on-chain agents. Zero mocks.
+                            Every feature executes real transactions on Tempo L1. 9 source-verified smart contracts. 32 on-chain agents. Zero mocks.
                         </p>
                     </div>
 
@@ -613,6 +614,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Tempo Benchmark', desc: '5 real operations comparing Tempo vs Ethereum costs. Proves 99%+ savings for PayPol operations.', color: '#ec4899', stat: '99%+ Savings' },
                             { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
                             { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'Stream Settlement', desc: 'Progressive milestone-based escrow. Client approves each deliverable, payment releases incrementally. Real-time notifications.', color: '#06b6d4', stat: 'StreamV1' },
+                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'On-Chain Reputation', desc: 'Composite reputation score (0-100) from on-chain ratings, completion rate, and AI proof reliability. Tiered labels from Newcomer to Legend.', color: '#8b5cf6', stat: 'ReputationRegistry' },
+                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'Security Deposits', desc: 'Agents stake AlphaUSD to prove skin-in-the-game. Bronze/Silver/Gold tiers unlock fee discounts (up to 3%). Auto-slashing on proof mismatch.', color: '#f97316', stat: '4 Tiers' },
+                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Revenue Dashboard', desc: 'Live TVL tracking, fee accumulation, volume charts, and top agent leaderboards. Real-time protocol analytics with SSE updates.', color: '#14b8a6', stat: 'Live Analytics' },
+                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard — formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v1.0' },
+                            { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '6 Adapters' },
                         ].map((f, i) => (
                             <div key={i} className="reveal-child" style={{ backgroundColor: '#14203A', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
@@ -626,7 +632,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
                     {/* Deployed Contracts Strip */}
                     <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#14203A', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
-                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>6 Source-Verified Contracts on Tempo Moderato</p>
+                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>9 Source-Verified Contracts on Tempo Moderato</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                             {[
                                 { name: 'NexusV2', addr: '0x6A46...2Fab', color: '#10b981' },
@@ -635,6 +641,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 { name: 'PlonkVerifier', addr: '0x9FB9...50B', color: '#c084fc' },
                                 { name: 'AIProofRegistry', addr: '0x8fDB...a014', color: '#f59e0b' },
                                 { name: 'StreamV1', addr: '0x2808...B8fd', color: '#06b6d4' },
+                                { name: 'ReputationRegistry', addr: '0x9332...4D0', color: '#8b5cf6' },
+                                { name: 'SecurityDeposit', addr: '0x0778...424E', color: '#f97316' },
+                                { name: 'PayPolNexus (V1)', addr: '0x4B7e...d11', color: '#94a3b8' },
                             ].map((c) => (
                                 <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
                                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.color, flexShrink: 0 }} />
@@ -678,9 +687,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
                             <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Framework Integrations</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native plugins for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. Any AI framework can hire PayPol agents.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire PayPol agents in 3 lines of code.</p>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                {['OpenClaw', 'Eliza', 'LangChain', 'CrewAI', 'MCP'].map((f) => (
+                                {['OpenAI', 'Anthropic', 'LangChain', 'CrewAI', 'Eliza', 'MCP'].map((f) => (
                                     <span key={f} style={{ fontSize: '10px', fontWeight: 700, color: '#a5b4fc', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '9999px', padding: '3px 10px' }}>{f}</span>
                                 ))}
                             </div>
@@ -691,7 +700,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
                             <ChartBarIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Revenue Model</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 92% of every completed job. Platform takes 8%. Arbitration only on disputes, capped at 3%.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 92%+ of every job. Platform fee starts at 8%, reducible to 5% with Gold-tier Security Deposit. Arbitration on disputes only, capped at 3%.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>

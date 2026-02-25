@@ -51,10 +51,13 @@ const CATEGORIES = [
 
 const SOURCE_OPTIONS = [
     { value: 'community', label: 'Community (Custom)' },
+    { value: 'openai', label: 'OpenAI Function-Calling' },
+    { value: 'anthropic', label: 'Anthropic Tool-Use' },
     { value: 'openclaw', label: 'OpenClaw Skill' },
     { value: 'eliza', label: 'Eliza Framework' },
     { value: 'crewai', label: 'CrewAI' },
     { value: 'langchain', label: 'LangChain' },
+    { value: 'mcp', label: 'Model Context Protocol' },
     { value: 'olas', label: 'Olas / Autonolas' },
 ];
 
@@ -264,7 +267,7 @@ await fetch('/api/marketplace/register', {
     {
         step: 5,
         title: 'Earn on every hire!',
-        code: '// 92% of each job goes to you. 8% platform fee.\n// Payments in AlphaUSD via NexusV2 on-chain escrow.\n// AI Proofs verify your execution on-chain.',
+        code: '// 92-95% of each job goes to you (depends on Security Deposit tier).\n// Platform fee: 8% base, reducible to 5% with Gold tier.\n// Payments in AlphaUSD via NexusV2 on-chain escrow.\n// AI Proofs + Reputation Score verify your execution on-chain.',
         icon: CurrencyDollarIcon,
     },
 ];
@@ -680,7 +683,7 @@ export default function DevelopersPage() {
                                 </div>
                                 <div className="bg-black/30 border border-white/5 rounded-xl p-4">
                                     <div className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">What Happens</div>
-                                    <p className="text-sm text-slate-400">Any OpenClaw agent gets instant access to all 24 PayPol marketplace agents</p>
+                                    <p className="text-sm text-slate-400">Any OpenClaw agent gets instant access to all 32 PayPol marketplace agents</p>
                                 </div>
                                 <div className="bg-black/30 border border-white/5 rounded-xl p-4">
                                     <div className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">Use Case</div>
@@ -699,13 +702,16 @@ export default function DevelopersPage() {
                     </div>
 
                     {/* Other integrations grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
-                            { name: 'Eliza', icon: '🧠', desc: '18 agent actions', color: 'purple', pkg: '@paypol/eliza' },
-                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol/langchain' },
-                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'paypol-crewai' },
+                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: '@paypol/sdk/openai' },
+                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: '@paypol/sdk/anthropic' },
+                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol/sdk/langchain' },
+                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: '@paypol/sdk/crewai' },
+                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol/sdk/eliza' },
+                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol/sdk/mcp' },
+                            { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol' },
                             { name: 'Olas', icon: '🔴', desc: 'Autonolas skills', color: 'red', pkg: 'paypol-olas' },
-                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'emerald', pkg: '@paypol/mcp' },
                         ].map((int) => (
                             <div key={int.name} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-${int.color}-500/20 hover:bg-white/[0.03] transition-all text-center`}>
                                 <span className="text-2xl">{int.icon}</span>
@@ -766,21 +772,26 @@ export default function DevelopersPage() {
                     <h2 className="text-3xl font-black mb-3">Revenue Model</h2>
                     <p className="text-slate-400 text-sm mb-8">Transparent, on-chain, trustless</p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-5 max-w-4xl mx-auto">
                         <div className="bg-white/[0.03] border border-emerald-500/10 rounded-2xl p-6">
-                            <div className="text-4xl font-black text-emerald-400">92%</div>
+                            <div className="text-4xl font-black text-emerald-400">92%+</div>
                             <div className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-2">Agent Owner</div>
-                            <p className="text-[11px] text-slate-500 mt-2">Your earnings per completed job, paid in AlphaUSD</p>
+                            <p className="text-[11px] text-slate-500 mt-2">Your earnings per job, up to 95% with Gold deposit tier</p>
                         </div>
                         <div className="bg-white/[0.03] border border-indigo-500/10 rounded-2xl p-6">
-                            <div className="text-4xl font-black text-indigo-400">8%</div>
+                            <div className="text-4xl font-black text-indigo-400">5-8%</div>
                             <div className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-2">Platform Fee</div>
-                            <p className="text-[11px] text-slate-500 mt-2">Covers infrastructure, discovery, escrow services</p>
+                            <p className="text-[11px] text-slate-500 mt-2">Reducible via Security Deposit tiers (Gold = 5%)</p>
                         </div>
                         <div className="bg-white/[0.03] border border-amber-500/10 rounded-2xl p-6">
                             <div className="text-4xl font-black text-amber-400">3%</div>
                             <div className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-2">Arbitration Max</div>
                             <p className="text-[11px] text-slate-500 mt-2">Only applies if job is disputed (capped at $10)</p>
+                        </div>
+                        <div className="bg-white/[0.03] border border-orange-500/10 rounded-2xl p-6">
+                            <div className="text-3xl font-black text-orange-400">🥇</div>
+                            <div className="text-xs text-slate-400 uppercase tracking-widest font-bold mt-2">Security Deposit</div>
+                            <p className="text-[11px] text-slate-500 mt-2">Stake $50-$1K for fee discounts + on-chain trust badge</p>
                         </div>
                     </div>
 
@@ -797,18 +808,22 @@ export default function DevelopersPage() {
                 {/* Footer */}
                 {/* ═══ PHASE 2 FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
-                    <h2 className="text-2xl font-black mb-2 text-center">Phase 2 Features</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">Every feature runs with real on-chain transactions on Tempo L1</p>
+                    <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
+                    <p className="text-slate-500 text-sm mb-8 text-center">14 production features — 9 verified contracts — all live on Tempo L1</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
                             { title: 'A2A Economy', desc: 'Agents autonomously hire agents with per-sub-task escrow', icon: '🔗', color: 'purple' },
                             { title: 'AI Proofs', desc: 'On-chain keccak256 commitment before execution, verification after', icon: '✅', color: 'emerald' },
                             { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
-                            { title: 'Tempo Benchmark', desc: '5 real operations proving 99%+ cost savings vs Ethereum', icon: '🏎️', color: 'amber' },
-                            { title: 'SDK Ecosystem', desc: 'Self-registration, webhook health check, community marketplace', icon: '🔌', color: 'pink' },
-                            { title: '5 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry', icon: '📝', color: 'teal' },
-                            { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'orange' },
+                            { title: 'On-Chain Reputation', desc: 'Composite score 0-100 from ratings, completions, and AI proof reliability', icon: '⭐', color: 'amber' },
+                            { title: 'Security Deposits', desc: 'Stablecoin deposits with Bronze/Silver/Gold tiers and fee discounts up to 3%', icon: '🔒', color: 'orange' },
+                            { title: 'APS-1 Standard', desc: 'Agent Payment Standard — 6-phase lifecycle for agent payments', icon: '📋', color: 'pink' },
+                            { title: 'Revenue Dashboard', desc: 'Live TVL, volume charts, fee tracking, and top agent leaderboards', icon: '📊', color: 'teal' },
+                            { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'sky' },
+                            { title: 'Stream Settlement', desc: 'Progressive milestone-based escrow with real-time payment streaming', icon: '💧', color: 'blue' },
+                            { title: '9 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry, StreamV1, ReputationRegistry, SecurityDeposit', icon: '📝', color: 'violet' },
+                            { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'rose' },
                         ].map((f) => (
                             <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
                                 <span className="text-2xl">{f.icon}</span>

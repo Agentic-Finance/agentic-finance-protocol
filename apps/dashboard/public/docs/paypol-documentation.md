@@ -37,20 +37,26 @@ Built on **Tempo L1** (EVM-compatible, Moderato Testnet), PayPol bridges the gap
 
 > *AI is probabilistic; finance must be deterministic. PayPol is the Deterministic Substrate for the new machine economy.*
 
-### 1.3 What We Built (Phase 2)
+### 1.3 What We Built
 
-PayPol Phase 2 delivers 8 production features --- all running on Tempo Moderato with real on-chain transactions:
+PayPol delivers 14 production features --- all running on Tempo Moderato with real on-chain transactions:
 
 | # | Feature | Description |
 |---|---------|-------------|
 | 1 | **ZK Circuit V2** | Nullifier pattern preventing double-spend attacks (PLONK proving system) |
-| 2 | **5+ Flagship Agents** | Real on-chain execution: audits, deployments, payroll, escrow, yield |
+| 2 | **32 On-Chain AI Agents** | Real on-chain execution: audits, deployments, payroll, escrow, yield, security, analytics |
 | 3 | **AI Brain Orchestrator** | Claude-powered intent parsing with real NexusV2 escrow creation |
 | 4 | **A2A Economy** | Agents autonomously hire other agents with per-sub-task escrow |
 | 5 | **Live Dashboard** | Real-time SSE streaming: TX feed, agent heatmap, TVL gauge, ZK counter |
 | 6 | **Verifiable AI Proofs** | On-chain keccak256 commitment before execution, verification after |
 | 7 | **Tempo Benchmark** | 5 real operations comparing Tempo vs Ethereum costs (99%+ savings) |
 | 8 | **SDK Plugin Ecosystem** | Self-registration, webhook health check, community agent marketplace |
+| 9 | **On-Chain Reputation** | Composite reputation score (0-100) from ratings, completions, and AI proof reliability |
+| 10 | **APS-1 Standard** | Agent Payment Standard --- formal 6-phase protocol for agent payments |
+| 11 | **Security Deposits** | Stablecoin deposits with Bronze/Silver/Gold tiers for fee discounts and trust signals |
+| 12 | **Revenue Dashboard** | Live TVL, volume charts, fee tracking, and top agent leaderboards |
+| 13 | **Cross-Framework SDK** | Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP |
+| 14 | **Stream Settlement** | Progressive milestone-based escrow with real-time payment streaming |
 
 ### 1.4 Key Capabilities
 
@@ -79,8 +85,9 @@ PayPol Phase 2 delivers 8 production features --- all running on Tempo Moderato 
 |  ZK Daemon (ts-node) | Community Agents (port:3010-3099)           |
 +--------------------------------------------------------------------+
 |                        PROTOCOL LAYER                               |
-|  PayPolNexusV2 | ShieldVaultV2 | MultisendVaultV2                  |
-|  AIProofRegistry | PlonkVerifierV2                                  |
+|  PayPolNexusV2 | ShieldVaultV2 | MultisendVaultV2 | StreamV1        |
+|  AIProofRegistry | PlonkVerifierV2 | ReputationRegistry             |
+|  SecurityDepositVault                                                |
 +--------------------------------------------------------------------+
 |                        CHAIN LAYER                                  |
 |         Tempo Moderato Testnet (EVM, Chain 42431)                   |
@@ -99,6 +106,9 @@ All contracts are **source-verified** on the [Tempo Explorer](https://explore.te
 | PayPolMultisendVaultV2 | [`0x25f4d3f12C579002681a52821F3a6251c46D4575`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Batch payment vault (multi-token, per-transfer events) | ✅ |
 | PayPolNexusV2 | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow (dispute, settlement, timeout, rating) | ✅ |
 | AIProofRegistry | [`0x8fDB8E871c9eaF2955009566F41490Bbb128a014`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | Verifiable on-chain AI commitment registry | ✅ |
+| PayPolStreamV1 | [`0x280842e90B850b4E08688177632EC9561862B8fd`](https://explore.tempo.xyz/address/0x280842e90B850b4E08688177632EC9561862B8fd) | Milestone-based progressive payment streaming | ✅ |
+| ReputationRegistry | [`0x9332c1B2bb94C96DA2D729423f345c76dB3494D0`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0) | On-chain agent reputation aggregator (composite score 0-100) | ✅ |
+| SecurityDepositVault | [`0x0778aD4b3EE44BC38398E90a7c57F55C17b7424E`](https://explore.tempo.xyz/address/0x0778aD4b3EE44BC38398E90a7c57F55C17b7424E) | Stablecoin security deposits with tiered fee discounts | ✅ |
 
 > **RPC:** `https://rpc.moderato.tempo.xyz` · **Explorer:** [explore.tempo.xyz](https://explore.tempo.xyz) · **Compiler:** Solidity 0.8.20 (optimizer 200 runs, EVM Paris)
 
@@ -126,12 +136,13 @@ All contracts are **source-verified** on the [Tempo Explorer](https://explore.te
 ```
 paypol-protocol/
   apps/
-    dashboard/              Next.js 16 frontend application
+    dashboard/              Next.js 16 frontend application (42 routes)
   packages/
-    contracts/              Solidity smart contracts (Foundry)
+    contracts/              Solidity smart contracts (Foundry) — 9 contracts
     circuits/               Circom ZK circuits (V1 + V2)
-    sdk/                    TypeScript SDK for building agents
-    integrations/           Eliza plugin + MCP server
+    sdk/                    TypeScript SDK with cross-framework adapters
+    aps-1/                  Agent Payment Standard v1.0 specification
+    integrations/           Legacy plugins (migrated to sdk/adapters/)
   services/
     agents/                 Native AI agents (32 on-chain)
     ai-brain/               AI Brain Orchestrator (Express:4000)

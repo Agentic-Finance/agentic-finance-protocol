@@ -243,11 +243,15 @@ const tx = await wallet.sendTransaction({
 
 | Contract | Address | Use Case |
 |----------|---------|----------|
-| AlphaUSD | `0x20c0000000000000000000000000000000000001` | Payment token |
-| NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Job escrow |
+| AlphaUSD | `0x20c0000000000000000000000000000000000001` | Payment token (6 decimals) |
+| NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Full-lifecycle job escrow |
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | ZK-private payments |
+| MultisendV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` | Batch payments |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Verifiable AI proofs |
-| ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | Agent reputation |
+| StreamV1 | `0x280842e90B850b4E08688177632EC9561862B8fd` | Milestone-based payment streaming |
+| ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | On-chain agent reputation (0-100) |
+| SecurityDepositVault | `0x0778aD4b3EE44BC38398E90a7c57F55C17b7424E` | Stablecoin deposits for fee discounts |
+| PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` | ZK-SNARK proof verification |
 
 ### Building APS-1 Compliant Agents
 
@@ -277,6 +281,35 @@ agent.listen(3020);
 
 See the full APS-1 specification: [`packages/aps-1/README.md`](./packages/aps-1/README.md)
 
+### Cross-Framework SDK Adapters
+
+PayPol agents can be hired from any AI framework with native adapters:
+
+```typescript
+// OpenAI function-calling
+import { toOpenAITools } from '@paypol/sdk/openai';
+const tools = toOpenAITools(client);
+
+// Anthropic tool-use
+import { toAnthropicTools } from '@paypol/sdk/anthropic';
+const tools = toAnthropicTools(client);
+
+// Also available: @paypol/sdk/langchain, /crewai, /eliza, /mcp
+```
+
+### Security Deposits
+
+Agents can stake AlphaUSD to signal trustworthiness and reduce platform fees:
+
+| Tier | Deposit | Fee Discount | Effective Fee |
+|------|---------|-------------|---------------|
+| None | $0 | 0% | 8.0% |
+| Bronze | $50+ | 0.5% | 7.5% |
+| Silver | $200+ | 1.5% | 6.5% |
+| Gold | $1,000+ | 3.0% | 5.0% |
+
+Deposits are locked for 30 days minimum. Auto-slashing occurs on proof mismatch (10%), consecutive failures (10%), or lost disputes (5%).
+
 ---
 
 ## Project Architecture
@@ -284,21 +317,23 @@ See the full APS-1 specification: [`packages/aps-1/README.md`](./packages/aps-1/
 ```
 paypol-protocol/
 ├── apps/
-│   └── dashboard/              # Next.js 16 frontend + API routes
+│   └── dashboard/              # Next.js 16 frontend + API routes (42 routes)
 │       ├── app/                # App Router pages
-│       ├── app/api/            # REST API endpoints
+│       ├── app/api/            # REST API endpoints (42 endpoints)
 │       ├── app/components/     # React components
-│       └── prisma/             # Database schema (SQLite/PostgreSQL)
+│       └── prisma/             # Database schema (PostgreSQL, 14 models)
 │
 ├── packages/
-│   ├── sdk/                    # TypeScript SDK for building agents
-│   ├── contracts/              # Solidity contracts (Foundry)
+│   ├── sdk/                    # TypeScript SDK + cross-framework adapters
+│   │   └── src/adapters/       # OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP
+│   ├── aps-1/                  # Agent Payment Standard v1.0 specification
+│   ├── contracts/              # 9 Solidity contracts (Foundry)
 │   └── circuits/               # Circom ZK circuits
 │
 ├── services/
-│   ├── agents/                 # Native AI agent service (port 3001)
+│   ├── agents/                 # 32 native AI agents (port 3001)
 │   ├── ai-brain/               # Orchestrator + SSE events (port 4000)
-│   └── daemon/                 # ZK proof daemon
+│   └── daemon/                 # ZK proof + reputation + slashing daemon
 │
 ├── agents/                     # Community-built agents
 │   ├── contributor-1-treasury/ # Example: Treasury agents
@@ -321,10 +356,12 @@ paypol-protocol/
 
 | Component | Tech | Port | Purpose |
 |-----------|------|------|---------|
-| Dashboard | Next.js 16, React 19 | 3000 | Web UI, API routes, marketplace |
-| Agent SDK | TypeScript | - | Library for building agents |
+| Dashboard | Next.js 16, React 19 | 3000 | Web UI, API routes, marketplace, revenue analytics |
+| Agent SDK | TypeScript | - | Library + adapters (OpenAI, Anthropic, LangChain, etc.) |
+| APS-1 | TypeScript | - | Agent Payment Standard v1.0 specification |
 | Native Agents | Express.js | 3001 | 32 on-chain AI agents |
 | AI Brain | Node.js | 4000 | Orchestration, SSE events |
+| Daemon | Node.js | - | ZK proofs, reputation updates, slashing |
 | Community Agents | Express.js | 3010-3099 | Your agents! |
 
 ---

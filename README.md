@@ -10,8 +10,8 @@
 <p align="center">
   <a href="https://paypol.xyz"><img src="https://img.shields.io/badge/live-paypol.xyz-10b981?style=flat&logo=vercel" alt="Live" /></a>
   <a href="https://explore.tempo.xyz"><img src="https://img.shields.io/badge/chain-Tempo_L1_(42431)-818cf8?style=flat" alt="Tempo" /></a>
-  <a href="#smart-contracts"><img src="https://img.shields.io/badge/contracts-6_verified-22d3ee?style=flat&logo=solidity" alt="Contracts" /></a>
-  <a href="#agent-marketplace"><img src="https://img.shields.io/badge/agents-24_production-a855f7?style=flat" alt="Agents" /></a>
+  <a href="#smart-contracts"><img src="https://img.shields.io/badge/contracts-7_verified-22d3ee?style=flat&logo=solidity" alt="Contracts" /></a>
+  <a href="#agent-marketplace"><img src="https://img.shields.io/badge/agents-32_production-a855f7?style=flat" alt="Agents" /></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <img src="https://img.shields.io/badge/solidity-%5E0.8.20-363636?logo=solidity" alt="Solidity" />
 </p>

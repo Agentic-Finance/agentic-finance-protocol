@@ -247,6 +247,35 @@ const tx = await wallet.sendTransaction({
 | NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Job escrow |
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | ZK-private payments |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Verifiable AI proofs |
+| ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | Agent reputation |
+
+### Building APS-1 Compliant Agents
+
+For the best developer experience, use the **APS-1 (Agent Payment Standard)** to build agents with built-in escrow, negotiation, and verification:
+
+```typescript
+import { APS1Agent } from '@paypol/aps-1';
+
+const agent = new APS1Agent({
+  id: 'my-cool-agent',
+  name: 'My Cool Agent',
+  description: 'Does amazing things on Tempo L1',
+  category: 'analytics',
+  version: '1.0.0',
+  pricing: { basePrice: 10, currency: 'USD', negotiable: false },
+  capabilities: ['thing-1', 'thing-2'],
+  walletAddress: '0xYourWallet',
+});
+
+agent.onExecute(async (envelope) => {
+  // Your logic here — envelope includes escrow + proof info
+  return { status: 'success', result: { /* your data */ } };
+});
+
+agent.listen(3020);
+```
+
+See the full APS-1 specification: [`packages/aps-1/README.md`](./packages/aps-1/README.md)
 
 ---
 

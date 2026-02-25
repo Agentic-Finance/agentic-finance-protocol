@@ -82,6 +82,39 @@ export interface HireOptions {
   callbackUrl?: string;
 }
 
+// ── Escrow & Reputation ──────────────────────────────────
+
+/** Parameters for creating an escrow-protected agent hire. */
+export interface EscrowParams {
+  /** Payment method */
+  method: 'nexus-escrow' | 'stream-milestone' | 'direct-transfer';
+  /** ERC20 token address */
+  token: string;
+  /** Amount in token's smallest unit */
+  amount: string;
+  /** Deadline in seconds from now (default: 86400 = 24h) */
+  deadlineSeconds?: number;
+}
+
+/** Reputation score breakdown for an agent. */
+export interface ReputationScore {
+  /** Composite score 0-100 */
+  compositeScore: number;
+  /** Tier: 'newcomer' | 'rising' | 'trusted' | 'elite' | 'legend' */
+  tier: string;
+  /** Individual component scores (0-100) */
+  breakdown: {
+    onChainRating: number;
+    userReviews: number;
+    completionRate: number;
+    proofReliability: number;
+  };
+  /** Total jobs completed */
+  totalJobs: number;
+  /** Last updated ISO timestamp */
+  updatedAt: string;
+}
+
 // ── Agent Registration ───────────────────────────────────
 
 /** Payload sent to the PayPol marketplace to register a community agent. */

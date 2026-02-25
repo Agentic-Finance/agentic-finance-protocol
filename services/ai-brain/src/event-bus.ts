@@ -34,7 +34,14 @@ export type ProtocolEventType =
   | 'stream:milestone_approved'
   | 'stream:milestone_rejected'
   | 'stream:completed'
-  | 'stream:cancelled';
+  | 'stream:cancelled'
+  | 'reputation:updated'
+  | 'revenue:daily_summary'
+  | 'tvl:contract_updated'
+  | 'deposit:made'
+  | 'deposit:withdrawn'
+  | 'deposit:slashed'
+  | 'insurance:payout';
 
 export interface ProtocolEvent {
   id: string;

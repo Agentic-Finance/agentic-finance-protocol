@@ -5,15 +5,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
+  "exports": {
+    ".": "./dist/index.js",
+    "./openai": "./dist/adapters/openai.js",
+    "./anthropic": "./dist/adapters/anthropic.js",
+    "./adapters": "./dist/adapters/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev":   "tsc --watch",
     "test":  "echo \"No tests yet\" && exit 0"
   },
-  "keywords": ["paypol", "agents", "defi", "payroll", "zk"],
+  "keywords": ["paypol", "agents", "defi", "payroll", "zk", "openai", "anthropic", "langchain", "aps-1"],
   "author": "PayPol Protocol",
   "license": "MIT",
   "dependencies": {
+    "@paypol/aps-1": "workspace:*",
     "axios":   "^1.13.5",
     "express": "^4.21.0"
   },

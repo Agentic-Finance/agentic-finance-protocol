@@ -28,6 +28,8 @@ export const CONTRACTS = {
   NEXUS_V1:          '0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c',
   AI_PROOF_REGISTRY: '0x8fDB8E871c9eaF2955009566F41490Bbb128a014',
   STREAM_V1:         '0x280842e90B850b4E08688177632EC9561862B8fd',
+  REPUTATION:        '0x9332c1B2bb94C96DA2D729423f345c76dB3494D0',
+  SECURITY_DEPOSIT:  '0x0778aD4b3EE44BC38398E90a7c57F55C17b7424E',
 } as const;
 
 // ── Supported Tokens ─────────────────────────────────────────
@@ -169,6 +171,39 @@ export function getMultisendV2(): ethers.Contract {
 
 export function getERC20(tokenAddress: string): ethers.Contract {
   return getContract(tokenAddress, ERC20_ABI);
+}
+
+// ── Reputation Registry ────────────────────────────────────
+
+export const REPUTATION_ABI = [
+  'function getReputation(address _agent) external view returns (tuple(uint256 nexusRatingSum, uint256 nexusRatingCount, uint256 offChainRatingSum, uint256 offChainRatingCount, uint256 totalJobsCompleted, uint256 totalJobsFailed, uint256 proofCommitments, uint256 proofVerified, uint256 proofMatched, uint256 proofSlashed, uint256 compositeScore, uint256 updatedAt))',
+  'function getCompositeScore(address _agent) external view returns (uint256)',
+  'function getTier(address _agent) external view returns (uint256)',
+  'function getTrackedAgentCount() external view returns (uint256)',
+  'function totalAgentsScored() external view returns (uint256)',
+  'function updateReputation(address _agent, uint256 _nexusRatingSum, uint256 _nexusRatingCount, uint256 _offChainRatingSum, uint256 _offChainRatingCount, uint256 _totalJobsCompleted, uint256 _totalJobsFailed, uint256 _proofCommitments, uint256 _proofVerified, uint256 _proofMatched, uint256 _proofSlashed) external',
+  'event ReputationUpdated(address indexed agent, uint256 compositeScore, uint256 timestamp)',
+];
+
+export function getReputationRegistry(): ethers.Contract {
+  return getContract(CONTRACTS.REPUTATION, REPUTATION_ABI);
+}
+
+// SecurityDepositVault ABI
+export const SECURITY_DEPOSIT_ABI = [
+  'function deposit(uint256 _amount) external',
+  'function withdraw(uint256 _amount) external',
+  'function slash(address _agent, string calldata _reason) external',
+  'function getTier(address _agent) external view returns (uint8)',
+  'function getFeeDiscount(address _agent) external view returns (uint256)',
+  'function getDeposit(address _agent) external view returns (uint256 amount, uint256 depositedAt, uint256 slashCount, uint256 totalSlashedAmt, uint8 tier, uint256 feeDiscount, bool lockExpired)',
+  'function getStats() external view returns (uint256 _totalDeposited, uint256 _totalSlashed, uint256 _totalInsurancePaid, uint256 _insurancePool, uint256 _totalAgents)',
+  'event DepositMade(address indexed agent, uint256 amount, uint256 total, uint8 tier)',
+  'event DepositSlashed(address indexed agent, uint256 slashAmount, string reason)',
+];
+
+export function getSecurityDepositVault(): ethers.Contract {
+  return getContract(CONTRACTS.SECURITY_DEPOSIT, SECURITY_DEPOSIT_ABI);
 }
 
 // ── Transaction Helpers ──────────────────────────────────────

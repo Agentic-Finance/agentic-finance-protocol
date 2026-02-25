@@ -1,7 +1,8 @@
-import React from 'react';
-import { CheckBadgeIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
+import { CheckBadgeIcon, SparklesIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
+import FiatCheckout from '../FiatCheckout';
 
 interface DealConfirmationProps {
     negotiation: NegotiationResult | null;
@@ -13,6 +14,8 @@ interface DealConfirmationProps {
 }
 
 function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, confirmationRef, isLoading }: DealConfirmationProps) {
+    const [payMethod, setPayMethod] = useState<'crypto' | 'card'>('crypto');
+
     if (!negotiation || !selectedAgent) return null;
 
     const agent = selectedAgent.agent;
@@ -87,31 +90,71 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                     </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+                {/* Payment Method Toggle */}
+                <div className="flex items-center gap-2 mb-4 relative z-10">
                     <button
-                        onClick={onReject}
-                        className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs uppercase tracking-widest rounded-xl transition-colors"
+                        onClick={() => setPayMethod('crypto')}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                            payMethod === 'crypto'
+                                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/40'
+                                : 'bg-black/30 text-slate-500 border border-white/5 hover:text-slate-300'
+                        }`}
                     >
-                        Reject Deal
+                        <span className="text-sm">⚡</span> Pay with Crypto
                     </button>
                     <button
-                        onClick={onConfirm}
-                        disabled={isLoading}
-                        className={`w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all flex items-center justify-center gap-2 ${isLoading ? 'opacity-60 cursor-not-allowed' : 'hover:from-emerald-400 hover:to-teal-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:-translate-y-0.5'}`}
+                        onClick={() => setPayMethod('card')}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+                            payMethod === 'card'
+                                ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/40'
+                                : 'bg-black/30 text-slate-500 border border-white/5 hover:text-slate-300'
+                        }`}
                     >
-                        {isLoading ? (
-                            <>
-                                <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                                Confirming...
-                            </>
-                        ) : (
-                            <>
-                                <CheckBadgeIcon className="w-6 h-6" /> Accept & Escrow
-                            </>
-                        )}
+                        <CreditCardIcon className="w-4 h-4" /> Pay with Card
                     </button>
                 </div>
+
+                {/* Actions */}
+                {payMethod === 'card' ? (
+                    <div className="flex flex-col gap-4 relative z-10">
+                        <FiatCheckout
+                            amount={negotiation.finalPrice}
+                            userWallet="0x0000000000000000000000000000000000000000"
+                            compact
+                        />
+                        <button
+                            onClick={onReject}
+                            className="w-full px-8 py-3 bg-transparent hover:bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs uppercase tracking-widest rounded-xl transition-colors"
+                        >
+                            Reject Deal
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+                        <button
+                            onClick={onReject}
+                            className="w-full sm:w-auto px-8 py-4 bg-transparent hover:bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs uppercase tracking-widest rounded-xl transition-colors"
+                        >
+                            Reject Deal
+                        </button>
+                        <button
+                            onClick={onConfirm}
+                            disabled={isLoading}
+                            className={`w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all flex items-center justify-center gap-2 ${isLoading ? 'opacity-60 cursor-not-allowed' : 'hover:from-emerald-400 hover:to-teal-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:-translate-y-0.5'}`}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                    Confirming...
+                                </>
+                            ) : (
+                                <>
+                                    <CheckBadgeIcon className="w-6 h-6" /> Accept & Escrow
+                                </>
+                            )}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

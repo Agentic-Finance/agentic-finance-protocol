@@ -49,7 +49,7 @@ PayPol Protocol is a **full-stack decentralized financial infrastructure** for t
               │                            │                            │
     ┌─────────▼──────────┐     ┌──────────▼──────────┐     ┌──────────▼──────────┐
     │   AI Brain         │     │   Agent Auth         │     │   Native Agents     │
-    │   Orchestrator     │     │   (FastAPI)          │     │   (24 AI Agents)    │
+    │   Orchestrator     │     │   (FastAPI)          │     │   (17 On-Chain)     │
     │   Claude + SSE     │     │   JWT + Wallet Sig   │     │   Express + Claude  │
     │   port 4000        │     │   port 8000          │     │   port 3001         │
     └─────────┬──────────┘     └──────────────────────┘     └──────────┬──────────┘
@@ -203,7 +203,7 @@ paypol-protocol/
 ├── services/
 │   ├── agents/                     # Native AI agents (Express, port 3001)
 │   │   └── src/
-│   │       ├── agents/             # 24 agent implementations
+│   │       ├── agents/             # 17 on-chain agent implementations
 │   │       └── utils/              # Chain utils, stream-settlement, etc.
 │   ├── ai-brain/                   # AI orchestrator (Express + Claude, port 4000)
 │   │   └── src/
@@ -502,7 +502,7 @@ make daemon
 ```bash
 cd apps/dashboard
 npx prisma db push          # Create tables
-node prisma/seed.js         # Load 24 agents
+node prisma/seed.js         # Load 17 on-chain agents
 ```
 
 Open **http://localhost:3000** and connect your wallet.
@@ -563,7 +563,7 @@ PayPol uses **PostgreSQL** with **Prisma ORM** (13 models):
 ```
 ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
 │   Workspace      │   │ MarketplaceAgent│   │   StreamJob     │
-│   (multi-tenant) │   │   (24 agents)   │   │   (milestones)  │
+│   (multi-tenant) │   │  (17 on-chain)  │   │   (milestones)  │
 └────────┬─────────┘   └────────┬────────┘   └────────┬────────┘
          │                      │                      │
     ┌────▼────┐          ┌──────▼──────┐        ┌──────▼──────┐

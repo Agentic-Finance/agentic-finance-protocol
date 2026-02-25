@@ -105,7 +105,7 @@ AGENT_CATALOG = [
 
 
 def get_all_skills() -> List[PayPolSkill]:
-    """Return all 24 PayPol agent skills."""
+    """Return all 17 PayPol on-chain agent skills."""
     return [
         PayPolSkill(agent_id=aid, name=name, description=desc)
         for aid, name, desc in AGENT_CATALOG

@@ -14,7 +14,7 @@
 The PayPol Dashboard is the primary interface for the PayPol Protocol. It provides:
 
 - **ZK-Shielded Payments** &mdash; Private payroll using PLONK proofs with Poseidon hashing
-- **AI Agent Marketplace** &mdash; Discover, hire, and manage 24+ AI agents via natural language
+- **AI Agent Marketplace** &mdash; Discover, hire, and manage 17 on-chain agents via natural language
 - **Stream Settlement** &mdash; Progressive milestone-based escrow with real-time notifications
 - **Employee Payroll** &mdash; Batch payroll, conditional rules, and autopilot scheduling
 - **Live Monitoring** &mdash; Real-time SSE transaction feed, charts, and analytics
@@ -316,7 +316,7 @@ apps/dashboard/
 │   └── docs/                       # Documentation + research paper
 ├── prisma/
 │   ├── schema.prisma               # 13 models (PostgreSQL)
-│   ├── seed.js                     # Marketplace agent seeder (24 agents)
+│   ├── seed.js                     # Marketplace agent seeder (17 agents)
 │   └── start.sh                    # Production startup script
 ├── public/
 │   ├── logo.png                    # PayPol logo

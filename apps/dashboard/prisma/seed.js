@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
- * Production Agent Seeder — Plain JS (no TypeScript dependency)
+ * Production Agent Seeder — 17 Real On-Chain Agents
  *
  * Called automatically by Docker CMD on startup.
+ * ALL agents execute real transactions on Tempo L1 (Chain 42431).
+ * No fake/AI-only agents — every agent interacts with smart contracts.
+ *
  * Uses upsert to safely re-run without duplicates.
  */
 
@@ -12,40 +15,52 @@ const prisma = new PrismaClient();
 const WALLET = "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793";
 
 const agents = [
-  { name: "Certi-Audit Pro", description: "Enterprise-grade smart contract security auditor powered by Claude AI. Detects reentrancy, overflow, access control vulnerabilities, and 50+ known exploit patterns.", category: "security", skills: '["audit","security","solidity","reentrancy","vulnerability","smart-contract"]', basePrice: 300, nativeAgentId: "contract-auditor", ownerWallet: WALLET, avatarEmoji: "\u{1F6E1}\uFE0F", isVerified: true, totalJobs: 127, successRate: 98.4, avgRating: 4.9, ratingCount: 89, responseTime: 15 },
-  { name: "Omnichain Yield Farmer", description: "AI-powered DeFi yield optimization engine. Analyzes liquidity pools, staking opportunities, and farming strategies across multiple chains.", category: "defi", skills: '["yield","farm","liquidity","pool","stake","apy","defi"]', basePrice: 75, nativeAgentId: "yield-optimizer", ownerWallet: WALLET, avatarEmoji: "\u{1F33E}", isVerified: true, totalJobs: 234, successRate: 95.7, avgRating: 4.7, ratingCount: 156, responseTime: 20 },
-  { name: "PayPol Payroll Planner", description: "Intelligent payroll optimization agent. Plans batch disbursements, analyzes gas costs, and generates payment schedules.", category: "payroll", skills: '["payroll","salary","batch","gas","schedule","payment"]', basePrice: 50, nativeAgentId: "payroll-planner", ownerWallet: WALLET, avatarEmoji: "\u{1F4CA}", isVerified: true, totalJobs: 312, successRate: 99.1, avgRating: 4.8, ratingCount: 201, responseTime: 10 },
-  { name: "Gas Oracle Predictor", description: "Real-time gas price prediction and transaction timing optimizer. Uses historical data patterns and mempool analysis.", category: "analytics", skills: '["gas","predict","timing","mempool","cost","analytics"]', basePrice: 25, nativeAgentId: "gas-predictor", ownerWallet: WALLET, avatarEmoji: "\u26FD", isVerified: true, totalJobs: 589, successRate: 97.3, avgRating: 4.6, ratingCount: 342, responseTime: 5 },
-  { name: "Flash Arbitrage Sniper", description: "Scans DEX volumes and token prices across chains to identify arbitrage opportunities using DeFiLlama + CoinGecko data.", category: "defi", skills: '["arbitrage","flashloan","mev","trade","snipe","dex"]', basePrice: 250, nativeAgentId: "arbitrage-scanner", ownerWallet: WALLET, avatarEmoji: "\u26A1", isVerified: true, totalJobs: 67, successRate: 91.0, avgRating: 4.5, ratingCount: 45, responseTime: 8 },
-  { name: "LegalEase Compliance Bot", description: "AI-powered crypto regulatory compliance advisor. Analyzes tax obligations, licensing requirements, and KYC/AML rules.", category: "compliance", skills: '["tax","legal","compliance","law","regulation","audit"]', basePrice: 150, nativeAgentId: "compliance-advisor", ownerWallet: WALLET, avatarEmoji: "\u2696\uFE0F", isVerified: true, totalJobs: 43, successRate: 96.5, avgRating: 4.8, ratingCount: 31, responseTime: 45 },
-  { name: "NFT Forensics Investigator", description: "Investigates NFT collections for wash trading, suspicious activity, and provenance analysis using on-chain data.", category: "security", skills: '["nft","forensics","investigate","stolen","provenance"]', basePrice: 200, nativeAgentId: "nft-forensics", ownerWallet: WALLET, avatarEmoji: "\u{1F50D}", isVerified: true, totalJobs: 28, successRate: 89.3, avgRating: 4.4, ratingCount: 19, responseTime: 60 },
-  { name: "Bridge Guardian", description: "Analyzes cross-chain bridge protocols for security, fees, and speed using DeFiLlama bridge data.", category: "security", skills: '["bridge","cross-chain","multichain","transfer","routing"]', basePrice: 180, nativeAgentId: "bridge-analyzer", ownerWallet: WALLET, avatarEmoji: "\u{1F309}", isVerified: true, totalJobs: 51, successRate: 94.1, avgRating: 4.3, ratingCount: 34, responseTime: 25 },
-  { name: "DAO Governance Advisor", description: "Analyzes DAO proposals, voting patterns, and governance health using Snapshot data.", category: "governance", skills: '["dao","governance","voting","proposal","token","treasury"]', basePrice: 120, nativeAgentId: "dao-advisor", ownerWallet: WALLET, avatarEmoji: "\u{1F3DB}\uFE0F", isVerified: true, totalJobs: 19, successRate: 100.0, avgRating: 4.7, ratingCount: 12, responseTime: 35 },
-  { name: "Sentinel Risk Analyzer", description: "Comprehensive DeFi portfolio risk analysis using DeFiLlama protocol data, TVL trends, and stablecoin metrics.", category: "analytics", skills: '["risk","portfolio","liquidation","monitor","tvl","exposure"]', basePrice: 200, nativeAgentId: "risk-analyzer", ownerWallet: WALLET, avatarEmoji: "\u{1F514}", isVerified: true, totalJobs: 76, successRate: 93.4, avgRating: 4.5, ratingCount: 52, responseTime: 12 },
-  { name: "CryptoTax Navigator", description: "Comprehensive crypto tax calculation and reporting agent. Analyzes wallet history across chains and generates tax-ready reports.", category: "tax", skills: '["tax","report","capital-gains","cost-basis","fifo","airdrop"]', basePrice: 175, nativeAgentId: "tax-navigator", ownerWallet: WALLET, avatarEmoji: "\u{1F9FE}", isVerified: true, totalJobs: 89, successRate: 97.2, avgRating: 4.7, ratingCount: 62, responseTime: 30 },
-  { name: "AlphaBalance Portfolio AI", description: "AI portfolio management agent. Recommends rebalancing strategies based on risk tolerance and market conditions.", category: "analytics", skills: '["portfolio","rebalance","allocation","diversify","risk"]', basePrice: 120, nativeAgentId: "portfolio-rebalancer", ownerWallet: WALLET, avatarEmoji: "\u{1F4CA}", isVerified: true, totalJobs: 156, successRate: 94.8, avgRating: 4.6, ratingCount: 108, responseTime: 20 },
-  { name: "LaunchPad Token Deployer", description: "End-to-end ERC-20/ERC-721 token deployment assistant. Generates audited Solidity contracts with configurable tokenomics.", category: "deployment", skills: '["deploy","token","erc20","erc721","launch","tokenomics"]', basePrice: 350, nativeAgentId: "token-deployer", ownerWallet: WALLET, avatarEmoji: "\u{1F680}", isVerified: true, totalJobs: 34, successRate: 100.0, avgRating: 4.9, ratingCount: 28, responseTime: 45 },
-  { name: "AirdropScan Tracker", description: "Monitors and tracks airdrop eligibility across protocols. Analyzes wallet activity against known airdrop criteria.", category: "defi", skills: '["airdrop","claim","eligibility","farming","distribution"]', basePrice: 60, nativeAgentId: "airdrop-tracker", ownerWallet: WALLET, avatarEmoji: "\u{1FA82}", isVerified: true, totalJobs: 421, successRate: 92.4, avgRating: 4.4, ratingCount: 289, responseTime: 15 },
-  { name: "MEV Sentinel Shield", description: "Protects transactions from MEV attacks including front-running and sandwich attacks. Analyzes mempool exposure.", category: "security", skills: '["mev","frontrun","sandwich","flashbots","mempool","protection"]', basePrice: 90, nativeAgentId: "mev-shield", ownerWallet: WALLET, avatarEmoji: "\u{1F530}", isVerified: true, totalJobs: 203, successRate: 96.1, avgRating: 4.7, ratingCount: 145, responseTime: 8 },
-  { name: "LiquidityOps Manager", description: "Manages concentrated liquidity positions on Uniswap V3/V4, Curve, and other AMMs.", category: "defi", skills: '["liquidity","amm","uniswap","curve","concentrated","lp"]', basePrice: 140, nativeAgentId: "liquidity-manager", ownerWallet: WALLET, avatarEmoji: "\u{1F4A7}", isVerified: true, totalJobs: 167, successRate: 93.4, avgRating: 4.5, ratingCount: 112, responseTime: 18 },
-  { name: "WhaleAlert Intelligence", description: "Tracks large wallet movements and whale accumulation/distribution patterns in real-time.", category: "analytics", skills: '["whale","tracking","smart-money","exchange-flow","accumulation"]', basePrice: 80, nativeAgentId: "whale-watcher", ownerWallet: WALLET, avatarEmoji: "\u{1F40B}", isVerified: true, totalJobs: 312, successRate: 95.5, avgRating: 4.6, ratingCount: 215, responseTime: 10 },
-  { name: "SentiChain Social Radar", description: "Analyzes crypto social sentiment across Twitter/X, Discord, Telegram, and governance forums.", category: "analytics", skills: '["sentiment","social","twitter","discord","telegram","nlp"]', basePrice: 65, nativeAgentId: "sentiment-analyzer", ownerWallet: WALLET, avatarEmoji: "\u{1F4E1}", isVerified: true, totalJobs: 245, successRate: 91.8, avgRating: 4.3, ratingCount: 178, responseTime: 12 },
-  { name: "OmniBridge Router", description: "Finds the cheapest, fastest, and safest bridge route for any cross-chain transfer across 20+ protocols.", category: "defi", skills: '["bridge","cross-chain","route","transfer","l2","rollup"]', basePrice: 40, nativeAgentId: "bridge-optimizer", ownerWallet: WALLET, avatarEmoji: "\u{1F517}", isVerified: true, totalJobs: 534, successRate: 97.6, avgRating: 4.8, ratingCount: 398, responseTime: 6 },
-  { name: "NFT Appraisal Engine", description: "Estimates fair market value of NFTs using rarity analysis, floor price trends, and trait distribution.", category: "nft", skills: '["nft","valuation","appraisal","rarity","floor-price","collection"]', basePrice: 100, nativeAgentId: "nft-valuator", ownerWallet: WALLET, avatarEmoji: "\u{1F3A8}", isVerified: true, totalJobs: 98, successRate: 88.8, avgRating: 4.2, ratingCount: 67, responseTime: 25 },
-  { name: "ProposalForge Writer", description: "Drafts professional DAO governance proposals from natural language descriptions. Structures for Snapshot or Tally.", category: "governance", skills: '["proposal","governance","dao","draft","snapshot","tally"]', basePrice: 85, nativeAgentId: "proposal-writer", ownerWallet: WALLET, avatarEmoji: "\u{1F4DD}", isVerified: true, totalJobs: 56, successRate: 98.2, avgRating: 4.8, ratingCount: 42, responseTime: 40 },
-  { name: "VestingVault Planner", description: "Designs and audits token vesting schedules for teams, investors, and advisors.", category: "compliance", skills: '["vesting","unlock","cliff","schedule","tokenomics","supply"]', basePrice: 130, nativeAgentId: "vesting-planner", ownerWallet: WALLET, avatarEmoji: "\u{1F512}", isVerified: true, totalJobs: 41, successRate: 100.0, avgRating: 4.9, ratingCount: 35, responseTime: 35 },
-  { name: "InsureGuard DeFi Cover", description: "Finds and compares DeFi insurance products across Nexus Mutual, InsurAce, and other providers.", category: "defi", skills: '["insurance","cover","nexus-mutual","premium","claim","protection"]', basePrice: 70, nativeAgentId: "insurance-finder", ownerWallet: WALLET, avatarEmoji: "\u{1F3E5}", isVerified: true, totalJobs: 73, successRate: 95.9, avgRating: 4.5, ratingCount: 49, responseTime: 20 },
-  { name: "ContractDeploy Pro", description: "Deploys and verifies pre-audited smart contract templates to any EVM chain. Handles gas estimation and verification.", category: "deployment", skills: '["deploy","smart-contract","verify","multisig","vault","proxy"]', basePrice: 280, nativeAgentId: "contract-deployer", ownerWallet: WALLET, avatarEmoji: "\u2699\uFE0F", isVerified: true, totalJobs: 22, successRate: 100.0, avgRating: 4.9, ratingCount: 18, responseTime: 60 },
+  // ── Core Agents (Original 7) ──────────────────────────────
+
+  { name: "Escrow Manager", description: "Creates and manages NexusV2 escrow jobs on Tempo L1. Locks funds trustlessly with full lifecycle: create → start → complete → settle → refund. Real on-chain execution with tx hashes.", category: "escrow", skills: '["escrow","create-job","settle","refund","nexus","on-chain"]', basePrice: 5, nativeAgentId: "escrow-manager", ownerWallet: WALLET, avatarEmoji: "\u{1F512}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 15 },
+
+  { name: "Shield Executor", description: "ZK-SNARK shielded payment agent using PLONK proofs with Poseidon hashing. Generates zero-knowledge proofs and executes private payments through ShieldVaultV2 on Tempo L1.", category: "privacy", skills: '["zk-proof","plonk","poseidon","shielded-payment","privacy","on-chain"]', basePrice: 10, nativeAgentId: "shield-executor", ownerWallet: WALLET, avatarEmoji: "\u{1F6E1}\uFE0F", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 30 },
+
+  { name: "Payroll Planner", description: "Intelligent batch payroll executor. Plans and executes multi-recipient disbursements through MultisendVault with gas optimization. Real on-chain batch payments on Tempo L1.", category: "payroll", skills: '["payroll","batch","multisend","salary","payment","on-chain"]', basePrice: 8, nativeAgentId: "payroll-planner", ownerWallet: WALLET, avatarEmoji: "\u{1F4CA}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 10 },
+
+  { name: "Token Deployer", description: "End-to-end ERC-20 token deployment on Tempo L1. AI designs tokenomics, generates audited Solidity, and deploys contracts with real on-chain verification.", category: "deployment", skills: '["deploy","token","erc20","solidity","tokenomics","on-chain"]', basePrice: 15, nativeAgentId: "token-deployer", ownerWallet: WALLET, avatarEmoji: "\u{1F680}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 45 },
+
+  { name: "Contract Deploy Pro", description: "Production smart contract deployment and verification. AI audits code, compiles Solidity, and deploys to Tempo L1 with on-chain verification via Sourcify.", category: "deployment", skills: '["deploy","smart-contract","verify","audit","solidity","on-chain"]', basePrice: 20, nativeAgentId: "contract-deploy-pro", ownerWallet: WALLET, avatarEmoji: "\u2699\uFE0F", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 60 },
+
+  { name: "A2A Coordinator", description: "Agent-to-Agent orchestration engine. Decomposes complex tasks into multi-step plans, hires specialized agents, and manages execution chains with NexusV2 escrows.", category: "orchestration", skills: '["a2a","coordinator","multi-agent","orchestration","escrow","on-chain"]', basePrice: 20, nativeAgentId: "coordinator", ownerWallet: WALLET, avatarEmoji: "\u{1F3AF}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 120 },
+
+  { name: "Tempo Benchmark", description: "Automated cost comparison between Tempo L1 and Ethereum mainnet. Executes 5 real operations (transfer, escrow, settlement, batch, proof commit) and calculates savings.", category: "analytics", skills: '["benchmark","gas-cost","tempo-vs-eth","comparison","analytics","on-chain"]', basePrice: 5, nativeAgentId: "tempo-benchmark", ownerWallet: WALLET, avatarEmoji: "\u{1F3CE}\uFE0F", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 30 },
+
+  // ── New On-Chain Agents (10) ──────────────────────────────
+
+  { name: "Token Transfer", description: "Direct ERC20 token transfers on Tempo L1. Supports AlphaUSD, pathUSD, BetaUSD, and ThetaUSD. AI parses natural language transfer requests and executes real on-chain transactions.", category: "payments", skills: '["transfer","erc20","send","payment","multi-token","on-chain"]', basePrice: 2, nativeAgentId: "token-transfer", ownerWallet: WALLET, avatarEmoji: "\u{1F4B8}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 8 },
+
+  { name: "Stream Creator", description: "Creates milestone-based payment streams on PayPolStreamV1. AI breaks job descriptions into milestones with budgets, then deploys progressive escrow streams on-chain.", category: "streams", skills: '["stream","milestone","progressive-escrow","create","budget","on-chain"]', basePrice: 8, nativeAgentId: "stream-creator", ownerWallet: WALLET, avatarEmoji: "\u{1F4A7}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 20 },
+
+  { name: "Stream Manager", description: "Manages PayPolStreamV1 lifecycle — submit milestones with proof hashes, approve/reject deliverables, cancel streams, check on-chain status. Full stream lifecycle management.", category: "streams", skills: '["stream","milestone","submit","approve","reject","cancel","on-chain"]', basePrice: 5, nativeAgentId: "stream-manager", ownerWallet: WALLET, avatarEmoji: "\u{1F3D7}\uFE0F", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 12 },
+
+  { name: "Vault Depositor", description: "Manages ShieldVaultV2 operations — deposit funds and execute public (non-ZK) payouts. For transparent vault transactions on Tempo L1 with real on-chain execution.", category: "privacy", skills: '["vault","deposit","payout","shield-vault","transparent","on-chain"]', basePrice: 5, nativeAgentId: "vault-depositor", ownerWallet: WALLET, avatarEmoji: "\u{1F3E6}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 15 },
+
+  { name: "Multisend Batch", description: "Execute batch token transfers via MultisendVaultV2. Send payments to multiple recipients in a single gas-efficient on-chain transaction. Up to 50 recipients per batch.", category: "payments", skills: '["batch","multisend","bulk-transfer","gas-efficient","payment","on-chain"]', basePrice: 8, nativeAgentId: "multisend-batch", ownerWallet: WALLET, avatarEmoji: "\u{1F4E6}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 15 },
+
+  { name: "Proof Verifier", description: "On-chain AI proof commitment and verification via AIProofRegistry. Two-phase: commit plan hash before execution, verify result hash after. Ensures AI accountability with immutable proofs.", category: "verification", skills: '["proof","commit","verify","ai-proof","accountability","on-chain"]', basePrice: 3, nativeAgentId: "proof-verifier", ownerWallet: WALLET, avatarEmoji: "\u2705", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 10 },
+
+  { name: "Allowance Manager", description: "Manage ERC20 token allowances for all PayPol contracts. Check, approve, and revoke permissions for NexusV2, ShieldVaultV2, MultisendV2, and StreamV1. On-chain security management.", category: "security", skills: '["allowance","approve","revoke","erc20","security","on-chain"]', basePrice: 2, nativeAgentId: "allowance-manager", ownerWallet: WALLET, avatarEmoji: "\u{1F510}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 8 },
+
+  { name: "Balance Scanner", description: "Comprehensive on-chain portfolio scanner. Reads wallet balances across all PayPol tokens (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), checks contract allowances, and provides portfolio analytics.", category: "analytics", skills: '["balance","portfolio","scan","multi-token","analytics","on-chain"]', basePrice: 2, nativeAgentId: "balance-scanner", ownerWallet: WALLET, avatarEmoji: "\u{1F50D}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 5 },
+
+  { name: "Fee Collector", description: "Collects accumulated platform fees from PayPol smart contracts (NexusV2, MultisendV2, StreamV1). Admin operation that withdraws protocol revenue with real on-chain execution.", category: "admin", skills: '["fees","collect","withdraw","revenue","admin","on-chain"]', basePrice: 3, nativeAgentId: "fee-collector", ownerWallet: WALLET, avatarEmoji: "\u{1F4B0}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 20 },
+
+  { name: "Escrow Lifecycle", description: "Manages NexusV2 escrow job progression — start execution, mark jobs complete, and rate workers. Handles mid-lifecycle steps complementing the Escrow Manager. Real on-chain execution.", category: "escrow", skills: '["escrow","start-job","complete","rate","lifecycle","on-chain"]', basePrice: 3, nativeAgentId: "escrow-lifecycle", ownerWallet: WALLET, avatarEmoji: "\u{1F504}", isVerified: true, totalJobs: 0, successRate: 100, avgRating: 5.0, ratingCount: 0, responseTime: 10 },
 ];
 
 async function seed() {
-  const count = await prisma.marketplaceAgent.count();
-  if (count >= agents.length) {
-    console.log(`[seed] ${count} agents already exist — skipping`);
-    return;
-  }
+  // Clear old fake agents and reseed with real ones
+  console.log(`[seed] Clearing old agents and seeding ${agents.length} real on-chain agents...`);
 
-  console.log(`[seed] Seeding ${agents.length} marketplace agents...`);
+  // Delete all existing agents first (clean slate)
+  await prisma.marketplaceAgent.deleteMany({});
+
   for (const agent of agents) {
     await prisma.marketplaceAgent.upsert({
       where: { name: agent.name },
@@ -55,12 +70,13 @@ async function seed() {
         category: agent.category,
         skills: agent.skills,
         basePrice: agent.basePrice,
+        nativeAgentId: agent.nativeAgentId,
         isVerified: agent.isVerified,
       },
     });
   }
   const total = await prisma.marketplaceAgent.count();
-  console.log(`[seed] Done! ${total} agents in marketplace.`);
+  console.log(`[seed] Done! ${total} real on-chain agents in marketplace.`);
 }
 
 seed()

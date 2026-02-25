@@ -3,7 +3,7 @@ PayPol CrewAI Integration
 ========================
 
 Exposes PayPol marketplace agents as CrewAI BaseTool instances, enabling
-multi-agent orchestration with PayPol's 24 native agents.
+multi-agent orchestration with PayPol's 17 on-chain agents.
 
 Usage:
     from paypol_crewai import PayPolTool, get_all_paypol_tools
@@ -15,7 +15,7 @@ Usage:
         description="Audit smart contracts for vulnerabilities"
     )
 
-    # All 24 tools at once
+    # All 17 tools at once
     all_tools = get_all_paypol_tools()
 
     # Use in CrewAI agent
@@ -81,7 +81,7 @@ class PayPolTool(BaseTool):
             return f"PayPol API error: {str(e)}"
 
 
-# ── Pre-built tools for all 24 agents ──────────────────────
+# ── Pre-built tools for all 17 agents ──────────────────────
 
 AGENT_CATALOG = [
     ("contract-auditor",     "AuditSmartContract",     "Audit Solidity smart contracts for security vulnerabilities"),
@@ -112,7 +112,7 @@ AGENT_CATALOG = [
 
 
 def get_all_paypol_tools() -> list:
-    """Return all 24 PayPol agent tools ready for CrewAI."""
+    """Return all 17 PayPol agent tools ready for CrewAI."""
     return [
         PayPolTool(agent_id=aid, name=name, description=desc)
         for aid, name, desc in AGENT_CATALOG

@@ -1,44 +1,35 @@
 /**
  * PayPol Native Agents Service
  *
- * Express HTTP server exposing 24 built-in PayPol agents across 10 categories:
+ * Express HTTP server exposing 17 built-in PayPol agents — ALL with real
+ * on-chain execution on Tempo L1 (Chain 42431). No fake/AI-only agents.
  *
- * WAVE 1 (Original 10):
- *   - contract-auditor    → Solidity security analysis
- *   - yield-optimizer     → DeFi APY strategy
- *   - payroll-planner     → Batch payroll optimization
- *   - gas-predictor       → Gas timing recommendation
- *   - arbitrage-scanner   → Cross-DEX arbitrage detection
- *   - compliance-advisor  → Crypto regulatory compliance
- *   - nft-forensics       → NFT wash trading & provenance
- *   - bridge-analyzer     → Cross-chain bridge security
- *   - dao-advisor         → DAO governance analysis
- *   - risk-analyzer       → DeFi portfolio risk scoring
- *
- * WAVE 2 (14 Practical Agents):
- *   - crypto-tax-navigator  → Crypto tax classification & reporting
- *   - portfolio-rebalancer  → Portfolio allocation & rebalancing
- *   - token-deployer        → ERC-20/721 token deployment
- *   - airdrop-tracker       → Airdrop eligibility & farming
- *   - mev-sentinel          → MEV protection & private tx
- *   - liquidity-manager     → Uniswap V3 LP management
- *   - whale-tracker         → Whale movement intelligence
- *   - social-radar          → Social sentiment analysis
- *   - omnibridge-router     → Cross-chain bridge routing
- *   - nft-appraiser         → NFT valuation & rarity
- *   - proposal-writer       → DAO governance proposals
- *   - vesting-planner       → Token vesting schedules
- *   - defi-insurance        → DeFi insurance coverage
- *   - contract-deploy-pro   → Production contract deployment
- *
- * WAVE 3 (On-Chain Execution — Real Tempo L1 Transactions):
+ * CORE AGENTS (Original 7):
  *   - escrow-manager        → NexusV2 escrow lifecycle (create/settle/refund)
  *   - shield-executor       → ZK-SNARK shielded payments via ShieldVault
+ *   - payroll-planner       → Batch payroll via MultisendVault
+ *   - token-deployer        → ERC-20 token deployment on Tempo
+ *   - contract-deploy-pro   → Production smart contract deployment
+ *   - coordinator-agent     → A2A (Agent-to-Agent) orchestration
+ *   - tempo-benchmark       → Gas cost benchmarking (Tempo vs Ethereum)
+ *
+ * NEW ON-CHAIN AGENTS (10):
+ *   - token-transfer        → Direct ERC20 token transfers
+ *   - stream-creator        → Create milestone payment streams (StreamV1)
+ *   - stream-manager        → Manage stream lifecycle (submit/approve/reject)
+ *   - vault-depositor       → ShieldVaultV2 deposits & public payouts
+ *   - multisend-batch       → Batch payments via MultisendVaultV2
+ *   - proof-verifier        → AI proof commitment & verification (AIProofRegistry)
+ *   - allowance-manager     → ERC20 approval management for all contracts
+ *   - balance-scanner       → On-chain portfolio analysis across all tokens
+ *   - fee-collector         → Platform fee withdrawal from contracts
+ *   - escrow-lifecycle      → NexusV2 job progression (start/complete/rate)
  *
  * Routes:
  *   GET  /agents                       → list all agent manifests
  *   GET  /agents/:id                   → single agent manifest
  *   POST /agents/:id/execute           → execute a job
+ *   POST /agents/:id/a2a-execute       → A2A sub-task execution
  *   GET  /health                       → service health check
  */
 
@@ -46,82 +37,51 @@ import express from 'express';
 import cors    from 'cors';
 import 'dotenv/config';
 
-// Wave 1: Original 10 agents
-import * as contractAuditor  from './agents/contract-auditor';
-import * as yieldOptimizer   from './agents/yield-optimizer';
-import * as payrollPlanner   from './agents/payroll-planner';
-import * as gasPredictor     from './agents/gas-predictor';
-import * as arbitrageScanner from './agents/arbitrage-scanner';
-import * as complianceAdvisor from './agents/compliance-advisor';
-import * as nftForensics     from './agents/nft-forensics';
-import * as bridgeAnalyzer   from './agents/bridge-analyzer';
-import * as daoAdvisor       from './agents/dao-advisor';
-import * as riskAnalyzer     from './agents/risk-analyzer';
-
-// Wave 2: 14 Practical Crypto Agents
-import * as cryptoTaxNavigator from './agents/crypto-tax-navigator';
-import * as portfolioRebalancer from './agents/portfolio-rebalancer';
-import * as tokenDeployer      from './agents/token-deployer';
-import * as airdropTracker     from './agents/airdrop-tracker';
-import * as mevSentinel        from './agents/mev-sentinel';
-import * as liquidityManager   from './agents/liquidity-manager';
-import * as whaleTracker       from './agents/whale-tracker';
-import * as socialRadar        from './agents/social-radar';
-import * as omnibridgeRouter   from './agents/omnibridge-router';
-import * as nftAppraiser       from './agents/nft-appraiser';
-import * as proposalWriter     from './agents/proposal-writer';
-import * as vestingPlanner     from './agents/vesting-planner';
-import * as defiInsurance      from './agents/defi-insurance';
-import * as contractDeployPro  from './agents/contract-deploy-pro';
-
-// Wave 3: On-Chain Execution Agents (real transactions on Tempo L1)
+// Core Agents (original 7 — all real on-chain)
 import * as escrowManager      from './agents/escrow-manager';
 import * as shieldExecutor     from './agents/shield-executor';
-
-// Wave 4: A2A (Agent-to-Agent) Coordination
+import * as payrollPlanner     from './agents/payroll-planner';
+import * as tokenDeployer      from './agents/token-deployer';
+import * as contractDeployPro  from './agents/contract-deploy-pro';
 import * as coordinatorAgent   from './agents/coordinator-agent';
-
-// Wave 5: Benchmark & Analytics
 import * as tempoBenchmark     from './agents/tempo-benchmark';
+
+// New On-Chain Agents (10 — all real on-chain)
+import * as tokenTransfer      from './agents/token-transfer';
+import * as streamCreator      from './agents/stream-creator';
+import * as streamManager      from './agents/stream-manager';
+import * as vaultDepositor     from './agents/vault-depositor';
+import * as multisendBatch     from './agents/multisend-batch';
+import * as proofVerifier      from './agents/proof-verifier';
+import * as allowanceManager   from './agents/allowance-manager';
+import * as balanceScanner     from './agents/balance-scanner';
+import * as feeCollector       from './agents/fee-collector';
+import * as escrowLifecycle    from './agents/escrow-lifecycle';
 
 import { AgentDescriptor, AgentHandler, JobRequest, A2AJobRequest } from './types';
 
 // ── Registry ──────────────────────────────────────────────
 
 const registry = new Map<string, { manifest: AgentDescriptor; handler: AgentHandler }>([
-  // Wave 1
-  [contractAuditor.manifest.id,  { manifest: contractAuditor.manifest,  handler: contractAuditor.handler  }],
-  [yieldOptimizer.manifest.id,   { manifest: yieldOptimizer.manifest,   handler: yieldOptimizer.handler   }],
-  [payrollPlanner.manifest.id,   { manifest: payrollPlanner.manifest,   handler: payrollPlanner.handler   }],
-  [gasPredictor.manifest.id,     { manifest: gasPredictor.manifest,     handler: gasPredictor.handler     }],
-  [arbitrageScanner.manifest.id, { manifest: arbitrageScanner.manifest, handler: arbitrageScanner.handler }],
-  [complianceAdvisor.manifest.id,{ manifest: complianceAdvisor.manifest,handler: complianceAdvisor.handler}],
-  [nftForensics.manifest.id,     { manifest: nftForensics.manifest,     handler: nftForensics.handler     }],
-  [bridgeAnalyzer.manifest.id,   { manifest: bridgeAnalyzer.manifest,   handler: bridgeAnalyzer.handler   }],
-  [daoAdvisor.manifest.id,       { manifest: daoAdvisor.manifest,       handler: daoAdvisor.handler       }],
-  [riskAnalyzer.manifest.id,     { manifest: riskAnalyzer.manifest,     handler: riskAnalyzer.handler     }],
-  // Wave 2
-  [cryptoTaxNavigator.manifest.id, { manifest: cryptoTaxNavigator.manifest, handler: cryptoTaxNavigator.handler }],
-  [portfolioRebalancer.manifest.id,{ manifest: portfolioRebalancer.manifest,handler: portfolioRebalancer.handler}],
-  [tokenDeployer.manifest.id,      { manifest: tokenDeployer.manifest,      handler: tokenDeployer.handler      }],
-  [airdropTracker.manifest.id,     { manifest: airdropTracker.manifest,     handler: airdropTracker.handler     }],
-  [mevSentinel.manifest.id,        { manifest: mevSentinel.manifest,        handler: mevSentinel.handler        }],
-  [liquidityManager.manifest.id,   { manifest: liquidityManager.manifest,   handler: liquidityManager.handler   }],
-  [whaleTracker.manifest.id,       { manifest: whaleTracker.manifest,       handler: whaleTracker.handler       }],
-  [socialRadar.manifest.id,        { manifest: socialRadar.manifest,        handler: socialRadar.handler        }],
-  [omnibridgeRouter.manifest.id,   { manifest: omnibridgeRouter.manifest,   handler: omnibridgeRouter.handler   }],
-  [nftAppraiser.manifest.id,       { manifest: nftAppraiser.manifest,       handler: nftAppraiser.handler       }],
-  [proposalWriter.manifest.id,     { manifest: proposalWriter.manifest,     handler: proposalWriter.handler     }],
-  [vestingPlanner.manifest.id,     { manifest: vestingPlanner.manifest,     handler: vestingPlanner.handler     }],
-  [defiInsurance.manifest.id,      { manifest: defiInsurance.manifest,      handler: defiInsurance.handler      }],
-  [contractDeployPro.manifest.id,  { manifest: contractDeployPro.manifest,  handler: contractDeployPro.handler  }],
-  // Wave 3: On-Chain Execution
+  // Core Agents
   [escrowManager.manifest.id,     { manifest: escrowManager.manifest,     handler: escrowManager.handler     }],
   [shieldExecutor.manifest.id,    { manifest: shieldExecutor.manifest,    handler: shieldExecutor.handler    }],
-  // Wave 4: A2A Coordination
+  [payrollPlanner.manifest.id,    { manifest: payrollPlanner.manifest,    handler: payrollPlanner.handler    }],
+  [tokenDeployer.manifest.id,     { manifest: tokenDeployer.manifest,     handler: tokenDeployer.handler     }],
+  [contractDeployPro.manifest.id, { manifest: contractDeployPro.manifest, handler: contractDeployPro.handler }],
   [coordinatorAgent.manifest.id,  { manifest: coordinatorAgent.manifest,  handler: coordinatorAgent.handler  }],
-  // Wave 5: Benchmark
   [tempoBenchmark.manifest.id,    { manifest: tempoBenchmark.manifest,    handler: tempoBenchmark.handler    }],
+  // New On-Chain Agents
+  [tokenTransfer.manifest.id,     { manifest: tokenTransfer.manifest,     handler: tokenTransfer.handler     }],
+  [streamCreator.manifest.id,     { manifest: streamCreator.manifest,     handler: streamCreator.handler     }],
+  [streamManager.manifest.id,     { manifest: streamManager.manifest,     handler: streamManager.handler     }],
+  [vaultDepositor.manifest.id,    { manifest: vaultDepositor.manifest,    handler: vaultDepositor.handler    }],
+  [multisendBatch.manifest.id,    { manifest: multisendBatch.manifest,    handler: multisendBatch.handler    }],
+  [proofVerifier.manifest.id,     { manifest: proofVerifier.manifest,     handler: proofVerifier.handler     }],
+  [allowanceManager.manifest.id,  { manifest: allowanceManager.manifest,  handler: allowanceManager.handler  }],
+  [balanceScanner.manifest.id,    { manifest: balanceScanner.manifest,    handler: balanceScanner.handler    }],
+  [feeCollector.manifest.id,      { manifest: feeCollector.manifest,      handler: feeCollector.handler      }],
+  [escrowLifecycle.manifest.id,   { manifest: escrowLifecycle.manifest,   handler: escrowLifecycle.handler   }],
 ]);
 
 // ── Server ────────────────────────────────────────────────
@@ -232,5 +192,5 @@ app.post('/agents/:id/a2a-execute', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`[agents] Service running on port ${PORT}`);
-  console.log(`[agents] Available: ${[...registry.keys()].join(', ')}`);
+  console.log(`[agents] ${registry.size} on-chain agents: ${[...registry.keys()].join(', ')}`);
 });

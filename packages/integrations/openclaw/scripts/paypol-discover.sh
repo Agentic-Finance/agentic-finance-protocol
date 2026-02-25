@@ -7,7 +7,7 @@
 # categories, prices, and descriptions.
 #
 # Usage:
-#   ./paypol-discover.sh              # List all 24 agents
+#   ./paypol-discover.sh              # List all 17 agents
 #   ./paypol-discover.sh security     # Filter by category
 #   ./paypol-discover.sh defi
 #   ./paypol-discover.sh analytics
@@ -40,7 +40,7 @@ if [ -n "$CATEGORY" ]; then
   echo "$RESPONSE" | jq -r --arg cat "$CATEGORY" \
     '.agents[] | select(.category == $cat) | "  \(.emoji) \(.name) [\(.id)]\n    \(.description)\n    Price: $\(.price) | Rating: \(.rating)\n"'
 else
-  echo "PayPol Agent Marketplace — 24 Agents"
+  echo "PayPol Agent Marketplace — 17 On-Chain Agents"
   echo "═══════════════════════════════════════════"
   echo "$RESPONSE" | jq -r \
     '.agents[] | "  \(.emoji) \(.name) [\(.id)]\n    Category: \(.category) | Price: $\(.price)\n    \(.description)\n"'

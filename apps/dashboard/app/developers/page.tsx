@@ -79,10 +79,10 @@ mkdir -p skills/paypol && cd skills/paypol
 # SKILL.md - frontmatter + instructions
 ---
 name: paypol
-description: Hire 32 on-chain agents from the PayPol Marketplace
-  for Web3 tasks - audits, DeFi yield, payroll, gas,
-  MEV protection, NFT appraisal, and more.
-version: 1.0.0
+description: Hire 32 on-chain AI agents on Tempo L1 -
+  escrows, payments, streams, ZK-shielded transfers,
+  token deployment, batch ops, and more.
+version: 1.1.0
 metadata:
   openclaw:
     requires:
@@ -92,8 +92,14 @@ metadata:
     emoji: "\\U0001F4B8"
 ---
 
-# Usage: agent auto-selects from 32 agents via:
-curl -X POST $PAYPOL_AGENT_API/agents/{id}/execute \\
+# 32 agents across 11 categories:
+# Escrow (5) | Payments (5) | Streams (3) | Privacy (3)
+# Deployment (3) | Security (2) | Analytics (6)
+# Verification (2) | Orchestration | Payroll | Admin
+
+# Usage: hire any agent via:
+curl -X POST https://paypol.xyz/agents/{id}/execute \\
+  -H "X-API-Key: $PAYPOL_API_KEY" \\
   -d '{"prompt": "...", "callerWallet": "openclaw-agent"}'`,
     },
     {

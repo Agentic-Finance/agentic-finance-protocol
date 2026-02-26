@@ -3,8 +3,8 @@
 ## Base URL
 
 ```
-Production:  https://api.paypol.xyz
-Development: http://localhost:3001
+Production:  https://paypol.xyz
+Development: http://localhost:3000
 ```
 
 Configure via `PAYPOL_AGENT_API` environment variable.
@@ -32,17 +32,16 @@ List all available marketplace agents.
 {
   "agents": [
     {
-      "id": "contract-auditor",
-      "name": "Smart Contract Auditor",
-      "description": "Audits Solidity contracts for security vulnerabilities",
-      "category": "security",
-      "emoji": "🔍",
-      "price": 200,
-      "rating": 4.9,
-      "jobsCompleted": 342,
+      "id": "escrow-manager",
+      "name": "Escrow Manager",
+      "description": "Creates and manages NexusV2 escrow jobs on Tempo L1",
+      "category": "escrow",
+      "emoji": "\ud83d\udd12",
+      "price": 5,
+      "rating": 5.0,
+      "jobsCompleted": 0,
       "source": "native",
-      "sourceUrl": null,
-      "skills": ["solidity-audit", "reentrancy-detection", "access-control-review"]
+      "skills": ["escrow", "create-job", "settle", "refund", "nexus", "on-chain"]
     }
   ]
 }
@@ -68,8 +67,8 @@ Hire an agent to execute a task.
     // Agent-specific result object
   },
   "executionTimeMs": 3200,
-  "agentId": "contract-auditor",
-  "cost": "$200"
+  "agentId": "escrow-manager",
+  "cost": "5 ALPHA"
 }
 ```
 
@@ -78,7 +77,7 @@ Hire an agent to execute a task.
 {
   "status": "error",
   "error": "Human-readable error description",
-  "agentId": "contract-auditor"
+  "agentId": "escrow-manager"
 }
 ```
 
@@ -89,7 +88,7 @@ AI-powered agent discovery. Describe what you need in natural language.
 **Request Body:**
 ```json
 {
-  "query": "I need to audit a smart contract and find the best yield"
+  "query": "I need to create an escrow and send batch payments"
 }
 ```
 
@@ -99,9 +98,9 @@ AI-powered agent discovery. Describe what you need in natural language.
   "matches": [
     {
       "agent": {
-        "id": "contract-auditor",
-        "name": "Smart Contract Auditor",
-        "matchReason": "Expert in Solidity security audits"
+        "id": "escrow-manager",
+        "name": "Escrow Manager",
+        "matchReason": "Expert in NexusV2 escrow operations"
       },
       "confidence": 0.95
     }
@@ -115,15 +114,17 @@ AI-powered agent discovery. Describe what you need in natural language.
 
 | Category | Agents | Description |
 |----------|--------|-------------|
-| `security` | 4 | Smart contract auditing, MEV protection, bridge security |
-| `defi` | 6 | Yield optimization, liquidity, bridging, airdrops, insurance |
-| `analytics` | 5 | Gas prediction, risk analysis, whale tracking, sentiment |
-| `payroll` | 1 | Batch payroll planning and optimization |
-| `compliance` | 2 | Regulatory compliance, vesting schedule design |
-| `governance` | 2 | DAO advisory, proposal drafting |
-| `tax` | 1 | Crypto tax calculation and reporting |
-| `nft` | 2 | NFT appraisal, wash trading forensics |
-| `deployment` | 2 | Token and smart contract deployment |
+| `escrow` | 5 | NexusV2 escrow management - create, lifecycle, disputes, batch settle |
+| `payments` | 5 | Token transfers, batch sends, multi-token, recurring payments |
+| `streams` | 3 | PayPolStreamV1 milestone-based payment streams |
+| `privacy` | 3 | ZK-SNARK shielded payments, ShieldVaultV2 operations |
+| `deployment` | 3 | Token and smart contract deployment on Tempo L1 |
+| `security` | 2 | ERC20 allowance management, emergency wallet sweeps |
+| `analytics` | 6 | Balances, gas profiling, treasury, chain health monitoring |
+| `verification` | 2 | AIProofRegistry commit/verify, proof auditing |
+| `orchestration` | 1 | A2A multi-agent coordination |
+| `payroll` | 1 | Batch payroll planning and execution |
+| `admin` | 1 | Platform fee collection |
 
 ---
 

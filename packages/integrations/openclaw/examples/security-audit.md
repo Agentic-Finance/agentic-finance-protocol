@@ -1,61 +1,43 @@
-# Example: Smart Contract Security Audit
+# Example: Token Deployment with Security
 
 ## Scenario
 
-User says: "Audit this Solidity contract before I deploy it to mainnet."
+User says: "Deploy a new token and set up proper allowances before distributing to my team."
 
-## Single Agent Call
+## Step 1: Deploy the Token
 
 ```bash
-./scripts/paypol-hire.sh contract-auditor \
-  "Perform a comprehensive security audit of this Solidity contract:
-
-pragma solidity ^0.8.19;
-
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
-
-contract SimpleVault is Ownable {
-    mapping(address => mapping(address => uint256)) public deposits;
-
-    event Deposited(address indexed user, address indexed token, uint256 amount);
-    event Withdrawn(address indexed user, address indexed token, uint256 amount);
-
-    function deposit(address token, uint256 amount) external {
-        IERC20(token).transferFrom(msg.sender, address(this), amount);
-        deposits[msg.sender][token] += amount;
-        emit Deposited(msg.sender, token, amount);
-    }
-
-    function withdraw(address token, uint256 amount) external {
-        require(deposits[msg.sender][token] >= amount, 'Insufficient balance');
-        deposits[msg.sender][token] -= amount;
-        IERC20(token).transfer(msg.sender, amount);
-        emit Withdrawn(msg.sender, token, amount);
-    }
-
-    function emergencyWithdraw(address token) external onlyOwner {
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        IERC20(token).transfer(owner(), balance);
-    }
-}
-
-Check for: reentrancy, access control issues, token compatibility (fee-on-transfer, rebasing), integer overflow, and centralization risks."
+./scripts/paypol-hire.sh token-deployer \
+  "Deploy a new ERC-20 token called ProjectCoin (PROJ) with 1,000,000 initial supply on Tempo L1."
 ```
 
 ## Expected Result
 
-The agent returns a structured audit report:
-- **Severity levels**: Critical, High, Medium, Low, Informational
-- **Vulnerability details**: Description, impact, affected code, recommendation
-- **Overall risk score**: 1-10 scale
-- **Deployment recommendation**: Deploy / Fix First / Do Not Deploy
+The agent returns deployment details:
+- **Contract address**: Deployed token address on Tempo L1
+- **Tx hash**: On-chain transaction hash
+- **Token details**: Name, symbol, decimals, total supply
+- **Verification**: Sourcify verification status
 
-## Follow-up: Deploy After Fix
+## Step 2: Set Up Allowances
 
-If audit passes, chain with deployment:
+After deployment, approve the MultisendVault to distribute tokens:
 
 ```bash
-./scripts/paypol-hire.sh contract-deploy-pro \
-  "Deploy this audited SimpleVault contract to Ethereum mainnet with a transparent proxy pattern for upgradeability. Include constructor args for initial owner."
+./scripts/paypol-hire.sh allowance-manager \
+  "Approve MultisendVaultV2 to spend 500,000 PROJ tokens for batch distribution."
+```
+
+## Step 3: Batch Distribute to Team
+
+```bash
+./scripts/paypol-hire.sh multisend-batch \
+  "Send PROJ tokens to team: 0xAAA 50000, 0xBBB 50000, 0xCCC 30000, 0xDDD 20000."
+```
+
+## Step 4: Verify Everything
+
+```bash
+./scripts/paypol-hire.sh balance-scanner \
+  "Scan all token balances for my wallet and verify the PROJ distribution went through."
 ```

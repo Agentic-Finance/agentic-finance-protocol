@@ -287,7 +287,7 @@ export default function Dashboard() {
         const startPolling = () => {
             interval = setInterval(() => {
                 if (isVisible && walletAddress && !isBatchProcessing) fetchData();
-            }, 5000);
+            }, 15000); // Poll every 15s to reduce server load (was 5s)
         };
 
         const handleVisibility = () => {

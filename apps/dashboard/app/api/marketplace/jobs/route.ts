@@ -7,9 +7,11 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { agentId, clientWallet, prompt, taskDescription, budget, negotiatedPrice, platformFee, token } = body;
 
-        if (!agentId || !clientWallet || !prompt || budget === undefined) {
-            return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+        if (!agentId || !clientWallet || budget === undefined) {
+            return NextResponse.json({ error: `Missing required fields. agentId=${!!agentId}, clientWallet=${!!clientWallet}, budget=${budget}` }, { status: 400 });
         }
+        // Fallback prompt to prevent empty prompt rejection
+        const safePrompt = prompt || taskDescription || 'Agent task via marketplace';
 
         // Verify agent exists
         const agent = await prisma.marketplaceAgent.findUnique({ where: { id: agentId } });
@@ -21,7 +23,7 @@ export async function POST(req: Request) {
             data: {
                 agentId,
                 clientWallet,
-                prompt,
+                prompt: safePrompt,
                 taskDescription: taskDescription || null,
                 budget: parseFloat(String(budget)),
                 negotiatedPrice: negotiatedPrice ? parseFloat(String(negotiatedPrice)) : null,

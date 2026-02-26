@@ -1,11 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 function NetworkChart() {
     const [data, setData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMounted, setIsMounted] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Delay rendering until the container is mounted and has dimensions
+    useEffect(() => {
+        const timer = requestAnimationFrame(() => setIsMounted(true));
+        return () => cancelAnimationFrame(timer);
+    }, []);
 
     useEffect(() => {
         const fetchChartData = async () => {
@@ -22,13 +30,13 @@ function NetworkChart() {
         fetchChartData();
     }, []);
 
-    if (isLoading) {
+    if (isLoading || !isMounted) {
         return <div className="h-64 flex items-center justify-center text-slate-500 font-mono text-sm animate-pulse">Loading Telemetry Data...</div>;
     }
 
     return (
-        <div className="h-48 sm:h-64 w-full mt-4 sm:mt-6">
-            <ResponsiveContainer width="100%" height="100%">
+        <div ref={containerRef} className="h-48 sm:h-64 w-full mt-4 sm:mt-6" style={{ minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%" debounce={50}>
                 <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                     <defs>
                         {/* High-fidelity "Cyberpunk / Web3" shadow gradient */}

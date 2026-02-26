@@ -7,6 +7,7 @@ import {
   ShoppingCart, HeartPulse, Coins, Briefcase
 } from "lucide-react";
 import Link from "next/link";
+import SubPageNav from "../components/SubPageNav";
 
 export default function ShieldPage() {
   const [recipient, setRecipient] = useState("");
@@ -69,8 +70,9 @@ export default function ShieldPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1120] p-4 sm:p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#0B1120]">
+      <SubPageNav />
+      <div className="max-w-7xl mx-auto space-y-8 p-4 sm:p-6">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">

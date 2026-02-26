@@ -242,8 +242,9 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
             body: JSON.stringify({
                 agentId: selectedAgent.agent.id,
                 clientWallet,
-                prompt,
-                budget: suggestedBudget,
+                prompt: prompt || selectedAgent.agent.description || 'Agent task via marketplace',
+                taskDescription: selectedAgent.agent.description,
+                budget: suggestedBudget || negotiation.finalPrice || selectedAgent.agent.basePrice,
                 negotiatedPrice: negotiation.finalPrice,
                 platformFee: negotiation.platformFee,
             }),

@@ -48,21 +48,28 @@ const MAX_FEED_SIZE = 100;
 
 // ── Hook ──────────────────────────────────────────────────────
 
-export function useSSE(orchestratorUrl = 'http://localhost:4000'): LiveDashboardState {
+export function useSSE(orchestratorUrl?: string): LiveDashboardState {
   const [state, setState] = useState<LiveDashboardState>(INITIAL_STATE);
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const retryCountRef = useRef(0);
+
+  // Auto-detect base URL: use provided URL, or current origin (works in both dev & production)
+  const baseUrl = orchestratorUrl || (typeof window !== 'undefined' ? window.location.origin : '');
 
   const connect = useCallback(() => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
 
+    if (!baseUrl) return;
+
     try {
-      const es = new EventSource(`${orchestratorUrl}/api/live/stream`);
+      const es = new EventSource(`${baseUrl}/api/live/stream`);
       eventSourceRef.current = es;
 
       es.onopen = () => {
+        retryCountRef.current = 0; // Reset retry count on successful connection
         setState(prev => ({ ...prev, connected: true }));
         console.log('[SSE] Connected to live stream');
       };
@@ -126,20 +133,26 @@ export function useSSE(orchestratorUrl = 'http://localhost:4000'): LiveDashboard
       es.onerror = () => {
         setState(prev => ({ ...prev, connected: false }));
         es.close();
-        // Reconnect after 5 seconds
-        reconnectTimeoutRef.current = setTimeout(connect, 5000);
+        // Exponential backoff: 5s, 10s, 20s, 30s max
+        retryCountRef.current++;
+        const delay = Math.min(5000 * Math.pow(2, retryCountRef.current - 1), 30000);
+        reconnectTimeoutRef.current = setTimeout(connect, delay);
       };
     } catch {
       setState(prev => ({ ...prev, connected: false }));
-      reconnectTimeoutRef.current = setTimeout(connect, 5000);
+      retryCountRef.current++;
+      const delay = Math.min(5000 * Math.pow(2, retryCountRef.current - 1), 30000);
+      reconnectTimeoutRef.current = setTimeout(connect, delay);
     }
-  }, [orchestratorUrl]);
+  }, [baseUrl]);
 
   // Fetch TVL periodically
   useEffect(() => {
+    if (!baseUrl) return;
+
     const fetchTVL = async () => {
       try {
-        const res = await fetch(`${orchestratorUrl}/api/live/tvl`);
+        const res = await fetch(`${baseUrl}/api/live/tvl`);
         if (res.ok) {
           const tvl = await res.json();
           setState(prev => ({ ...prev, tvl }));
@@ -150,7 +163,7 @@ export function useSSE(orchestratorUrl = 'http://localhost:4000'): LiveDashboard
     fetchTVL();
     const interval = setInterval(fetchTVL, 30_000); // Every 30s
     return () => clearInterval(interval);
-  }, [orchestratorUrl]);
+  }, [baseUrl]);
 
   // Connect on mount
   useEffect(() => {

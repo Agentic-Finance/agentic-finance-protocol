@@ -1,4 +1,5 @@
 import EmbeddedWallets from '../components/EmbeddedWallets';
+import SubPageNav from '../components/SubPageNav';
 import Link from 'next/link';
 
 export const metadata = {
@@ -9,8 +10,9 @@ export const metadata = {
 export default function WalletsPage() {
     return (
         <div className="min-h-screen bg-[#0B1120]">
+            <SubPageNav />
             {/* Header */}
-            <div className="border-b border-white/[0.08] pp-glass sticky top-0 z-40">
+            <div className="border-b border-white/[0.08] pp-glass">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">

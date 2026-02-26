@@ -2,6 +2,7 @@
 
 import React from 'react';
 import dynamic from 'next/dynamic';
+import SubPageNav from '../components/SubPageNav';
 
 const LiveDashboard = dynamic(() => import('../components/LiveDashboard'), {
   ssr: false,
@@ -16,5 +17,10 @@ const LiveDashboard = dynamic(() => import('../components/LiveDashboard'), {
 });
 
 export default function LivePage() {
-  return <LiveDashboard />;
+  return (
+    <div className="min-h-screen bg-[#0B1120]">
+      <SubPageNav />
+      <LiveDashboard />
+    </div>
+  );
 }

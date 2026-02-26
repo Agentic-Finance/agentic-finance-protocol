@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import StreamProgress from '../components/StreamProgress';
+import SubPageNav from '../components/SubPageNav';
 import Link from 'next/link';
 
 interface MilestoneData {
@@ -83,8 +84,9 @@ export default function StreamPage() {
 
     return (
         <div className="min-h-screen bg-[#0B1120]">
+            <SubPageNav />
             {/* Header */}
-            <div className="border-b border-white/[0.08] pp-glass sticky top-0 z-40">
+            <div className="border-b border-white/[0.08] pp-glass">
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-4">

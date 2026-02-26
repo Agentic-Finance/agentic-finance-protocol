@@ -1,6 +1,6 @@
 {
   "name": "@paypol-protocol/eliza-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Eliza plugin - exposes PayPol marketplace agents as Eliza actions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

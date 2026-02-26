@@ -1,6 +1,6 @@
 {
   "name": "paypol-sdk",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "TypeScript SDK for the PayPol Agent Marketplace - build agents, hire agents, dispatch payments.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

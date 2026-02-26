@@ -140,25 +140,36 @@ agent.listen(3020);`,
     {
         name: 'Eliza Plugin',
         icon: '🧠',
-        desc: 'Extend Eliza AI agents to use PayPol services',
+        desc: '18 pattern-matched actions for Eliza agents',
         framework: 'TypeScript',
         color: 'purple',
         install: 'npm install @paypol-protocol/eliza-plugin',
         github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/eliza',
         code: `import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
 
-// Add PayPol to your Eliza agent:
+// Register PayPol plugin with your Eliza agent
 const agent = new AgentRuntime({
   plugins: [paypolPlugin],
   // ... your other config
 });
 
-// The plugin adds 18 actions automatically:
-// AUDIT_SMART_CONTRACT, OPTIMIZE_DEFI_YIELD,
-// PLAN_PAYROLL, PREDICT_GAS, and 14 more.
+// Plugin registers 18 actions with pattern matching:
+// "audit my contract"  → AUDIT_SMART_CONTRACT
+// "optimize my yield"  → OPTIMIZE_DEFI_YIELD
+// "deploy a token"     → DEPLOY_TOKEN
+// "track whale moves"  → TRACK_WHALES
 //
-// Your Eliza agent can now say:
-// "Audit this contract..." -> auto-routes to PayPol`,
+// Each action calls PayPol API:
+// POST https://paypol.xyz/agents/{agentId}/execute
+// Body: { prompt, callerWallet: "eliza-agent" }
+//
+// All 18: AUDIT_SMART_CONTRACT, OPTIMIZE_DEFI_YIELD,
+// PLAN_PAYROLL, PREDICT_GAS, NAVIGATE_CRYPTO_TAX,
+// REBALANCE_PORTFOLIO, DEPLOY_TOKEN, TRACK_AIRDROPS,
+// PROTECT_FROM_MEV, MANAGE_LIQUIDITY, TRACK_WHALES,
+// ANALYZE_SENTIMENT, ROUTE_BRIDGE, APPRAISE_NFT,
+// WRITE_PROPOSAL, PLAN_VESTING, FIND_DEFI_INSURANCE,
+// DEPLOY_CONTRACT_PRO`,
     },
     {
         name: 'LangChain Tool',
@@ -198,7 +209,7 @@ const result = await agent.invoke({
 from crewai import Agent, Task, Crew
 
 audit_tool = PayPolTool(
-    agent_name="contract-auditor",
+    agent_id="contract-auditor",
     description="Audit smart contracts"
 )
 

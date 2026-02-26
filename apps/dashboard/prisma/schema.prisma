@@ -280,3 +280,47 @@ model ConditionalRule {
   createdAt       DateTime  @default(now())
   triggeredAt     DateTime?
 }
+
+// ==========================================
+// 📈 ESCROW YIELD GENERATION (Feature 8)
+// ==========================================
+
+// Tracks yield accrued on locked escrow funds
+model EscrowYield {
+  id            String    @id @default(uuid())
+  jobId         String                          // ref AgentJob id
+  principal     Float                           // locked escrow amount
+  token         String    @default("AlphaUSD")
+  apy           Float     @default(5.0)         // 5% APY
+  yieldEarned   Float     @default(0)
+  status        String    @default("Accruing")  // Accruing | Settled | Withdrawn
+  startedAt     DateTime  @default(now())
+  settledAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([jobId])
+  @@index([status])
+}
+
+// ==========================================
+// 👛 EMBEDDED WALLETS (Feature 9)
+// ==========================================
+
+// Per-agent/employee wallet with encrypted private key
+model EmbeddedWallet {
+  id              String    @id @default(uuid())
+  label           String                          // "Agent: ContractGuard" or "Employee: John"
+  ownerType       String                          // "agent" | "employee"
+  ownerId         String?                         // agentId or employee identifier
+  address         String    @unique
+  encryptedKey    String                          // AES-256-GCM encrypted private key
+  iv              String                          // Initialization vector
+  authTag         String                          // GCM auth tag
+  balance         Float     @default(0)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  lastUsedAt      DateTime?
+
+  @@index([ownerType])
+  @@index([address])
+}

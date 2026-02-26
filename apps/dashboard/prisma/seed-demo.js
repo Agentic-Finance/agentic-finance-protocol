@@ -297,6 +297,97 @@ async function seed() {
   }
   console.log(`[seed-demo] Created ${employees.length} Employees`);
 
+  // ── 10. Create EscrowYield Positions (8) ───────────────
+  // Yield on locked escrow funds — mix of accruing and settled
+  const allJobs = await prisma.agentJob.findMany({
+    where: { status: { in: ['ESCROW_LOCKED', 'COMPLETED', 'SETTLED'] } },
+    take: 8,
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const yieldPositions = [];
+  for (let i = 0; i < Math.min(8, allJobs.length); i++) {
+    const job = allJobs[i];
+    const principal = job.negotiatedPrice || job.budget;
+    const apy = [4.5, 5.0, 5.0, 5.5, 5.0, 4.8, 5.2, 5.0][i] || 5.0;
+    const daysActive = Math.floor(Math.random() * 30) + 3;
+    const yieldEarned = Math.round(principal * (apy / 100) * (daysActive / 365) * 100) / 100;
+    const isSettled = i >= 6; // Last 2 are settled
+
+    yieldPositions.push({
+      jobId: job.id,
+      principal: Math.round(principal * 100) / 100,
+      token: job.token,
+      apy,
+      yieldEarned: isSettled ? yieldEarned : 0, // Accruing ones compute in real-time
+      status: isSettled ? 'Settled' : 'Accruing',
+      startedAt: daysAgo(daysActive),
+      settledAt: isSettled ? daysAgo(1) : null,
+    });
+  }
+
+  for (const yp of yieldPositions) {
+    await prisma.escrowYield.create({ data: yp });
+  }
+  console.log(`[seed-demo] Created ${yieldPositions.length} EscrowYield positions`);
+
+  // ── 11. Create Embedded Wallets (10) ──────────────────
+  // 6 agent wallets + 4 employee wallets
+  const crypto = require('crypto');
+  function fakeEncrypt() {
+    // Generate realistic-looking encrypted data for demo
+    return {
+      encryptedKey: crypto.randomBytes(32).toString('hex'),
+      iv: crypto.randomBytes(16).toString('hex'),
+      authTag: crypto.randomBytes(16).toString('hex'),
+    };
+  }
+
+  const agentWalletLabels = [
+    'Agent: ContractGuard', 'Agent: YieldOptimizer', 'Agent: GasAnalyzer',
+    'Agent: ComplianceBot', 'Agent: AuditShield', 'Agent: DeployMaster',
+  ];
+  const employeeWalletLabels = [
+    'Employee: Alex Chen', 'Employee: Maria Santos',
+    'Employee: James Park', 'Employee: Priya Sharma',
+  ];
+
+  const walletData = [];
+  for (let i = 0; i < agentWalletLabels.length; i++) {
+    const enc = fakeEncrypt();
+    walletData.push({
+      label: agentWalletLabels[i],
+      ownerType: 'agent',
+      ownerId: agents[i]?.id || null,
+      address: randomWallet(),
+      encryptedKey: enc.encryptedKey,
+      iv: enc.iv,
+      authTag: enc.authTag,
+      balance: randomBetween(100, 5000),
+      isActive: true,
+      lastUsedAt: daysAgo(Math.floor(Math.random() * 7)),
+    });
+  }
+  for (let i = 0; i < employeeWalletLabels.length; i++) {
+    const enc = fakeEncrypt();
+    walletData.push({
+      label: employeeWalletLabels[i],
+      ownerType: 'employee',
+      address: randomWallet(),
+      encryptedKey: enc.encryptedKey,
+      iv: enc.iv,
+      authTag: enc.authTag,
+      balance: randomBetween(50, 2000),
+      isActive: true,
+      lastUsedAt: daysAgo(Math.floor(Math.random() * 14)),
+    });
+  }
+
+  for (const w of walletData) {
+    await prisma.embeddedWallet.create({ data: w });
+  }
+  console.log(`[seed-demo] Created ${walletData.length} Embedded Wallets`);
+
   // ── Summary ─────────────────────────────────────────────
   console.log('\n[seed-demo] ═══════════════════════════════════');
   console.log(`[seed-demo] ✅ Demo data seeded successfully!`);
@@ -307,6 +398,8 @@ async function seed() {
   console.log(`[seed-demo]    Streams:        ${streamConfigs.length}`);
   console.log(`[seed-demo]    Autopilot:      ${autopilotRules.length}`);
   console.log(`[seed-demo]    Employees:      ${employees.length}`);
+  console.log(`[seed-demo]    Yield Positions:${yieldPositions.length}`);
+  console.log(`[seed-demo]    Wallets:        ${walletData.length}`);
   console.log('[seed-demo] ═══════════════════════════════════\n');
 }
 

@@ -29,12 +29,16 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
 
     return (
         <div
-            className={`relative bg-white/[0.03] border rounded-2xl p-4 flex flex-col transition-all duration-200 group cursor-pointer ${
+            role="button"
+            tabIndex={0}
+            aria-label={`Hire ${a.name} - ${a.category} agent, ${a.basePrice} ALPHA`}
+            className={`relative bg-white/[0.03] border rounded-2xl p-4 flex flex-col transition-all duration-200 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
                 rank === 0 && !isBrowseMode
                     ? 'border-indigo-500/30 bg-indigo-500/[0.04]'
                     : 'border-white/[0.06] hover:border-indigo-500/25 hover:bg-white/[0.05]'
             }`}
             onClick={() => onHire(agent)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onHire(agent); } }}
         >
             {/* Best Match badge - only in AI search results */}
             {rank === 0 && !isBrowseMode && (
@@ -74,7 +78,17 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
                 <span><span className="text-emerald-400 font-semibold">{a.successRate}%</span></span>
             </div>
 
-            {/* Row 3: Description */}
+            {/* Row 3: Skills */}
+            {a.skills && a.skills.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-2">
+                    {a.skills.slice(0, 3).map((skill, i) => (
+                        <span key={i} className="text-[9px] text-slate-500 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.04]">{skill}</span>
+                    ))}
+                    {a.skills.length > 3 && <span className="text-[9px] text-slate-600">+{a.skills.length - 3}</span>}
+                </div>
+            )}
+
+            {/* Row 4: Description */}
             <p className="text-[11px] text-slate-400/80 leading-relaxed mb-3 flex-1 line-clamp-2">
                 {isBrowseMode ? a.description : (agent.relevanceScore > 0 ? agent.reasoning : a.description)}
             </p>

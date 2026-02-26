@@ -1,5 +1,5 @@
 // src/app/components/Navbar.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -68,9 +68,19 @@ function Navbar({
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const pathname = usePathname();
 
+    // Close mobile menu on Escape key
+    const handleEscape = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape' && mobileMenuOpen) setMobileMenuOpen(false);
+    }, [mobileMenuOpen]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [handleEscape]);
+
     return (
         <>
-            <nav className="border-b border-white/[0.08] sticky top-0 z-50 pp-glass">
+            <nav className="border-b border-white/[0.08] sticky top-0 z-50 pp-glass" aria-label="Main navigation">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
                     {/* ─── LEFT: Logo + Mobile Menu Toggle ─── */}
@@ -135,6 +145,7 @@ function Navbar({
                         {isAdmin && (
                             <button
                                 onClick={() => setIsSystemLocked(!isSystemLocked)}
+                                aria-label={isSystemLocked ? 'Unlock system' : 'Lock system'}
                                 className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all ${
                                     isSystemLocked
                                         ? 'bg-rose-500/8 text-rose-400 border-rose-500/20 hover:bg-rose-500/15'
@@ -158,7 +169,7 @@ function Navbar({
                                     </p>
                                     <span className="text-[9px] text-slate-500 font-semibold">{activeVaultToken.symbol}</span>
                                 </div>
-                                <button onClick={disconnectWallet} className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-white/[0.04] transition-colors group">
+                                <button onClick={disconnectWallet} aria-label="Disconnect wallet" className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-white/[0.04] transition-colors group">
                                     <div className="w-2 h-2 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-[0_0_6px_rgba(99,102,241,0.4)]"></div>
                                     <span className="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">
                                         {truncateAddress(walletAddress)}

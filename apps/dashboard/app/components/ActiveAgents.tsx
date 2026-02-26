@@ -15,7 +15,7 @@ function ActiveAgents(props: ActiveAgentsProps) {
             <div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-fuchsia-400/80 rounded-tr-xl z-10 pointer-events-none"></div>
             <div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-fuchsia-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                 <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none" style={{ background: 'radial-gradient(ellipse at center, rgba(217,70,239,0.1) 0%, transparent 70%)' }}></div>
                 <div className="flex items-center justify-between mb-6 border-b border-white/[0.05] pb-6 relative z-10">
                     <h2 className="text-2xl font-bold text-white flex items-center gap-3"><span className="p-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl shadow-[0_0_15px_rgba(217,70,239,0.2)]">🤖</span>Active Agents</h2>
@@ -34,12 +34,12 @@ function ActiveAgents(props: ActiveAgentsProps) {
                                     <span className={`w-2 h-2 rounded-full ${rule.status === 'Active' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`}></span> ↻ {rule.schedule}
                                 </div>
                                 {props.isAdmin && (
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-wrap gap-2">
                                         {rule.status === 'Active' && (
                                             <button onClick={() => props.triggerAutopilotAgent(rule.id, rule.name)} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-indigo-500/10 text-indigo-400 border-indigo-500/30 hover:bg-indigo-500/20">⚡ Execute</button>
                                         )}
-                                        <button onClick={() => props.toggleAutopilotState(rule.id, rule.status)} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-white/5 text-slate-300 border-white/10 hover:bg-white/10">⏸</button>
-                                        <button onClick={() => props.deleteAutopilotAgent(rule.id)} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20">✕</button>
+                                        <button onClick={() => props.toggleAutopilotState(rule.id, rule.status)} aria-label={rule.status === 'Active' ? 'Pause agent' : 'Resume agent'} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-white/5 text-slate-300 border-white/10 hover:bg-white/10">{rule.status === 'Active' ? '⏸' : '▶'}</button>
+                                        <button onClick={() => props.deleteAutopilotAgent(rule.id)} aria-label="Delete agent" className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20">✕</button>
                                     </div>
                                 )}
                             </div>

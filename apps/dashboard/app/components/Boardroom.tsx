@@ -36,7 +36,7 @@ function Boardroom(props: BoardroomProps) {
             <div className={`absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 rounded-tr-xl z-10 pointer-events-none ${isAgentMode ? 'border-fuchsia-400/80' : 'border-amber-400/80'}`}></div>
             <div className={`absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 rounded-bl-xl z-10 pointer-events-none ${isAgentMode ? 'border-fuchsia-400/80' : 'border-amber-400/80'}`}></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                 <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 pointer-events-none`} style={{ background: isAgentMode ? 'radial-gradient(ellipse at center, rgba(217,70,239,0.05) 0%, transparent 70%)' : 'radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%)' }}></div>
                 
                 {/* HEADER */}
@@ -99,8 +99,8 @@ function Boardroom(props: BoardroomProps) {
                         <tbody className="divide-y divide-white/[0.04]">
                             {props.awaitingTxs.map((tx, i) => {
                                 // Dynamically fetch real wallet from DB/state
-                                const realWallet = tx.wallet_address || tx.recipientWallet || tx.wallet || "0x0000000000000000000000000000000000000000";
-                                const displayWallet = realWallet.length > 20 ? `${realWallet.slice(0, 10)}...${realWallet.slice(-8)}` : realWallet;
+                                const realWallet = tx.wallet_address || tx.recipientWallet || tx.wallet || '';
+                                const displayWallet = !realWallet ? 'Unknown' : realWallet.length > 20 ? `${realWallet.slice(0, 10)}...${realWallet.slice(-8)}` : realWallet;
 
                                 return (
                                 <tr key={tx.id || i} className="hover:bg-white/[0.03] transition-colors group">
@@ -131,15 +131,15 @@ function Boardroom(props: BoardroomProps) {
                                             </div>
                                         ) : (
                                             <div className="animate-in fade-in duration-300">
-                                                <span className="text-sm font-bold text-white tabular-nums">{parseFloat(tx.amount).toFixed(4)}</span> 
+                                                <span className="text-sm font-bold text-white tabular-nums">{(parseFloat(tx.amount) || 0).toFixed(4)}</span> 
                                                 <span className="text-[10px] text-slate-500 ml-1">{tx.token || 'AlphaUSD'}</span>
                                             </div>
                                         )}
                                     </td>
                                     
-                                    <td className="py-5 pr-3 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <td className="py-5 pr-3 text-right opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity sm:opacity-100 sm:group-hover:opacity-100 md:opacity-0">
                                         {props.isAdmin && (
-                                            <button onClick={() => props.removeAwaitingTx(tx.id)} className="w-6 h-6 inline-flex items-center justify-center bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-md transition-all shadow-sm">✕</button>
+                                            <button onClick={() => props.removeAwaitingTx(tx.id)} aria-label={`Remove ${tx.name}`} className="w-6 h-6 inline-flex items-center justify-center bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white rounded-md transition-all shadow-sm">✕</button>
                                         )}
                                     </td>
                                 </tr>

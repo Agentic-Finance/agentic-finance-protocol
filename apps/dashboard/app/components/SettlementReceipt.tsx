@@ -67,7 +67,11 @@ function FundFlowBar({ isShielded }: { isShielded: boolean }) {
                 return (
                     <React.Fragment key={step.label}>
                         <div className="flex flex-col items-center min-w-0 flex-shrink-0">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 bg-${accentColor}-500/10 border-${accentColor}-500/40 shadow-[0_0_12px_rgba(245,158,11,0.2)]`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 ${
+                                isShielded
+                                    ? 'bg-fuchsia-500/10 border-fuchsia-500/40 shadow-[0_0_12px_rgba(192,38,211,0.2)]'
+                                    : 'bg-amber-500/10 border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                            }`}>
                                 {step.icon}
                             </div>
                             <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-1.5">{step.label}</span>
@@ -153,7 +157,7 @@ function BatchCard({ batch, isExpanded, onToggle }: {
             </button>
 
             {/* ── Expanded Detail Panel ────────────── */}
-            <div className={`transition-all duration-500 ease-in-out border-t border-white/5 bg-[#070a0f] ${isExpanded ? 'max-h-[1200px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden border-transparent'}`}>
+            <div className={`transition-all duration-500 ease-in-out bg-[#070a0f] ${isExpanded ? 'max-h-[1200px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <div className="p-6">
 
                     {/* Fund Flow Timeline */}
@@ -166,6 +170,8 @@ function BatchCard({ batch, isExpanded, onToggle }: {
                     <div className="mb-5">
                         <h5 className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3">Recipient Breakdown</h5>
 
+                        <div className="overflow-x-auto -mx-2 px-2">
+                        <div className="min-w-[600px]">
                         <div className="grid grid-cols-12 gap-3 px-4 pb-3 border-b border-white/5 text-[9px] font-bold text-slate-500 uppercase tracking-wider">
                             <div className="col-span-3">Identity</div>
                             <div className="col-span-4">Wallet</div>
@@ -209,6 +215,8 @@ function BatchCard({ batch, isExpanded, onToggle }: {
                                 </div>
                             </div>
                         ))}
+                        </div>
+                        </div>
                     </div>
 
                     {/* Summary Footer */}
@@ -273,7 +281,7 @@ function SettlementReceipt({ settlements, settlementRef }: SettlementReceiptProp
             {/* Ambient Border Glow */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-amber-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
 
                 {/* Header */}
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-center border-b border-white/10 pb-6 mb-6 gap-4">

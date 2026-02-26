@@ -30,7 +30,7 @@ JSON FORMAT FOR ACTION:
     "actionType": "ACTION",
     "intents": [
         {
-            "name": "Employee Name (or 'Unknown' if just an address)",
+            "name": "The person's name EXACTLY as mentioned in the user's prompt (e.g. 'Alice', 'Bob'). Only use 'Unknown' if the user provided a raw wallet address (0x...) with no associated name.",
             "amount": "Numeric amount as a string (e.g. '500')",
             "token": "Token symbol (e.g. 'AlphaUSD')",
             "note": "Reason for payment or leave empty"

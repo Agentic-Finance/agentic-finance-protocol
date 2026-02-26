@@ -123,7 +123,7 @@ function ActiveEscrowCard({ item, isExpanded, onToggle, now }: {
     now: number;
 }) {
     const dl = formatDeadline(item.deadline, now);
-    const displayAmount = item.negotiatedPrice || item.amount;
+    const displayAmount = item.negotiatedPrice ?? item.amount;
 
     return (
         <div
@@ -142,9 +142,11 @@ function ActiveEscrowCard({ item, isExpanded, onToggle, now }: {
                         </h4>
                         <div className="flex items-center gap-2 mt-0.5">
                             {item.onChainJobId != null && (
+                                <>
                                 <span className="text-[10px] text-slate-500 font-mono">Job #{item.onChainJobId}</span>
+                                <span className="text-[10px] text-slate-500">·</span>
+                                </>
                             )}
-                            <span className="text-[10px] text-slate-500">·</span>
                             <span className="text-xs text-white/80 font-semibold">{displayAmount.toFixed(2)} <span className="text-slate-500 text-[10px]">{item.token}</span></span>
                         </div>
                     </div>
@@ -284,7 +286,7 @@ function RecentCard({ item }: { item: TrackerItem }) {
             <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/80 font-semibold truncate">{item.agentName}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-slate-400">{(item.negotiatedPrice || item.amount).toFixed(2)} {item.token}</span>
+                    <span className="text-[10px] text-slate-400">{(item.negotiatedPrice ?? item.amount).toFixed(2)} {item.token}</span>
                     <span className="text-[10px] text-slate-600">·</span>
                     <span className="text-[10px] text-slate-500">{formatTimeAgo(item.completedAt || item.createdAt)}</span>
                 </div>
@@ -311,6 +313,9 @@ function EscrowTracker({ walletAddress }: EscrowTrackerProps) {
     }, []);
 
     // Self-contained polling (10s)
+    const expandedJobIdRef = React.useRef(expandedJobId);
+    expandedJobIdRef.current = expandedJobId;
+
     const fetchTracker = useCallback(async () => {
         if (!walletAddress) return;
         try {
@@ -320,12 +325,12 @@ function EscrowTracker({ walletAddress }: EscrowTrackerProps) {
                 setActiveEscrows(data.active || []);
                 setRecentEscrows(data.recent || []);
                 // Auto-expand first active if none expanded
-                if (data.active?.length > 0 && !expandedJobId) {
+                if (data.active?.length > 0 && !expandedJobIdRef.current) {
                     setExpandedJobId(data.active[0].jobId);
                 }
             }
         } catch { /* silent */ }
-    }, [walletAddress, expandedJobId]);
+    }, [walletAddress]);
 
     useEffect(() => {
         if (!walletAddress) return;

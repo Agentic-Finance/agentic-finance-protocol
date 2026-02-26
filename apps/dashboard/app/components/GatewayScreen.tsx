@@ -30,22 +30,22 @@ export default function GatewayScreen(props: GatewayProps) {
             <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center relative overflow-hidden font-sans">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
 
-                <div className="relative z-10 w-full max-w-2xl px-8">
-                    <div className="text-center mb-10">
+                <div className="relative z-10 w-full max-w-2xl px-4 sm:px-8">
+                    <div className="text-center mb-8 sm:mb-10">
                         <Image src="/logo.png" alt="PayPol" width={192} height={48} className="h-12 w-auto object-contain mx-auto mb-6 drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" priority />
                         <h1 className="text-3xl font-bold text-white mb-3">Agentic Finance Gateway</h1>
                         <p className="text-slate-400 text-sm">Welcome to PayPol. Please select your operational protocol.</p>
                     </div>
 
-                    <div className="bg-[#151B27]/95 border border-white/[0.08] rounded-3xl p-8 shadow-2xl transition-all duration-300">
+                    <div className="bg-[#151B27]/95 border border-white/[0.08] rounded-3xl p-5 sm:p-8 shadow-2xl transition-all duration-300">
                         {props.gatewayMode === 'Select' && (
                             <div className="animate-in fade-in zoom-in-95">
-                                <div className="grid grid-cols-2 gap-5 mb-6">
-                                    <button onClick={() => props.setGatewayMode('Create')} className="p-8 rounded-2xl border bg-indigo-500/10 border-indigo-500/30 hover:border-indigo-500/60 hover:bg-indigo-500/20 text-center transition-all group">
+                                <div className="grid grid-cols-2 gap-3 sm:gap-5 mb-6">
+                                    <button onClick={() => props.setGatewayMode('Create')} className="p-4 sm:p-8 rounded-2xl border bg-indigo-500/10 border-indigo-500/30 hover:border-indigo-500/60 hover:bg-indigo-500/20 text-center transition-all group">
                                         <div className="w-16 h-16 mx-auto bg-indigo-500/20 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🏢</div>
                                         <h3 className="text-lg font-bold text-white mb-2">Create Workspace</h3>
                                     </button>
-                                    <button onClick={() => props.setGatewayMode('Join')} className="p-8 rounded-2xl border bg-fuchsia-500/10 border-fuchsia-500/30 hover:border-fuchsia-500/60 hover:bg-fuchsia-500/20 text-center transition-all group">
+                                    <button onClick={() => props.setGatewayMode('Join')} className="p-4 sm:p-8 rounded-2xl border bg-fuchsia-500/10 border-fuchsia-500/30 hover:border-fuchsia-500/60 hover:bg-fuchsia-500/20 text-center transition-all group">
                                         <div className="w-16 h-16 mx-auto bg-fuchsia-500/20 rounded-full flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">🤝</div>
                                         <h3 className="text-lg font-bold text-white mb-2">Join Workspace</h3>
                                     </button>
@@ -159,7 +159,7 @@ export default function GatewayScreen(props: GatewayProps) {
         return (
             <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center relative overflow-hidden font-sans">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
-                <div className="relative z-10 text-center w-full px-8">
+                <div className="relative z-10 text-center w-full px-4 sm:px-8">
                     <div className="flex justify-center items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
                         <Image src="/logo.png" alt="PayPol Logo" width={448} height={112} className="h-20 md:h-28 w-auto object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.4)] mx-auto" priority />
                     </div>
@@ -167,7 +167,7 @@ export default function GatewayScreen(props: GatewayProps) {
                         The Financial OS for the Agentic Economy.
                     </p>
                     <div className="flex justify-center">
-                        <button onClick={props.connectWallet} className="px-12 py-6 bg-white/[0.05] hover:bg-white/[0.1] text-white text-xl font-bold rounded-3xl transition-all duration-300 border border-white/[0.1] shadow-2xl hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] hover:-translate-y-1 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+                        <button onClick={props.connectWallet} className="px-8 sm:px-12 py-5 sm:py-6 bg-white/[0.05] hover:bg-white/[0.1] text-white text-lg sm:text-xl font-bold rounded-3xl transition-all duration-300 border border-white/[0.1] shadow-2xl hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] hover:-translate-y-1 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
                             Connect Web3 Wallet →
                         </button>
                     </div>

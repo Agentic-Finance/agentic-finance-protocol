@@ -89,7 +89,20 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
     }, [setConditions]);
 
     const updateCondition = useCallback((id: string, field: keyof Condition, value: string) => {
-        setConditions(prev => prev.map(c => c.id === id ? { ...c, [field]: value } : c));
+        setConditions(prev => prev.map(c => {
+            if (c.id !== id) return c;
+            const updated = { ...c, [field]: value };
+            // Reset operator to valid value when type changes
+            if (field === 'type') {
+                if (value === 'date_time' && !['>=', '=='].includes(c.operator)) {
+                    updated.operator = '>=';
+                }
+                if (value === 'webhook') {
+                    updated.operator = '>=';
+                }
+            }
+            return updated;
+        }));
     }, [setConditions]);
 
     const applyPreset = useCallback((preset: typeof EXAMPLE_PRESETS[0]) => {

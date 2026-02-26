@@ -70,7 +70,10 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                 }
 
                 const provider = new ethers.BrowserProvider((window as any).ethereum);
-                const signer = await provider.getSigner();
+                // Fetch accounts and normalize to EIP-55 checksum to prevent "bad address checksum" errors
+                const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
+                const checksummedAddress = accounts[0] ? ethers.getAddress(accounts[0]) : undefined;
+                const signer = await provider.getSigner(checksummedAddress);
                 const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
 
                 if (action === 'release') {
@@ -94,32 +97,41 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                 }
             }
 
-            // Sync to DB via settle API (for actions with agentJobId)
+            // Sync to both APIs in parallel (settle + legacy escrow)
+            const syncPromises: Promise<void>[] = [];
+
+            // 1. Marketplace settle API (for actions with agentJobId)
             if (escrow.agentJobId) {
                 const settleAction = action === 'release' ? 'settle'
                     : action === 'timeout' ? 'refund'
                     : action;
-                await fetch('/api/marketplace/settle', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        jobId: escrow.agentJobId,
-                        action: settleAction,
-                        txHash,
-                        reason: action === 'dispute' ? disputeReason : undefined
-                    })
-                });
+                syncPromises.push(
+                    fetch('/api/marketplace/settle', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jobId: escrow.agentJobId,
+                            action: settleAction,
+                            txHash,
+                            reason: action === 'dispute' ? disputeReason : undefined
+                        })
+                    }).then(res => { if (!res.ok) console.error('Failed to sync settle to DB'); }).catch(err => console.error('Settle sync error:', err))
+                );
             }
 
-            // Also sync to legacy escrow API
+            // 2. Legacy escrow API
             const legacyAction = action === 'timeout' ? 'refund' : action;
             const legacyPayload: any = { id, action: legacyAction, agentJobId: escrow.agentJobId, txHash };
             if (action === 'dispute') legacyPayload.reason = disputeReason;
-            await fetch('/api/escrow', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(legacyPayload)
-            });
+            syncPromises.push(
+                fetch('/api/escrow', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(legacyPayload)
+                }).then(res => { if (!res.ok) console.error('Failed to sync legacy escrow to DB'); }).catch(err => console.error('Legacy escrow sync error:', err))
+            );
+
+            await Promise.allSettled(syncPromises);
 
             // Show success message (Engine 3: Arbitration Monetization)
             if (action === 'dispute') {
@@ -206,7 +218,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
         <div className="relative z-20 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-teal-500/40 via-cyan-500/20 to-teal-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#061014]/90 shadow-inner backdrop-blur-3xl overflow-hidden max-w-4xl mx-auto">
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#061014]/90 shadow-inner backdrop-blur-3xl overflow-hidden max-w-4xl mx-auto">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-teal-500/5 blur-[80px] pointer-events-none"></div>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 border-b border-white/[0.05] pb-6 relative z-10">
@@ -417,6 +429,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                                                 value={disputeReason}
                                                 onChange={(e) => setDisputeReason(e.target.value)}
                                                 placeholder="Explain why the proof of work is unacceptable..."
+                                                aria-label="Dispute reason"
                                                 className="w-full bg-black/60 border border-rose-500/30 rounded-lg p-3 text-sm text-slate-200 outline-none focus:border-rose-500 resize-none"
                                                 rows={2}
                                             />
@@ -441,7 +454,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                                                 onClick={() => { setDisputingId(escrow.id); setCardMessage(null); }}
                                                 disabled={processingId === escrow.id}
                                                 className="px-6 py-4 bg-rose-500/10 hover:bg-rose-500 disabled:opacity-50 text-rose-400 hover:text-white border border-rose-500/30 rounded-xl transition-all flex items-center justify-center"
-                                                title="Dispute & Escalate"
+                                                aria-label="Dispute & Escalate"
                                             >
                                                 <XCircleIcon className="w-7 h-7" />
                                             </button>

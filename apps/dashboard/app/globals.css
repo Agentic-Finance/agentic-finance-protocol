@@ -124,3 +124,20 @@ input[type=number] { -moz-appearance: textfield; }
   50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* ── Firefox scrollbar support ── */
+.cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
+.cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
+
+/* ── Respect user motion preferences ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-pulse, .animate-spin, .animate-bounce, .animate-pulse-glow, .animate-shrink {
+    animation: none !important;
+  }
+}

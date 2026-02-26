@@ -17,7 +17,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
             {/* Ambient Background Glow */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-indigo-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
             
-            <div className="p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[500px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[400px] sm:min-h-[500px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
                 
                 {/* Header Section */}
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-center border-b border-white/10 pb-6 mb-6 gap-4">
@@ -48,11 +48,12 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                             <div key={tx.hash || i} className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'bg-black/60 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.05)]' : 'bg-[#0f1522] border-white/5 hover:border-white/10'}`}>
                                 
                                 {/* 🌟 BATCH SUMMARY ROW */}
-                                <div 
+                                <button
                                     onClick={() => toggleExpand(tx.hash)}
-                                    className={`p-5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 cursor-pointer hover:bg-white/[0.02] transition-colors ${tx.isJustSettled ? 'animate-[pulse_2s_ease-in-out_3] bg-indigo-500/10' : ''}`}
+                                    aria-expanded={isExpanded}
+                                    className={`w-full text-left p-5 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 cursor-pointer hover:bg-white/[0.02] transition-colors ${tx.isJustSettled ? 'animate-[pulse_2s_ease-in-out_3] bg-indigo-500/10' : ''}`}
                                 >
-                                    <div className="flex items-center gap-5 min-w-[300px]">
+                                    <div className="flex items-center gap-5 min-w-0 sm:min-w-[300px]">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center border shadow-inner ${isShieldedBatch ? 'bg-fuchsia-500/10 border-fuchsia-500/20 text-fuchsia-400' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
                                             {isShieldedBatch ? '🛡️' : '🌐'}
                                         </div>
@@ -85,11 +86,13 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                         </div>
                                     </div>
-                                </div>
+                                </button>
 
-                                {/* 🌟 DETAILED BREAKDOWN ACCORDION */}
-                                <div className={`transition-all duration-500 ease-in-out border-t border-white/5 bg-[#070a0f] ${isExpanded ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden border-transparent'}`}>
+                                {/* DETAILED BREAKDOWN ACCORDION */}
+                                <div className={`transition-all duration-500 ease-in-out bg-[#070a0f] ${isExpanded ? 'max-h-[800px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                                     <div className="p-6 overflow-y-auto max-h-[600px] scrollbar-hide">
+                                        <div className="overflow-x-auto -mx-2 px-2">
+                                        <div className="min-w-[600px]">
                                         <div className="grid grid-cols-12 gap-4 px-4 pb-3 border-b border-white/5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                                             <div className="col-span-3">Recipient Identity</div>
                                             <div className="col-span-4">Wallet / ZK Destination</div>
@@ -120,14 +123,16 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                                                         className={`text-[10px] font-bold transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${isShieldedBatch ? 'bg-fuchsia-500/10 text-fuchsia-400 hover:bg-fuchsia-500/20 border-fuchsia-500/30' : 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-blue-500/30'}`}
                                                     >
                                                         {isShieldedBatch ? 'View ZK Proof' : 'View L1 TX'}
-                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                                                     </a>
                                                 </div>
                                             </div>
                                         ))}
+                                        </div>
+                                        </div>
                                     </div>
-                                    
-                                    {/* CHANGED L2 to L1 */}
+
+                                    {/* L1 Footer */}
                                     <div className="bg-black/80 p-4 border-t border-white/5 flex justify-between items-center text-xs text-slate-500 px-10">
                                         <span>Total Batch Execution Cost Covered by Daemon</span>
                                         <span className="font-mono text-slate-400">Tempo Network (L1) Validated</span>

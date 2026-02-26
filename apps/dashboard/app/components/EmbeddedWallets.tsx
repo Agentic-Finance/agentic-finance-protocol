@@ -50,6 +50,7 @@ export default function EmbeddedWallets() {
     const [genLabel, setGenLabel] = useState('');
     const [genType, setGenType] = useState<'agent' | 'employee'>('agent');
     const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [genError, setGenError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchWallets();
@@ -71,6 +72,7 @@ export default function EmbeddedWallets() {
     async function handleGenerate() {
         if (!genLabel.trim()) return;
         setGenerating(true);
+        setGenError(null);
         try {
             const res = await fetch('/api/wallets/generate', {
                 method: 'POST',
@@ -82,18 +84,24 @@ export default function EmbeddedWallets() {
                 setShowGenerate(false);
                 setGenLabel('');
                 await fetchWallets();
+            } else {
+                setGenError(json.error || 'Failed to generate wallet.');
             }
         } catch {
-            // Silent fail
+            setGenError('Network error. Please try again.');
         } finally {
             setGenerating(false);
         }
     }
 
     function copyAddress(addr: string, id: string) {
-        navigator.clipboard.writeText(addr);
-        setCopiedId(id);
-        setTimeout(() => setCopiedId(null), 2000);
+        navigator.clipboard.writeText(addr).then(() => {
+            setCopiedId(id);
+            setTimeout(() => setCopiedId(null), 2000);
+        }).catch(() => {
+            // Fallback for non-secure contexts
+            setCopiedId(null);
+        });
     }
 
     if (loading) {
@@ -226,6 +234,9 @@ export default function EmbeddedWallets() {
                                 {generating ? 'Generating...' : 'Generate & Encrypt'}
                             </button>
                         </div>
+                        {genError && (
+                            <p className="text-[10px] text-rose-400 mt-2 bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/20">{genError}</p>
+                        )}
                         <p className="text-[10px] text-slate-600 mt-3">
                             Private key encrypted with AES-256-GCM. Never exposed in plaintext.
                         </p>
@@ -284,9 +295,14 @@ export default function EmbeddedWallets() {
                                             <span className="text-white font-mono font-semibold">{formatUSD(w.balance)}</span>
                                         </td>
                                         <td className="py-3 text-center">
-                                            <span className={`inline-block w-2 h-2 rounded-full ${
-                                                w.isActive ? 'bg-emerald-400' : 'bg-slate-600'
-                                            }`} />
+                                            <span className="flex items-center justify-center gap-1.5">
+                                                <span className={`inline-block w-2 h-2 rounded-full ${
+                                                    w.isActive ? 'bg-emerald-400' : 'bg-slate-600'
+                                                }`} />
+                                                <span className={`text-[10px] ${w.isActive ? 'text-emerald-400' : 'text-slate-600'}`}>
+                                                    {w.isActive ? 'Active' : 'Idle'}
+                                                </span>
+                                            </span>
                                         </td>
                                     </tr>
                                 ))}

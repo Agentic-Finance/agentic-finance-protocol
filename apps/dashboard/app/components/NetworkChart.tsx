@@ -27,7 +27,7 @@ function NetworkChart() {
     }
 
     return (
-        <div className="h-64 w-full mt-6">
+        <div className="h-48 sm:h-64 w-full mt-4 sm:mt-6">
             <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                     <defs>

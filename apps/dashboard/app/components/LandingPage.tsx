@@ -63,52 +63,63 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
         } else {
             // Nexus A2A - Live demo with real marketplace agents
+            let cancelled = false;
+            const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
             const runLiveDemo = async () => {
                 setOutputStep(1);
                 setNexusLog(prev => [...prev, "> Initializing Nexus Protocol..."]);
 
-                await new Promise(r => setTimeout(r, 800));
+                await delay(800);
+                if (cancelled) return;
                 setNexusLog(prev => [...prev, "> Querying Agent Marketplace on Tempo L1..."]);
 
                 try {
                     const res = await fetch('/api/marketplace/agents');
                     const data = await res.json();
+                    if (cancelled) return;
                     const agents = (data.agents || []).filter((a: any) => a.isVerified);
 
-                    await new Promise(r => setTimeout(r, 600));
+                    await delay(600);
+                    if (cancelled) return;
                     setNexusLog(prev => [...prev, `> ${agents.length} verified agents found on-chain`]);
 
                     if (agents.length >= 2) {
                         const a1 = agents[0];
                         const a2 = agents[Math.min(5, agents.length - 1)];
                         setAgentData({ devAddress: a1.ownerWallet, auditAddress: a2.ownerWallet });
-                        await new Promise(r => setTimeout(r, 400));
+                        await delay(400);
+                        if (cancelled) return;
                         setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} ALPHA)`]);
                         setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} ALPHA)`]);
                     }
                     setOutputStep(2);
 
-                    await new Promise(r => setTimeout(r, 1200));
+                    await delay(1200);
+                    if (cancelled) return;
                     setNexusLog(prev => [...prev, "> NexusV2 Escrow: Funds locked trustlessly on-chain"]);
 
-                    await new Promise(r => setTimeout(r, 1000));
+                    await delay(1000);
+                    if (cancelled) return;
                     const agent = agents[0];
                     setNexusLog(prev => [...prev, `> [CHAIN] \u2705 Job completed. Escrow settled.`]);
                     setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} ALPHA released to ${agent?.name || 'Agent'}`]);
                     setOutputStep(3);
                 } catch {
+                    if (cancelled) return;
                     // Fallback to mock if API unavailable
                     const mockDev = '0x7a3F' + Math.random().toString(16).slice(2, 6);
                     const mockAudit = '0x9bE2' + Math.random().toString(16).slice(2, 6);
                     setAgentData({ devAddress: mockDev, auditAddress: mockAudit });
                     setNexusLog(prev => [...prev, `> Agents: Dev(${mockDev.slice(0, 8)}...) & Audit(${mockAudit.slice(0, 8)}...)`]);
                     setOutputStep(2);
-                    await new Promise(r => setTimeout(r, 1500));
+                    await delay(1500);
+                    if (cancelled) return;
                     setNexusLog(prev => [...prev, "> [CHAIN] \uD83D\uDCB8 $5.00 streamed to Dev Agent."]);
                     setOutputStep(3);
                 }
             };
             runLiveDemo();
+            return () => { cancelled = true; };
         }
     }, [activeTab]);
 
@@ -163,7 +174,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 10, padding: '90px 20px 24px' }}>
 
                 {/* GIANT HEADLINE */}
-                <div className="animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '24px' }}>
+                <div className="landing-animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '24px' }}>
                     <h1 style={{ fontWeight: '900', letterSpacing: '-0.03em', lineHeight: 1.08, fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)', margin: 0, textShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
                         <span style={{ color: '#fff' }}>The Financial OS for</span>
                         <br />
@@ -172,7 +183,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
 
                 {/* FLOATING TERMINAL - iPhone Edge-to-Edge */}
-                <div className="animate-fade-in-up terminal-tilt" style={{
+                <div className="landing-animate-fade-in-up terminal-tilt" style={{
                     width: '96%', maxWidth: '1200px', flex: 1, minHeight: '420px',
                     backgroundColor: 'rgba(12, 16, 22, 0.95)',
                     border: `1.5px solid ${prompts[activeTab].color}35`, borderRadius: '28px',
@@ -224,7 +235,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         <div className={`transition-all duration-500 ${outputStep >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ backgroundColor: '#161B22', color: '#fff', padding: '14px 20px', borderRadius: '14px', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.05)', alignSelf: 'flex-end', maxWidth: '85%', fontWeight: '500', fontFamily: 'monospace' }}>{prompts[activeTab].command}</div>
 
                         {activeTab === 0 && outputStep >= 2 && (
-                            <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+                            <div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
                                 <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '20px', padding: '20px 28px', position: 'relative', overflow: 'hidden' }}>
                                     <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', backgroundColor: '#10b981', height: '100%' }}></div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -240,7 +251,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         )}
 
                         {activeTab === 1 && outputStep >= 2 && (
-                            <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '650px', margin: '0 auto' }}>
+                            <div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '650px', margin: '0 auto' }}>
                                 <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '18px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 30px rgba(168,85,247,0.1)' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '36px', height: '36px', backgroundColor: '#000', border: '2px solid #a855f7', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '18px', height: '18px', color: '#a855f7' }} /></div><div><p style={{ fontSize: '0.65rem', color: '#a855f7', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Nexus Vault</p><p style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>500.0 <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>USDC</span></p></div></div>
                                     <div style={{ backgroundColor: 'rgba(168,85,247,0.1)', padding: '5px 10px', borderRadius: '8px', border: '1px solid rgba(168,85,247,0.3)' }}><span style={{ fontSize: '0.7rem', color: '#c084fc', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><ClockIcon style={{ width: '13px', height: '13px' }} /> In Escrow</span></div>
@@ -256,10 +267,10 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             </div>
                         )}
 
-                        {activeTab === 2 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(129, 140, 248, 0.3)', borderRadius: '16px', overflow: 'hidden' }}><div style={{ display: 'flex', backgroundColor: 'rgba(129, 140, 248, 0.1)', padding: '12px 20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#a5b4fc', textTransform: 'uppercase' }}><div style={{ flex: 1 }}>Employee</div><div style={{ flex: 1 }}>Wallet</div><div style={{ width: '100px', textAlign: 'right' }}>Amount</div></div>{[{ name: "Alice", wallet: "0x71C...9A", amount: "5k" }, { name: "Bob", wallet: "0x3F2...8B", amount: "4.5k" }, { name: "Charlie", wallet: "0x9E1...1C", amount: "4.5k" }].map((row, i) => (<div key={i} style={{ display: 'flex', padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem' }}><div style={{ flex: 1, color: '#fff', fontWeight: 'bold' }}>{row.name}</div><div style={{ flex: 1, color: '#64748b', fontFamily: 'monospace' }}>{row.wallet}</div><div style={{ width: '100px', textAlign: 'right', color: '#10b981', fontWeight: 'bold' }}>{row.amount}</div></div>))}</div></div>)}
-                        {activeTab === 3 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(236, 72, 153, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1e1b4b', borderRadius: '50%', border: '1px solid #4338ca', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><GlobeAltIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Ethereum</span></div><div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}><span style={{ fontSize: '0.7rem', color: '#ec4899', marginBottom: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>50,000 USDC</span><div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_1.5s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#ec4899' }}></div></div><span style={{ fontSize: '0.65rem', color: '#64748b', marginTop: '4px' }}>LayerZero Bridge</span></div><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#064e3b', borderRadius: '50%', border: '1px solid #059669', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#34d399' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Arbitrum</span></div></div></div>)}
-                        {activeTab === 4 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(234, 179, 8, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><ChartBarIcon style={{ width: '24px', height: '24px', color: '#eab308' }} /><span style={{ color: '#fff', fontWeight: 'bold' }}>Portfolio Rebalancing</span></div><span style={{ fontSize: '0.75rem', color: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(234, 179, 8, 0.2)', fontWeight: 'bold' }}>AUTO-EXECUTED</span></div><div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}><div style={{ textAlign: 'center', opacity: 0.6 }}><p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '4px' }}>Previous Split</p><p style={{ fontSize: '1.1rem', color: '#cbd5e1', fontWeight: 'bold', fontFamily: 'monospace' }}>BTC:52% / ETH:48%</p></div><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /><div style={{ textAlign: 'center' }}><p style={{ fontSize: '0.8rem', color: '#eab308', marginBottom: '4px' }}>New Target Split</p><p style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>BTC:60% / ETH:40%</p></div></div></div></div>)}
-                        {activeTab === 5 && outputStep >= 2 && (<div className="animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}><div style={{ width: '100%', backgroundColor: '#05070A', border: '1px solid rgba(6, 182, 212, 0.3)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}><ServerStackIcon style={{ width: '32px', height: '32px', color: '#06b6d4' }} /><span style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold' }}>Uptime API Oracle</span></div><div style={{ width: '2px', height: '40px', backgroundColor: '#06b6d4', opacity: 0.5 }}></div><div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>{[1, 2, 3, 4, 5].map((id) => (<div key={id} style={{ width: '40px', height: '40px', backgroundColor: '#162036', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><SignalIcon style={{ width: '20px', height: '20px', color: '#06b6d4' }} /><div className="animate-pulse" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div></div>))}<div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>...</div></div><div style={{ marginTop: '32px', backgroundColor: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '10px 20px', borderRadius: '999px' }}><span style={{ fontSize: '0.85rem', color: '#22d3ee', fontWeight: 'bold', fontFamily: 'monospace' }}>Verifying 5,000 active nodes...</span></div></div></div>)}
+                        {activeTab === 2 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(129, 140, 248, 0.3)', borderRadius: '16px', overflow: 'hidden' }}><div style={{ display: 'flex', backgroundColor: 'rgba(129, 140, 248, 0.1)', padding: '12px 20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#a5b4fc', textTransform: 'uppercase' }}><div style={{ flex: 1 }}>Employee</div><div style={{ flex: 1 }}>Wallet</div><div style={{ width: '100px', textAlign: 'right' }}>Amount</div></div>{[{ name: "Alice", wallet: "0x71C...9A", amount: "5k" }, { name: "Bob", wallet: "0x3F2...8B", amount: "4.5k" }, { name: "Charlie", wallet: "0x9E1...1C", amount: "4.5k" }].map((row, i) => (<div key={i} style={{ display: 'flex', padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem' }}><div style={{ flex: 1, color: '#fff', fontWeight: 'bold' }}>{row.name}</div><div style={{ flex: 1, color: '#64748b', fontFamily: 'monospace' }}>{row.wallet}</div><div style={{ width: '100px', textAlign: 'right', color: '#10b981', fontWeight: 'bold' }}>{row.amount}</div></div>))}</div></div>)}
+                        {activeTab === 3 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(236, 72, 153, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1e1b4b', borderRadius: '50%', border: '1px solid #4338ca', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><GlobeAltIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Ethereum</span></div><div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}><span style={{ fontSize: '0.7rem', color: '#ec4899', marginBottom: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>50,000 USDC</span><div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_1.5s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#ec4899' }}></div></div><span style={{ fontSize: '0.65rem', color: '#64748b', marginTop: '4px' }}>LayerZero Bridge</span></div><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#064e3b', borderRadius: '50%', border: '1px solid #059669', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#34d399' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Arbitrum</span></div></div></div>)}
+                        {activeTab === 4 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(234, 179, 8, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><ChartBarIcon style={{ width: '24px', height: '24px', color: '#eab308' }} /><span style={{ color: '#fff', fontWeight: 'bold' }}>Portfolio Rebalancing</span></div><span style={{ fontSize: '0.75rem', color: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(234, 179, 8, 0.2)', fontWeight: 'bold' }}>AUTO-EXECUTED</span></div><div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}><div style={{ textAlign: 'center', opacity: 0.6 }}><p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '4px' }}>Previous Split</p><p style={{ fontSize: '1.1rem', color: '#cbd5e1', fontWeight: 'bold', fontFamily: 'monospace' }}>BTC:52% / ETH:48%</p></div><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /><div style={{ textAlign: 'center' }}><p style={{ fontSize: '0.8rem', color: '#eab308', marginBottom: '4px' }}>New Target Split</p><p style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>BTC:60% / ETH:40%</p></div></div></div></div>)}
+                        {activeTab === 5 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}><div style={{ width: '100%', backgroundColor: '#05070A', border: '1px solid rgba(6, 182, 212, 0.3)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}><ServerStackIcon style={{ width: '32px', height: '32px', color: '#06b6d4' }} /><span style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold' }}>Uptime API Oracle</span></div><div style={{ width: '2px', height: '40px', backgroundColor: '#06b6d4', opacity: 0.5 }}></div><div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>{[1, 2, 3, 4, 5].map((id) => (<div key={id} style={{ width: '40px', height: '40px', backgroundColor: '#162036', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><SignalIcon style={{ width: '20px', height: '20px', color: '#06b6d4' }} /><div className="animate-pulse" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div></div>))}<div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>...</div></div><div style={{ marginTop: '32px', backgroundColor: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '10px 20px', borderRadius: '999px' }}><span style={{ fontSize: '0.85rem', color: '#22d3ee', fontWeight: 'bold', fontFamily: 'monospace' }}>Verifying 5,000 active nodes...</span></div></div></div>)}
 
                         {/* Agent Execution Logs */}
                         <div className={`transition-all duration-700 mt-auto ${outputStep >= 1 ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: '#030407', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '14px', fontFamily: 'monospace', fontSize: '0.72rem', color: '#64748b' }}>
@@ -877,8 +888,8 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                 }
 
                 /* ── Existing Animations ── */
-                @keyframes fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-                .animate-fade-in-up { animation: fade-in-up 0.7s forwards; opacity: 0; }
+                @keyframes landing-fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+                .landing-animate-fade-in-up { animation: landing-fade-in-up 0.7s forwards; opacity: 0; }
                 @keyframes slideRight { 0% { transform: translateX(-100px); } 100% { transform: translateX(250px); } }
                 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
                 .animate-ticker { animation: ticker 30s linear infinite; }

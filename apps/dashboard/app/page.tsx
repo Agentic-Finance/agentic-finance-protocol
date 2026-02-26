@@ -356,8 +356,12 @@ export default function Dashboard() {
             // Dynamic import - ethers.js (472KB) only loaded when actually needed
             const { ethers } = await import('ethers');
 
+            // Normalize sender wallet to EIP-55 checksum format
+            const checksummedWallet = ethers.getAddress(walletAddress);
+
             const provider = new ethers.BrowserProvider((window as any).ethereum);
-            const signer = await provider.getSigner();
+            // Pass checksummed address directly to avoid BrowserProvider re-fetching accounts with bad checksum
+            const signer = await provider.getSigner(checksummedWallet);
             const isAgentMode = awaitingTxs.some(tx => tx.isDiscovery === true || (tx.note && tx.note.includes('A2A')));
 
             const tokenAddress = activeVaultToken.address || "0x20c0000000000000000000000000000000000001";
@@ -381,28 +385,32 @@ export default function Dashboard() {
                 showToast('success', 'Step 2/2: Locking funds in Escrow Vault...');
                 const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
                 const rawRecipient = awaitingTxs[0].wallet_address || awaitingTxs[0].address || awaitingTxs[0].recipientWallet || awaitingTxs[0].wallet;
-                // Validate address format to prevent ENS resolution on unsupported networks
-                const recipientWalletStr = (rawRecipient && /^0x[a-fA-F0-9]{40}$/.test(rawRecipient))
-                    ? rawRecipient
-                    : ethers.ZeroAddress;
+                // Validate address format - REJECT invalid addresses instead of silently sending to ZeroAddress
+                if (!rawRecipient || !/^0x[a-fA-F0-9]{40}$/.test(rawRecipient)) {
+                    throw new Error(`Invalid recipient address: ${rawRecipient || 'none'}. Cannot create escrow with invalid wallet.`);
+                }
+                // Normalize to EIP-55 checksum format to prevent "bad address checksum" errors
+                const recipientWalletStr = ethers.getAddress(rawRecipient);
                 const DEADLINE_48H = BigInt(172800); // 48 hours in seconds
-                const createTx = await nexusV2.createJob(recipientWalletStr, walletAddress, tokenAddress, amountInUnits, DEADLINE_48H, { gasLimit: 500000 });
+                const createTx = await nexusV2.createJob(recipientWalletStr, checksummedWallet, tokenAddress, amountInUnits, DEADLINE_48H, { gasLimit: 500000 });
                 activeTxHash = createTx.hash;
                 const receipt = await createTx.wait();
 
-                // Step 3: Extract onChainJobId from JobCreated event
+                // Step 3: Extract onChainJobId from JobCreated event (MANDATORY)
                 let onChainJobId: number | null = null;
-                try {
-                    for (const log of receipt.logs) {
-                        try {
-                            const parsed = nexusV2.interface.parseLog({ topics: log.topics as string[], data: log.data });
-                            if (parsed && parsed.name === 'JobCreated') {
-                                onChainJobId = Number(parsed.args.jobId);
-                                break;
-                            }
-                        } catch { /* skip non-matching logs */ }
-                    }
-                } catch { /* event extraction is best-effort */ }
+                for (const log of receipt.logs) {
+                    try {
+                        const parsed = nexusV2.interface.parseLog({ topics: log.topics as string[], data: log.data });
+                        if (parsed && parsed.name === 'JobCreated') {
+                            onChainJobId = Number(parsed.args.jobId);
+                            break;
+                        }
+                    } catch { /* skip non-matching logs */ }
+                }
+                if (onChainJobId == null) {
+                    console.error('JobCreated event not found in transaction receipt. Logs:', receipt.logs);
+                    showToast('error', 'Warning: Escrow created but job ID could not be extracted. Contact support.');
+                }
 
                 // Step 4: Sync onChainJobId + deadline to DB via Settlement API
                 const currentAgentJobId = awaitingTxs[0].agentJobId || awaitingTxs[0].jobId;
@@ -483,18 +491,18 @@ export default function Dashboard() {
 
             <Navbar currentWorkspace={currentWorkspace} isAdmin={isAdmin} isSystemLocked={isSystemLocked} setIsSystemLocked={setIsSystemLocked} userBalance={userBalance} activeVaultToken={activeVaultToken} walletAddress={walletAddress} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
-            <main className="max-w-[1400px] mx-auto px-8 py-10">
+            <main className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
                 <TopStatsCards totalDisbursed={totalDisbursed} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} />
 
                 <Suspense fallback={<LazyFallback />}>
-                    <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} />
+                    <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} />
                 </Suspense>
 
                 <div className="relative z-20 mb-10">
                     <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/40 via-purple-500/20 to-fuchsia-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
                     <div className="absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 border-indigo-400/80 rounded-tl-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -right-1 w-10 h-10 border-b-2 border-r-2 border-fuchsia-400/80 rounded-br-xl z-10 pointer-events-none"></div><div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-fuchsia-400/80 rounded-tr-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-indigo-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
-                    <div className="p-8 flex flex-col border border-white/[0.08] rounded-3xl relative z-10 bg-[#151B27]/95 shadow-inner overflow-hidden">
+                    <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl relative z-10 bg-[#151B27]/95 shadow-inner overflow-hidden">
                         <div className="absolute top-0 right-0 w-[60%] h-32 bg-fuchsia-500/10 blur-[80px] pointer-events-none"></div>
                         <div className="flex flex-wrap md:flex-nowrap justify-between items-center relative z-10 border-b border-white/[0.05] pb-6 mb-6 gap-4">
                             <div><h3 className="text-2xl font-bold text-white flex items-center gap-3"><span className="p-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl">📈</span> Protocol Volume</h3></div>
@@ -507,8 +515,8 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                    <div className="lg:col-span-8 space-y-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
+                    <div className="lg:col-span-8 space-y-6 sm:space-y-10">
                         <Suspense fallback={<LazyFallback />}>
                             {/* @ts-ignore */}
                             <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />

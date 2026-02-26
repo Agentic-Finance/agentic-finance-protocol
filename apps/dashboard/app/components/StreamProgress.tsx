@@ -44,7 +44,7 @@ const EXPLORER = 'https://explore.tempo.xyz';
 
 function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProps) {
     const [loading, setLoading] = useState<string | null>(null);
-    const [rejectReason, setRejectReason] = useState('');
+    const [rejectReasons, setRejectReasons] = useState<Record<number, string>>({});
     const [showRejectInput, setShowRejectInput] = useState<number | null>(null);
 
     const isClient = walletAddress.toLowerCase() === stream.clientWallet.toLowerCase();
@@ -106,13 +106,13 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                     action: 'reject',
                     streamJobId: stream.id,
                     milestoneIndex,
-                    rejectReason,
+                    rejectReason: rejectReasons[milestoneIndex] || '',
                 }),
             });
             const data = await res.json();
             if (data.success) {
                 setShowRejectInput(null);
-                setRejectReason('');
+                setRejectReasons(prev => { const next = { ...prev }; delete next[milestoneIndex]; return next; });
                 onRefresh();
             }
         } catch (err) {
@@ -206,8 +206,8 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                     </span>
                 </div>
                 <div className="flex items-center justify-between text-[10px] text-slate-500">
-                    <span>Released: ${stream.releasedAmount.toFixed(2)}</span>
-                    <span>Budget: ${stream.totalBudget.toFixed(2)}</span>
+                    <span>Released: {stream.releasedAmount.toFixed(2)} AlphaUSD</span>
+                    <span>Budget: {stream.totalBudget.toFixed(2)} AlphaUSD</span>
                 </div>
 
                 {/* Deadline */}
@@ -250,7 +250,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                                     {getStatusBadge(m.status)}
                                 </div>
                                 <div className="flex items-center gap-3 text-[10px] text-slate-500 mb-2">
-                                    <span className="font-bold text-slate-300">${m.amount.toFixed(2)}</span>
+                                    <span className="font-bold text-slate-300">{m.amount.toFixed(2)} <span className="text-slate-500">AlphaUSD</span></span>
                                     {m.submitTxHash && (
                                         <a href={`${EXPLORER}/tx/${m.submitTxHash}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">Submit TX</a>
                                     )}
@@ -306,8 +306,8 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                                     <div className="mt-3 flex items-center gap-2">
                                         <input
                                             type="text"
-                                            value={rejectReason}
-                                            onChange={(e) => setRejectReason(e.target.value)}
+                                            value={rejectReasons[m.index] || ''}
+                                            onChange={(e) => setRejectReasons(prev => ({ ...prev, [m.index]: e.target.value }))}
                                             placeholder="Reason for rejection..."
                                             className="flex-1 text-[11px] px-3 py-1.5 rounded-lg bg-black/30 border border-white/[0.08] text-white placeholder:text-slate-600 focus:outline-none focus:border-red-500/30"
                                         />
@@ -334,7 +334,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
                         disabled={loading === 'cancel'}
                         className="text-[11px] font-bold px-4 py-2 rounded-lg bg-red-500/[0.07] text-red-400/80 border border-red-500/15 hover:bg-red-500/15 transition-colors disabled:opacity-50 w-full"
                     >
-                        {loading === 'cancel' ? 'Cancelling...' : `Cancel Stream - Refund $${(stream.totalBudget - stream.releasedAmount).toFixed(2)}`}
+                        {loading === 'cancel' ? 'Cancelling...' : `Cancel Stream - Refund ${(stream.totalBudget - stream.releasedAmount).toFixed(2)} AlphaUSD`}
                     </button>
                 </div>
             )}

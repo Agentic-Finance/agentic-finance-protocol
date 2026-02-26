@@ -155,18 +155,31 @@ function MarketplacePanel({
                                     </button>
 
                                     <div className="flex items-center gap-1">
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                            <button
-                                                key={page}
-                                                onClick={() => setCurrentPage(page)}
-                                                className={`w-7 h-7 rounded-lg text-[11px] font-semibold transition-all ${
-                                                    page === safePage
-                                                        ? 'bg-indigo-500/15 text-indigo-300'
-                                                        : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
-                                                }`}
-                                            >
-                                                {page}
-                                            </button>
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                            .filter(page => {
+                                                if (totalPages <= 7) return true;
+                                                if (page === 1 || page === totalPages) return true;
+                                                if (Math.abs(page - safePage) <= 1) return true;
+                                                return false;
+                                            })
+                                            .map((page, i, arr) => (
+                                            <React.Fragment key={page}>
+                                                {i > 0 && arr[i - 1] !== page - 1 && (
+                                                    <span className="text-slate-600 text-[11px] px-1">...</span>
+                                                )}
+                                                <button
+                                                    onClick={() => setCurrentPage(page)}
+                                                    aria-label={`Page ${page}`}
+                                                    aria-current={page === safePage ? 'page' : undefined}
+                                                    className={`w-7 h-7 rounded-lg text-[11px] font-semibold transition-all ${
+                                                        page === safePage
+                                                            ? 'bg-indigo-500/15 text-indigo-300'
+                                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            </React.Fragment>
                                         ))}
                                     </div>
 

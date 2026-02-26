@@ -98,6 +98,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const [isBrowseLoading, setIsBrowseLoading] = useState(false);
 
     const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
     // ════════════════════════════════════
     // BROWSE: Fetch all agents from catalog
@@ -117,7 +118,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                     name: a.name,
                     description: a.description,
                     category: a.category,
-                    skills: typeof a.skills === 'string' ? JSON.parse(a.skills) : a.skills,
+                    skills: typeof a.skills === 'string' ? (() => { try { return JSON.parse(a.skills); } catch { return []; } })() : (a.skills || []),
                     basePrice: a.basePrice,
                     ownerWallet: a.ownerWallet,
                     avatarEmoji: a.avatarEmoji,
@@ -199,6 +200,10 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     // 2. SELECT AGENT → AUTO-NEGOTIATE
     // ════════════════════════════════════
     const selectAgent = useCallback((agent: DiscoveredAgent) => {
+        // Clear any previous negotiation timers
+        negotiationTimersRef.current.forEach(t => clearTimeout(t));
+        negotiationTimersRef.current = [];
+
         setSelectedAgent(agent);
         setPhase('negotiating');
 
@@ -209,14 +214,15 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         // Animate negotiation logs one by one
         setNegotiationLogs([]);
         result.rounds.forEach((round, i) => {
-            setTimeout(() => {
+            const timer = setTimeout(() => {
                 setNegotiationLogs(prev => [...prev, round]);
                 // After all rounds, move to confirming
                 if (i === result.rounds.length - 1) {
                     setNegotiation(result);
                     setPhase('confirming');
                 }
-            }, (i + 1) * 600); // 600ms between each message
+            }, (i + 1) * 600);
+            negotiationTimersRef.current.push(timer);
         });
     }, [suggestedBudget]);
 
@@ -257,18 +263,23 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         setPhase('executing');
 
         // Also queue in boardroom for on-chain escrow
-        await fetch('/api/employees', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: selectedAgent.agent.name,
-                wallet: selectedAgent.agent.ownerWallet,
-                amount: String(negotiation.finalPrice),
-                token: 'AlphaUSD',
-                note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
-                isDiscovery: true,
-            }),
-        });
+        try {
+            const escrowRes = await fetch('/api/employees', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: selectedAgent.agent.name,
+                    wallet: selectedAgent.agent.ownerWallet,
+                    amount: String(negotiation.finalPrice),
+                    token: 'AlphaUSD',
+                    note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
+                    isDiscovery: true,
+                }),
+            });
+            if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
+        } catch (escrowErr) {
+            console.error('Escrow queue error:', escrowErr);
+        }
     }, [selectedAgent, negotiation, suggestedBudget]);
 
     // ════════════════════════════════════
@@ -283,6 +294,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jobId: activeJob.id }),
             });
+            if (!res.ok) throw new Error('Agent execution failed');
 
             const data = await res.json();
 
@@ -313,6 +325,8 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
 
     const reset = useCallback(() => {
         if (jobPollingRef.current) clearInterval(jobPollingRef.current);
+        negotiationTimersRef.current.forEach(t => clearTimeout(t));
+        negotiationTimersRef.current = [];
         setPhase('idle');
         setMatchedAgents([]);
         setSelectedAgent(null);

@@ -31,9 +31,10 @@ interface OmniTerminalProps {
     boardroomRef: any;
     autopilotRef: any;
     history?: any[];
+    walletAddress?: string | null;
 }
 
-function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history }: OmniTerminalProps) {
+function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history, walletAddress }: OmniTerminalProps) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
@@ -158,6 +159,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     })
                 });
                 if (cancelled) return;
+                if (!response.ok) throw new Error('AI parsing failed');
 
                 const data = await response.json();
 
@@ -180,14 +182,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 if (rawWalletsInPrompt[idx]) { resolvedWallet = rawWalletsInPrompt[idx]; isRaw = true; }
                                 else if (intent.wallet && /^0x[a-fA-F0-9]{40}$/i.test(intent.wallet.trim())) { resolvedWallet = intent.wallet.trim(); isRaw = true; }
                                 else { const foundContact = safeContacts.find(c => c.name.toLowerCase() === finalName.toLowerCase()); if (foundContact) resolvedWallet = foundContact.wallet; }
-                                if (finalName.toLowerCase().includes('unknown') || finalName.includes('0x')) finalName = 'Unknown Entity';
+                                // Only mark as 'Unknown Entity' if the name is exactly 'Unknown' or is a raw hex address
+                                if (finalName === 'Unknown' || /^0x[a-fA-F0-9]{6,}$/i.test(finalName)) finalName = 'Unknown Entity';
                                 finalParsed.push({ name: finalName, wallet: resolvedWallet, isRawWallet: isRaw, amount: intent.amount || '0', token: intent.token || 'AlphaUSD', schedule: intent.schedule, timelock: intent.timelock, note: intent.note, indexId: indexCounter++ });
                             }
                         });
                         setLiveIntents(finalParsed);
                     } else { setLiveIntents([]); }
                 }
-            } catch (error) { console.error("AI Parsing Error:", error); } finally { if (!cancelled) setIsAiParsing(false); }
+            } catch (error) { console.error("AI Parsing Error:", error); if (!cancelled) showToast('error', 'Failed to parse intent. Try again.'); } finally { if (!cancelled) setIsAiParsing(false); }
         })();
 
         return () => { cancelled = true; };
@@ -220,6 +223,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 const { SUPPORTED_TOKENS: currentTokens, contacts: currentContacts } = latestDataRef.current;
                 const safeContacts = currentContacts.length > 0 ? currentContacts : [{ name: 'Tony', wallet: '0xe89b...' }];
                 const response = await fetch('/api/ai-parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: `Extract payroll intents.\nRaw Data:\n${csvText}`, supportedTokens: currentTokens.map((t: any) => t.symbol), addressBook: safeContacts.map(c => c.name) }) });
+                if (!response.ok) throw new Error('CSV parsing failed');
                 const data = await response.json();
                 if (data.intents && data.intents.length > 0) {
                     let finalParsed: ParsedIntent[] = []; let indexCounter = 0;
@@ -286,7 +290,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     return `${typeLabel} ${c.param} ${c.operator} ${c.value}`;
                 }).join(` ${conditionLogic} `);
 
-                await fetch('/api/conditional-payroll', {
+                const condRes = await fetch('/api/conditional-payroll', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -301,18 +305,20 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         conditionLogic,
                     })
                 });
+                if (!condRes.ok) throw new Error('Failed to deploy conditional rule.');
 
-                showToast('success', `⚡ Conditional rule deployed! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
+                showToast('success', `Conditional rule deployed! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
                 resetTerminal(true);
                 await fetchData();
             } else {
                 // STANDARD MODE: Push directly to Boardroom
                 for (const r of recipients) {
-                    await fetch('/api/employees', {
+                    const empRes = await fetch('/api/employees', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(r)
                     });
+                    if (!empRes.ok) throw new Error(`Failed to queue ${r.name}`);
                 }
                 showToast('success', 'Payloads queued in Boardroom!');
                 resetTerminal(true);
@@ -335,10 +341,16 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
     const handleConfirmDeal = useCallback(async () => {
         if (isConfirmingDeal) return;
+        if (!walletAddress) {
+            showToast('error', 'Connect your wallet first.');
+            return;
+        }
         setIsConfirmingDeal(true);
         try {
-            const demoWallet = '0x' + Array.from({ length: 40 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
-            await marketplace.confirmDeal(demoWallet, aiPrompt);
+            // Use real wallet address instead of random demo wallet
+            // Use agent description as fallback prompt when user hired from browse mode (aiPrompt is empty)
+            const taskPrompt = aiPrompt.trim() || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
+            await marketplace.confirmDeal(walletAddress, taskPrompt);
             await fetchData();
             showToast('success', 'Agent contract queued in Escrow!');
             setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
@@ -347,7 +359,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         } finally {
             setIsConfirmingDeal(false);
         }
-    }, [marketplace, aiPrompt, fetchData, showToast, boardroomRef, isConfirmingDeal]);
+    }, [marketplace, aiPrompt, walletAddress, fetchData, showToast, boardroomRef, isConfirmingDeal]);
 
     const handleRejectDeal = useCallback(() => {
         marketplace.rejectDeal();
@@ -425,12 +437,12 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             )}
 
             <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700">
-                <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
+                <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''} ${isDraggingTerminal ? 'ring-2 ring-emerald-500/40 ring-offset-2 ring-offset-[#0C1017]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
-                    <div className="p-8 md:p-10 flex flex-col border border-white/[0.08] rounded-2xl bg-[#0C1017]">
+                    <div className="p-4 sm:p-8 md:p-10 flex flex-col border border-white/[0.08] rounded-2xl bg-[#0C1017]">
 
                         {/* Header */}
-                        <div className="flex flex-wrap justify-between items-center mb-8 gap-4 border-b border-white/[0.05] pb-5">
+                        <div className="flex flex-wrap justify-between items-center mb-6 sm:mb-8 gap-2 sm:gap-4 border-b border-white/[0.05] pb-5">
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-lg font-semibold text-white transition-colors duration-500">
                                     {isPayroll ? 'Mass Disbursal' : 'Agent Marketplace'}
@@ -468,7 +480,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                         {/* Input Area */}
                         <div className="flex items-start gap-4 w-full relative">
-                            <span className={`font-mono font-black text-3xl mt-0.5 shrink-0 transition-colors duration-500 ${chatAnswer ? 'text-indigo-500' : isPayroll ? 'text-emerald-500' : 'text-indigo-500'}`}>{'❯'}</span>
+                            <span className={`font-mono font-black text-2xl sm:text-3xl mt-0.5 shrink-0 transition-colors duration-500 ${chatAnswer ? 'text-indigo-500' : isPayroll ? 'text-emerald-500' : 'text-indigo-500'}`}>{'❯'}</span>
                             <div className="relative w-full min-h-[120px]">
                                 {!aiPrompt && (
                                     <div className="absolute top-1.5 left-0 pointer-events-none opacity-35">
@@ -482,7 +494,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     onChange={(e) => setAiPrompt(e.target.value)}
                                     onKeyDown={handleKeyDownToDeploy}
                                     disabled={isA2aActive && !isPayroll}
-                                    className="relative z-10 text-white caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-all w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide"
+                                    className={`relative z-10 text-white caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-words w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide ${isA2aActive && !isPayroll ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     spellCheck={false}
                                 />
                             </div>

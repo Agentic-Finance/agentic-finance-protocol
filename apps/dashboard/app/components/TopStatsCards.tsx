@@ -46,7 +46,7 @@ function TopStatsCards(props: TopStatsProps) {
                 <div className="p-6 flex flex-col border border-white/5 rounded-2xl relative z-10 shadow-inner h-full" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 border border-cyan-500/20 shadow-[0_0_10px_rgba(6,182,212,0.2)]">🏦</div>
-                        <select value={props.activeVaultToken.symbol} onChange={(e) => props.setActiveVaultToken(props.SUPPORTED_TOKENS.find((t: any) => t.symbol === e.target.value))} className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/30 outline-none cursor-pointer hover:bg-cyan-500/20 transition-colors">
+                        <select aria-label="Select vault token" value={props.activeVaultToken.symbol} onChange={(e) => { const found = props.SUPPORTED_TOKENS.find((t: any) => t.symbol === e.target.value); if (found) props.setActiveVaultToken(found); }} className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/30 outline-none cursor-pointer hover:bg-cyan-500/20 transition-colors">
                             {props.SUPPORTED_TOKENS.map((t: any) => <option key={t.symbol} value={t.symbol}>{t.symbol}</option>)}
                         </select>
                     </div>
@@ -57,7 +57,7 @@ function TopStatsCards(props: TopStatsProps) {
                         <div className="mt-4 pt-4 border-t border-white/5">
                             {props.showFundInput ? (
                                 <div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
-                                    <input type="number" value={props.fundAmount} onChange={e => props.setFundAmount(e.target.value)} placeholder="0.00" className="w-full bg-black/50 border border-cyan-500/30 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none focus:border-cyan-400" />
+                                    <input type="number" min="0" step="0.01" aria-label="Fund amount" value={props.fundAmount} onChange={e => props.setFundAmount(e.target.value)} placeholder="0.00" className="w-full bg-black/50 border border-cyan-500/30 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none focus:border-cyan-400" />
                                     <button onClick={props.executeFund} disabled={props.isFunding} className="text-[10px] uppercase tracking-widest bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-3 py-1.5 rounded-lg transition-colors">{props.isFunding ? '...' : 'Fund'}</button>
                                     <button onClick={() => props.setShowFundInput(false)} className="text-[10px] bg-white/5 hover:bg-white/10 text-white px-2.5 py-1.5 rounded-lg border border-white/10 transition-colors">✕</button>
                                 </div>

@@ -49,10 +49,17 @@ export default function SubPageNav() {
     return (
         <nav className="border-b border-white/[0.08] pp-glass sticky top-0 z-50" aria-label="Sub-page navigation">
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-12 flex items-center justify-between gap-3">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
-                    <Image src="/logo.png" alt="PayPol" width={120} height={30} className="h-6 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity" priority />
-                </Link>
+                {/* Back Arrow + Logo */}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                    <Link href="/" className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.10] hover:border-indigo-500/30 transition-all group" title="Back to Dashboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                    </Link>
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Image src="/logo.png" alt="PayPol" width={120} height={30} className="h-6 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity" priority />
+                    </Link>
+                </div>
 
                 {/* Nav Links */}
                 <div className="flex items-center bg-white/[0.03] border border-white/[0.06] rounded-xl px-1 py-0.5 gap-0.5 overflow-x-auto scrollbar-hide">

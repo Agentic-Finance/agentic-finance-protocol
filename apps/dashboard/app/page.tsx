@@ -29,13 +29,16 @@ const LazyFallback = () => (
 );
 
 export default function Dashboard() {
-    // Check sessionStorage: if user already clicked "Launch App" this session, skip landing
-    const [showLanding, setShowLanding] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return !sessionStorage.getItem('paypol_app_launched');
+    const [showLanding, setShowLanding] = useState(true);
+    const [isReady, setIsReady] = useState(false); // Prevent flash while checking sessionStorage
+
+    // After hydration, check sessionStorage to skip landing if user already launched app
+    useEffect(() => {
+        if (sessionStorage.getItem('paypol_app_launched')) {
+            setShowLanding(false);
         }
-        return true;
-    });
+        setIsReady(true);
+    }, []);
 
     const [currentWorkspace, setCurrentWorkspace] = useState<{ name: string, type: string, admin_wallet: string, id: string } | null | undefined>(undefined);
     const [gatewayMode, setGatewayMode] = useState<'Select' | 'Create' | 'Join'>('Select');
@@ -471,6 +474,7 @@ export default function Dashboard() {
     // =========================================================================
     // ROUTING LOGIC
     // =========================================================================
+    if (!isReady) { return <LazyFallback />; } // Wait for sessionStorage check before routing
     if (showLanding) { return <Suspense fallback={<LazyFallback />}><LandingPage onLaunchApp={() => { sessionStorage.setItem('paypol_app_launched', '1'); setShowLanding(false); }} /></Suspense>; }
     if (!currentWorkspace) { return (<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} /></Suspense>); }
 

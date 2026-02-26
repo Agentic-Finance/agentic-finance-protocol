@@ -15,19 +15,19 @@ const SUGGESTED_PROMPTS = [
 
 function SuggestedPrompts({ onSelect }: SuggestedPromptsProps) {
     return (
-        <div className="mt-3 mb-1 animate-in fade-in duration-500">
-            <p className="text-[10px] text-slate-600 font-medium uppercase tracking-wider mb-2 ml-0.5">
+        <div className="mt-4 mb-2 animate-in fade-in duration-500">
+            <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mb-3 ml-0.5">
                 Suggested tasks
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
                 {SUGGESTED_PROMPTS.map((prompt, idx) => (
                     <button
                         key={idx}
                         onClick={() => onSelect(prompt.text)}
-                        className="group px-3 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.04] hover:border-indigo-500/20 hover:bg-indigo-500/[0.03] transition-all duration-150 text-left flex items-center gap-1.5"
+                        className="group px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-indigo-500/20 hover:bg-indigo-500/[0.03] transition-all duration-150 text-left flex items-center gap-2"
                     >
-                        <span className="text-sm shrink-0">{prompt.emoji}</span>
-                        <span className="text-[11px] text-slate-500 group-hover:text-indigo-300 transition-colors">{prompt.text}</span>
+                        <span className="text-base shrink-0">{prompt.emoji}</span>
+                        <span className="text-xs text-slate-500 group-hover:text-indigo-300 transition-colors">{prompt.text}</span>
                     </button>
                 ))}
             </div>

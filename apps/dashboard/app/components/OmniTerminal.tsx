@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { CommandLineIcon, CpuChipIcon } from '@heroicons/react/24/outline';
 import NegotiationLog from './NegotiationLog';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
@@ -383,17 +383,6 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const isPayroll = activeTab === 'payroll';
     const isA2aActive = marketplace.phase !== 'idle' && marketplace.phase !== 'browsing';
 
-    const themeGlow = useMemo(() =>
-        isDraggingTerminal ? 'from-indigo-500/80 via-blue-500/60 to-cyan-500/80 scale-[1.01]'
-            : isPayroll ? (globalMode === 'autopilot' ? 'from-fuchsia-500/50 via-purple-500/30 to-fuchsia-500/50' : globalMode === 'shield' ? 'from-purple-500/50 via-indigo-500/30 to-purple-500/50' : 'from-emerald-500/50 via-teal-500/30 to-indigo-500/50')
-            : 'from-indigo-500/50 via-purple-500/30 to-indigo-500/50',
-        [isDraggingTerminal, isPayroll, globalMode]);
-
-    const themeBorder = useMemo(() =>
-        isPayroll ? (globalMode === 'autopilot' ? 'border-fuchsia-400/80' : globalMode === 'shield' ? 'border-purple-400/80' : 'border-emerald-400/80') : 'border-indigo-400/80',
-        [isPayroll, globalMode]);
-
-    const textTheme = isPayroll ? 'text-emerald-400' : 'text-indigo-400';
     const hasReadyIntents = liveIntents.length > 0 && liveIntents.every(i => (i.name !== '...' || i.isRawWallet) && i.amount !== '...');
     const hasConditions = conditions.length > 0;
 
@@ -436,72 +425,53 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             )}
 
             <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700">
-                <div className={`rounded-3xl relative overflow-visible group transition-all duration-700 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''}`} style={{ background: 'radial-gradient(ellipse at top, rgba(10,13,20,0.95) 0%, rgba(10,13,20,0.90) 100%)' }} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
+                <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
-                    <div className={`absolute -inset-[1px] bg-gradient-to-r ${themeGlow} rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none transition-all duration-700`}></div>
-                    <div className={`absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 ${themeBorder} rounded-tl-xl z-10 pointer-events-none`}></div>
-                    <div className={`absolute -bottom-1 -right-1 w-10 h-10 border-b-2 border-r-2 ${themeBorder} rounded-br-xl z-10 pointer-events-none`}></div>
-                    <div className={`absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 ${themeBorder} rounded-tr-xl z-10 pointer-events-none`}></div>
-                    <div className={`absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 ${themeBorder} rounded-bl-xl z-10 pointer-events-none`}></div>
-
-                    <div className="p-6 md:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#151B27]/90 shadow-inner">
+                    <div className="p-8 md:p-10 flex flex-col border border-white/[0.08] rounded-2xl bg-[#0C1017]">
 
                         {/* Header */}
-                        <div className="flex flex-wrap justify-between items-center mb-6 gap-4 border-b border-white/[0.05] pb-4">
+                        <div className="flex flex-wrap justify-between items-center mb-8 gap-4 border-b border-white/[0.05] pb-5">
                             <div className="flex flex-col gap-1">
-                                <span className={`text-[10px] font-mono uppercase tracking-widest flex items-center gap-2 transition-colors duration-700 ${textTheme}`}>
-                                    <span className={`w-1.5 h-1.5 rounded-full animate-ping ${isPayroll ? 'bg-emerald-400' : 'bg-indigo-400'}`}></span>
-                                    {isPayroll ? 'Neural Terminal Online' : 'Agent Marketplace Engine'}
-                                </span>
-                                <span className="text-[9px] text-slate-500 font-mono">
-                                    {isPayroll ? 'Type naturally or ask a question. We parse the intent.' : 'Describe your task. AI discovers the best agent.'}
+                                <h2 className="text-lg font-semibold text-white transition-colors duration-500">
+                                    {isPayroll ? 'Mass Disbursal' : 'Agent Marketplace'}
+                                </h2>
+                                <span className="text-sm text-slate-500">
+                                    {isPayroll ? 'Type naturally or ask a question — we parse the intent.' : 'Describe your task — AI discovers the best agent.'}
                                 </span>
                             </div>
 
-                            <div className="flex bg-[#030407]/80 border border-white/10 rounded-2xl p-1.5 z-20 gap-1.5">
+                            <div className="flex bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 gap-1">
                                 <button
                                     onClick={() => { setActiveTab('payroll'); resetTerminal(true); }}
-                                    className={`relative px-5 py-3 rounded-xl text-xs font-bold transition-all duration-300 flex flex-col items-start gap-0.5 min-w-[160px] ${
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                                         isPayroll
-                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.1)]'
-                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03] border border-transparent'
+                                            ? 'bg-emerald-500/10 text-emerald-400'
+                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
                                     }`}
                                 >
-                                    <div className="flex items-center gap-2">
-                                        <CommandLineIcon className="w-4 h-4"/>
-                                        <span>Mass Disbursal</span>
-                                    </div>
-                                    <span className={`text-[9px] font-normal pl-6 ${isPayroll ? 'text-emerald-500/50' : 'text-slate-600'}`}>
-                                        AI-powered payments
-                                    </span>
-                                    {isPayroll && <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>}
+                                    <CommandLineIcon className="w-4 h-4"/>
+                                    Payroll
                                 </button>
                                 <button
                                     onClick={() => { setActiveTab('a2a'); resetTerminal(true); }}
-                                    className={`relative px-5 py-3 rounded-xl text-xs font-bold transition-all duration-300 flex flex-col items-start gap-0.5 min-w-[160px] ${
+                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                                         !isPayroll
-                                            ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-[0_0_12px_rgba(79,70,229,0.1)]'
-                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03] border border-transparent'
+                                            ? 'bg-indigo-500/10 text-indigo-400'
+                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
                                     }`}
                                 >
-                                    <div className="flex items-center gap-2">
-                                        <CpuChipIcon className="w-4 h-4"/>
-                                        <span>Agent Marketplace</span>
-                                    </div>
-                                    <span className={`text-[9px] font-normal pl-6 ${!isPayroll ? 'text-indigo-500/50' : 'text-slate-600'}`}>
-                                        Hire AI agents (A2A)
-                                    </span>
-                                    {!isPayroll && <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>}
+                                    <CpuChipIcon className="w-4 h-4"/>
+                                    Agents
                                 </button>
                             </div>
                         </div>
 
                         {/* Input Area */}
                         <div className="flex items-start gap-4 w-full relative">
-                            <span className={`font-mono font-black text-2xl mt-0.5 shrink-0 transition-colors duration-700 ${chatAnswer ? 'text-indigo-500' : isPayroll ? 'text-emerald-500' : 'text-indigo-500'}`}>{'❯'}</span>
-                            <div className="relative w-full min-h-[80px]">
+                            <span className={`font-mono font-black text-3xl mt-0.5 shrink-0 transition-colors duration-500 ${chatAnswer ? 'text-indigo-500' : isPayroll ? 'text-emerald-500' : 'text-indigo-500'}`}>{'❯'}</span>
+                            <div className="relative w-full min-h-[120px]">
                                 {!aiPrompt && (
-                                    <div className="absolute top-1 left-0 pointer-events-none opacity-40 flex flex-col gap-3">
+                                    <div className="absolute top-1.5 left-0 pointer-events-none opacity-35">
                                         <span className="text-slate-300 font-sans text-xl font-medium tracking-wide">
                                             {isPayroll ? 'Command me, or ask: "Who got paid the most?"' : 'e.g. "Audit my Solidity contract for reentrancy bugs"'}
                                         </span>
@@ -512,7 +482,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     onChange={(e) => setAiPrompt(e.target.value)}
                                     onKeyDown={handleKeyDownToDeploy}
                                     disabled={isA2aActive && !isPayroll}
-                                    className="relative z-10 text-white caret-emerald-400 font-sans text-lg font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-all w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide"
+                                    className="relative z-10 text-white caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-all w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide"
                                     spellCheck={false}
                                 />
                             </div>
@@ -643,6 +613,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             </div>
 
             {/* Review Modal */}
+
             {showReviewModal && marketplace.activeJob && marketplace.selectedAgent && (
                 <ReviewModal
                     isOpen={showReviewModal}

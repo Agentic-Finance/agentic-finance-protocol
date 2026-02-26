@@ -1,5 +1,7 @@
-import React from 'react';
-import { CpuChipIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import AgentCard from './AgentCard';
 import type { DiscoveredAgent, MarketplacePhase } from '../../hooks/useAgentMarketplace';
 
@@ -27,6 +29,8 @@ const CATEGORIES = [
     { key: 'deployment', label: 'Deploy' },
 ];
 
+const AGENTS_PER_PAGE = 12;
+
 function SkeletonCard() {
     return (
         <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4 animate-pulse">
@@ -52,11 +56,25 @@ function MarketplacePanel({
     onHireAgent, onFilterCategory, error
 }: MarketplacePanelProps) {
 
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // Reset to page 1 when category changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeCategory]);
+
     // ── BROWSE MODE ──
     if (phase === 'browsing') {
         const displayAgents = activeCategory
             ? allAgents.filter(a => a.agent.category === activeCategory)
             : allAgents;
+
+        const totalPages = Math.ceil(displayAgents.length / AGENTS_PER_PAGE);
+        const safePage = Math.min(currentPage, totalPages || 1);
+        const paginatedAgents = displayAgents.slice(
+            (safePage - 1) * AGENTS_PER_PAGE,
+            safePage * AGENTS_PER_PAGE
+        );
 
         return (
             <div className="mt-4 bg-[#0A0E17] border border-white/[0.06] rounded-2xl overflow-hidden animate-in fade-in duration-500">
@@ -107,17 +125,66 @@ function MarketplacePanel({
                             No agents in this category
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {displayAgents.map((agent, i) => (
-                                <AgentCard
-                                    key={agent.agentId}
-                                    agent={agent}
-                                    rank={i}
-                                    onHire={onHireAgent}
-                                    isBrowseMode={true}
-                                />
-                            ))}
-                        </div>
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {paginatedAgents.map((agent, i) => (
+                                    <AgentCard
+                                        key={agent.agentId}
+                                        agent={agent}
+                                        rank={(safePage - 1) * AGENTS_PER_PAGE + i}
+                                        onHire={onHireAgent}
+                                        isBrowseMode={true}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="flex items-center justify-center gap-3 mt-4 pt-3 border-t border-white/[0.03]">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={safePage <= 1}
+                                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
+                                            safePage <= 1
+                                                ? 'text-slate-700 cursor-not-allowed'
+                                                : 'text-slate-400 hover:text-indigo-300 hover:bg-white/[0.03]'
+                                        }`}
+                                    >
+                                        <ChevronLeftIcon className="w-3 h-3" />
+                                        Prev
+                                    </button>
+
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                            <button
+                                                key={page}
+                                                onClick={() => setCurrentPage(page)}
+                                                className={`w-7 h-7 rounded-lg text-[11px] font-semibold transition-all ${
+                                                    page === safePage
+                                                        ? 'bg-indigo-500/15 text-indigo-300'
+                                                        : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
+                                                }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={safePage >= totalPages}
+                                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
+                                            safePage >= totalPages
+                                                ? 'text-slate-700 cursor-not-allowed'
+                                                : 'text-slate-400 hover:text-indigo-300 hover:bg-white/[0.03]'
+                                        }`}
+                                    >
+                                        Next
+                                        <ChevronRightIcon className="w-3 h-3" />
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

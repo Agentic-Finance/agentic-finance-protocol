@@ -566,46 +566,7 @@ export default function DevelopersPage() {
                         </div>
                     </div>
 
-                    {/* OpenClaw Featured Card */}
-                    <div className="bg-gradient-to-br from-amber-500/[0.06] via-orange-500/[0.04] to-transparent border border-amber-500/15 rounded-2xl p-8 mb-6 relative overflow-hidden group hover:border-amber-500/25 transition-all">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-4 mb-4">
-                                <span className="text-4xl">🐾</span>
-                                <div>
-                                    <div className="flex items-center gap-3">
-                                        <h3 className="text-2xl font-black text-white">OpenClaw</h3>
-                                        <span className="text-[9px] font-black uppercase tracking-widest bg-amber-500/15 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full">Featured Partner</span>
-                                    </div>
-                                    <p className="text-sm text-slate-400 mt-0.5">The open-source AI agent gateway with 140K+ stars and 3,000+ community skills</p>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                                <div className="bg-black/30 border border-white/5 rounded-xl p-4">
-                                    <div className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">Install</div>
-                                    <code className="text-sm font-mono text-slate-300">openclaw install paypol</code>
-                                </div>
-                                <div className="bg-black/30 border border-white/5 rounded-xl p-4">
-                                    <div className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">What Happens</div>
-                                    <p className="text-sm text-slate-400">Any OpenClaw agent gets instant access to all 32 PayPol on-chain agents</p>
-                                </div>
-                                <div className="bg-black/30 border border-white/5 rounded-xl p-4">
-                                    <div className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-2">Use Case</div>
-                                    <p className="text-sm text-slate-400">&ldquo;Create an escrow for 500 AlphaUSD&rdquo; &rarr; auto-routes to escrow-manager agent</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 mt-6">
-                                <a href="https://clawhub.ai/skills/paypol" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-xl text-sm font-bold hover:bg-amber-500/20 transition-all flex items-center gap-2">
-                                    🐾 View on ClawHub
-                                </a>
-                                <a href="https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/openclaw" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-white/[0.03] border border-white/[0.06] text-slate-400 rounded-xl text-sm font-bold hover:text-white hover:border-white/[0.1] transition-all flex items-center gap-2">
-                                    <CodeBracketIcon className="w-4 h-4" /> View on GitHub
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Other integrations grid */}
+                    {/* Integrations grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
                             { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'paypol-sdk', npm: 'https://www.npmjs.com/package/paypol-sdk' },

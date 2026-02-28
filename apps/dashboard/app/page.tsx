@@ -30,12 +30,21 @@ const LazyFallback = () => (
 
 export default function Dashboard() {
     const [showLanding, setShowLanding] = useState(true);
-    const [isReady, setIsReady] = useState(false); // Prevent flash while checking sessionStorage
+    const [isReady, setIsReady] = useState(false);
 
-    // After hydration, check sessionStorage to skip landing if user already launched app
+    // After hydration, check ?app=1 query param to skip landing & auto-reconnect wallet
     useEffect(() => {
-        if (sessionStorage.getItem('paypol_app_launched')) {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('app') === '1') {
             setShowLanding(false);
+            // Auto-reconnect wallet silently (eth_accounts doesn't prompt)
+            if (typeof window !== 'undefined' && (window as any).ethereum) {
+                (window as any).ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+                    if (accounts.length > 0) {
+                        initializeSession(accounts[0]);
+                    }
+                }).catch(() => {});
+            }
         }
         setIsReady(true);
     }, []);
@@ -213,8 +222,50 @@ export default function Dashboard() {
     const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = PAYPOL_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
 
     const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); localStorage.removeItem('paypol_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('paypol_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('paypol_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
-    const connectWallet = useCallback(async () => { try { const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' }); await initializeSession(accounts[0]); } catch (error) { showToast('error', 'Connection request declined.'); } }, [showToast]);
-    const disconnectWallet = useCallback(() => { setWalletAddress(null); setCurrentWorkspace(undefined); setUserBalance("0.00"); sessionStorage.removeItem('paypol_app_launched'); setShowLanding(true); showToast('success', 'Session disconnected.'); }, [showToast]);
+    const ensureTempoNetwork = useCallback(async () => {
+        const TEMPO_CHAIN_ID = '0xa5bf'; // 42431
+        const TEMPO_CHAIN_CONFIG = {
+            chainId: TEMPO_CHAIN_ID,
+            chainName: 'Tempo Moderato Testnet',
+            nativeCurrency: { name: 'TEMPO', symbol: 'TEMPO', decimals: 18 },
+            rpcUrls: ['https://rpc.moderato.tempo.xyz'],
+            blockExplorerUrls: ['https://explore.tempo.xyz'],
+        };
+        try {
+            const currentChainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
+            if (currentChainId === TEMPO_CHAIN_ID) return;
+        } catch { /* ignore */ }
+        try {
+            await (window as any).ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: TEMPO_CHAIN_ID }] });
+        } catch (switchError: any) {
+            // User rejected — don't force add
+            if (switchError.code === 4001) throw switchError;
+            // Chain not found (4902) or any other error — try adding it
+            try {
+                await (window as any).ethereum.request({ method: 'wallet_addEthereumChain', params: [TEMPO_CHAIN_CONFIG] });
+            } catch (addError: any) {
+                if (addError.code === 4001) throw addError;
+                console.warn('Failed to add Tempo network:', addError);
+            }
+        }
+    }, []);
+    const connectWallet = useCallback(async () => {
+        if (typeof window === 'undefined' || !(window as any).ethereum) {
+            showToast('error', 'No Web3 wallet detected. Please install MetaMask.');
+            window.open('https://metamask.io/download/', '_blank');
+            return;
+        }
+        try {
+            const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+            if (!accounts || accounts.length === 0) { showToast('error', 'No accounts returned.'); return; }
+            try { await ensureTempoNetwork(); } catch (netErr) { console.warn('Network switch failed, continuing:', netErr); }
+            await initializeSession(accounts[0]);
+        } catch (error: any) {
+            console.error('connectWallet error:', error);
+            showToast('error', error.code === 4001 ? 'Connection request declined.' : `Wallet error: ${error.message || 'Unknown'}`);
+        }
+    }, [showToast, ensureTempoNetwork]);
+    const disconnectWallet = useCallback(() => { setWalletAddress(null); setCurrentWorkspace(undefined); setUserBalance("0.00"); setShowLanding(true); showToast('success', 'Session disconnected.'); }, [showToast]);
     const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `PAYPOL GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { setCurrentWorkspace(data.workspace); showToast('success', 'Smart Vault deployed successfully.'); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
     const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('paypol_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
     const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? PAYPOL_SHIELD_ADDRESS : PAYPOL_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
@@ -362,6 +413,9 @@ export default function Dashboard() {
         try {
             if (typeof (window as any).ethereum === 'undefined') throw new Error("MetaMask is not installed.");
 
+            // Auto-switch to Tempo network before signing
+            await ensureTempoNetwork();
+
             // Dynamic import - ethers.js (472KB) only loaded when actually needed
             const { ethers } = await import('ethers');
 
@@ -472,11 +526,29 @@ export default function Dashboard() {
     }, [isAdmin, walletAddress, awaitingTxs, awaitingTotalAmountNum, activeVaultToken, usePhantomShield, showToast, fetchData]);
 
     // =========================================================================
+    // GLOBAL TOAST (visible on ALL screens: Landing, Gateway, Dashboard)
+    // =========================================================================
+    const toastComponent = (
+        <div className={`fixed bottom-10 right-0 left-0 md:left-auto md:right-10 z-[500] transition-all duration-500 ease-out transform flex justify-center md:justify-end pointer-events-none ${toast.show ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}>
+            <div className={`relative overflow-hidden flex items-start gap-4 p-5 pr-12 rounded-2xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] pointer-events-auto max-w-sm w-11/12 md:w-[400px] will-change-transform ${toast.type === 'success' ? 'bg-[#061A11]/95 border-emerald-500/40' : 'bg-[#1A060A]/95 border-rose-500/40'}`}>
+                <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[60px] opacity-40 pointer-events-none ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
+                <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl border shadow-inner ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>{toast.type === 'success' ? '✨' : '🚨'}</div>
+                <div className="flex-1 pt-1 relative z-10">
+                    <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${toast.type === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>{toast.type === 'success' ? 'System Confirmed' : 'Action Halted'}</p>
+                    <p className="text-sm font-medium text-slate-200 whitespace-pre-line leading-relaxed">{toast.msg}</p>
+                </div>
+                <button onClick={() => setToast({ ...toast, show: false })} className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors z-20">✕</button>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-black/50"><div key={toast.id} className={`h-full origin-left ${toast.show ? 'animate-shrink' : ''} ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div></div>
+            </div>
+        </div>
+    );
+
+    // =========================================================================
     // ROUTING LOGIC
     // =========================================================================
-    if (!isReady) { return <LazyFallback />; } // Wait for sessionStorage check before routing
-    if (showLanding) { return <Suspense fallback={<LazyFallback />}><LandingPage onLaunchApp={() => { sessionStorage.setItem('paypol_app_launched', '1'); setShowLanding(false); }} /></Suspense>; }
-    if (!currentWorkspace) { return (<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} /></Suspense>); }
+    if (!isReady) { return <>{toastComponent}<LazyFallback /></>; }
+    if (showLanding) { return <>{toastComponent}<Suspense fallback={<LazyFallback />}><LandingPage onLaunchApp={() => { setShowLanding(false); }} /></Suspense></>; }
+    if (!currentWorkspace) { return (<>{toastComponent}<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} /></Suspense></>); }
 
     return (
         <div className="min-h-screen bg-[#0B1120] text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-x-hidden pb-32">
@@ -486,18 +558,7 @@ export default function Dashboard() {
             <div className="fixed bottom-[-10%] right-[-5%] w-[40%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(192,38,211,0.15)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
             <div className="fixed top-[20%] right-[-5%] w-[30%] h-[40%] rounded-full bg-[radial-gradient(circle,_rgba(6,182,212,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
 
-            <div className={`fixed bottom-10 right-0 left-0 md:left-auto md:right-10 z-[500] transition-all duration-500 ease-out transform flex justify-center md:justify-end pointer-events-none ${toast.show ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}>
-                <div className={`relative overflow-hidden flex items-start gap-4 p-5 pr-12 rounded-2xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] pointer-events-auto max-w-sm w-11/12 md:w-[400px] will-change-transform ${toast.type === 'success' ? 'bg-[#061A11]/95 border-emerald-500/40' : 'bg-[#1A060A]/95 border-rose-500/40'}`}>
-                    <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[60px] opacity-40 pointer-events-none ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-                    <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl border shadow-inner ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>{toast.type === 'success' ? '✨' : '🚨'}</div>
-                    <div className="flex-1 pt-1 relative z-10">
-                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${toast.type === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>{toast.type === 'success' ? 'System Confirmed' : 'Action Halted'}</p>
-                        <p className="text-sm font-medium text-slate-200 whitespace-pre-line leading-relaxed">{toast.msg}</p>
-                    </div>
-                    <button onClick={() => setToast({ ...toast, show: false })} className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors z-20">✕</button>
-                    <div className="absolute bottom-0 left-0 w-full h-1 bg-black/50"><div key={toast.id} className={`h-full origin-left ${toast.show ? 'animate-shrink' : ''} ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div></div>
-                </div>
-            </div>
+            {toastComponent}
 
             <Navbar currentWorkspace={currentWorkspace} isAdmin={isAdmin} isSystemLocked={isSystemLocked} setIsSystemLocked={setIsSystemLocked} userBalance={userBalance} activeVaultToken={activeVaultToken} walletAddress={walletAddress} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 

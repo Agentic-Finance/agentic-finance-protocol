@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckBadgeIcon, CreditCardIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 import FiatCheckout from '../FiatCheckout';
@@ -11,10 +11,12 @@ interface DealConfirmationProps {
     onReject: () => void;
     confirmationRef: React.RefObject<HTMLDivElement | null>;
     isLoading?: boolean;
+    walletAddress?: string | null;
 }
 
-function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, confirmationRef, isLoading }: DealConfirmationProps) {
+function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, confirmationRef, isLoading, walletAddress }: DealConfirmationProps) {
     const [payMethod, setPayMethod] = useState<'crypto' | 'card'>('crypto');
+    const [shieldEnabled, setShieldEnabled] = useState(false);
 
     if (!negotiation || !selectedAgent) return null;
 
@@ -44,15 +46,16 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
 
                 {/* Price Row */}
                 <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="bg-black/30 border border-white/[0.04] rounded-xl p-4 text-center">
-                        <span className="text-[9px] text-slate-600 uppercase tracking-wider block mb-1">Escrow Price</span>
-                        <span className="text-white font-mono font-bold text-2xl">{negotiation.finalPrice.toFixed(2)}</span>
-                        <span className="text-[10px] text-slate-500 block mt-0.5">AlphaUSD</span>
+                    <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-xl p-4 text-center relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5"></div>
+                        <span className="relative text-[9px] text-indigo-400/80 uppercase tracking-wider block mb-1 font-semibold">Escrow Price</span>
+                        <span className="relative text-white font-mono font-bold text-2xl">{negotiation.finalPrice.toFixed(2)}</span>
+                        <span className="relative text-[10px] text-indigo-300/60 block mt-0.5">AlphaUSD</span>
                     </div>
-                    <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-xl p-4 text-center">
-                        <span className="text-[9px] text-emerald-400/60 uppercase tracking-wider block mb-1">Savings</span>
-                        <span className="text-emerald-400 font-mono font-bold text-2xl">{negotiation.savings.toFixed(2)}</span>
-                        <span className="text-[10px] text-emerald-500/60 block mt-0.5">AlphaUSD</span>
+                    <div className="bg-black/20 border border-white/[0.04] rounded-xl p-4 text-center">
+                        <span className="text-[9px] text-emerald-500/50 uppercase tracking-wider block mb-1">Savings</span>
+                        <span className="text-emerald-400/70 font-mono font-bold text-lg">{negotiation.savings.toFixed(2)}</span>
+                        <span className="text-[10px] text-slate-600 block mt-0.5">AlphaUSD</span>
                     </div>
                 </div>
 
@@ -100,12 +103,39 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                     </button>
                 </div>
 
+                {/* Shield ZK Toggle */}
+                <button
+                    onClick={() => setShieldEnabled(!shieldEnabled)}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] font-semibold transition-all mb-4 ${
+                        shieldEnabled
+                            ? 'bg-violet-500/10 text-violet-400 border border-violet-500/25'
+                            : 'bg-black/20 text-slate-500 border border-white/[0.04] hover:text-slate-300'
+                    }`}
+                >
+                    <ShieldCheckIcon className="w-4 h-4" />
+                    <span className="flex-1 text-left">Shield ZK</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${
+                        shieldEnabled
+                            ? 'bg-violet-500/20 text-violet-300'
+                            : 'bg-white/5 text-slate-600'
+                    }`}>
+                        {shieldEnabled ? 'ON' : 'OFF'}
+                    </span>
+                </button>
+
+                {shieldEnabled && (
+                    <div className="bg-violet-500/5 border border-violet-500/10 rounded-lg p-2.5 mb-4 text-[10px] text-violet-300/70">
+                        ZK-SNARK privacy enabled. Funds route through ShieldVault with Poseidon commitment — on-chain observers cannot link payment to recipient.
+                    </div>
+                )}
+
                 {/* Actions */}
                 {payMethod === 'card' ? (
                     <div className="flex flex-col gap-3">
                         <FiatCheckout
                             amount={negotiation.finalPrice}
-                            userWallet="0x0000000000000000000000000000000000000000"
+                            userWallet={walletAddress || ''}
+                            shieldEnabled={shieldEnabled}
                             compact
                         />
                         <button

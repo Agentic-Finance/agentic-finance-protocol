@@ -22,8 +22,8 @@ dotenv.config();
 // ==========================================
 const RPC_URL = "https://rpc.moderato.tempo.xyz";
 const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
-// V2 Shield Vault (set after deployment - falls back to V1 if not deployed)
-const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "";
+// V2 Shield Vault - Nullifier Anti-Double-Spend (deployed & verified on Tempo)
+const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
 
 // NexusV2 - A2A Escrow Lifecycle (deployed to Tempo testnet)
 const PAYPOL_NEXUS_V2_ADDRESS = "0x3Bc01ecc428Ca0Ff76c433F8B3B46D00edE15837";
@@ -150,8 +150,24 @@ class PayPolDaemon {
 
                 if (this.useV2Circuit && this.shieldContractV2) {
                     // ═══ V2 PATH: Nullifier Anti-Double-Spend ═══
-                    const { proofArray, pubSignals, secret, nullifier, commitment } =
-                        await this.generateZKProofV2(job.recipientWallet, scaledAmountWei.toString());
+
+                    // Check if secrets are pre-stored (from fiat on-ramp Shield flow)
+                    let storedSecrets: { secret?: string; nullifier?: string; nullifierHash?: string; depositTxHash?: string } | null = null;
+                    if (job.zkProof && job.zkProof !== 'N/A' && job.zkProof !== 'Mock-Proof-Data') {
+                        try {
+                            storedSecrets = JSON.parse(job.zkProof);
+                            console.log(`[DAEMON] 📦 Using pre-stored secrets from fiat Shield deposit (depositTx: ${storedSecrets?.depositTxHash?.slice(0, 16)}...)`);
+                        } catch { /* not JSON — generate fresh */ }
+                    }
+
+                    const { proofArray, pubSignals, secret, nullifier, commitment } = storedSecrets?.secret
+                        ? await this.generateZKProofV2WithSecrets(
+                            job.recipientWallet,
+                            scaledAmountWei.toString(),
+                            storedSecrets.secret,
+                            storedSecrets.nullifier!
+                          )
+                        : await this.generateZKProofV2(job.recipientWallet, scaledAmountWei.toString());
 
                     console.log(`[DAEMON] 🔐 V2 Proof generated. Commitment: ${commitment.slice(0, 20)}...`);
                     console.log(`[DAEMON] 🚀 Broadcasting V2 ZK Transaction to L1 Tempo...`);
@@ -280,6 +296,62 @@ class PayPolDaemon {
 
         if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
             throw new Error(`ZK V2 circuits not found at: ${wasmPath}. Run: circom paypol_shield_v2.circom --r1cs --wasm && snarkjs plonk setup`);
+        }
+
+        const { proof, publicSignals } = await snarkjs.plonk.fullProve(circuitInputs, wasmPath, zkeyPath);
+        const calldata = await snarkjs.plonk.exportSolidityCallData(proof, publicSignals);
+        const calldataStr = String(calldata);
+
+        const splitIndex = calldataStr.indexOf('][');
+        if (splitIndex === -1) throw new Error("Invalid PLONK calldata format from snarkjs.");
+
+        const proofArrayForContract: string[] = JSON.parse(calldataStr.substring(0, splitIndex + 1));
+        const pubSignalsArray: string[] = JSON.parse(calldataStr.substring(splitIndex + 1));
+
+        return {
+            proofArray: proofArrayForContract,
+            pubSignals: pubSignalsArray,
+            secret,
+            nullifier,
+            commitment,
+            nullifierHash,
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ZK PROOF GENERATION - V2 with Pre-stored Secrets
+    // (Used when secrets were generated during fiat Shield deposit)
+    // ═══════════════════════════════════════════════════════════
+    private async generateZKProofV2WithSecrets(recipient: string, amount: string, secret: string, nullifier: string) {
+        let cleanRecipient = recipient.toLowerCase().trim();
+        if (cleanRecipient.includes('...') || cleanRecipient.length !== 42) {
+            cleanRecipient = "0x0000000000000000000000000000000000000001";
+        }
+
+        const recipientBigIntStr = BigInt(cleanRecipient).toString();
+        const poseidon = await buildPoseidon();
+
+        // Use the SAME secrets that were used during deposit
+        const commitHash = poseidon([BigInt(secret), BigInt(nullifier), BigInt(amount), BigInt(recipientBigIntStr)]);
+        const commitment = poseidon.F.toObject(commitHash).toString();
+
+        const nullHash = poseidon([BigInt(nullifier), BigInt(secret)]);
+        const nullifierHash = poseidon.F.toObject(nullHash).toString();
+
+        const circuitInputs = {
+            commitment,
+            nullifierHash,
+            recipient: recipientBigIntStr,
+            amount,
+            secret,
+            nullifier,
+        };
+
+        const wasmPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_v2.wasm");
+        const zkeyPath = path.join(__dirname, "..", "..", "apps", "dashboard", "public", "zk", "paypol_shield_v2_final.zkey");
+
+        if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
+            throw new Error(`ZK V2 circuits not found at: ${wasmPath}. Copy from packages/circuits/`);
         }
 
         const { proof, publicSignals } = await snarkjs.plonk.fullProve(circuitInputs, wasmPath, zkeyPath);

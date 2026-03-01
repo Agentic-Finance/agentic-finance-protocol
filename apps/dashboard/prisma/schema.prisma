@@ -239,27 +239,30 @@ model Notification {
 }
 
 // ==========================================
-// 💳 FIAT ON-RAMP (Stripe Integration)
+// 💳 FIAT ON-RAMP (Paddle Integration)
 // ==========================================
 
 // Tracks credit card → crypto → escrow flow
 model FiatPayment {
-  id              String    @id @default(uuid())
-  stripeSessionId String    @unique
-  stripePaymentId String?
-  agentJobId      String?
-  userWallet      String
-  amountUSD       Float
-  amountCrypto    Float?
-  token           String    @default("AlphaUSD")
-  status          String    @default("PENDING")  // PENDING, PAID, CRYPTO_SENT, ESCROWED, FAILED
-  escrowTxHash    String?
-  transferTxHash  String?
-  createdAt       DateTime  @default(now())
-  completedAt     DateTime?
+  id                   String    @id @default(uuid())
+  paddleTransactionId  String    @unique
+  paddlePaymentId      String?
+  agentJobId           String?
+  userWallet           String
+  amountUSD            Float
+  amountCrypto         Float?
+  token                String    @default("AlphaUSD")
+  shieldEnabled        Boolean   @default(false)
+  status               String    @default("PENDING")  // PENDING, PAID, CRYPTO_SENT, SHIELD_DEPOSITED, ESCROWED, FAILED
+  escrowTxHash         String?
+  transferTxHash       String?
+  shieldCommitment     String?
+  shieldData           String?   // JSON: { secret, nullifier, nullifierHash, depositTxHash }
+  createdAt            DateTime  @default(now())
+  completedAt          DateTime?
 
   @@index([userWallet])
-  @@index([stripeSessionId])
+  @@index([paddleTransactionId])
 }
 
 // ==========================================

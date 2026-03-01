@@ -1,100 +1,121 @@
 /**
- * POST /api/fiat/checkout - Create Stripe Checkout Session
+ * POST /api/fiat/checkout - Create Paddle Checkout Transaction
  *
- * Creates a Stripe Checkout session for fiat-to-crypto conversion.
- * After payment, Stripe webhook triggers stablecoin transfer.
+ * Creates a Paddle transaction server-side for fiat-to-crypto conversion.
+ * After payment, Paddle webhook triggers stablecoin transfer.
+ *
+ * Requires "Default Payment Link" to be set in Paddle Dashboard
+ * (Checkout → Checkout Settings → Default Payment Link → https://paypol.xyz)
  *
  * Body: { amount: number, userWallet: string, agentJobId?: string, returnUrl: string }
- * Returns: { sessionId: string, checkoutUrl: string }
+ *   - amount: the crypto amount user wants to RECEIVE (e.g., 100 AlphaUSD)
+ *   - The card is charged: amount × (1 + markupPercent/100)
+ *
+ * Returns: { transactionId, pricing, useOverlay: true }
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { validateCheckoutParams, buildCheckoutMetadata, FIAT_CONFIG } from '../../../lib/fiat-onramp';
+import { validateCheckoutParams, buildCheckoutMetadata, calculateMarkup, paddleApiRequest, FIAT_CONFIG } from '../../../lib/fiat-onramp';
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { amount, userWallet, agentJobId, returnUrl } = body;
+    const { amount, userWallet, agentJobId, returnUrl, shieldEnabled } = body;
 
-    // Validate
+    // Validate — "amount" is the crypto amount user wants to receive
     const error = validateCheckoutParams({ amount, userWallet, returnUrl });
     if (error) {
       return NextResponse.json({ error }, { status: 400 });
     }
 
-    // Check if Stripe is configured
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-    if (!stripeSecretKey) {
-      // Demo mode: create a mock session for testing
-      const mockSessionId = `cs_demo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    // Calculate markup pricing
+    const pricing = calculateMarkup(amount);
 
-      // Save to database
+    // Check if Paddle is configured
+    const paddleApiKey = process.env.PADDLE_API_KEY;
+    if (!paddleApiKey) {
+      // Demo mode: create a mock transaction for testing
+      const mockTransactionId = `txn_demo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+      // Save to database — amountUSD is what user pays (with markup)
       await prisma.fiatPayment.create({
         data: {
-          stripeSessionId: mockSessionId,
+          paddleTransactionId: mockTransactionId,
           userWallet,
-          amountUSD: amount,
-          amountCrypto: amount * FIAT_CONFIG.exchangeRate,
+          amountUSD: pricing.chargeAmount,
+          amountCrypto: pricing.cryptoAmount,
           token: FIAT_CONFIG.defaultToken,
           agentJobId: agentJobId || null,
+          shieldEnabled: !!shieldEnabled,
           status: 'PENDING',
         },
       });
 
       return NextResponse.json({
-        sessionId: mockSessionId,
-        checkoutUrl: `${returnUrl}?fiat_session=${mockSessionId}&demo=true`,
+        transactionId: mockTransactionId,
+        checkoutUrl: `${returnUrl}?fiat_session=${mockTransactionId}&demo=true`,
         demo: true,
-        message: 'Stripe not configured - running in demo mode. In production, this returns a Stripe Checkout URL.',
+        pricing,
+        message: 'Paddle not configured - running in demo mode.',
       });
     }
 
-    // Production: Create real Stripe Checkout Session
-    const Stripe = (await import('stripe')).default;
-    const stripe = new Stripe(stripeSecretKey);
-
+    // ── Production: Create Paddle Transaction (server-side) ──────
     const metadata = buildCheckoutMetadata({ amount, userWallet, agentJobId, returnUrl });
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
+    const transaction = await paddleApiRequest('/transactions', 'POST', {
+      items: [
         {
-          price_data: {
-            currency: FIAT_CONFIG.stripeCurrency,
-            product_data: {
-              name: `${amount} ${FIAT_CONFIG.defaultToken}`,
-              description: `Purchase ${amount} ${FIAT_CONFIG.defaultToken} stablecoins on Tempo L1`,
-            },
-            unit_amount: Math.round(amount * 100), // Stripe uses cents
-          },
           quantity: 1,
+          price: {
+            description: `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (incl. ${pricing.markupPercent}% processing fee)`,
+            name: `${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken}`,
+            unit_price: {
+              amount: String(Math.round(pricing.chargeAmount * 100)), // Paddle uses cents
+              currency_code: FIAT_CONFIG.paddleCurrency,
+            },
+            product: {
+              name: `${FIAT_CONFIG.defaultToken} Stablecoin`,
+              description: 'Privacy-preserving stablecoin on Tempo L1',
+              tax_category: 'standard',
+            },
+          },
         },
       ],
-      mode: 'payment',
-      success_url: `${returnUrl}?fiat_session={CHECKOUT_SESSION_ID}&success=true`,
-      cancel_url: `${returnUrl}?fiat_session={CHECKOUT_SESSION_ID}&cancelled=true`,
-      metadata,
+      custom_data: {
+        ...metadata,
+        cryptoAmount: pricing.cryptoAmount.toString(),
+        chargeAmount: pricing.chargeAmount.toString(),
+        markupPercent: pricing.markupPercent.toString(),
+        shieldEnabled: shieldEnabled ? 'true' : 'false',
+      },
     });
+
+    const txnId = transaction.data.id;
 
     // Save to database
     await prisma.fiatPayment.create({
       data: {
-        stripeSessionId: session.id,
+        paddleTransactionId: txnId,
         userWallet,
-        amountUSD: amount,
-        amountCrypto: amount * FIAT_CONFIG.exchangeRate,
+        amountUSD: pricing.chargeAmount,
+        amountCrypto: pricing.cryptoAmount,
         token: FIAT_CONFIG.defaultToken,
         agentJobId: agentJobId || null,
+        shieldEnabled: !!shieldEnabled,
         status: 'PENDING',
       },
     });
 
+    // Return transaction ID for Paddle.js overlay checkout
     return NextResponse.json({
-      sessionId: session.id,
-      checkoutUrl: session.url,
+      transactionId: txnId,
+      pricing,
+      useOverlay: true,
+      shieldEnabled: !!shieldEnabled,
     });
   } catch (err: any) {
     console.error('[fiat/checkout] Error:', err);

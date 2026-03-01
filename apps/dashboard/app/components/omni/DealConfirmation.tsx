@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 import FiatCheckout from '../FiatCheckout';
+
+/** Shield ZK fee: 0.2% (max $5) — same as Payroll Phantom Shield */
+const SHIELD_FEE_PERCENT = 0.2;
+const SHIELD_FEE_MAX = 5;
 
 interface DealConfirmationProps {
     negotiation: NegotiationResult | null;
@@ -17,10 +21,44 @@ interface DealConfirmationProps {
 function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, confirmationRef, isLoading, walletAddress }: DealConfirmationProps) {
     const [payMethod, setPayMethod] = useState<'crypto' | 'card'>('crypto');
     const [shieldEnabled, setShieldEnabled] = useState(false);
+    const [localWallet, setLocalWallet] = useState<string | null>(null);
+
+    // Auto-detect wallet from MetaMask if not passed via props
+    useEffect(() => {
+        if (walletAddress) {
+            setLocalWallet(walletAddress);
+            return;
+        }
+        // Fallback: try to read from window.ethereum
+        const eth = typeof window !== 'undefined' ? (window as any).ethereum : null;
+        if (eth) {
+            eth.request?.({ method: 'eth_accounts' })
+                .then((accounts: string[]) => {
+                    if (accounts?.[0]) setLocalWallet(accounts[0]);
+                })
+                .catch(() => {});
+        }
+    }, [walletAddress]);
+
+    // Connect wallet handler
+    const connectWallet = useCallback(async () => {
+        const eth = typeof window !== 'undefined' ? (window as any).ethereum : null;
+        if (!eth) return;
+        try {
+            const accounts = await eth.request({ method: 'eth_requestAccounts' });
+            if (accounts?.[0]) setLocalWallet(accounts[0]);
+        } catch { /* user rejected */ }
+    }, []);
 
     if (!negotiation || !selectedAgent) return null;
 
     const agent = selectedAgent.agent;
+    const effectiveWallet = walletAddress || localWallet;
+
+    // Shield fee calculation
+    const shieldFee = shieldEnabled
+        ? Math.min(+(negotiation.finalPrice * SHIELD_FEE_PERCENT / 100).toFixed(2), SHIELD_FEE_MAX)
+        : 0;
 
     return (
         <div
@@ -144,19 +182,27 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                         </div>
                     </div>
                     {shieldEnabled && (
-                        <div className="px-4 pb-3 flex gap-3 text-[9px] text-violet-400/50">
-                            <span className="flex items-center gap-1">
-                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
-                                Poseidon commitment
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
-                                ShieldVault V2
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
-                                Nullifier anti-replay
-                            </span>
+                        <div className="px-4 pb-3 space-y-2">
+                            {/* Fee info */}
+                            <div className="flex items-center justify-between bg-violet-500/10 rounded-lg px-3 py-1.5">
+                                <span className="text-[10px] text-violet-300/70">Shield fee ({SHIELD_FEE_PERCENT}%, max ${SHIELD_FEE_MAX})</span>
+                                <span className="text-[11px] text-violet-300 font-mono font-semibold">+${shieldFee.toFixed(2)}</span>
+                            </div>
+                            {/* Feature pills */}
+                            <div className="flex gap-3 text-[9px] text-violet-400/50">
+                                <span className="flex items-center gap-1">
+                                    <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                    Poseidon commitment
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                    ShieldVault V2
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                    Nullifier anti-replay
+                                </span>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -164,18 +210,20 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                 {/* Actions */}
                 {payMethod === 'card' ? (
                     <div className="flex flex-col gap-3">
-                        {walletAddress ? (
+                        {effectiveWallet ? (
                             <FiatCheckout
                                 amount={negotiation.finalPrice}
-                                userWallet={walletAddress}
+                                userWallet={effectiveWallet}
                                 shieldEnabled={shieldEnabled}
                                 compact
                             />
                         ) : (
-                            <div className="w-full bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
-                                <p className="text-amber-400 text-xs font-semibold mb-1">Wallet not connected</p>
-                                <p className="text-amber-300/50 text-[10px]">Connect your wallet to receive AlphaUSD after card payment</p>
-                            </div>
+                            <button
+                                onClick={connectWallet}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-sm uppercase tracking-widest bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-400 hover:to-orange-400 shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all"
+                            >
+                                🔗 Connect Wallet to Pay
+                            </button>
                         )}
                         <button
                             onClick={onReject}

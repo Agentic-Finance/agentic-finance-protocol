@@ -1,77 +1,72 @@
-// schema.prisma
+// schema.prisma — PayPol Daemon (shares PostgreSQL database with Dashboard)
+// Must stay in sync with apps/dashboard/prisma/schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL") 
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// 🏢 Multi-tenant Workspace
+// Models the daemon reads/writes
+
 model Workspace {
   id              String   @id @default(uuid())
-  name            String
+  name            String   @unique
   adminWallet     String   @unique
+  type            String?
   createdAt       DateTime @default(now())
   payloads        TimeVaultPayload[]
 }
 
-// 🛡️ Shielded Transaction Ledger
 model TimeVaultPayload {
   id              String   @id @default(uuid())
   workspaceId     String
-  
-  // --- [NEW FIELDS ADDED] ---
-  name            String?  
+  name            String?
   token           String   @default("AlphaUSD")
-  note            String?  
-  isDiscovery     Boolean  @default(false) 
-  // --------------------------
-
+  note            String?
+  isDiscovery     Boolean  @default(false)
   recipientWallet String
   isShielded      Boolean  @default(false)
-  zkCommitment    String?  
-  zkProof         String?  
-  amount          Float?   
+  zkCommitment    String?
+  zkProof         String?
+  amount          Float?
   status          String   @default("Draft")
   createdAt       DateTime @default(now())
   workspace       Workspace @relation(fields: [workspaceId], references: [id])
 }
 
-// ZK Payroll History Storage Table
-model PayoutRecord {
-  id        String   @id @default(cuid())
-  recipient String   // Employee wallet address
-  amount    Float    // Amount (AlphaUSD)
-  txHash    String   @unique // Blockchain transaction hash
-  createdAt DateTime @default(now()) // Timestamp of transfer
-}
-
-// 🤖 Autopilot Agent Rules (Recurring Payouts)
-model AutopilotRule {
-  id             Int      @id @default(autoincrement()) // Using Int as UI passes id: number
-  name           String
-  wallet_address String
-  amount         Float
-  token          String   @default("AlphaUSD")
-  schedule       String   // e.g., "Daily", "Weekly", "Monthly (1st)"
-  note           String?
-  status         String   @default("Active") // Status: "Active" or "Paused"
-  createdAt      DateTime @default(now())
-}
-
-// 📝 Boardroom Queue (OmniTerminal Intents)
-// Stores temporary transactions before Admin signs the Escrow
-model EmployeeTx {
-  id            String   @id @default(uuid())
-  name          String
-  walletAddress String
-  amount        String
-  token         String   @default("AlphaUSD")
-  note          String?
-  isDiscovery   Boolean  @default(false)
-  status        String   @default("AWAITING") // Status: "AWAITING", "PENDING"
-  createdAt     DateTime @default(now())
+model AgentJob {
+  id              String    @id @default(uuid())
+  agentId         String
+  clientWallet    String
+  prompt          String
+  taskDescription String?
+  budget          Float
+  negotiatedPrice Float?
+  platformFee     Float?
+  token           String    @default("AlphaUSD")
+  status          String    @default("CREATED")
+  result          String?
+  escrowTxHash    String?
+  settleTxHash    String?
+  onChainJobId    Int?
+  disputeReason   String?
+  deadline        DateTime?
+  executionTime   Int?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  parentJobId     String?
+  parentAgentId   String?
+  a2aChainId      String?
+  depth           Int       @default(0)
+  planHash        String?
+  resultHash      String?
+  commitmentId    String?
+  commitTxHash    String?
+  verifyTxHash    String?
+  proofMatched    Boolean?
 }

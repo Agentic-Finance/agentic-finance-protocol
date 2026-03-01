@@ -8,10 +8,17 @@ All contracts are deployed on **Tempo Moderato Testnet (Chain ID: 42431)** and s
 
 | Contract | Address | Description |
 |----------|---------|-------------|
-| **PlonkVerifier** | [`0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964`](https://explore.tempo.xyz/address/0xa7F8Bdde48b558E838c2deBDcD4b3779D47c0964) | ZK-SNARK on-chain proof verifier (PLONK). Auto-generated from snarkJS. |
-| **PayPolShieldVault** | [`0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1`](https://explore.tempo.xyz/address/0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1) | ZK-shielded private payroll vault. Supports both public and zero-knowledge ERC-20 payouts. |
-| **PayPolMultisendVault** | [`0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69`](https://explore.tempo.xyz/address/0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69) | Batch payroll vault. Sends funds to up to 100 recipients in one transaction. |
-| **PayPolNexusV2** | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow for the Agent Marketplace (dispute, settlement, timeout, rating). |
+| **PlonkVerifierV2** | [`0x9FB90e9...`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | ZK-SNARK on-chain PLONK proof verifier. Auto-generated from snarkJS trusted setup. |
+| **PayPolShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with Poseidon 4-input commitments and nullifier anti-double-spend. |
+| **PayPolNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
+| **PayPolMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX with per-transfer events. |
+| **AIProofRegistry** | [`0x8fDB8E8...`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | AI proof commitment & verification. Pre-hash commit, post-verify, slashing. |
+| **PayPolStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
+| **ReputationRegistry** | [`0x9332c1B...`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0) | On-chain reputation scoring from job completions, disputes, and peer reviews. |
+| **SecurityDepositVault** | [`0x8C1d4da...`](https://explore.tempo.xyz/address/0x8C1d4da4034FFEB5E3809aa017785cB70B081A80) | Tiered deposit system (Bronze/Silver/Gold) with fee discounts and slashing. |
+| **SimpleERC20** | - | Test stablecoin (AlphaUSD) for development. |
+
+> **Legacy V1 Contracts** (still operational): PlonkVerifier V1 (`0xa7F8Bd...`), PayPolShieldVault V1 (`0x4cfcaE...`), PayPolMultisendVault V1 (`0xc0e6F0...`)
 
 ## Network Configuration
 
@@ -28,25 +35,36 @@ All contracts are deployed on **Tempo Moderato Testnet (Chain ID: 42431)** and s
 ## Contract Architecture
 
 ```
-PlonkVerifier (ZK Proof Verification)
+PlonkVerifierV2 (ZK Proof Verification — PLONK)
     │
     ▼
-PayPolShieldVault (Private Payroll)
-    ├── executePublicPayout()     - Direct ERC-20 transfer
-    └── executeShieldedPayout()   - ZK-verified private transfer
+PayPolShieldVaultV2 (Private Payroll — Nullifier Pattern)
+    ├── deposit()                  - Lock tokens with Poseidon commitment
+    ├── executeShieldedPayout()    - ZK-verified private transfer (PLONK proof)
+    └── isNullifierUsed()          - Anti-double-spend check
 
-PayPolMultisendVault (Batch Payroll)
-    └── batchDisburse()           - Pay up to 100 recipients in one tx
+PayPolMultisendV2 (Batch Payroll)
+    └── batchDisburse()            - Pay up to 100 recipients in one tx
 
 PayPolNexusV2 (Agent Marketplace Escrow)
     ├── createJob()       - Employer locks ERC-20 in escrow
     ├── startJob()        - Agent begins work
     ├── completeJob()     - Agent claims completion
     ├── disputeJob()      - Employer disputes result
-    ├── settleJob()       - Judge releases funds (8% platform fee)
+    ├── settleJob()       - Judge releases funds (5% platform fee)
     ├── refundJob()       - Judge refunds employer
     ├── claimTimeout()    - Employer claims after deadline
     └── rateWorker()      - Employer rates 1-5 stars
+
+AIProofRegistry (Verifiable AI Proofs)
+    ├── commit()          - Pre-hash AI plan before execution
+    ├── verify()          - Post-verify AI result hash
+    └── slash()           - Penalize mismatched results
+
+PayPolStreamV1 (Milestone Streaming)
+    ├── createStream()    - Create milestone-based escrow
+    ├── submitMilestone() - Worker submits proof
+    └── approveMilestone()- Employer approves + releases funds
 ```
 
 ## Getting Started

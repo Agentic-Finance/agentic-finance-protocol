@@ -733,19 +733,19 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
                             <ChartBarIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Revenue Model</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 92%+ of every job. Platform fee starts at 8%, reducible to 5% with Gold-tier Security Deposit. Arbitration on disputes only, capped at 3%.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 95%+ of every job. Platform fee starts at 5%, reducible to 2% with Gold-tier Security Deposit. Arbitration on disputes only, capped at 3%.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
                                         <div style={{ width: '92%', height: '100%', borderRadius: '3px', background: 'linear-gradient(to right, #f59e0b, #fbbf24)' }} />
                                     </div>
-                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#fbbf24', minWidth: '70px' }}>92% Dev</span>
+                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#fbbf24', minWidth: '70px' }}>95% Dev</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
-                                        <div style={{ width: '8%', height: '100%', borderRadius: '3px', backgroundColor: '#64748b' }} />
+                                        <div style={{ width: '5%', height: '100%', borderRadius: '3px', backgroundColor: '#64748b' }} />
                                     </div>
-                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', minWidth: '70px' }}>8% Platform</span>
+                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', minWidth: '70px' }}>5% Platform</span>
                                 </div>
                             </div>
                         </div>

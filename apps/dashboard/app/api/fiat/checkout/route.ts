@@ -34,18 +34,28 @@ export async function POST(req: NextRequest) {
     // Calculate markup pricing
     const pricing = calculateMarkup(amount);
 
+    // Shield ZK fee: 0.5% of escrow amount, max $10 — same as Payroll Phantom Shield
+    const SHIELD_FEE_PERCENT = 0.5;
+    const SHIELD_FEE_MAX = 10;
+    const shieldFee = shieldEnabled
+      ? Math.min(+(amount * SHIELD_FEE_PERCENT / 100).toFixed(2), SHIELD_FEE_MAX)
+      : 0;
+
+    // Total card charge = markup charge + Shield fee
+    const totalCharge = +(pricing.chargeAmount + shieldFee).toFixed(2);
+
     // Check if Paddle is configured
     const paddleApiKey = process.env.PADDLE_API_KEY;
     if (!paddleApiKey) {
       // Demo mode: create a mock transaction for testing
       const mockTransactionId = `txn_demo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-      // Save to database — amountUSD is what user pays (with markup)
+      // Save to database — amountUSD is total charged (markup + Shield fee)
       await prisma.fiatPayment.create({
         data: {
           paddleTransactionId: mockTransactionId,
           userWallet,
-          amountUSD: pricing.chargeAmount,
+          amountUSD: totalCharge,
           amountCrypto: pricing.cryptoAmount,
           token: FIAT_CONFIG.defaultToken,
           agentJobId: agentJobId || null,
@@ -58,7 +68,7 @@ export async function POST(req: NextRequest) {
         transactionId: mockTransactionId,
         checkoutUrl: `${returnUrl}?fiat_session=${mockTransactionId}&demo=true`,
         demo: true,
-        pricing,
+        pricing: { ...pricing, shieldFee, totalCharge },
         message: 'Paddle not configured - running in demo mode.',
       });
     }
@@ -66,42 +76,48 @@ export async function POST(req: NextRequest) {
     // ── Production: Create Paddle Transaction (server-side) ──────
     const metadata = buildCheckoutMetadata({ amount, userWallet, agentJobId, returnUrl });
 
+    // Use existing product ID (pre-configured with correct tax category)
+    // with inline price for dynamic amounts
+    const paddleProductId = process.env.PADDLE_PRODUCT_ID || 'pro_01kjk6t804cgm9vnmjh8acnn6t';
+
+    // Paddle charge includes: escrow × (1 + 8% markup) + Shield ZK fee
+    const paddleDescription = shieldEnabled
+      ? `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (${pricing.markupPercent}% fee + Shield ZK)`
+      : `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (incl. ${pricing.markupPercent}% processing fee)`;
+
     const transaction = await paddleApiRequest('/transactions', 'POST', {
       items: [
         {
           quantity: 1,
           price: {
-            description: `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (incl. ${pricing.markupPercent}% processing fee)`,
+            description: paddleDescription,
             name: `${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken}`,
             unit_price: {
-              amount: String(Math.round(pricing.chargeAmount * 100)), // Paddle uses cents
+              amount: String(Math.round(totalCharge * 100)), // Paddle uses cents — includes Shield fee
               currency_code: FIAT_CONFIG.paddleCurrency,
             },
-            product: {
-              name: `${FIAT_CONFIG.defaultToken} Stablecoin`,
-              description: 'Privacy-preserving stablecoin on Tempo L1',
-              tax_category: 'standard',
-            },
+            product_id: paddleProductId,
           },
         },
       ],
       custom_data: {
         ...metadata,
         cryptoAmount: pricing.cryptoAmount.toString(),
-        chargeAmount: pricing.chargeAmount.toString(),
+        chargeAmount: totalCharge.toString(),
         markupPercent: pricing.markupPercent.toString(),
         shieldEnabled: shieldEnabled ? 'true' : 'false',
+        shieldFee: shieldFee.toString(),
       },
     });
 
     const txnId = transaction.data.id;
 
-    // Save to database
+    // Save to database — amountUSD = total charged including Shield fee
     await prisma.fiatPayment.create({
       data: {
         paddleTransactionId: txnId,
         userWallet,
-        amountUSD: pricing.chargeAmount,
+        amountUSD: totalCharge,
         amountCrypto: pricing.cryptoAmount,
         token: FIAT_CONFIG.defaultToken,
         agentJobId: agentJobId || null,
@@ -113,7 +129,7 @@ export async function POST(req: NextRequest) {
     // Return transaction ID for Paddle.js overlay checkout
     return NextResponse.json({
       transactionId: txnId,
-      pricing,
+      pricing: { ...pricing, shieldFee, totalCharge },
       useOverlay: true,
       shieldEnabled: !!shieldEnabled,
     });

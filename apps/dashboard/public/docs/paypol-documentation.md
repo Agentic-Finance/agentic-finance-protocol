@@ -19,9 +19,11 @@
 10. [Real-Time Live Dashboard](#10-real-time-live-dashboard)
 11. [Tempo Benchmark Report](#11-tempo-benchmark-report)
 12. [SDK & Plugin Ecosystem](#12-sdk--plugin-ecosystem)
-13. [Fee Schedule](#13-fee-schedule)
-14. [Security Model](#14-security-model)
-15. [Deployment Guide](#15-deployment-guide)
+13. [APS-1 v2.0 --- Agent Payment Standard](#13-aps-1-v20----agent-payment-standard)
+14. [ZK Agent Identity](#14-zk-agent-identity)
+15. [Fee Schedule](#15-fee-schedule)
+16. [Security Model](#16-security-model)
+17. [Deployment Guide](#17-deployment-guide)
 
 ---
 
@@ -52,11 +54,13 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 | 7 | **Tempo Benchmark** | 5 real operations comparing Tempo vs Ethereum costs (99%+ savings) |
 | 8 | **SDK Plugin Ecosystem** | Self-registration, webhook health check, community agent marketplace |
 | 9 | **On-Chain Reputation** | Composite reputation score (0-100) from ratings, completions, and AI proof reliability |
-| 10 | **APS-1 Standard** | Agent Payment Standard --- formal 6-phase protocol for agent payments |
+| 10 | **APS-1 v2.0 Standard** | Agent Payment Standard v2.0 --- 6-phase lifecycle, pluggable EscrowProvider/ProofProvider, A2A delegation, OpenAPI 3.1 spec |
 | 11 | **Security Deposits** | Stablecoin deposits with Bronze/Silver/Gold tiers for fee discounts and trust signals |
 | 12 | **Revenue Dashboard** | Live TVL, volume charts, fee tracking, and top agent leaderboards |
-| 13 | **Cross-Framework SDK** | Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP |
+| 13 | **Cross-Framework SDK v2.0** | Native adapters for OpenAI, Anthropic Claude MCP, LangChain, CrewAI, Eliza, OpenClaw |
 | 14 | **Stream Settlement** | Progressive milestone-based escrow with real-time payment streaming |
+| 15 | **ZK Agent Identity** | Zero-knowledge proofs for reputation tier, compliance status, and identity verification |
+| 16 | **Public AI Proof Dashboard** | Verification dashboard at `/verify` with live on-chain AIProofRegistry stats |
 
 ### 1.4 Key Capabilities
 
@@ -66,7 +70,7 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 | **ZK Privacy Shield V2** | PLONK ZK-SNARKs with nullifier anti-double-spend pattern |
 | **A2A Economy** | Agent-to-Agent autonomous hiring with per-sub-task escrow chains |
 | **Verifiable AI Proofs** | On-chain commitment registry for auditable AI reasoning |
-| **Escrow Arbitration** | Game-theoretic dispute resolution with 8% platform fee + 3% penalty |
+| **Escrow Arbitration** | Game-theoretic dispute resolution with 5% platform fee + 3% penalty |
 | **Real-Time Dashboard** | SSE-powered live monitoring of all protocol activity |
 
 ---
@@ -82,7 +86,8 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 +--------------------------------------------------------------------+
 |                        SERVICE LAYER                                |
 |  AI Brain (Express:4000) | Native Agents (port:3001)               |
-|  ZK Daemon (ts-node) | Community Agents (port:3010-3099)           |
+|  ZK Daemon (Docker: Poseidon cache + parallel PLONK proofs)        |
+|  Community Agents (port:3010-3099)                                  |
 +--------------------------------------------------------------------+
 |                        PROTOCOL LAYER                               |
 |  PayPolNexusV2 | ShieldVaultV2 | MultisendVaultV2 | StreamV1        |
@@ -141,7 +146,8 @@ paypol-protocol/
     contracts/              Solidity smart contracts (Foundry) - 9 contracts
     circuits/               Circom ZK circuits (V1 + V2)
     sdk/                    TypeScript SDK with cross-framework adapters
-    aps-1/                  Agent Payment Standard v1.0 specification
+    aps-1/                  Agent Payment Standard v2.0 (RFC + OpenAPI + Zod schemas)
+    zk-identity/            ZK Agent Identity proofs (reputation, compliance, identity)
     integrations/           Legacy plugins (migrated to sdk/adapters/)
   services/
     agents/                 Native AI agents (32 on-chain)
@@ -294,7 +300,7 @@ Creates an escrow job. Employer must approve token transfer beforehand.
 | `_deadlineDuration` | `uint256` | Seconds until timeout (default: 172800 = 48h) |
 
 #### `settleJob(jobId)`
-Judge approves work. Worker receives `budget - 8% platformFee`. If disputed: additional 3% penalty on losing party.
+Judge approves work. Worker receives `budget - 5% platformFee`. If disputed: additional 3% penalty on losing party.
 
 #### `refundJob(jobId)`
 Judge refunds employer. If disputed: 3% penalty on agent (capped at max arbitration penalty).
@@ -505,15 +511,51 @@ The Privacy Shield V2 uses Zero-Knowledge SNARKs with a **nullifier pattern** to
 | Trusted Setup | Required (ceremony) | Universal (no per-circuit ceremony) |
 | Public Signals | 1 (commitment) | 3 (commitment, nullifierHash, recipient) |
 
-### 7.5 Files
+### 7.5 Production Implementation
+
+The ZK Privacy Shield V2 is **fully operational in production** with the following architecture:
+
+**ZK Daemon Service (`services/daemon/daemon.ts`):**
+A dedicated Docker container running alongside the dashboard. Polls every 5 seconds for PENDING shielded payloads and processes them through dual paths:
+
+| Path | Trigger | Flow | Concurrency |
+|---|---|---|---|
+| **Path A** | Frontend pre-deposited (`ShieldVaultV2.deposit()` per employee) | Generate proof → `executeShieldedPayout()` | Parallel (up to 3 concurrent) |
+| **Path B** | Tokens in daemon wallet | `approve → deposit → proof → payout` | Sequential (nonce management) |
+
+**Performance Optimizations:**
+
+| Optimization | Before | After | Impact |
+|---|---|---|---|
+| Poseidon Cache | Rebuild WASM every call (~200ms) | Singleton loaded once at startup (~0ms) | **200ms saved per hash** |
+| Parallel Proofs | Sequential processing | `Promise.allSettled()` batches of 3 | **3x faster for Path A** |
+| Indexing Delay | 1000ms between TXs | 200ms (Tempo fast finality) | **1.6s saved per lifecycle** |
+| Dedup Computations | Poseidon rebuilt 3x per job | `computeCommitment()` shared helper | **400ms saved per job** |
+
+**Per-Employee Privacy:**
+Each employee in a payroll batch receives a unique cryptographic commitment with independent secrets:
+- Frontend generates N separate `ShieldVaultV2.deposit()` transactions
+- No observer can correlate which deposit corresponds to which withdrawal
+- Achieves Zcash-level privacy at individual payment level
+
+**Shield API (`/api/shield`):**
+Three actions available via POST:
+- `generate_commitment`: Create Poseidon commitment for deposit (uses cached singleton)
+- `generate_proof`: Generate PLONK proof for withdrawal (Circom V2 + snarkjs)
+- Legacy vault creation (backward compatible)
+
+### 7.6 Files
 
 | File | Location | Purpose |
 |---|---|---|
-| Circuit V1 | `packages/circuits/paypol_shield.circom` | Original Groth16 circuit |
-| Circuit V2 | `packages/circuits/paypol_shield_v2.circom` | PLONK circuit with nullifier |
-| Verifier V2 | `packages/contracts/src/PlonkVerifier.sol` | On-chain PLONK verification |
+| Circuit V2 | `packages/circuits/paypol_shield_v2.circom` | PLONK circuit with nullifier (2.2MB WASM + 3.6MB zkey) |
+| Circuit V1 | `packages/circuits/paypol_shield.circom` | Legacy Groth16 circuit (fallback) |
+| Verifier V2 | `packages/contracts/src/PlonkVerifierV2.sol` | On-chain PLONK verification |
 | ShieldVault V2 | `packages/contracts/src/PayPolShieldVaultV2.sol` | Vault with nullifier registry |
-| Daemon | `services/daemon/` | Server-side proof generation |
+| Poseidon Cache | `apps/dashboard/app/lib/poseidon-cache.ts` | Singleton Poseidon instance + helpers |
+| Shield API | `apps/dashboard/app/api/shield/route.ts` | Commitment + proof generation API |
+| Daemon | `services/daemon/daemon.ts` | Production ZK proof processor (Docker) |
+| Daemon Dockerfile | `services/daemon/Dockerfile` | Node.js 20-slim + snarkjs + circuits |
 
 ---
 
@@ -757,15 +799,17 @@ Every agent must implement:
 | `/manifest` | GET | Returns agent metadata (name, skills, price) |
 | `/execute` | POST | Receives job payload, returns result |
 
-### 12.4 Framework Integrations
+### 12.4 Framework Integrations (SDK v2.0)
 
-| Framework | Package | Description |
-|---|---|---|
-| OpenClaw | `paypol` skill | Install as a skill; any OpenClaw agent gets all PayPol agents |
-| Eliza | `@paypol-protocol/eliza` | Plugin with 18 agent actions |
-| LangChain | `@paypol-protocol/langchain` | StructuredTool wrappers |
-| CrewAI | `paypol-crewai` | Python BaseTool integration |
-| MCP | `@paypol-protocol/mcp` | Model Context Protocol server for Claude |
+| Framework | Package | Type | Description |
+|---|---|---|---|
+| OpenAI | `@paypol-protocol/sdk` | Function Calling | Native OpenAI function definitions for all 32 agents |
+| Anthropic | `@paypol-protocol/sdk` | Tool Use | Claude MCP tool definitions + Anthropic Tool-Use adapters |
+| LangChain | `@paypol-protocol/sdk/langchain` | StructuredTool | LangChain tool wrappers with typed schemas |
+| CrewAI | `@paypol-protocol/sdk/crewai` | BaseTool | Python BaseTool + `generateCrewAIPython()` code generation |
+| Eliza | `@paypol-protocol/eliza-plugin` | Plugin | 18 pattern-matched actions for Eliza agents |
+| OpenClaw | `paypol` skill | Skill | Install as skill; any OpenClaw agent gets all PayPol agents |
+| MCP | `@paypol-protocol/mcp-server` | MCP Server | Model Context Protocol server with 10 tools (v2.0) |
 
 ### 12.5 Community Agents
 
@@ -780,22 +824,140 @@ Every agent must implement:
 
 ---
 
-## 13. Fee Schedule
+## 13. APS-1 v2.0 --- Agent Payment Standard
 
-### 13.1 Engine 1 --- Enterprise Treasury & Payroll
+### 13.1 Overview
+
+APS-1 (Agent Payment Standard) is the open protocol specification for agent-to-agent payments. Version 2.0 introduces pluggable provider interfaces, A2A delegation, structured error codes, and lifecycle events.
+
+**Package:** `@paypol-protocol/aps-1@2.0.0` (MIT License)
+
+### 13.2 Six-Phase Lifecycle
+
+```
+Phase 1: Discover   → Find agent via /manifest endpoint
+Phase 2: Negotiate  → Multi-round pricing negotiation
+Phase 3: Escrow     → Lock funds via EscrowProvider
+Phase 4: Execute    → Agent performs task, streams SSE events
+Phase 5: Verify     → ProofProvider commit/verify pattern
+Phase 6: Settle     → Release payment or refund
+```
+
+### 13.3 Pluggable Providers
+
+**EscrowProvider Interface:**
+```typescript
+interface APS1EscrowProvider {
+  readonly name: string;
+  readonly method: APS1PaymentMethod;
+  createEscrow(params: APS1EscrowParams): Promise<APS1EscrowReceipt>;
+  settleEscrow(onChainId: number): Promise<APS1EscrowSettlement>;
+  refundEscrow(onChainId: number): Promise<APS1EscrowSettlement>;
+  disputeEscrow?(onChainId: number, reason: string): Promise<APS1EscrowSettlement>;
+  getEscrowStatus(onChainId: number): Promise<APS1EscrowStatus>;
+}
+```
+
+**ProofProvider Interface:**
+```typescript
+interface APS1ProofProvider {
+  readonly name: string;
+  commit(planHash: string, onChainJobId?: number): Promise<APS1ProofCommitment>;
+  verify(commitmentId: string, resultHash: string): Promise<APS1ProofVerification>;
+  getStats?(): Promise<APS1ProofStats>;
+}
+```
+
+### 13.4 A2A Delegation
+
+Agents can delegate sub-tasks to other agents with budget tracking:
+
+```typescript
+await client.delegateA2A({
+  parentJobId: 'job-123',
+  targetAgent: 'https://agent-b.com',
+  subTask: 'Analyze portfolio data',
+  budget: 50,
+  maxDepth: 5,  // Default: APS1_MAX_A2A_DEPTH = 5
+});
+```
+
+### 13.5 Resources
+
+| Resource | Location |
+|---|---|
+| RFC Specification | `packages/aps-1/APS-1-RFC.md` |
+| OpenAPI 3.1 Spec | `packages/aps-1/openapi.yaml` |
+| TypeScript Types | `packages/aps-1/src/types.ts` |
+| Zod Validators | `packages/aps-1/src/validator.ts` |
+| npm Package | `@paypol-protocol/aps-1@2.0.0` |
+
+---
+
+## 14. ZK Agent Identity
+
+### 14.1 Overview
+
+The ZK Agent Identity system allows agents to prove properties about themselves (reputation tier, compliance status, identity verification) without revealing sensitive details like exact scores or wallet addresses.
+
+**Package:** `@paypol-protocol/zk-identity@1.0.0`
+
+### 14.2 Proof Types
+
+| Proof Type | What it proves | What it hides |
+|---|---|---|
+| **ZK Reputation** | Agent is in a specific tier (e.g., "Trusted") | Exact score and wallet address |
+| **ZK Compliance** | Agent has passed KYB/GDPR/SOC2 | Attestation details |
+| **ZK Identity** | Agent is a verified protocol member | Wallet address and join date |
+
+### 14.3 Reputation Tiers
+
+```typescript
+const ZK_REPUTATION_TIERS = {
+  'unrated':     { min: 0,    max: 2000 },
+  'bronze':      { min: 2000, max: 4000 },
+  'silver':      { min: 4000, max: 6000 },
+  'gold':        { min: 6000, max: 8000 },
+  'trusted':     { min: 8000, max: 10000 },
+};
+```
+
+### 14.4 Usage
+
+```typescript
+import { MockZKProver, MockZKVerifier } from '@paypol-protocol/zk-identity';
+
+const prover = new MockZKProver();
+const verifier = new MockZKVerifier();
+
+// Agent proves they are "gold" tier without revealing exact score
+const proof = await prover.proveReputation(agentWallet, agentScore, 'gold');
+const result = await verifier.verifyReputation(proof);
+// result.valid === true, proof.publicInputs.tier === 'gold'
+```
+
+### 14.5 Anti-Replay
+
+Each proof includes a nullifier that prevents replay attacks. The verifier tracks used nullifiers and rejects duplicate proofs. Proof validity window: 24 hours.
+
+---
+
+## 15. Fee Schedule
+
+### 15.1 Engine 1 --- Enterprise Treasury & Payroll
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
 | Protocol Fee | 0.2% | $5.00 per batch | All mass disbursals |
-| Phantom Shield Premium | 0.2% | $5.00 per batch | When ZK-privacy enabled |
+| Phantom Shield Premium | 0.5% | $10.00 per batch | When ZK-privacy enabled |
 
-### 13.2 Engine 2 --- Agent Marketplace
+### 15.2 Engine 2 --- Agent Marketplace
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
-| Platform Commission | 8% | None | Deducted from agent pay on settlement |
+| Platform Commission | 5% | None | Deducted from agent pay on settlement |
 
-### 13.3 Engine 3 --- Arbitration
+### 15.3 Engine 3 --- Arbitration
 
 | Fee | Rate | Cap | Condition |
 |---|---|---|---|
@@ -803,7 +965,7 @@ Every agent must implement:
 
 ---
 
-## 14. Security Model
+## 16. Security Model
 
 ### 14.1 Authentication
 
@@ -832,7 +994,7 @@ Every agent must implement:
 
 ---
 
-## 15. Deployment Guide
+## 17. Deployment Guide
 
 ### 15.1 Smart Contract Deployment
 

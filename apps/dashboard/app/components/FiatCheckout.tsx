@@ -4,7 +4,11 @@ import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { CreditCardIcon, CheckCircleIcon, ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 /** Markup config — must match FIAT_CONFIG in fiat-onramp.ts */
-const MARKUP_PERCENT = 8;
+const MARKUP_PERCENT = 5;
+const FIXED_FEE = 1.00;
+/** Shield ZK fee — must match checkout API */
+const SHIELD_FEE_PERCENT = 0.5;
+const SHIELD_FEE_MAX = 10;
 
 /** Paddle.js client-side token */
 const PADDLE_CLIENT_TOKEN = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
@@ -113,10 +117,15 @@ export default function FiatCheckout({ amount: initialAmount, userWallet, agentJ
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const pricing = useMemo(() => {
-    const chargeAmount = +(amount * (1 + MARKUP_PERCENT / 100)).toFixed(2);
+    const chargeAmount = +(amount * (1 + MARKUP_PERCENT / 100) + FIXED_FEE).toFixed(2);
     const markupAmount = +(chargeAmount - amount).toFixed(2);
-    return { cryptoAmount: amount, chargeAmount, markupAmount, markupPercent: MARKUP_PERCENT };
-  }, [amount]);
+    // Shield ZK fee added when enabled
+    const shieldFee = shieldEnabled
+      ? Math.min(+(amount * SHIELD_FEE_PERCENT / 100).toFixed(2), SHIELD_FEE_MAX)
+      : 0;
+    const totalCharge = +(chargeAmount + shieldFee).toFixed(2);
+    return { cryptoAmount: amount, chargeAmount, markupAmount, markupPercent: MARKUP_PERCENT, fixedFee: FIXED_FEE, shieldFee, totalCharge };
+  }, [amount, shieldEnabled]);
 
   // Load Paddle.js on mount
   useEffect(() => {
@@ -278,7 +287,7 @@ export default function FiatCheckout({ amount: initialAmount, userWallet, agentJ
           ) : step === 'error' ? (
             <><ExclamationTriangleIcon className="w-5 h-5" /> {error || 'Failed'}</>
           ) : (
-            <><CreditCardIcon className="w-5 h-5" /> Pay ${pricing.chargeAmount.toFixed(2)} with Card</>
+            <><CreditCardIcon className="w-5 h-5" /> Pay ${pricing.totalCharge.toFixed(2)} with Card</>
           )}
         </button>
 

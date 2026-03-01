@@ -4,11 +4,13 @@ import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 import FiatCheckout from '../FiatCheckout';
 
-/** Shield ZK fee: 0.2% (max $5) — same as Payroll Phantom Shield */
-const SHIELD_FEE_PERCENT = 0.2;
-const SHIELD_FEE_MAX = 5;
+/** Shield ZK fee: 0.5% (max $10) — same as Payroll Phantom Shield */
+const SHIELD_FEE_PERCENT = 0.5;
+const SHIELD_FEE_MAX = 10;
 /** Card processing markup — must match FIAT_CONFIG */
-const CARD_MARKUP_PERCENT = 8;
+const CARD_MARKUP_PERCENT = 5;
+/** Card fixed processing fee — must match FIAT_CONFIG */
+const CARD_FIXED_FEE = 1.00;
 
 interface DealConfirmationProps {
     negotiation: NegotiationResult | null;
@@ -62,9 +64,9 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
         ? Math.min(+(negotiation.finalPrice * SHIELD_FEE_PERCENT / 100).toFixed(2), SHIELD_FEE_MAX)
         : 0;
 
-    // Card pricing breakdown
-    const processingFee = +(negotiation.finalPrice * CARD_MARKUP_PERCENT / 100).toFixed(2);
-    const totalCardCharge = +(negotiation.finalPrice * (1 + CARD_MARKUP_PERCENT / 100) + shieldFee).toFixed(2);
+    // Card pricing breakdown (markup % + fixed fee + Shield fee)
+    const processingFee = +(negotiation.finalPrice * CARD_MARKUP_PERCENT / 100 + CARD_FIXED_FEE).toFixed(2);
+    const totalCardCharge = +(negotiation.finalPrice * (1 + CARD_MARKUP_PERCENT / 100) + CARD_FIXED_FEE + shieldFee).toFixed(2);
 
     return (
         <div
@@ -221,7 +223,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                             <span className="text-white font-mono">{negotiation.finalPrice.toFixed(2)} AlphaUSD</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-slate-500">Processing fee ({CARD_MARKUP_PERCENT}%)</span>
+                            <span className="text-slate-500">Processing fee ({CARD_MARKUP_PERCENT}% + ${CARD_FIXED_FEE.toFixed(2)})</span>
                             <span className="text-slate-400 font-mono">+${processingFee.toFixed(2)}</span>
                         </div>
                         {shieldEnabled && (

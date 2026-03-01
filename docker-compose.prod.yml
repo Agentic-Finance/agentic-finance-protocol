@@ -54,6 +54,28 @@ services:
       retries: 3
       start_period: 40s
 
+  # ── ZK Daemon (Shield & A2A Escrow Processor) ──────────
+  daemon:
+    build:
+      context: .
+      dockerfile: services/daemon/Dockerfile
+    container_name: paypol-daemon
+    restart: always
+    env_file:
+      - ./apps/dashboard/.env.production
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://paypol:paypol_production_2024@db:5432/paypol_core
+      - RPC_URL=https://rpc.moderato.tempo.xyz
+      - SHIELD_V2_ADDRESS=0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055
+      - NEXUS_V2_ADDRESS=0x6A467Cd4156093bB528e448C04366586a1052Fab
+      - TOKEN_ADDRESS=0x20c0000000000000000000000000000000000001
+    networks:
+      - paypol-net
+    depends_on:
+      db:
+        condition: service_healthy
+
   # ── Nginx (Reverse Proxy + SSL) ─────────────────────────
   nginx:
     image: nginx:alpine

@@ -12,17 +12,22 @@ const tocItems: TocItem[] = [
     { id: '3-cryptographic-privacy-the-phantom-shield', label: '3. Cryptographic Privacy', level: 2 },
     { id: '4-dynamic-negotiation-engine', label: '4. Negotiation Engine', level: 2 },
     { id: '5-escrow-smart-contract-architecture', label: '5. Escrow Architecture', level: 2 },
-    { id: '6-system-architecture', label: '6. System Architecture', level: 2 },
-    { id: '7-related-work', label: '7. Related Work', level: 2 },
-    { id: '8-future-work', label: '8. Future Work', level: 2 },
-    { id: '9-conclusion', label: '9. Conclusion', level: 2 },
-    { id: 'references', label: 'References', level: 2 },
+    { id: '6-agent-to-agent-a2a-economy', label: '6. A2A Economy', level: 2 },
+    { id: '7-verifiable-ai-proof-commitments', label: '7. AI Proof Commitments', level: 2 },
+    { id: '8-tempo-l1-benchmark-analysis', label: '8. Tempo Benchmark', level: 2 },
+    { id: '9-system-architecture', label: '9. System Architecture', level: 2 },
+    { id: '10-aps-1-v20-open-protocol-standard', label: '10. APS-1 v2.0 Standard', level: 2 },
+    { id: '11-zk-agent-identity', label: '11. ZK Agent Identity', level: 2 },
+    { id: '12-related-work', label: '12. Related Work', level: 2 },
+    { id: '13-future-work', label: '13. Future Work', level: 2 },
+    { id: '14-conclusion', label: '14. Conclusion', level: 2 },
+    { id: '15-references', label: '15. References', level: 2 },
 ];
 
 const paperStats = [
-    { label: 'Sections', value: '9' },
-    { label: 'References', value: '6' },
-    { label: 'Smart Contracts', value: '4' },
+    { label: 'Sections', value: '15' },
+    { label: 'References', value: '7' },
+    { label: 'Smart Contracts', value: '8' },
     { label: 'ZK Circuits', value: '1' },
 ];
 

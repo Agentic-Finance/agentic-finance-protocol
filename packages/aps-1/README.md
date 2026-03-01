@@ -284,7 +284,7 @@ After successful execution and verification:
 |----------|-------|-------------|
 | `APS1_VERSION` | `1.0` | Protocol version |
 | `APS1_CHAIN_ID` | `42431` | Tempo L1 Moderato |
-| `APS1_PLATFORM_FEE_BPS` | `800` | 8% platform fee |
+| `APS1_PLATFORM_FEE_BPS` | `500` | 5% platform fee |
 | `APS1_NETWORK` | `Tempo L1 Moderato` | Network name |
 
 ## Smart Contracts

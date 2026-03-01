@@ -33,12 +33,12 @@ PayPol Protocol is **agent-to-agent payment infrastructure** built on Tempo L1. 
 | **Agent Payment Standard (APS-1)** | Open protocol for agent-to-agent payments. 6-phase lifecycle: Discover, Negotiate, Escrow, Execute, Verify, Settle. |
 | **Reputation System** | On-chain reputation scoring based on job completion, disputes, and peer reviews. Stored in ReputationRegistry. |
 | **Security Deposits** | Tiered deposit system (Bronze/Silver/Gold) with fee discounts, 30-day lock, slashing, and insurance pool. |
-| **ZK-Shielded Payments** | PLONK proofs with Poseidon hashing. Nullifier-based anti-double-spend. Pay without revealing amounts. |
+| **ZK-Shielded Payments** | Real Circom V2 circuits with PLONK proofs via snarkjs. Poseidon 4-input commitment scheme. Nullifier anti-double-spend. Per-employee privacy with cached singleton Poseidon (~0ms after init). Production ZK daemon with parallel proof processing. |
 | **Fiat On-Ramp** | Credit card to stablecoin via Stripe. USD converts 1:1 to AlphaUSD and flows directly into escrow. |
 | **Stream Settlement** | Progressive milestone-based escrow. Up to 10 milestones per stream with proof submission and approval. |
 | **Revenue Analytics** | Live TVL tracking across all contracts, fee collection, agent performance metrics, and time-series charts. |
 | **Cross-Framework SDK** | Native adapters for OpenAI function-calling and Anthropic tool-use. Plus integrations for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. |
-| **AI Agent Marketplace** | 32 production agents across 10 categories. AI-powered natural language discovery. Developers earn 92%. |
+| **AI Agent Marketplace** | 32 production agents across 10 categories. AI-powered natural language discovery. Developers earn 95%. |
 
 ---
 
@@ -64,7 +64,8 @@ PayPol Protocol is **agent-to-agent payment infrastructure** built on Tempo L1. 
     +---------v----------+                                    +------------v----------+
     |   ZK Daemon        |                                    |   Notification Svc    |
     |   PLONK Prover     |                                    |   DB + SSE + Webhook  |
-    |   Poseidon Hash    |                                    |   port 4200           |
+    |   Poseidon Cache   |                                    |   port 4200           |
+    |   Parallel Proofs  |                                    |                       |
     +---------+----------+                                    +------------+----------+
               |                                                           |
               +-------------------------+---------------------------------+
@@ -94,7 +95,7 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **PayPolNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 8%. |
+| **PayPolNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
 | **PayPolShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with nullifier-based anti-double-spend. |
 | **PayPolMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX. |
 | **PlonkVerifierV2** | [`0x9FB90e9...`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | On-chain PLONK proof verifier from snarkJS trusted setup. |
@@ -110,10 +111,10 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 
 | Tier | Deposit | Fee Discount | Effective Fee |
 |------|---------|-------------|---------------|
-| None | $0 | 0% | 8.0% |
-| Bronze | $50 | 0.5% | 7.5% |
-| Silver | $200 | 1.5% | 6.5% |
-| Gold | $1,000 | 3.0% | 5.0% |
+| None | $0 | 0% | 5.0% |
+| Bronze | $50 | 0.5% | 4.5% |
+| Silver | $200 | 1.5% | 3.5% |
+| Gold | $1,000 | 3.0% | 2.0% |
 
 ---
 
@@ -174,8 +175,8 @@ Full specification: [`packages/aps-1/README.md`](packages/aps-1/README.md)
 
 | Recipient | Share | Description |
 |-----------|-------|-------------|
-| **Agent Developer** | 92% | Paid in AlphaUSD per completed job |
-| **Platform** | 8% | Infrastructure, discovery, escrow |
+| **Agent Developer** | 95% | Paid in AlphaUSD per completed job |
+| **Platform** | 5% | Infrastructure, discovery, escrow |
 | **Arbitration** | 3% max | Only on disputed jobs |
 
 ### AI-Powered Discovery
@@ -341,7 +342,7 @@ paypol-protocol/
 +-- agents/                         # 7 community contributor teams
 |
 +-- deploy/                         # Nginx + SSL + deploy scripts
-+-- docker-compose.prod.yml         # Production: Dashboard + DB + Nginx + Certbot
++-- docker-compose.prod.yml         # Production: Dashboard + DB + Daemon + Nginx + Certbot
 ```
 
 ---
@@ -463,6 +464,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 | **SSL** | Let's Encrypt via Certbot |
 | **Frontend** | Next.js 16 standalone build |
 | **Database** | PostgreSQL 16 (health-checked) |
+| **ZK Daemon** | Node.js 20 + snarkjs + Circom V2 circuits (Debian slim) |
 | **Containers** | Docker Compose |
 
 ---
@@ -473,7 +475,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 |-------|-----------|
 | **Blockchain** | Tempo L1 (EVM), Chain ID 42431, Ethers.js v6 |
 | **Smart Contracts** | Solidity 0.8.20, Foundry, OpenZeppelin |
-| **Privacy** | Circom 2.0, snarkjs, Poseidon hash, PLONK proofs |
+| **Privacy** | Circom 2.0 V2 circuits, snarkjs PLONK, Poseidon singleton cache, parallel proof generation, per-employee commitments |
 | **Frontend** | Next.js 16, React 19, Tailwind CSS 4, Prisma 6 |
 | **Backend** | Express.js, FastAPI, Server-Sent Events |
 | **AI** | Anthropic Claude, OpenAI |

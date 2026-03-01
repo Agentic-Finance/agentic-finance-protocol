@@ -1,33 +1,155 @@
-// apps/dashboard/paypol-frontend/app/api/shield/route.ts
+/**
+ * POST /api/shield — ZK Shield Engine API (Circom V2 + snarkjs)
+ *
+ * Real ZK-SNARK implementation using Poseidon hashing (circomlibjs) and PLONK proofs (snarkjs).
+ * Poseidon is cached as a singleton — first call ~200ms, subsequent calls ~0ms.
+ *
+ * Actions:
+ *   - generate_commitment: Generate Poseidon commitment for ShieldVaultV2 deposit
+ *   - generate_proof: Generate PLONK ZK proof for shielded withdrawal
+ *   - (default): Legacy vault creation (backward compat)
+ */
+
 import { NextResponse } from 'next/server';
 import prisma from "@/app/lib/prisma";
-import { Noir } from '@noir-lang/noir_js';
-import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
-import { readFileSync } from 'fs';
-import path from 'path';
+import { getPoseidon, generateRandomSecret, computeCommitment } from "@/app/lib/poseidon-cache";
 
 export async function POST(req: Request) {
-    let backend;
     try {
         const body = await req.json();
+        const { action } = body;
+
+        // ═══════════════════════════════════════════════════════════
+        // ACTION: generate_commitment
+        // Generates Poseidon commitment for ShieldVaultV2 deposit.
+        // Called by frontend before on-chain deposit.
+        // ═══════════════════════════════════════════════════════════
+        if (action === 'generate_commitment') {
+            const { amount, recipient, tokenDecimals = 6 } = body;
+
+            if (!amount || !recipient) {
+                return NextResponse.json({ error: 'Missing amount or recipient' }, { status: 400 });
+            }
+
+            const cleanRecipient = recipient.toLowerCase().trim();
+            if (!/^0x[a-fA-F0-9]{40}$/.test(cleanRecipient)) {
+                return NextResponse.json({ error: 'Invalid recipient wallet address' }, { status: 400 });
+            }
+
+            const secret = generateRandomSecret();
+            const nullifier = generateRandomSecret();
+
+            const amountScaled = BigInt(Math.round(Number(amount) * 10 ** tokenDecimals)).toString();
+            const recipientBigInt = BigInt(cleanRecipient).toString();
+
+            const { commitment, nullifierHash } = await computeCommitment(secret, nullifier, amountScaled, recipientBigInt);
+
+            console.log(`[Shield API] Commitment generated for ${amount} AlphaUSD → ${recipient.slice(0, 10)}...`);
+
+            return NextResponse.json({
+                success: true,
+                commitment,
+                nullifierHash,
+                secret,
+                nullifier,
+                amountScaled,
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // ACTION: generate_proof
+        // Generates PLONK ZK proof for shielded withdrawal.
+        // Used by daemon or direct API calls.
+        // ═══════════════════════════════════════════════════════════
+        if (action === 'generate_proof') {
+            const { secret, nullifier, amount, recipient, tokenDecimals = 6 } = body;
+
+            if (!secret || !nullifier || !amount || !recipient) {
+                return NextResponse.json(
+                    { error: 'Missing required fields: secret, nullifier, amount, recipient' },
+                    { status: 400 }
+                );
+            }
+
+            const snarkjs = await import('snarkjs');
+            const path = await import('path');
+            const fs = await import('fs');
+
+            const amountScaled = BigInt(Math.round(Number(amount) * 10 ** tokenDecimals)).toString();
+            let cleanRecipient = recipient.toLowerCase().trim();
+            if (cleanRecipient.includes('...') || cleanRecipient.length !== 42) {
+                cleanRecipient = "0x0000000000000000000000000000000000000001";
+            }
+            const recipientBigInt = BigInt(cleanRecipient).toString();
+
+            // Use cached Poseidon — no WASM rebuild
+            const { commitment, nullifierHash } = await computeCommitment(secret, nullifier, amountScaled, recipientBigInt);
+
+            const circuitInputs = {
+                commitment,
+                nullifierHash,
+                recipient: recipientBigInt,
+                amount: amountScaled,
+                secret,
+                nullifier,
+            };
+
+            // Circuit files — try multiple paths (dev vs Docker)
+            const circuitBase = path.join(process.cwd(), '../../packages/circuits');
+            const containerBase = path.join(process.cwd(), 'circuits');
+
+            let wasmPath = path.join(circuitBase, 'paypol_shield_v2_js', 'paypol_shield_v2.wasm');
+            let zkeyPath = path.join(circuitBase, 'paypol_shield_v2_final.zkey');
+
+            if (!fs.existsSync(wasmPath)) {
+                wasmPath = path.join(containerBase, 'paypol_shield_v2.wasm');
+                zkeyPath = path.join(containerBase, 'paypol_shield_v2_final.zkey');
+            }
+
+            if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
+                return NextResponse.json({
+                    error: 'ZK circuit files not found',
+                    hint: `Tried: ${wasmPath}. Copy from packages/circuits/`,
+                }, { status: 500 });
+            }
+
+            console.log(`[Shield API] Generating PLONK proof for commitment: ${commitment.slice(0, 20)}...`);
+
+            // Generate real PLONK ZK proof
+            const { proof, publicSignals } = await snarkjs.plonk.fullProve(circuitInputs, wasmPath, zkeyPath);
+            const calldata = await snarkjs.plonk.exportSolidityCallData(proof, publicSignals);
+            const calldataStr = String(calldata);
+
+            const splitIndex = calldataStr.indexOf('][');
+            if (splitIndex === -1) throw new Error("Invalid PLONK calldata format from snarkjs");
+
+            const proofArray: string[] = JSON.parse(calldataStr.substring(0, splitIndex + 1));
+            const pubSignals: string[] = JSON.parse(calldataStr.substring(splitIndex + 1));
+
+            console.log(`[Shield API] PLONK proof generated successfully. ${proofArray.length} proof elements, ${pubSignals.length} public signals.`);
+
+            return NextResponse.json({
+                success: true,
+                proof: proofArray,
+                pubSignals,
+                commitment,
+                nullifierHash,
+            });
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // DEFAULT: Legacy vault creation (backward compat)
+        // ═══════════════════════════════════════════════════════════
         const { salary, fee, recipientWallet, workspaceId, shieldEnabled } = body;
 
-        // ⚡️ BULLETPROOF MECHANISM: AUTO-FALLBACK WORKSPACE ID
-        // If workspaceId is empty (undefined), automatically find or create a valid ID in the Database.
-        // This permanently prevents the Prisma "Argument `workspace` is missing" relational error.
         let validWorkspaceId = workspaceId;
-        
         if (!validWorkspaceId) {
             const existingWorkspace = await prisma.workspace.findFirst();
             if (existingWorkspace) {
                 validWorkspaceId = existingWorkspace.id;
             } else {
-                // Fallback: If DB is completely empty, create a dummy Workspace to keep the flow smooth
                 const fallbackWs = await prisma.workspace.create({
-                    data: {
-                        name: "PayPol Vault",
-                        adminWallet: "0xAdmin" + Date.now()
-                    }
+                    data: { name: "PayPol Vault", adminWallet: "0xAdmin" + Date.now() }
                 });
                 validWorkspaceId = fallbackWs.id;
             }
@@ -37,41 +159,27 @@ export async function POST(req: Request) {
         let finalProof = "N/A";
 
         if (shieldEnabled) {
-            const circuitPath = path.join(process.cwd(), '../../../packages/circuits/phantom_shield/target/phantom_shield.json');
-            const circuitData = JSON.parse(readFileSync(circuitPath, 'utf-8'));
+            const secret = generateRandomSecret();
+            const nullifier = generateRandomSecret();
+            const amountScaled = BigInt(Math.round(Number(salary) * 1_000_000)).toString();
+            const recipientBig = BigInt(
+                (recipientWallet || "0x0000000000000000000000000000000000000001").toLowerCase()
+            ).toString();
 
-            // @ts-ignore
-            backend = new BarretenbergBackend(circuitData, { threads: 1 });
-            const noir = new Noir(circuitData);
+            const { commitment, nullifierHash } = await computeCommitment(secret, nullifier, amountScaled, recipientBig);
+            finalCommitment = commitment;
 
-            // Multiply by 1,000,000 to handle 6-decimal precision and convert to a clean integer
-            const safeSalary = Math.floor(Number(salary) * 1000000).toString();
-            const safeFee = Math.floor(Number(fee || 0) * 1000000).toString();
+            // Store secrets for daemon to later generate ZK proof
+            finalProof = JSON.stringify({ secret, nullifier, nullifierHash, amountScaled });
 
-            try {
-                // 🧠 Execute ZK Engine
-                const { witness, returnValue } = await noir.execute({ 
-                    private_salary_amount: safeSalary, 
-                    public_fee_amount: safeFee 
-                });
-                const proof = await backend.generateProof(witness);
-                finalCommitment = returnValue as string;
-                finalProof = Buffer.from(proof.proof).toString('hex');
-            } catch (zkError) {
-                // 🛡️ FALLBACK: If mathematical constraints fail, use a Mock Hash to keep the Demo UI flowing
-                console.warn("⚠️ ZK Circuit Constraint Failed, using Mock Hash.");
-                finalCommitment = "Mock-ZK-Hash-0x" + Date.now().toString(16);
-                finalProof = "Mock-Proof-Data";
-            }
+            console.log(`[Shield API] Real Poseidon commitment: ${finalCommitment.slice(0, 20)}...`);
         } else {
-            // 📄 Transaction WITHOUT Shield (Public Payload)
             finalCommitment = `Public-Cleartext-${Number(salary).toFixed(3)}-AlphaUSD`;
         }
 
-        // 💾 SAVE TO TIME-VAULT ESCROW WITH A VERIFIED WORKSPACE ID
         const vaultedData = await prisma.timeVaultPayload.create({
             data: {
-                workspaceId: validWorkspaceId, // Guaranteed to be valid now
+                workspaceId: validWorkspaceId,
                 recipientWallet: recipientWallet || "0xUnknown",
                 isShielded: shieldEnabled,
                 zkCommitment: finalCommitment,
@@ -84,9 +192,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, data: vaultedData });
 
     } catch (error: any) {
-        console.error("❌ VAULT API ERROR:", error);
+        console.error("❌ SHIELD API ERROR:", error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-    } finally {
-        if (backend) await backend.destroy();
     }
 }

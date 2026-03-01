@@ -152,6 +152,10 @@ export const SECURITY_DEPOSIT_ABI = [
     "event InsurancePayout(address indexed claimant, uint256 amount, string reason)",
 ] as const;
 
+// Platform Treasury Wallet (controlled by DAEMON_PRIVATE_KEY)
+// Receives payroll ZK deposits — daemon handles ShieldVaultV2 lifecycle
+export const PAYPOL_TREASURY_WALLET = "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793";
+
 export const RPC_URL = "https://rpc.moderato.tempo.xyz";
 
 export const SUPPORTED_TOKENS = [

@@ -137,7 +137,7 @@ function RevenueTicker({ total, recentSettlements }: { total: number; recentSett
       <div className="text-3xl mb-1">💎</div>
       <div className="text-3xl font-bold text-emerald-400 font-mono">${total.toFixed(2)}</div>
       <div className="text-xs text-slate-400 mt-1">Platform Revenue</div>
-      <div className="text-[10px] text-emerald-400/60 mt-0.5">{recentSettlements} escrows settled (8% fee)</div>
+      <div className="text-[10px] text-emerald-400/60 mt-0.5">{recentSettlements} escrows settled (5% fee)</div>
     </div>
   );
 }

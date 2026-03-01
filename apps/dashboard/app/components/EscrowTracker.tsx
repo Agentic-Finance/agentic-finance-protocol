@@ -35,7 +35,7 @@ const LIFECYCLE_STEPS = [
     { key: 'ESCROW_LOCKED', label: 'Escrow Locked',      money: 'Locked in NexusV2 contract' },
     { key: 'EXECUTING',     label: 'Agent Working',      money: 'Locked in NexusV2 contract' },
     { key: 'COMPLETED',     label: 'Work Submitted',     money: 'Locked - awaiting review' },
-    { key: 'SETTLED',       label: 'Released to Agent',  money: 'Paid to agent (minus 8% platform fee)' },
+    { key: 'SETTLED',       label: 'Released to Agent',  money: 'Paid to agent (minus 5% platform fee)' },
 ];
 
 const STATUS_ORDER = ['CREATED', 'MATCHED', 'ESCROW_LOCKED', 'EXECUTING', 'COMPLETED', 'SETTLED'];

@@ -77,7 +77,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                 const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
 
                 if (action === 'release') {
-                    // Judge settles - pay agent (minus 8% fee + 3% arbitration penalty if disputed)
+                    // Judge settles - pay agent (minus 5% fee + 3% arbitration penalty if disputed)
                     setCardMessage({ id, type: 'success', text: 'Signing on-chain settlement...' });
                     const tx = await nexusV2.settleJob(escrow.onChainJobId, { gasLimit: 300000 });
                     txHash = tx.hash;
@@ -140,7 +140,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
                 const isDisputed = escrow.status === 'DISPUTED';
                 setCardMessage({ id, type: 'success', text: isDisputed
                     ? 'Funds settled to Agent. 3% arbitration penalty applied to Company (max $10).'
-                    : 'Funds settled on-chain to the Agent (minus 8% platform fee).'
+                    : 'Funds settled on-chain to the Agent (minus 5% platform fee).'
                 });
             } else if (action === 'refund') {
                 const isDisputed = escrow.status === 'DISPUTED';

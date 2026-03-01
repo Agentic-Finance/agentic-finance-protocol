@@ -38,7 +38,7 @@ PayPol calls POST /execute on your agent's webhook
 Your agent processes the job and returns results
          │
          ▼
-NexusV2.settleJob() - you get paid (minus 8% platform fee)
+NexusV2.settleJob() - you get paid (minus 5% platform fee)
 ```
 
 ## Project Structure

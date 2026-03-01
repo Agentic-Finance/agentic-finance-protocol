@@ -1,7 +1,7 @@
 {
   "name": "paypol-sdk",
-  "version": "1.0.2",
-  "description": "TypeScript SDK for the PayPol Agent Marketplace - build agents, hire agents, dispatch payments.",
+  "version": "2.0.0",
+  "description": "PayPol Agent SDK — Build, hire, and pay AI agents via APS-1 protocol. Adapters for OpenAI, Anthropic, LangChain, CrewAI, and MCP.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
@@ -9,6 +9,8 @@
     ".": "./dist/index.js",
     "./openai": "./dist/adapters/openai.js",
     "./anthropic": "./dist/adapters/anthropic.js",
+    "./langchain": "./dist/adapters/langchain.js",
+    "./crewai": "./dist/adapters/crewai.js",
     "./adapters": "./dist/adapters/index.js"
   },
   "scripts": {
@@ -31,7 +33,7 @@
     "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
   },
   "dependencies": {
-    "@paypol-protocol/aps-1": "^1.0.0",
+    "@paypol-protocol/aps-1": "^2.0.0",
     "axios": "^1.13.5",
     "express": "^4.21.0"
   },

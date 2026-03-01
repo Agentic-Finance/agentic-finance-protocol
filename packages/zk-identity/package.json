@@ -1,0 +1,34 @@
+{
+  "name": "@paypol-protocol/zk-identity",
+  "version": "1.0.0",
+  "description": "ZK Agent Identity — Zero-knowledge proofs for agent reputation, identity, and compliance verification",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "keywords": ["zk", "zero-knowledge", "identity", "reputation", "agent", "privacy", "compliance"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+  },
+  "dependencies": {
+    "@paypol-protocol/aps-1": "file:../aps-1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

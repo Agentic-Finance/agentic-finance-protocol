@@ -25,8 +25,8 @@ export const FIAT_CONFIG = {
   tokenAddress: '0x20c0000000000000000000000000000000000001',
   /** Token decimals */
   tokenDecimals: 6,
-  /** Minimum purchase amount in USD */
-  minAmount: 1,
+  /** Minimum card purchase amount in USD (covers Paddle $0.50 fixed fee) */
+  minAmount: 5,
   /** Maximum purchase amount in USD */
   maxAmount: 10000,
   /** 1 USD = 1 AlphaUSD (stablecoin peg) */
@@ -35,16 +35,23 @@ export const FIAT_CONFIG = {
   paddleCurrency: 'USD' as const,
   /**
    * Platform markup percentage (added on top of crypto amount).
-   * Covers Paddle processing fees (~5% + $0.50) and generates profit.
+   * Combined with platformFixedFee to ensure profitability at all amounts.
    *
-   * Example with 8% markup:
-   *   User wants 100 AlphaUSD → charged $108
-   *   Paddle fee: 5% × $108 + $0.50 = $5.90
-   *   PayPol receives: $108 - $5.90 = $102.10
+   * Example with 5% + $1.00:
+   *   User wants 100 AlphaUSD → charged $106 (100 × 1.05 + $1)
+   *   Paddle fee: 5% × $106 + $0.50 = $5.80
+   *   PayPol receives: $106 - $5.80 = $100.20
    *   PayPol sends: 100 AlphaUSD (cost = $100 at 1:1 peg)
-   *   Net profit: $2.10 per $100 transaction
+   *   Net profit: $0.20 per $100 transaction
+   *
+   *   User wants 5 AlphaUSD (min) → charged $6.25 (5 × 1.05 + $1)
+   *   Paddle fee: 5% × $6.25 + $0.50 = $0.81
+   *   PayPol receives: $6.25 - $0.81 = $5.44
+   *   Net profit: $0.44 — never negative at min $5!
    */
-  platformMarkupPercent: 8,
+  platformMarkupPercent: 5,
+  /** Fixed processing fee per transaction (covers Paddle fixed cost + min profit) */
+  platformFixedFee: 1.00,
   /** Paddle estimated fee percent (for UI display only) */
   paddleFeePercent: 5,
   /** Paddle fixed fee per transaction (for UI display only) */
@@ -147,7 +154,7 @@ export async function transferStablecoin(
   amountUSD: number,
 ): Promise<string> {
   const provider = new ethers.JsonRpcProvider(FIAT_CONFIG.rpcUrl);
-  const treasuryKey = process.env.DAEMON_PRIVATE_KEY;
+  const treasuryKey = process.env.DAEMON_PRIVATE_KEY || process.env.BOT_PRIVATE_KEY || process.env.ADMIN_PRIVATE_KEY;
 
   if (!treasuryKey) {
     throw new Error('DAEMON_PRIVATE_KEY not configured for fiat on-ramp');
@@ -169,14 +176,13 @@ export async function transferStablecoin(
     to: FIAT_CONFIG.tokenAddress,
     data,
     type: 0, // Legacy TX for Tempo L1
-    gasLimit: 500_000,
+    // Tempo TIP-20 precompile tokens use ~276k gas for transfer()
+    gasLimit: 800_000,
   });
 
   // Tempo L1 uses custom tx types (0x76) that ethers.js v6 can't parse.
   // tx.wait() may throw "invalid BigNumberish value" when reading receipt.
-  // We need to distinguish between:
-  //   - Parse error (BAD_DATA): tx was mined OK, just can't read receipt → use tx.hash
-  //   - Actual revert (CALL_EXCEPTION): tx failed on chain → throw error
+  // Use verifyTxOnChain() with raw RPC to reliably check status.
   let txHash = tx.hash;
   try {
     const receipt = await tx.wait(1, 15000); // 1 confirmation, 15s timeout
@@ -188,22 +194,10 @@ export async function transferStablecoin(
     const errCode = waitErr?.code || '';
     const errMsg = waitErr?.message || '';
 
-    // If it's a parse/data error from Tempo's custom tx format, tx was likely successful
+    // If it's a parse/data error from Tempo's custom tx format, verify via raw RPC
     if (errCode === 'BAD_DATA' || errMsg.includes('invalid BigNumberish') || errMsg.includes('invalid value for')) {
-      console.warn(`[transferStablecoin] tx.wait() parse error (Tempo custom tx type), using tx.hash: ${txHash}`);
-      // Verify the tx actually succeeded by checking via RPC
-      try {
-        const txReceipt = await provider.send('eth_getTransactionReceipt', [txHash]);
-        if (txReceipt && txReceipt.status === '0x0') {
-          throw new Error(`Transaction reverted on-chain: ${txHash}`);
-        }
-      } catch (rpcErr: any) {
-        // If RPC check also fails with parse error, assume success (tx was mined)
-        if (rpcErr.message?.includes('reverted')) {
-          throw rpcErr;
-        }
-        console.warn(`[transferStablecoin] RPC receipt check failed, assuming tx success: ${txHash}`);
-      }
+      console.warn(`[transferStablecoin] tx.wait() parse error (Tempo custom tx type), verifying via RPC...`);
+      await verifyTxOnChain(txHash, 'ERC20 transfer');
     } else {
       // Actual failure — rethrow
       throw waitErr;
@@ -222,20 +216,26 @@ export function usdToCrypto(amountUSD: number): number {
 // ── Markup & Pricing Calculator ──────────────────────────
 
 /**
- * Calculate the total charge amount with platform markup.
+ * Calculate the total charge amount with platform markup + fixed fee.
  *
  * @param cryptoAmount - How many AlphaUSD the user wants to receive
  * @returns Breakdown of charges
  *
  * Example: cryptoAmount = 100
- *   chargeAmount = 100 × (1 + 8/100) = $108.00
- *   markupAmount = $8.00
- *   estimatedPaddleFee = 5% × $108 + $0.50 = $5.90
- *   estimatedProfit = $108 - $5.90 - $100 = $2.10
+ *   chargeAmount = 100 × (1 + 5/100) + $1.00 = $106.00
+ *   markupAmount = $6.00 (5% + $1)
+ *   estimatedPaddleFee = 5% × $106 + $0.50 = $5.80
+ *   estimatedProfit = $106 - $5.80 - $100 = $0.20
+ *
+ * Example: cryptoAmount = 5 (minimum)
+ *   chargeAmount = 5 × 1.05 + $1.00 = $6.25
+ *   Paddle fee = $0.81
+ *   Profit = $0.44 — always positive at min $5!
  */
 export function calculateMarkup(cryptoAmount: number) {
   const markup = FIAT_CONFIG.platformMarkupPercent;
-  const chargeAmount = +(cryptoAmount * (1 + markup / 100)).toFixed(2);
+  const fixedFee = FIAT_CONFIG.platformFixedFee;
+  const chargeAmount = +(cryptoAmount * (1 + markup / 100) + fixedFee).toFixed(2);
   const markupAmount = +(chargeAmount - cryptoAmount).toFixed(2);
   const estimatedPaddleFee = +(
     chargeAmount * (FIAT_CONFIG.paddleFeePercent / 100) + FIAT_CONFIG.paddleFixedFee
@@ -245,18 +245,20 @@ export function calculateMarkup(cryptoAmount: number) {
   return {
     /** Amount of AlphaUSD user receives */
     cryptoAmount,
-    /** Total USD charged to user's card (includes markup) */
+    /** Total USD charged to user's card (includes markup + fixed fee) */
     chargeAmount,
-    /** Markup added by platform */
+    /** Total fees added by platform (markup % + fixed fee) */
     markupAmount,
     /** Markup percentage */
     markupPercent: markup,
+    /** Fixed processing fee */
+    fixedFee,
     /** Estimated Paddle processing fee */
     estimatedPaddleFee,
     /** Estimated platform net profit */
     estimatedProfit,
-    /** Processing fee label for UI (e.g., "8% processing fee") */
-    feeLabel: `${markup}% processing fee`,
+    /** Processing fee label for UI */
+    feeLabel: `${markup}% + $${fixedFee.toFixed(2)} processing fee`,
   };
 }
 
@@ -315,12 +317,12 @@ export async function generateShieldCommitment(
   recipientWallet: string,
   amountScaled: bigint,
 ): Promise<ShieldCommitmentData> {
-  // Dynamic import circomlibjs (heavy library)
-  const { buildPoseidon } = await import('circomlibjs');
-  const poseidon = await buildPoseidon();
+  // Use cached Poseidon singleton — no WASM rebuild per call
+  const { getPoseidon, generateRandomSecret: genSecret } = await import('./poseidon-cache');
+  const poseidon = await getPoseidon();
 
-  const secret = generateRandomSecret();
-  const nullifier = generateRandomSecret();
+  const secret = genSecret();
+  const nullifier = genSecret();
   const recipientBigInt = BigInt(recipientWallet.toLowerCase()).toString();
 
   // Commitment: Poseidon(secret, nullifier, amount, recipient) — 4 inputs
@@ -406,7 +408,7 @@ export async function depositToShieldVault(
   amountUSD: number,
 ): Promise<{ depositTxHash: string; commitmentData: ShieldCommitmentData }> {
   const provider = new ethers.JsonRpcProvider(FIAT_CONFIG.rpcUrl);
-  const treasuryKey = process.env.DAEMON_PRIVATE_KEY;
+  const treasuryKey = process.env.DAEMON_PRIVATE_KEY || process.env.BOT_PRIVATE_KEY || process.env.ADMIN_PRIVATE_KEY;
 
   if (!treasuryKey) {
     throw new Error('DAEMON_PRIVATE_KEY not configured for Shield deposit');
@@ -429,7 +431,9 @@ export async function depositToShieldVault(
     to: FIAT_CONFIG.tokenAddress,
     data: approveData,
     type: 0,
-    gasLimit: 200_000,
+    // Tempo TIP-20 precompile tokens (0x20c0...) use ~276k gas for approve()
+    // — much higher than standard ERC20 (~46k). Use 800k for safety margin.
+    gasLimit: 800_000,
   });
 
   // Wait for approve + verify via RPC (don't just catch BAD_DATA blindly)
@@ -463,7 +467,10 @@ export async function depositToShieldVault(
     to: SHIELD_V2_ADDRESS,
     data: depositData,
     type: 0,
-    gasLimit: 500_000,
+    // deposit() calls TIP-20 transferFrom() internally (~300k+ gas)
+    // plus storage writes for commitment (~40k). Total can exceed 500k.
+    // Use 1.5M for safety on Tempo's precompile tokens.
+    gasLimit: 1_500_000,
   });
 
   // Wait for deposit + verify via RPC

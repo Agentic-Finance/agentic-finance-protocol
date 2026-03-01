@@ -91,11 +91,60 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
-        const { action, isShielded, batchTxHash } = body;
+        const { action, isShielded, batchTxHash, zkData } = body;
 
         if (action === 'approve') {
-            if (isShielded) {
-                // ZK Shielded mode → Move to PENDING for Daemon to generate ZK proof + execute shieldContract
+            if (isShielded && zkData && Array.isArray(zkData) && zkData.length > 0) {
+                // ═══ REAL ZK Shield Mode (per-employee commitments) ═══
+                // Frontend already deposited to ShieldVaultV2 with unique commitments per employee.
+                // Store each employee's ZK data so daemon can generate proofs.
+                const drafts = await prisma.timeVaultPayload.findMany({
+                    where: { status: "Draft" },
+                    orderBy: { createdAt: 'asc' },
+                });
+
+                for (const draft of drafts) {
+                    // Match zkData to draft by recipient wallet or by order
+                    const match = zkData.find((zk: any) =>
+                        zk.employeeId === draft.id
+                    ) || zkData.find((zk: any) =>
+                        zk.recipient?.toLowerCase() === draft.recipientWallet?.toLowerCase()
+                    );
+
+                    if (match) {
+                        await prisma.timeVaultPayload.update({
+                            where: { id: draft.id },
+                            data: {
+                                status: "PENDING",
+                                isShielded: true,
+                                zkCommitment: match.commitment,
+                                zkProof: JSON.stringify({
+                                    secret: match.secret,
+                                    nullifier: match.nullifier,
+                                    nullifierHash: match.nullifierHash,
+                                    depositTxHash: match.depositTxHash,
+                                    amountScaled: match.amountScaled,
+                                }),
+                            },
+                        });
+                        console.log(`✅ [API] Employee ${draft.recipientWallet?.slice(0, 10)}... → PENDING with real ZK commitment: ${match.commitment?.slice(0, 16)}...`);
+                    } else {
+                        // No matching zkData — mark as PENDING without zkData (daemon generates fresh secrets)
+                        await prisma.timeVaultPayload.update({
+                            where: { id: draft.id },
+                            data: {
+                                status: "PENDING",
+                                isShielded: true,
+                                zkProof: batchTxHash || null,
+                            },
+                        });
+                        console.log(`⚠️ [API] Employee ${draft.recipientWallet?.slice(0, 10)}... → PENDING (no matching zkData, daemon will handle)`);
+                    }
+                }
+                console.log(`✅ [API] Boardroom approved (Real ZK Shield) → ${drafts.length} employees set to PENDING with per-employee commitments.`);
+
+            } else if (isShielded) {
+                // ═══ Legacy ZK Shield Mode (batch — daemon generates secrets) ═══
                 await prisma.timeVaultPayload.updateMany({
                     where: { status: "Draft" },
                     data: {
@@ -104,10 +153,9 @@ export async function PUT(req: Request) {
                         zkProof: batchTxHash || null
                     }
                 });
-                console.log("✅ [API] Boardroom approved (ZK Shield) → PENDING for Daemon ZK execution.");
+                console.log("✅ [API] Boardroom approved (ZK Shield legacy) → PENDING for Daemon ZK execution.");
             } else {
-                // Public mode → On-chain TX already confirmed by frontend (transfer/createJob)
-                // Skip daemon - mark as COMPLETED immediately (no ZK proof needed)
+                // ═══ Public Mode → On-chain TX already confirmed by frontend ═══
                 await prisma.timeVaultPayload.updateMany({
                     where: { status: "Draft" },
                     data: {
@@ -119,14 +167,14 @@ export async function PUT(req: Request) {
                 console.log("✅ [API] Boardroom approved (Public) → COMPLETED directly. TX already on-chain.");
             }
         } else if (action === 'cancel_vault') {
-            await prisma.timeVaultPayload.deleteMany({ 
-                where: { status: { in: ["Draft", "PENDING", "PROCESSING", "Vaulted"] } } 
+            await prisma.timeVaultPayload.deleteMany({
+                where: { status: { in: ["Draft", "PENDING", "PROCESSING", "Vaulted"] } }
             });
         }
         return NextResponse.json({ success: true });
-    } catch (error) { 
+    } catch (error) {
         console.error("❌ [PUT] Error:", error);
-        return NextResponse.json({ success: false }, { status: 500 }); 
+        return NextResponse.json({ success: false }, { status: 500 });
     }
 }
 

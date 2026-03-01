@@ -572,6 +572,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onReject={handleRejectDeal}
                                 confirmationRef={confirmationRef}
                                 isLoading={isConfirmingDeal}
+                                walletAddress={walletAddress}
                             />
                         )}
 

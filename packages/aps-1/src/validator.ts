@@ -1,8 +1,14 @@
 /**
- * APS-1 Validator
+ * APS-1 Validator v2.0
  *
  * Runtime validation schemas for APS-1 protocol messages.
  * Uses Zod for type-safe validation of manifests, execution envelopes, and results.
+ *
+ * v2.0 additions:
+ * - A2A context validation
+ * - Error code validation
+ * - Event validation
+ * - Protocol config validation
  */
 
 import { z } from 'zod';
@@ -16,6 +22,7 @@ const isoTimestamp = z.string().datetime({ message: 'Must be ISO 8601 timestamp'
 const categorySchema = z.enum([
   'security', 'escrow', 'payments', 'streams', 'analytics',
   'deployment', 'privacy', 'verification', 'orchestration', 'payroll', 'admin',
+  'defi', 'compliance', 'automation',
 ]);
 
 const paymentMethodSchema = z.enum(['nexus-escrow', 'stream-milestone', 'direct-transfer']);
@@ -26,10 +33,13 @@ const tokenConfigSchema = z.object({
   decimals: z.number().int().min(0).max(18),
 });
 
+const reputationTierSchema = z.enum(['newcomer', 'rising', 'trusted', 'elite', 'legend']);
+const securityDepositTierSchema = z.enum(['none', 'bronze', 'silver', 'gold']);
+
 // ── APS-1 Manifest Schema ──────────────────────────────────
 
 export const APS1ManifestSchema = z.object({
-  aps: z.literal('1.0'),
+  aps: z.enum(['1.0', '2.0']),
   id: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/, 'Must be kebab-case'),
   name: z.string().min(1).max(128),
   description: z.string().min(1).max(1024),
@@ -47,13 +57,18 @@ export const APS1ManifestSchema = z.object({
   supportedTokens: z.array(tokenConfigSchema).min(1),
   proofEnabled: z.boolean(),
   reputationScore: z.number().int().min(0).max(10000).optional(),
+  reputationTier: reputationTierSchema.optional(),
   walletAddress: ethAddress,
+  securityDepositTier: securityDepositTierSchema.optional(),
+  a2aEnabled: z.boolean().optional(),
   endpoints: z.object({
     manifest: z.string().url(),
     execute: z.string().url(),
     negotiate: z.string().url().optional(),
     status: z.string().url().optional(),
     health: z.string().url().optional(),
+    a2aExecute: z.string().url().optional(),
+    events: z.string().url().optional(),
   }),
   metadata: z.record(z.unknown()).optional(),
 });
@@ -66,6 +81,8 @@ export const APS1NegotiationSchema = z.object({
   price: z.number().min(0),
   currency: z.literal('USD'),
   message: z.string().max(1024).optional(),
+  maxRounds: z.number().int().min(1).max(20).optional(),
+  round: z.number().int().min(1).optional(),
   timestamp: isoTimestamp,
 });
 
@@ -83,6 +100,16 @@ export const APS1EscrowParamsSchema = z.object({
     amount: z.string().min(1),
     deliverable: z.string().min(1).max(512),
   })).optional(),
+});
+
+// ── A2A Context Schema (v2.0) ──────────────────────────────
+
+export const APS1A2AContextSchema = z.object({
+  parentJobId: z.string().min(1),
+  parentAgentId: z.string().min(1),
+  depth: z.number().int().min(0).max(5),
+  budgetAllocation: z.number().min(0),
+  a2aChainId: z.string().min(1),
 });
 
 // ── APS-1 Execution Envelope Schema ────────────────────────
@@ -104,10 +131,13 @@ export const APS1ExecutionEnvelopeSchema = z.object({
     commitmentId: bytes32,
     commitTxHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   }).optional(),
+  a2a: APS1A2AContextSchema.optional(),
   timestamp: isoTimestamp,
 });
 
 // ── APS-1 Result Schema ────────────────────────────────────
+
+const errorCodeSchema = z.string().regex(/^APS1_\d{4}$/, 'Must be APS1_XXXX format');
 
 export const APS1ResultSchema = z.object({
   jobId: z.string().min(1),
@@ -115,6 +145,7 @@ export const APS1ResultSchema = z.object({
   status: z.enum(['success', 'error', 'pending']),
   result: z.unknown().optional(),
   error: z.string().optional(),
+  errorCode: errorCodeSchema.optional(),
   onChain: z.object({
     executed: z.boolean(),
     transactions: z.array(z.object({
@@ -132,6 +163,15 @@ export const APS1ResultSchema = z.object({
     verifyTxHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
     matched: z.boolean(),
   }).optional(),
+  a2a: z.object({
+    childJobs: z.array(z.object({
+      jobId: z.string().min(1),
+      agentId: z.string().min(1),
+      status: z.enum(['success', 'error', 'pending']),
+      executionTimeMs: z.number().int().min(0),
+    })),
+    a2aChainId: z.string().min(1),
+  }).optional(),
   executionTimeMs: z.number().int().min(0),
   timestamp: isoTimestamp,
 });
@@ -145,6 +185,37 @@ export const APS1SettlementSchema = z.object({
   platformFee: z.string(),
   txHash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   timestamp: isoTimestamp,
+});
+
+// ── APS-1 Event Schema (v2.0) ──────────────────────────────
+
+export const APS1EventSchema = z.object({
+  type: z.string().min(1),
+  jobId: z.string(),
+  agentId: z.string(),
+  data: z.record(z.unknown()),
+  timestamp: isoTimestamp,
+});
+
+// ── Protocol Config Schema (v2.0) ──────────────────────────
+
+export const APS1ProtocolConfigSchema = z.object({
+  chainId: z.number().int(),
+  network: z.string().min(1),
+  rpcUrl: z.string().url(),
+  explorerUrl: z.string().url(),
+  platformFeeBps: z.number().int().min(0).max(3000),
+  contracts: z.object({
+    nexusV2: ethAddress,
+    shieldVaultV2: ethAddress.optional(),
+    multisendV2: ethAddress.optional(),
+    aiProofRegistry: ethAddress.optional(),
+    streamV1: ethAddress.optional(),
+    reputation: ethAddress.optional(),
+    securityDeposit: ethAddress.optional(),
+  }),
+  defaultToken: tokenConfigSchema,
+  supportedTokens: z.array(tokenConfigSchema).min(1),
 });
 
 // ── Validation Functions ───────────────────────────────────
@@ -190,4 +261,19 @@ export function validateNegotiation(data: unknown) {
 /** Validate an APS-1 settlement event */
 export function validateSettlement(data: unknown) {
   return validate(APS1SettlementSchema, data);
+}
+
+/** Validate an APS-1 lifecycle event */
+export function validateEvent(data: unknown) {
+  return validate(APS1EventSchema, data);
+}
+
+/** Validate APS-1 A2A context */
+export function validateA2AContext(data: unknown) {
+  return validate(APS1A2AContextSchema, data);
+}
+
+/** Validate APS-1 protocol configuration */
+export function validateProtocolConfig(data: unknown) {
+  return validate(APS1ProtocolConfigSchema, data);
 }

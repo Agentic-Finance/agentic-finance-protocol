@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 
-import { PAYPOL_NEXUS_ADDRESS, PAYPOL_MULTISEND_ADDRESS, PAYPOL_SHIELD_ADDRESS, PAYPOL_NEXUS_V2_ADDRESS, NEXUS_ABI, NEXUS_V2_ABI, ERC20_ABI, RPC_URL, SUPPORTED_TOKENS } from './lib/constants';
+import { PAYPOL_NEXUS_ADDRESS, PAYPOL_MULTISEND_ADDRESS, PAYPOL_SHIELD_ADDRESS, PAYPOL_SHIELD_V2_ADDRESS, PAYPOL_NEXUS_V2_ADDRESS, PAYPOL_TREASURY_WALLET, NEXUS_ABI, NEXUS_V2_ABI, SHIELD_V2_ABI, ERC20_ABI, RPC_URL, SUPPORTED_TOKENS } from './lib/constants';
 
 // Direct imports for critical above-the-fold components
 import Navbar from './components/Navbar';
@@ -122,12 +122,12 @@ export default function Dashboard() {
     );
 
     const protocolFeeNum = useMemo(() =>
-        Math.min(awaitingTotalAmountNum * 0.002, 5.00),
+        Math.min(awaitingTotalAmountNum * 0.002, 5.00), // Protocol fee 0.2% max $5
         [awaitingTotalAmountNum]
     );
 
     const shieldFeeNum = useMemo(() =>
-        usePhantomShield ? Math.min(awaitingTotalAmountNum * 0.002, 5.00) : 0,
+        usePhantomShield ? Math.min(awaitingTotalAmountNum * 0.005, 10.00) : 0, // Shield 0.5% max $10
         [usePhantomShield, awaitingTotalAmountNum]
     );
 
@@ -432,7 +432,9 @@ export default function Dashboard() {
 
             const totalRequiredAmount = awaitingTotalAmountNum;
             const amountInUnits = ethers.parseUnits(totalRequiredAmount.toFixed(tokenDecimals), tokenDecimals);
-            const targetVault = usePhantomShield ? PAYPOL_SHIELD_ADDRESS : PAYPOL_MULTISEND_ADDRESS;
+            // Shield deposits now go through ShieldVaultV2.deposit() directly (handled in the shield branch below)
+            // Public transfers go to MultisendVault as before
+            const targetVault = PAYPOL_MULTISEND_ADDRESS;
 
             let activeTxHash = "";
 
@@ -492,13 +494,115 @@ export default function Dashboard() {
                     });
                 }
                 showToast('success', 'Escrow locked on-chain! Agent will begin work.');
+            } else if (usePhantomShield) {
+                // ═══ REAL ZK Shield: ShieldVaultV2 Deposit Flow ═══
+                // 1. Generate Poseidon commitments per employee via Shield API
+                // 2. Approve ShieldVaultV2 to spend tokens
+                // 3. Deposit to ShieldVaultV2 with real cryptographic commitment
+                // 4. Daemon picks up PENDING → generates ZK proof → executeShieldedPayout
+
+                showToast('success', `Generating ZK commitments for ${awaitingTxs.length} employee(s)...`);
+
+                // Step 1: Generate commitments for ALL employees via server API
+                const zkCommitments: Array<{
+                    commitment: string; nullifierHash: string; secret: string; nullifier: string;
+                    amountScaled: string; employeeId: string; amount: number; recipient: string;
+                }> = [];
+
+                for (const tx of awaitingTxs) {
+                    const recipient = tx.wallet_address || tx.address || tx.recipientWallet || tx.wallet;
+                    if (!recipient || !/^0x[a-fA-F0-9]{40}$/.test(recipient)) {
+                        throw new Error(`Invalid recipient address: ${recipient}. Cannot create ZK commitment.`);
+                    }
+                    const res = await fetch('/api/shield', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            action: 'generate_commitment',
+                            amount: tx.amount,
+                            recipient,
+                            tokenDecimals: tokenDecimals,
+                        })
+                    });
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.error || 'Failed to generate ZK commitment');
+                    zkCommitments.push({
+                        ...data,
+                        employeeId: tx.id,
+                        amount: tx.amount,
+                        recipient,
+                    });
+                }
+
+                // Step 2: Approve ShieldVaultV2 to spend total amount (1 MetaMask popup)
+                showToast('success', 'Step 1: Approving token spend for Shield Vault...');
+                const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
+                const approveTx = await tokenContract.approve(PAYPOL_SHIELD_V2_ADDRESS, amountInUnits, { gasLimit: 800_000 });
+                try { await approveTx.wait(); } catch (e: any) {
+                    // Tempo TIP-20 parse error — check if TX actually succeeded
+                    if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                        console.warn('[ZK Shield] approve tx.wait() parse error (Tempo), assuming success');
+                    } else { throw e; }
+                }
+
+                // Step 3: Deposit for each employee with unique commitment
+                const depositTxHashes: string[] = [];
+                for (let i = 0; i < zkCommitments.length; i++) {
+                    const zk = zkCommitments[i];
+                    showToast('success', `Step 2: Shield Deposit (${i + 1}/${zkCommitments.length})...`);
+                    const empAmount = ethers.parseUnits(Number(zk.amount).toFixed(tokenDecimals), tokenDecimals);
+                    const shieldVault = new ethers.Contract(PAYPOL_SHIELD_V2_ADDRESS, SHIELD_V2_ABI, signer);
+                    const depositTx = await shieldVault.deposit(zk.commitment, empAmount, { gasLimit: 1_500_000 });
+                    depositTxHashes.push(depositTx.hash);
+                    try { await depositTx.wait(); } catch (e: any) {
+                        if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                            console.warn(`[ZK Shield] deposit ${i + 1} tx.wait() parse error (Tempo), assuming success`);
+                        } else { throw e; }
+                    }
+                }
+
+                activeTxHash = depositTxHashes[0];
+
+                // Step 4: Pass per-employee zkData to employees API
+                const zkDataForApi = zkCommitments.map((zk, i) => ({
+                    employeeId: zk.employeeId,
+                    commitment: zk.commitment,
+                    nullifierHash: zk.nullifierHash,
+                    secret: zk.secret,
+                    nullifier: zk.nullifier,
+                    depositTxHash: depositTxHashes[i],
+                    amountScaled: zk.amountScaled,
+                }));
+
+                // Store ZK data via employees API
+                await fetch('/api/employees', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'approve',
+                        isShielded: true,
+                        batchTxHash: activeTxHash,
+                        zkData: zkDataForApi,
+                    })
+                });
+
+                setAwaitingTxs([]);
+                await fetchData();
+                setTimeout(() => document.getElementById('escrow-vault-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                showToast('success', `${zkCommitments.length} Shield deposit(s) confirmed! Daemon will generate ZK proofs.`);
+                return; // Skip the generic PUT call below
             } else {
+                // ═══ Public Transfer (No Shield) ═══
                 showToast('success', `Depositing ${totalRequiredAmount} AlphaUSD to Vault...`);
                 const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-                const txResponse = await tokenContract.transfer(targetVault, amountInUnits);
+                const txResponse = await tokenContract.transfer(PAYPOL_MULTISEND_ADDRESS, amountInUnits, { gasLimit: 800_000 });
                 activeTxHash = txResponse.hash;
-                await txResponse.wait();
-                showToast('success', 'Deposit confirmed! Waking up Daemon...');
+                try { await txResponse.wait(); } catch (e: any) {
+                    if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                        console.warn('[Public] transfer tx.wait() parse error (Tempo), assuming success');
+                    } else { throw e; }
+                }
+                showToast('success', 'Deposit confirmed!');
             }
 
             await fetch('/api/employees', {

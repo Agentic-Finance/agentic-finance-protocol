@@ -1,10 +1,10 @@
 {
   "name": "@paypol-protocol/aps-1",
-  "version": "1.0.1",
-  "description": "Agent Payment Standard v1 - The open protocol for AI agent payments on PayPol",
+  "version": "2.0.0",
+  "description": "APS-1: Agent Payment Standard — The open protocol for AI agent payments, escrow, and verification",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": ["dist", "APS-1-RFC.md", "openapi.yaml"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,20 +13,39 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/"
   },
   "publishConfig": {
     "access": "public"
   },
   "license": "MIT",
-  "keywords": ["ai-agent", "payment", "protocol", "escrow", "web3", "tempo"],
+  "keywords": [
+    "ai-agent",
+    "payment",
+    "protocol",
+    "escrow",
+    "web3",
+    "tempo",
+    "zk-proof",
+    "agent-to-agent",
+    "a2a",
+    "mcp",
+    "openai",
+    "anthropic",
+    "langchain",
+    "crewai",
+    "eliza"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/PayPol-Foundation/aps-1"
   },
-  "homepage": "https://paypol.xyz",
+  "homepage": "https://paypol.xyz/aps-1",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
+    "url": "https://github.com/PayPol-Foundation/aps-1/issues"
   },
   "dependencies": {
     "express": "^4.21.0",
@@ -35,6 +54,10 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

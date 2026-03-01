@@ -70,8 +70,8 @@ export function negotiate(budget: number, agent: AgentProfile): NegotiationResul
     // Round 4: Final agreement (split the remaining difference)
     const finalAgentPay = Math.round(((round3Offer + round2Counter) / 2) * 100) / 100;
 
-    // Platform fee: 8% of agent pay
-    const platformFee = Math.round(finalAgentPay * 0.08 * 100) / 100;
+    // Platform fee: 5% of agent pay (reducible to 2% with Gold Security Deposit)
+    const platformFee = Math.round(finalAgentPay * 0.05 * 100) / 100;
     const finalPrice = Math.round((finalAgentPay + platformFee) * 100) / 100;
     const savings = Math.round((effectiveBudget - finalPrice) * 100) / 100;
 

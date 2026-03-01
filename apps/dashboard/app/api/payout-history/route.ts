@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { apiSuccess, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 
 export const dynamic = 'force-dynamic';
@@ -26,9 +26,8 @@ export async function GET() {
             zkCommitment: tx.zkCommitment 
         }));
 
-        return NextResponse.json(formattedHistory);
+        return apiSuccess({ data: formattedHistory });
     } catch (error: any) {
-        console.error("History fetch error:", error);
-        return NextResponse.json({ error: "Failed to fetch history" }, { status: 500 });
+        return logAndReturn("PAYOUT_HISTORY", error, "Failed to fetch history");
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface BoardroomProps {
-    boardroomRef: any; 
+    boardroomRef: React.RefObject<HTMLDivElement | null>;
     awaitingTxs: any[]; 
     isAdmin: boolean; 
     usePhantomShield: boolean; 
@@ -87,7 +87,7 @@ function Boardroom(props: BoardroomProps) {
 
                 {/* Queue Table */}
                 <div className="overflow-x-auto relative z-10 mb-8">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse" aria-label="Pending payroll transactions">
                         <thead>
                             <tr className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-white/5">
                                 <th className="pb-4 pl-3">Recipient</th>

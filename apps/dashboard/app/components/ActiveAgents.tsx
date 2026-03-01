@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ActiveAgentsProps {
-    autopilotRef: any; autopilotRules: any[]; isAdmin: boolean; triggerAutopilotAgent: (id: number, ruleName: string) => void; toggleAutopilotState: (id: number, status: string) => void; deleteAutopilotAgent: (id: number) => void;
+    autopilotRef: React.RefObject<HTMLDivElement | null>; autopilotRules: any[]; isAdmin: boolean; triggerAutopilotAgent: (id: number, ruleName: string) => void; toggleAutopilotState: (id: number, status: string) => void; deleteAutopilotAgent: (id: number) => void;
 }
 
 function ActiveAgents(props: ActiveAgentsProps) {
@@ -36,10 +36,10 @@ function ActiveAgents(props: ActiveAgentsProps) {
                                 {props.isAdmin && (
                                     <div className="flex flex-wrap gap-2">
                                         {rule.status === 'Active' && (
-                                            <button onClick={() => props.triggerAutopilotAgent(rule.id, rule.name)} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-indigo-500/10 text-indigo-400 border-indigo-500/30 hover:bg-indigo-500/20">⚡ Execute</button>
+                                            <button onClick={() => props.triggerAutopilotAgent(rule.id, rule.name)} className="text-xs font-bold px-3 py-2 rounded-lg border bg-indigo-500/10 text-indigo-400 border-indigo-500/30 hover:bg-indigo-500/20">⚡ Execute</button>
                                         )}
-                                        <button onClick={() => props.toggleAutopilotState(rule.id, rule.status)} aria-label={rule.status === 'Active' ? 'Pause agent' : 'Resume agent'} className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-white/5 text-slate-300 border-white/10 hover:bg-white/10">{rule.status === 'Active' ? '⏸' : '▶'}</button>
-                                        <button onClick={() => props.deleteAutopilotAgent(rule.id)} aria-label="Delete agent" className="text-xs font-bold px-3 py-1.5 rounded-lg border bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20">✕</button>
+                                        <button onClick={() => props.toggleAutopilotState(rule.id, rule.status)} aria-label={rule.status === 'Active' ? 'Pause agent' : 'Resume agent'} className="text-xs font-bold px-3 py-2 rounded-lg border bg-white/5 text-slate-300 border-white/10 hover:bg-white/10">{rule.status === 'Active' ? '⏸' : '▶'}</button>
+                                        <button onClick={() => props.deleteAutopilotAgent(rule.id)} aria-label="Delete agent" className="text-xs font-bold px-3 py-2 rounded-lg border bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20">✕</button>
                                     </div>
                                 )}
                             </div>

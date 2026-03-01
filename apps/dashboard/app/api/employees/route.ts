@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { apiSuccess, apiError, safeParseFloat, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 export const dynamic = 'force-dynamic';
 
@@ -28,16 +28,14 @@ export async function GET(req: Request) {
             zkProof: item.zkProof 
         });
 
-        return NextResponse.json({
-            success: true,
+        return apiSuccess({
             pending: pending.map(mapToFrontend),
             awaiting: pending.map(mapToFrontend),
             // Send everything that is currently processing or completed
             vaulted: payloads.filter((p: any) => p.status === "PENDING" || p.status === "PROCESSING" || p.status === "COMPLETED").map(mapToFrontend)
         });
     } catch (error) {
-        console.error("❌ [GET] Fetch Error:", error);
-        return NextResponse.json({ success: false, error: "Database error" }, { status: 500 });
+        return logAndReturn("EMPLOYEES_GET", error, "Database error");
     }
 }
 
@@ -66,7 +64,7 @@ export async function POST(req: Request) {
                     workspaceId: defaultWorkspace!.id,
                     name: intent.name || "Unknown Entity",
                     recipientWallet: intent.wallet || intent.wallet_address || "0x0000000000000000000000000000000000000000",
-                    amount: parseFloat(intent.amount) || 0,
+                    amount: safeParseFloat(intent.amount),
                     token: intent.token || "AlphaUSD",
                     note: intent.note || "",
                     isDiscovery: intent.isDiscovery || false,
@@ -77,11 +75,10 @@ export async function POST(req: Request) {
 
         await prisma.$transaction(operations);
         console.log("✅ [API] Draft saved to Boardroom successfully!");
-        return NextResponse.json({ success: true });
+        return apiSuccess({});
         
     } catch (error: any) {
-        console.error("🚨 [API] Boardroom Ingestion Error:", error.message || error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return logAndReturn("EMPLOYEES_POST", error, "Failed to save draft to Boardroom");
     }
 }
 
@@ -171,10 +168,9 @@ export async function PUT(req: Request) {
                 where: { status: { in: ["Draft", "PENDING", "PROCESSING", "Vaulted"] } }
             });
         }
-        return NextResponse.json({ success: true });
+        return apiSuccess({});
     } catch (error) {
-        console.error("❌ [PUT] Error:", error);
-        return NextResponse.json({ success: false }, { status: 500 });
+        return logAndReturn("EMPLOYEES_PUT", error, "Failed to process state transition");
     }
 }
 
@@ -184,11 +180,11 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
     try {
         const { id } = await req.json();
-        if (!id) return NextResponse.json({ success: false }, { status: 400 });
-        
+        if (!id) return apiError("Missing payload ID", 400);
+
         await prisma.timeVaultPayload.delete({ where: { id: String(id) } });
-        return NextResponse.json({ success: true });
-    } catch (error) { 
-        return NextResponse.json({ success: false }, { status: 500 }); 
+        return apiSuccess({});
+    } catch (error) {
+        return logAndReturn("EMPLOYEES_DELETE", error, "Failed to delete payload");
     }
 }

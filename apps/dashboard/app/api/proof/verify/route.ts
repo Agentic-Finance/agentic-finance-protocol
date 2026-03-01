@@ -20,15 +20,9 @@
  * }
  */
 
-import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
-
-const RPC_URL = 'https://rpc.moderato.tempo.xyz';
-const AI_PROOF_REGISTRY_ADDRESS = '0x8fDB8E871c9eaF2955009566F41490Bbb128a014';
-
-const AI_PROOF_REGISTRY_ABI = [
-  'function getCommitment(uint256 commitmentId) view returns (address committer, bytes32 planHash, bytes32 resultHash, uint256 nexusJobId, bool verified, bool matched, bool slashed, uint256 timestamp)',
-];
+import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app/lib/constants';
+import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 
 export async function GET(request: Request) {
   try {
@@ -36,16 +30,16 @@ export async function GET(request: Request) {
     const idParam = searchParams.get('id');
 
     if (!idParam) {
-      return NextResponse.json({ error: 'Missing ?id=<commitmentId>' }, { status: 400 });
+      return apiError('Missing ?id=<commitmentId>', 400);
     }
 
     const commitmentId = parseInt(idParam, 10);
     if (isNaN(commitmentId) || commitmentId < 0) {
-      return NextResponse.json({ error: 'Invalid commitment ID' }, { status: 400 });
+      return apiError('Invalid commitment ID', 400);
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
-    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, provider);
+    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, [...AI_PROOF_REGISTRY_ABI], provider);
 
     const commitment = await registry.getCommitment(commitmentId);
 
@@ -65,7 +59,7 @@ export async function GET(request: Request) {
     else if (verified && !matched) status = 'verified-mismatch';
     else status = 'pending';
 
-    return NextResponse.json({
+    return apiSuccess({
       commitmentId,
       committer,
       planHash,
@@ -81,10 +75,6 @@ export async function GET(request: Request) {
       chainId: 42431,
     });
   } catch (error: any) {
-    console.error('[ProofVerify] Error:', error.message);
-    return NextResponse.json(
-      { error: 'Failed to verify commitment', details: error.message },
-      { status: 500 },
-    );
+    return logAndReturn('ProofVerify', error, 'Failed to verify commitment');
   }
 }

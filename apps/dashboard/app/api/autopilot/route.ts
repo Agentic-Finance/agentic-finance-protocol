@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { apiSuccess, apiError, safeParseFloat, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 
 // Fetch all autopilot rules to display in the UI
@@ -8,10 +8,9 @@ export async function GET(req: Request) {
             orderBy: { createdAt: 'desc' }
         });
         
-        return NextResponse.json(rules);
+        return apiSuccess({ data: rules });
     } catch (error) {
-        console.error("Fetch Error:", error);
-        return NextResponse.json({ success: false, error: "Failed to fetch rules" }, { status: 500 });
+        return logAndReturn("AUTOPILOT_GET", error, "Failed to fetch rules");
     }
 }
 
@@ -28,7 +27,7 @@ export async function POST(req: Request) {
                 data: {
                     name: p.name || "Anonymous",
                     wallet_address: p.wallet,
-                    amount: parseFloat(p.amount),
+                    amount: safeParseFloat(p.amount),
                     token: p.token || "AlphaUSD",
                     schedule: p.schedule,
                     note: p.note || "",
@@ -39,11 +38,10 @@ export async function POST(req: Request) {
 
         // Insert all records in a single transaction
         await prisma.$transaction(operations);
-        return NextResponse.json({ success: true });
-        
+        return apiSuccess({});
+
     } catch (error) {
-        console.error("Ingestion Error:", error);
-        return NextResponse.json({ success: false, error: "Failed to deploy agent" }, { status: 500 });
+        return logAndReturn("AUTOPILOT_POST", error, "Failed to deploy agent");
     }
 }
 
@@ -53,7 +51,7 @@ export async function PUT(req: Request) {
         const { id, action } = await req.json();
 
         if (!id) {
-            return NextResponse.json({ success: false, error: "Missing Agent ID" }, { status: 400 });
+            return apiError("Missing Agent ID", 400);
         }
 
         // --- NEW: Trigger a manual cycle into The Boardroom ---
@@ -79,7 +77,7 @@ export async function PUT(req: Request) {
                 }
             });
 
-            return NextResponse.json({ success: true, message: "Cycle triggered to Boardroom" });
+            return apiSuccess({ message: "Cycle triggered to Boardroom" });
         }
 
         // --- EXISTING: Pause or Resume ---
@@ -89,10 +87,9 @@ export async function PUT(req: Request) {
             data: { status: newStatus }
         });
 
-        return NextResponse.json({ success: true, message: `Agent ${newStatus}` });
+        return apiSuccess({ message: `Agent ${newStatus}` });
     } catch (error) {
-        console.error("State Mutation Error:", error);
-        return NextResponse.json({ success: false, error: "Failed to process agent action" }, { status: 500 });
+        return logAndReturn("AUTOPILOT_PUT", error, "Failed to process agent action");
     }
 }
 
@@ -102,16 +99,15 @@ export async function DELETE(req: Request) {
         const { id } = await req.json();
 
         if (!id) {
-            return NextResponse.json({ success: false, error: "Missing Agent ID" }, { status: 400 });
+            return apiError("Missing Agent ID", 400);
         }
 
         await prisma.autopilotRule.delete({
             where: { id: Number(id) }
         });
 
-        return NextResponse.json({ success: true, message: "Agent wiped from memory." });
+        return apiSuccess({ message: "Agent wiped from memory." });
     } catch (error) {
-        console.error("Termination Error:", error);
-        return NextResponse.json({ success: false, error: "Failed to terminate agent" }, { status: 500 });
+        return logAndReturn("AUTOPILOT_DELETE", error, "Failed to terminate agent");
     }
 }

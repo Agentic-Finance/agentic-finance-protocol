@@ -37,6 +37,11 @@ model TimeVaultPayload {
   status          String   @default("Draft")
   createdAt       DateTime @default(now())
   workspace       Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@index([status])
+  @@index([status, isShielded])
+  @@index([workspaceId])
+  @@index([recipientWallet])
 }
 
 model AgentJob {
@@ -69,4 +74,9 @@ model AgentJob {
   commitTxHash    String?
   verifyTxHash    String?
   proofMatched    Boolean?
+
+  @@index([status])
+  @@index([onChainJobId])
+  @@index([deadline])
+  @@index([clientWallet])
 }

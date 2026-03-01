@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { apiSuccess, apiError, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 
 export async function GET() {
@@ -59,10 +59,9 @@ export async function GET() {
             };
         });
 
-        return NextResponse.json({ success: true, escrows: formattedEscrows });
+        return apiSuccess({ escrows: formattedEscrows });
     } catch (error: any) {
-        console.error("[ESCROW_GET_ERROR]:", error);
-        return NextResponse.json({ success: false, error: "Failed to fetch escrows" }, { status: 500 });
+        return logAndReturn("ESCROW_GET", error, "Failed to fetch escrows");
     }
 }
 
@@ -71,7 +70,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { id, action, reason, txHash, agentJobId } = body;
 
-        if (!id) return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+        if (!id) return apiError("Missing ID", 400);
 
         // Action: Company Director raises a dispute against the Neural Agent
         if (action === 'dispute') {
@@ -86,7 +85,7 @@ export async function POST(req: Request) {
                     data: { status: 'DISPUTED', disputeReason: reason || 'Employer dispute' }
                 });
             }
-            return NextResponse.json({ success: true, message: 'Transaction disputed successfully.' });
+            return apiSuccess({ message: 'Transaction disputed successfully.' });
         }
 
         // Action: PayPol Arbitrator rules in favor of the Agent (Pay the Agent)
@@ -102,7 +101,7 @@ export async function POST(req: Request) {
                     data: { status: 'SETTLED', settleTxHash: txHash || null }
                 });
             }
-            return NextResponse.json({ success: true, message: 'Funds released to Agent.' });
+            return apiSuccess({ message: 'Funds released to Agent.' });
         }
 
         // Action: PayPol Arbitrator rules in favor of the Company (Return funds to Company)
@@ -118,12 +117,11 @@ export async function POST(req: Request) {
                     data: { status: 'REFUNDED', settleTxHash: txHash || null }
                 });
             }
-            return NextResponse.json({ success: true, message: 'Funds refunded to Company.' });
+            return apiSuccess({ message: 'Funds refunded to Company.' });
         }
 
-        return NextResponse.json({ success: false, error: "Invalid action" }, { status: 400 });
+        return apiError("Invalid action", 400);
     } catch (error: any) {
-        console.error("[ESCROW_POST_ERROR]:", error);
-        return NextResponse.json({ success: false, error: "Database Error: " + error.message }, { status: 500 });
+        return logAndReturn("ESCROW_POST", error, "Failed to process escrow action");
     }
 }

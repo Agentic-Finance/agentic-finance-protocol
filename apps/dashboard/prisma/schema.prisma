@@ -40,6 +40,11 @@ model TimeVaultPayload {
   status          String   @default("Draft")
   createdAt       DateTime @default(now())
   workspace       Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@index([status])
+  @@index([status, isShielded])
+  @@index([workspaceId])
+  @@index([recipientWallet])
 }
 
 // Employee Payroll (replaces legacy sqlite employees table)
@@ -164,6 +169,11 @@ model AgentJob {
   commitTxHash    String?   // TX hash of on-chain commitment
   verifyTxHash    String?   // TX hash of on-chain verification
   proofMatched    Boolean?  // Did planHash match resultHash?
+
+  @@index([status])
+  @@index([onChainJobId])
+  @@index([deadline])
+  @@index([clientWallet])
 }
 
 // Post-job reviews and ratings

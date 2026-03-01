@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 
 export async function GET() {
@@ -22,9 +22,7 @@ export async function GET() {
     const transactionCount = aggregates._count.id;
     const avgPayout = transactionCount > 0 ? totalVolume / transactionCount : 0;
 
-    return NextResponse.json(
-      {
-        success: true,
+    const response = apiSuccess({
         stats: {
           totalShieldedVolume: totalVolume.toLocaleString(),
           totalExecutions: transactionCount,
@@ -32,17 +30,10 @@ export async function GET() {
           active24h: last24hCount,
           networkIntegrity: "99.9%", // Simulated ZK-Proof success rate
         },
-      },
-      {
-        headers: {
-          "Cache-Control": "s-maxage=10, stale-while-revalidate=30",
-        },
-      }
-    );
+      });
+    response.headers.set("Cache-Control", "s-maxage=10, stale-while-revalidate=30");
+    return response;
   } catch (error) {
-    return NextResponse.json(
-      { success: false, error: "Failed to fetch stats" },
-      { status: 500 }
-    );
+    return apiError("Failed to fetch stats", 500);
   }
 }

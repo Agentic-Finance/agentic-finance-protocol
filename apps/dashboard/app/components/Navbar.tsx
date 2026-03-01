@@ -91,6 +91,7 @@ function Navbar({
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className="lg:hidden flex items-center justify-center w-8 h-8 rounded-lg hover:bg-white/[0.06] transition-colors"
                                 aria-label="Toggle navigation menu"
+                                aria-expanded={mobileMenuOpen}
                             >
                                 {mobileMenuOpen ? (
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-300">
@@ -109,9 +110,9 @@ function Navbar({
                         </Link>
 
                         {currentWorkspace && (
-                            <div className="hidden md:flex items-center gap-2 px-2.5 py-1 bg-white/[0.04] border border-white/[0.06] rounded-lg">
+                            <div className="flex items-center gap-2 px-2 py-1 bg-white/[0.04] border border-white/[0.06] rounded-lg">
                                 <span className="text-xs">{currentWorkspace.type === 'Organization' ? '🏢' : '👤'}</span>
-                                <span className="text-xs font-semibold text-slate-300 max-w-[100px] truncate">{currentWorkspace.name}</span>
+                                <span className="text-xs font-semibold text-slate-300 max-w-[60px] sm:max-w-[100px] truncate">{currentWorkspace.name}</span>
                             </div>
                         )}
                     </div>
@@ -190,7 +191,7 @@ function Navbar({
 
             {/* ─── Mobile Navigation Drawer ─── */}
             {walletAddress && mobileMenuOpen && (
-                <div className="lg:hidden fixed inset-0 z-40" onClick={() => setMobileMenuOpen(false)}>
+                <div className="lg:hidden fixed inset-0 z-40" role="dialog" aria-modal="true" aria-label="Navigation menu" onClick={() => setMobileMenuOpen(false)}>
                     {/* Overlay */}
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
                     {/* Menu */}

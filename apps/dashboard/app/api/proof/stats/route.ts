@@ -18,16 +18,9 @@
  * }
  */
 
-import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
-
-const RPC_URL = 'https://rpc.moderato.tempo.xyz';
-const AI_PROOF_REGISTRY_ADDRESS = '0x8fDB8E871c9eaF2955009566F41490Bbb128a014';
-
-const AI_PROOF_REGISTRY_ABI = [
-  'function getStats() view returns (uint256 totalCommitments, uint256 totalVerified, uint256 totalMatched, uint256 totalMismatched, uint256 totalSlashed)',
-  'function getCommitment(uint256 commitmentId) view returns (address committer, bytes32 planHash, bytes32 resultHash, uint256 nexusJobId, bool verified, bool matched, bool slashed, uint256 timestamp)',
-];
+import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app/lib/constants';
+import { apiSuccess, logAndReturn } from '@/app/lib/api-response';
 
 // Cache stats for 30 seconds
 let cachedStats: any = null;
@@ -39,11 +32,11 @@ export async function GET() {
     const now = Date.now();
 
     if (cachedStats && now - cacheTime < CACHE_TTL) {
-      return NextResponse.json(cachedStats);
+      return apiSuccess(cachedStats);
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
-    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, provider);
+    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, [...AI_PROOF_REGISTRY_ABI], provider);
 
     const stats = await registry.getStats();
 
@@ -75,12 +68,8 @@ export async function GET() {
     cachedStats = result;
     cacheTime = now;
 
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (error: any) {
-    console.error('[ProofStats] Error:', error.message);
-    return NextResponse.json(
-      { error: 'Failed to fetch proof stats', details: error.message },
-      { status: 500 },
-    );
+    return logAndReturn('ProofStats', error, 'Failed to fetch proof stats');
   }
 }

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { apiSuccess, apiError, logAndReturn } from "@/app/lib/api-response";
 import prisma from '../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,7 @@ export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         const wallet = searchParams.get('wallet')?.trim();
-        if (!wallet) return NextResponse.json({ error: "Missing wallet parameter" }, { status: 400 });
+        if (!wallet) return apiError("Missing wallet parameter", 400);
 
         const workspace = await prisma.workspace.findFirst({
             where: {
@@ -23,9 +23,9 @@ export async function GET(req: Request) {
             created_at: workspace.createdAt,
         } : null;
 
-        return NextResponse.json({ workspace: mapped });
+        return apiSuccess({ workspace: mapped });
     } catch (error: any) {
-        return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
+        return logAndReturn("WORKSPACE_GET", error, "Failed to fetch workspace");
     }
 }
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
             where: { adminWallet: { equals: cleanWallet, mode: 'insensitive' } },
         });
         if (existingWallet) {
-            return NextResponse.json({ error: "This wallet is already bound to a workspace." }, { status: 403 });
+            return apiError("This wallet is already bound to a workspace.", 403);
         }
 
         // 2. Check unique name
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
             where: { name: { equals: cleanName, mode: 'insensitive' } },
         });
         if (existingName) {
-            return NextResponse.json({ error: "Workspace name is already taken! Please use the 'Join Workspace' option." }, { status: 403 });
+            return apiError("Workspace name is already taken! Please use the 'Join Workspace' option.", 403);
         }
 
         // 3. Create workspace
@@ -60,8 +60,7 @@ export async function POST(req: Request) {
             },
         });
 
-        return NextResponse.json({
-            success: true,
+        return apiSuccess({
             workspace: {
                 admin_wallet: workspace.adminWallet,
                 name: workspace.name,
@@ -69,6 +68,6 @@ export async function POST(req: Request) {
             },
         });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return logAndReturn("WORKSPACE_POST", error, "Failed to create workspace");
     }
 }

@@ -13,18 +13,28 @@
 
 import { ethers } from 'ethers';
 import crypto from 'crypto';
+import {
+  PAYPOL_TREASURY_WALLET,
+  PAYPOL_NEXUS_V2_ADDRESS,
+  PAYPOL_SHIELD_V2_ADDRESS,
+  RPC_URL,
+  SUPPORTED_TOKENS,
+} from '@/app/lib/constants';
+import { verifyTxOnChain } from '@/app/lib/verify-tx';
 
 // ── Configuration ────────────────────────────────────────
 
+const alphaUSD = SUPPORTED_TOKENS.find(t => t.symbol === 'AlphaUSD')!;
+
 export const FIAT_CONFIG = {
   /** Platform treasury wallet (holds stablecoin reserve) */
-  treasuryWallet: '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793',
+  treasuryWallet: PAYPOL_TREASURY_WALLET,
   /** Default stablecoin */
-  defaultToken: 'AlphaUSD',
+  defaultToken: alphaUSD.symbol,
   /** Token address */
-  tokenAddress: '0x20c0000000000000000000000000000000000001',
+  tokenAddress: alphaUSD.address,
   /** Token decimals */
-  tokenDecimals: 6,
+  tokenDecimals: alphaUSD.decimals,
   /** Minimum card purchase amount in USD (covers Paddle $0.50 fixed fee) */
   minAmount: 5,
   /** Maximum purchase amount in USD */
@@ -57,11 +67,11 @@ export const FIAT_CONFIG = {
   /** Paddle fixed fee per transaction (for UI display only) */
   paddleFixedFee: 0.50,
   /** RPC URL */
-  rpcUrl: 'https://rpc.moderato.tempo.xyz',
+  rpcUrl: RPC_URL,
   /** Chain ID */
   chainId: 42431,
   /** NexusV2 contract */
-  nexusV2Address: '0x6A467Cd4156093bB528e448C04366586a1052Fab',
+  nexusV2Address: PAYPOL_NEXUS_V2_ADDRESS,
   /** Paddle API base URL */
   paddleApiUrl: process.env.PADDLE_ENVIRONMENT === 'production'
     ? 'https://api.paddle.com'
@@ -287,9 +297,6 @@ export function validateCheckoutParams(params: FiatCheckoutParams): string | nul
 
 // ── Shield ZK Deposit Helper ─────────────────────────────
 
-/** Shield V2 contract address */
-const SHIELD_V2_ADDRESS = '0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055';
-
 /**
  * Generate a cryptographically secure random field element for ZK circuits.
  * Returns a BigInt string safe for Poseidon hashing (< BN254 field order).
@@ -353,56 +360,6 @@ export async function generateShieldCommitment(
  * The daemon later generates a ZK proof and calls executeShieldedPayout()
  * to withdraw funds to the user's wallet with zero-knowledge privacy.
  */
-/**
- * Verify a transaction succeeded on Tempo L1 via raw HTTP RPC.
- * Uses raw fetch() instead of provider.send() to bypass ethers.js
- * parsing layer that throws BAD_DATA on Tempo's custom tx type 0x76.
- *
- * Polls up to 5 times (2s apart) for receipt, then checks status.
- * Throws if reverted or receipt not found.
- */
-async function verifyTxOnChain(
-  txHash: string,
-  label: string,
-): Promise<void> {
-  for (let attempt = 0; attempt < 5; attempt++) {
-    try {
-      const rpcRes = await fetch(FIAT_CONFIG.rpcUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: Date.now(),
-          method: 'eth_getTransactionReceipt',
-          params: [txHash],
-        }),
-      });
-      const rpcJson = await rpcRes.json();
-      const receipt = rpcJson?.result;
-
-      if (receipt) {
-        if (receipt.status === '0x0') {
-          throw new Error(`${label} reverted on-chain: ${txHash}`);
-        }
-        if (receipt.status === '0x1') {
-          console.log(`[verifyTxOnChain] ${label} confirmed OK: ${txHash}`);
-          return;
-        }
-        // Unknown status — log and assume OK
-        console.warn(`[verifyTxOnChain] ${label} has unknown status ${receipt.status}: ${txHash}`);
-        return;
-      }
-    } catch (err: any) {
-      if (err.message?.includes('reverted')) throw err;
-      console.warn(`[verifyTxOnChain] ${label} RPC error (attempt ${attempt + 1}):`, err.message);
-    }
-    // Receipt not available yet — wait 2s and retry
-    await new Promise(r => setTimeout(r, 2000));
-  }
-  // After 5 attempts (10s), receipt still not found — throw error (don't assume success!)
-  throw new Error(`${label} receipt not found after 10s — tx may have failed: ${txHash}`);
-}
-
 export async function depositToShieldVault(
   recipientWallet: string,
   amountUSD: number,
@@ -425,7 +382,7 @@ export async function depositToShieldVault(
   const erc20Interface = new ethers.Interface([
     'function approve(address spender, uint256 amount) returns (bool)',
   ]);
-  const approveData = erc20Interface.encodeFunctionData('approve', [SHIELD_V2_ADDRESS, amountScaled]);
+  const approveData = erc20Interface.encodeFunctionData('approve', [PAYPOL_SHIELD_V2_ADDRESS, amountScaled]);
 
   const approveTx = await wallet.sendTransaction({
     to: FIAT_CONFIG.tokenAddress,
@@ -464,7 +421,7 @@ export async function depositToShieldVault(
   ]);
 
   const depositTx = await wallet.sendTransaction({
-    to: SHIELD_V2_ADDRESS,
+    to: PAYPOL_SHIELD_V2_ADDRESS,
     data: depositData,
     type: 0,
     // deposit() calls TIP-20 transferFrom() internally (~300k+ gas)

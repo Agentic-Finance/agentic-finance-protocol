@@ -10,7 +10,7 @@
  *   - (default): Legacy vault creation (backward compat)
  */
 
-import { NextResponse } from 'next/server';
+import { apiSuccess, apiError, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 import { getPoseidon, generateRandomSecret, computeCommitment } from "@/app/lib/poseidon-cache";
 
@@ -28,12 +28,12 @@ export async function POST(req: Request) {
             const { amount, recipient, tokenDecimals = 6 } = body;
 
             if (!amount || !recipient) {
-                return NextResponse.json({ error: 'Missing amount or recipient' }, { status: 400 });
+                return apiError('Missing amount or recipient', 400);
             }
 
             const cleanRecipient = recipient.toLowerCase().trim();
             if (!/^0x[a-fA-F0-9]{40}$/.test(cleanRecipient)) {
-                return NextResponse.json({ error: 'Invalid recipient wallet address' }, { status: 400 });
+                return apiError('Invalid recipient wallet address', 400);
             }
 
             const secret = generateRandomSecret();
@@ -46,8 +46,7 @@ export async function POST(req: Request) {
 
             console.log(`[Shield API] Commitment generated for ${amount} AlphaUSD → ${recipient.slice(0, 10)}...`);
 
-            return NextResponse.json({
-                success: true,
+            return apiSuccess({
                 commitment,
                 nullifierHash,
                 secret,
@@ -65,10 +64,7 @@ export async function POST(req: Request) {
             const { secret, nullifier, amount, recipient, tokenDecimals = 6 } = body;
 
             if (!secret || !nullifier || !amount || !recipient) {
-                return NextResponse.json(
-                    { error: 'Missing required fields: secret, nullifier, amount, recipient' },
-                    { status: 400 }
-                );
+                return apiError('Missing required fields: secret, nullifier, amount, recipient', 400);
             }
 
             const snarkjs = await import('snarkjs');
@@ -107,10 +103,7 @@ export async function POST(req: Request) {
             }
 
             if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
-                return NextResponse.json({
-                    error: 'ZK circuit files not found',
-                    hint: `Tried: ${wasmPath}. Copy from packages/circuits/`,
-                }, { status: 500 });
+                return apiError('ZK circuit files not found', 500);
             }
 
             console.log(`[Shield API] Generating PLONK proof for commitment: ${commitment.slice(0, 20)}...`);
@@ -128,8 +121,7 @@ export async function POST(req: Request) {
 
             console.log(`[Shield API] PLONK proof generated successfully. ${proofArray.length} proof elements, ${pubSignals.length} public signals.`);
 
-            return NextResponse.json({
-                success: true,
+            return apiSuccess({
                 proof: proofArray,
                 pubSignals,
                 commitment,
@@ -189,10 +181,9 @@ export async function POST(req: Request) {
             }
         });
 
-        return NextResponse.json({ success: true, data: vaultedData });
+        return apiSuccess({ data: vaultedData });
 
     } catch (error: any) {
-        console.error("❌ SHIELD API ERROR:", error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return logAndReturn("SHIELD_API", error, "Shield operation failed");
     }
 }

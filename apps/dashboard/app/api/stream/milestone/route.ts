@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 import { notify } from '../../../lib/notify';
+import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         const { action, streamJobId, milestoneIndex } = body;
 
         if (!action || !streamJobId || milestoneIndex === undefined) {
-            return NextResponse.json({ error: 'Missing action, streamJobId, or milestoneIndex' }, { status: 400 });
+            return apiError('Missing action, streamJobId, or milestoneIndex', 400);
         }
 
         // Load stream + milestone
@@ -36,22 +36,22 @@ export async function POST(req: Request) {
         });
 
         if (!stream) {
-            return NextResponse.json({ error: 'Stream not found' }, { status: 404 });
+            return apiError('Stream not found', 404);
         }
 
         if (stream.status !== 'ACTIVE') {
-            return NextResponse.json({ error: 'Stream is not active' }, { status: 400 });
+            return apiError('Stream is not active', 400);
         }
 
         const milestone = stream.milestones.find(m => m.index === milestoneIndex);
         if (!milestone) {
-            return NextResponse.json({ error: `Milestone ${milestoneIndex} not found` }, { status: 404 });
+            return apiError(`Milestone ${milestoneIndex} not found`, 404);
         }
 
         switch (action) {
             case 'submit': {
                 if (milestone.status !== 'PENDING' && milestone.status !== 'REJECTED') {
-                    return NextResponse.json({ error: 'Milestone cannot be submitted in current state' }, { status: 400 });
+                    return apiError('Milestone cannot be submitted in current state', 400);
                 }
 
                 const updated = await prisma.milestone.update({
@@ -74,38 +74,50 @@ export async function POST(req: Request) {
                     milestoneId: milestone.id,
                 });
 
-                return NextResponse.json({ success: true, milestone: updated });
+                return apiSuccess({ milestone: updated });
             }
 
             case 'approve': {
                 if (milestone.status !== 'SUBMITTED') {
-                    return NextResponse.json({ error: 'Only submitted milestones can be approved' }, { status: 400 });
+                    return apiError('Only submitted milestones can be approved', 400);
                 }
 
-                // Update milestone
-                const updated = await prisma.milestone.update({
-                    where: { id: milestone.id },
-                    data: {
-                        status: 'APPROVED',
-                        approveTxHash: body.approveTxHash || null,
-                        reviewedAt: new Date(),
-                    },
+                // Use transaction to prevent race condition:
+                // Two concurrent approvals could both see same count and both mark stream COMPLETED
+                const result = await prisma.$transaction(async (tx) => {
+                    // Re-check milestone status inside transaction
+                    const freshMilestone = await tx.milestone.findUnique({ where: { id: milestone.id } });
+                    if (!freshMilestone || freshMilestone.status !== 'SUBMITTED') {
+                        throw new Error('Milestone already processed');
+                    }
+
+                    const updated = await tx.milestone.update({
+                        where: { id: milestone.id },
+                        data: {
+                            status: 'APPROVED',
+                            approveTxHash: body.approveTxHash || null,
+                            reviewedAt: new Date(),
+                        },
+                    });
+
+                    // Count approved milestones INSIDE the transaction for accuracy
+                    const approvedCount = await tx.milestone.count({
+                        where: { streamJobId: stream.id, status: 'APPROVED' },
+                    });
+                    const allApproved = approvedCount === stream.milestones.length;
+
+                    await tx.streamJob.update({
+                        where: { id: stream.id },
+                        data: {
+                            releasedAmount: { increment: milestone.amount },
+                            status: allApproved ? 'COMPLETED' : 'ACTIVE',
+                        },
+                    });
+
+                    return { updated, allApproved };
                 });
 
-                // Update stream released amount
-                const newReleased = stream.releasedAmount + milestone.amount;
-                const approvedCount = stream.milestones.filter(m => m.status === 'APPROVED').length + 1;
-                const allApproved = approvedCount === stream.milestones.length;
-
-                await prisma.streamJob.update({
-                    where: { id: stream.id },
-                    data: {
-                        releasedAmount: newReleased,
-                        status: allApproved ? 'COMPLETED' : 'ACTIVE',
-                    },
-                });
-
-                // Notify agent
+                // Notify agent (outside transaction — non-critical)
                 await notify({
                     wallet: stream.agentWallet,
                     type: 'stream:milestone_approved',
@@ -116,7 +128,7 @@ export async function POST(req: Request) {
                 });
 
                 // If all approved, notify both
-                if (allApproved) {
+                if (result.allApproved) {
                     await notify({
                         wallet: stream.clientWallet,
                         type: 'stream:completed',
@@ -133,12 +145,12 @@ export async function POST(req: Request) {
                     });
                 }
 
-                return NextResponse.json({ success: true, milestone: updated, streamCompleted: allApproved });
+                return apiSuccess({ milestone: result.updated, streamCompleted: result.allApproved });
             }
 
             case 'reject': {
                 if (milestone.status !== 'SUBMITTED') {
-                    return NextResponse.json({ error: 'Only submitted milestones can be rejected' }, { status: 400 });
+                    return apiError('Only submitted milestones can be rejected', 400);
                 }
 
                 const updated = await prisma.milestone.update({
@@ -160,14 +172,13 @@ export async function POST(req: Request) {
                     milestoneId: milestone.id,
                 });
 
-                return NextResponse.json({ success: true, milestone: updated });
+                return apiSuccess({ milestone: updated });
             }
 
             default:
-                return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
+                return apiError(`Unknown action: ${action}`, 400);
         }
     } catch (error: any) {
-        console.error('[api/stream/milestone] POST error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return logAndReturn('STREAM_MILESTONE', error, 'Failed to process milestone action');
     }
 }

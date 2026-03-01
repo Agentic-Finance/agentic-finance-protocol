@@ -6,7 +6,7 @@ interface LedgerHistoryProps {
     exportLedgerToCSV: () => void; 
     expandedTx: string | null;
     setExpandedTx: (hash: string | null) => void;
-    historyRef: any;
+    historyRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, setExpandedTx, historyRef }: LedgerHistoryProps) {

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { apiSuccess, logAndReturn } from "@/app/lib/api-response";
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -29,7 +29,7 @@ export async function GET() {
         const employeeWallets = wallets.filter((w) => w.ownerType === 'employee');
         const totalBalance = wallets.reduce((s, w) => s + w.balance, 0);
 
-        return NextResponse.json({
+        return apiSuccess({
             wallets,
             summary: {
                 totalWallets: wallets.length,
@@ -40,7 +40,6 @@ export async function GET() {
             },
         });
     } catch (error: any) {
-        console.error('Wallets error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return logAndReturn("WALLETS_GET", error, "Failed to fetch wallets");
     }
 }

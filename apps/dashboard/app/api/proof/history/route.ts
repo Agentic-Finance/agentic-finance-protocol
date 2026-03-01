@@ -14,16 +14,9 @@
  * }
  */
 
-import { NextResponse } from 'next/server';
 import { ethers } from 'ethers';
-
-const RPC_URL = 'https://rpc.moderato.tempo.xyz';
-const AI_PROOF_REGISTRY_ADDRESS = '0x8fDB8E871c9eaF2955009566F41490Bbb128a014';
-
-const AI_PROOF_REGISTRY_ABI = [
-  'function getStats() view returns (uint256 totalCommitments, uint256 totalVerified, uint256 totalMatched, uint256 totalMismatched, uint256 totalSlashed)',
-  'function getCommitment(uint256 commitmentId) view returns (address committer, bytes32 planHash, bytes32 resultHash, uint256 nexusJobId, bool verified, bool matched, bool slashed, uint256 timestamp)',
-];
+import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app/lib/constants';
+import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 
 // Cache for 30 seconds
 let cachedHistory: any = null;
@@ -39,18 +32,18 @@ export async function GET(request: Request) {
     const key = `${limit}:${offset}`;
 
     if (cachedHistory && cacheKey === key && Date.now() - cacheTime < CACHE_TTL) {
-      return NextResponse.json(cachedHistory);
+      return apiSuccess(cachedHistory);
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
-    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, provider);
+    const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, [...AI_PROOF_REGISTRY_ABI], provider);
 
     // Get total commitments
     const stats = await registry.getStats();
     const total = Number(stats[0]);
 
     if (total === 0) {
-      return NextResponse.json({ commitments: [], total: 0 });
+      return apiSuccess({ commitments: [], total: 0 });
     }
 
     // Fetch commitment details (most recent first)
@@ -98,12 +91,8 @@ export async function GET(request: Request) {
     cacheKey = key;
     cacheTime = Date.now();
 
-    return NextResponse.json(result);
+    return apiSuccess(result);
   } catch (error: any) {
-    console.error('[ProofHistory] Error:', error.message);
-    return NextResponse.json(
-      { error: 'Failed to fetch proof history', details: error.message },
-      { status: 500 },
-    );
+    return logAndReturn('ProofHistory', error, 'Failed to fetch proof history');
   }
 }

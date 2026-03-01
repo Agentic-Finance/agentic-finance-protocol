@@ -1,17 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { ethers } from 'ethers';
+import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app/lib/constants';
+import { verifyTxOnChain } from '@/app/lib/verify-tx';
+import { apiError, logAndReturn } from '@/app/lib/api-response';
 
 const AGENT_SERVICE_URL = process.env.AGENT_SERVICE_URL || 'http://localhost:3001';
-const RPC_URL = process.env.RPC_URL || 'https://rpc.moderato.tempo.xyz';
-const AI_PROOF_REGISTRY_ADDRESS = '0x8fDB8E871c9eaF2955009566F41490Bbb128a014';
-
-const AI_PROOF_REGISTRY_ABI = [
-    "function commit(bytes32 planHash, uint256 nexusJobId) external returns (bytes32)",
-    "function verify(bytes32 commitmentId, bytes32 resultHash) external",
-    "event CommitmentMade(bytes32 indexed commitmentId, address indexed agent, uint256 indexed nexusJobId, bytes32 planHash)",
-    "event CommitmentVerified(bytes32 indexed commitmentId, bool matched, bytes32 resultHash)",
-];
 
 /**
  * Get daemon wallet for on-chain AI proof transactions.
@@ -24,42 +18,12 @@ function getDaemonWallet(): ethers.Wallet | null {
     return new ethers.Wallet(key, provider);
 }
 
-/**
- * Verify transaction on Tempo via raw RPC (ethers.js can't parse Tempo's 0x76 tx type).
- */
-async function verifyTxOnChain(txHash: string, label: string): Promise<void> {
-    for (let attempt = 0; attempt < 5; attempt++) {
-        try {
-            const res = await fetch(RPC_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0', id: Date.now(),
-                    method: 'eth_getTransactionReceipt',
-                    params: [txHash],
-                }),
-            });
-            const json = await res.json();
-            const receipt = json?.result;
-            if (receipt) {
-                if (receipt.status === '0x0') throw new Error(`${label} reverted: ${txHash}`);
-                if (receipt.status === '0x1') return;
-                return;
-            }
-        } catch (err: any) {
-            if (err.message?.includes('reverted')) throw err;
-        }
-        await new Promise(r => setTimeout(r, 2000));
-    }
-    console.warn(`[AIProof] ${label} receipt not found after 10s — continuing anyway`);
-}
-
 export async function POST(req: Request) {
     try {
         const { jobId } = await req.json();
 
         if (!jobId) {
-            return NextResponse.json({ error: "Missing jobId." }, { status: 400 });
+            return apiError('Missing jobId', 400);
         }
 
         // 1. Fetch job + agent
@@ -68,9 +32,9 @@ export async function POST(req: Request) {
             include: { agent: true },
         });
 
-        if (!job) return NextResponse.json({ error: "Job not found." }, { status: 404 });
+        if (!job) return apiError('Job not found', 404);
         if (job.status !== 'ESCROW_LOCKED' && job.status !== 'MATCHED') {
-            return NextResponse.json({ error: `Cannot execute job in status: ${job.status}` }, { status: 400 });
+            return apiError(`Cannot execute job in status: ${job.status}`, 400);
         }
 
         // 2. Mark as executing
@@ -286,7 +250,6 @@ export async function POST(req: Request) {
         });
 
     } catch (error: any) {
-        console.error("[Marketplace Execute]", error);
-        return NextResponse.json({ error: "Execution failed." }, { status: 500 });
+        return logAndReturn('Marketplace Execute', error, 'Execution failed');
     }
 }

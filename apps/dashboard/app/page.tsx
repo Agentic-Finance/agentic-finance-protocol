@@ -7,6 +7,7 @@ import { PAYPOL_NEXUS_ADDRESS, PAYPOL_MULTISEND_ADDRESS, PAYPOL_SHIELD_ADDRESS, 
 // Direct imports for critical above-the-fold components
 import Navbar from './components/Navbar';
 import TopStatsCards from './components/TopStatsCards';
+import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
 
 // Lazy load heavy / conditionally-rendered components (Phase 3)
 const LandingPage = lazy(() => import('./components/LandingPage'));
@@ -43,7 +44,7 @@ export default function Dashboard() {
                     if (accounts.length > 0) {
                         initializeSession(accounts[0]);
                     }
-                }).catch(() => {});
+                }).catch((e: Error) => console.warn('[Auto-reconnect]', e.message));
             }
         }
         setIsReady(true);
@@ -285,7 +286,8 @@ export default function Dashboard() {
             ]);
 
             if (histRes.ok) {
-                const rawHistory = await histRes.json();
+                const histData = await histRes.json();
+                const rawHistory = histData.data || histData;
                 const groupedMap: Record<string, any> = {};
 
                 rawHistory.forEach((row: any) => {
@@ -329,11 +331,19 @@ export default function Dashboard() {
                 });
                 setLocalEscrow(Object.values(queueMap).map(q => ({...q, amount: typeof q.amount === 'number' ? q.amount.toFixed(2) : q.amount})));
             }
-            if (autopilotRes.ok) setAutopilotRules(await autopilotRes.json());
+            if (autopilotRes.ok) {
+                const autopilotData = await autopilotRes.json();
+                setAutopilotRules(autopilotData.data || autopilotData);
+            }
             if (statsRes.ok) setSysStats((await statsRes.json()).stats);
             await fetchOnChainBalances(walletAddress, activeVaultToken);
-        } catch (error) { console.error("Hydration Error"); }
-    }, [walletAddress, activeVaultToken, fetchOnChainBalances]);
+        } catch (error) {
+            console.error("Hydration Error", error);
+            if (error instanceof TypeError) {
+                showToast('error', 'Network error — retrying...');
+            }
+        }
+    }, [walletAddress, activeVaultToken, fetchOnChainBalances, showToast]);
 
     // Smart polling: 5s interval, pause when tab hidden (Phase 4.3)
     useEffect(() => {
@@ -633,7 +643,7 @@ export default function Dashboard() {
     // GLOBAL TOAST (visible on ALL screens: Landing, Gateway, Dashboard)
     // =========================================================================
     const toastComponent = (
-        <div className={`fixed bottom-10 right-0 left-0 md:left-auto md:right-10 z-[500] transition-all duration-500 ease-out transform flex justify-center md:justify-end pointer-events-none ${toast.show ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}>
+        <div role="status" aria-live="polite" aria-atomic="true" className={`fixed bottom-10 right-0 left-0 md:left-auto md:right-10 z-[500] transition-all duration-500 ease-out transform flex justify-center md:justify-end pointer-events-none ${toast.show ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'}`}>
             <div className={`relative overflow-hidden flex items-start gap-4 p-5 pr-12 rounded-2xl border shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] pointer-events-auto max-w-sm w-11/12 md:w-[400px] will-change-transform ${toast.type === 'success' ? 'bg-[#061A11]/95 border-emerald-500/40' : 'bg-[#1A060A]/95 border-rose-500/40'}`}>
                 <div className={`absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[60px] opacity-40 pointer-events-none ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
                 <div className={`relative flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl border shadow-inner ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`}>{toast.type === 'success' ? '✨' : '🚨'}</div>
@@ -666,11 +676,11 @@ export default function Dashboard() {
 
             <Navbar currentWorkspace={currentWorkspace} isAdmin={isAdmin} isSystemLocked={isSystemLocked} setIsSystemLocked={setIsSystemLocked} userBalance={userBalance} activeVaultToken={activeVaultToken} walletAddress={walletAddress} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
-            <main className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
+            <main id="main-content" className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
                 <TopStatsCards totalDisbursed={totalDisbursed} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} />
 
-                <Suspense fallback={<LazyFallback />}>
+                <Suspense fallback={<TerminalSkeleton />}>
                     <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} />
                 </Suspense>
 
@@ -683,7 +693,7 @@ export default function Dashboard() {
                             <div><h3 className="text-2xl font-bold text-white flex items-center gap-3"><span className="p-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl">📈</span> Protocol Volume</h3></div>
                         </div>
                         <div className="relative z-10 w-full">
-                            <Suspense fallback={<LazyFallback />}>
+                            <Suspense fallback={<ChartSkeleton />}>
                                 <NetworkChart />
                             </Suspense>
                         </div>
@@ -692,40 +702,36 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
                     <div className="lg:col-span-8 space-y-6 sm:space-y-10">
-                        <Suspense fallback={<LazyFallback />}>
-                            {/* @ts-ignore */}
+                        <Suspense fallback={<BoardroomSkeleton />}>
                             <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
                         </Suspense>
 
                         {recentSettlements.length > 0 && (
-                            <Suspense fallback={<LazyFallback />}>
+                            <Suspense fallback={<SectionSkeleton />}>
                                 <SettlementReceipt settlements={recentSettlements} settlementRef={settlementRef} />
                             </Suspense>
                         )}
 
-                        <Suspense fallback={<LazyFallback />}>
+                        <Suspense fallback={<SectionSkeleton />}>
                             <JudgeDashboard />
                         </Suspense>
 
-                        <Suspense fallback={<LazyFallback />}>
-                            {/* @ts-ignore */}
+                        <Suspense fallback={<SectionSkeleton />}>
                             <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
                         </Suspense>
 
                         <div ref={historyRef}>
-                            <Suspense fallback={<LazyFallback />}>
-                                {/* @ts-ignore */}
+                            <Suspense fallback={<SectionSkeleton />}>
                                 <LedgerHistory pendingTxs={pendingTxs} history={history} exportLedgerToCSV={exportLedgerToCSV} expandedTx={expandedTx} setExpandedTx={setExpandedTx} historyRef={historyRef} />
                             </Suspense>
                         </div>
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
-                        <Suspense fallback={<LazyFallback />}>
-                            {/* @ts-ignore */}
+                        <Suspense fallback={<SidebarSkeleton />}>
                             <TimeVault localEscrow={localEscrow} />
                         </Suspense>
-                        <Suspense fallback={<LazyFallback />}>
+                        <Suspense fallback={<SidebarSkeleton />}>
                             <EscrowTracker walletAddress={walletAddress} />
                         </Suspense>
                     </div>

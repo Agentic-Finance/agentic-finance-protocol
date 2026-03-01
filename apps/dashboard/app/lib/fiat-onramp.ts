@@ -351,6 +351,56 @@ export async function generateShieldCommitment(
  * The daemon later generates a ZK proof and calls executeShieldedPayout()
  * to withdraw funds to the user's wallet with zero-knowledge privacy.
  */
+/**
+ * Verify a transaction succeeded on Tempo L1 via raw HTTP RPC.
+ * Uses raw fetch() instead of provider.send() to bypass ethers.js
+ * parsing layer that throws BAD_DATA on Tempo's custom tx type 0x76.
+ *
+ * Polls up to 5 times (2s apart) for receipt, then checks status.
+ * Throws if reverted or receipt not found.
+ */
+async function verifyTxOnChain(
+  txHash: string,
+  label: string,
+): Promise<void> {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      const rpcRes = await fetch(FIAT_CONFIG.rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: Date.now(),
+          method: 'eth_getTransactionReceipt',
+          params: [txHash],
+        }),
+      });
+      const rpcJson = await rpcRes.json();
+      const receipt = rpcJson?.result;
+
+      if (receipt) {
+        if (receipt.status === '0x0') {
+          throw new Error(`${label} reverted on-chain: ${txHash}`);
+        }
+        if (receipt.status === '0x1') {
+          console.log(`[verifyTxOnChain] ${label} confirmed OK: ${txHash}`);
+          return;
+        }
+        // Unknown status — log and assume OK
+        console.warn(`[verifyTxOnChain] ${label} has unknown status ${receipt.status}: ${txHash}`);
+        return;
+      }
+    } catch (err: any) {
+      if (err.message?.includes('reverted')) throw err;
+      console.warn(`[verifyTxOnChain] ${label} RPC error (attempt ${attempt + 1}):`, err.message);
+    }
+    // Receipt not available yet — wait 2s and retry
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  // After 5 attempts (10s), receipt still not found — throw error (don't assume success!)
+  throw new Error(`${label} receipt not found after 10s — tx may have failed: ${txHash}`);
+}
+
 export async function depositToShieldVault(
   recipientWallet: string,
   amountUSD: number,
@@ -382,15 +432,23 @@ export async function depositToShieldVault(
     gasLimit: 200_000,
   });
 
+  // Wait for approve + verify via RPC (don't just catch BAD_DATA blindly)
   try {
     await approveTx.wait(1, 15000);
   } catch (waitErr: any) {
-    // Tempo custom tx type parse error — ignore if BAD_DATA
-    if (waitErr?.code !== 'BAD_DATA' && !waitErr?.message?.includes('invalid BigNumberish')) {
+    const errCode = waitErr?.code || '';
+    const errMsg = waitErr?.message || '';
+    if (errCode === 'BAD_DATA' || errMsg.includes('invalid BigNumberish') || errMsg.includes('invalid value for')) {
+      // Tempo parse error — verify via raw RPC that approve actually succeeded
+      await verifyTxOnChain(approveTx.hash, 'ERC20 approve');
+    } else {
       throw waitErr;
     }
   }
   console.log(`[depositToShieldVault] ERC20 approval confirmed: ${approveTx.hash}`);
+
+  // Small delay to ensure approve is fully indexed before deposit
+  await new Promise(r => setTimeout(r, 1000));
 
   // Step 3: Deposit to Shield Vault V2
   const shieldInterface = new ethers.Interface([
@@ -408,6 +466,7 @@ export async function depositToShieldVault(
     gasLimit: 500_000,
   });
 
+  // Wait for deposit + verify via RPC
   let depositTxHash = depositTx.hash;
   try {
     const receipt = await depositTx.wait(1, 15000);
@@ -419,16 +478,8 @@ export async function depositToShieldVault(
     const errCode = waitErr?.code || '';
     const errMsg = waitErr?.message || '';
     if (errCode === 'BAD_DATA' || errMsg.includes('invalid BigNumberish') || errMsg.includes('invalid value for')) {
-      console.warn(`[depositToShieldVault] tx.wait() parse error (Tempo custom tx type), using tx.hash: ${depositTxHash}`);
-      try {
-        const txReceipt = await provider.send('eth_getTransactionReceipt', [depositTxHash]);
-        if (txReceipt && txReceipt.status === '0x0') {
-          throw new Error(`Shield deposit reverted on-chain: ${depositTxHash}`);
-        }
-      } catch (rpcErr: any) {
-        if (rpcErr.message?.includes('reverted')) throw rpcErr;
-        console.warn(`[depositToShieldVault] RPC receipt check failed, assuming success: ${depositTxHash}`);
-      }
+      // Tempo parse error — verify via raw RPC (STRICT: throw if not confirmed)
+      await verifyTxOnChain(depositTxHash, 'Shield deposit');
     } else {
       throw waitErr;
     }

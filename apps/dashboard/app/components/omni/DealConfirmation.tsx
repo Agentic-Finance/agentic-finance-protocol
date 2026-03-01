@@ -7,6 +7,8 @@ import FiatCheckout from '../FiatCheckout';
 /** Shield ZK fee: 0.2% (max $5) — same as Payroll Phantom Shield */
 const SHIELD_FEE_PERCENT = 0.2;
 const SHIELD_FEE_MAX = 5;
+/** Card processing markup — must match FIAT_CONFIG */
+const CARD_MARKUP_PERCENT = 8;
 
 interface DealConfirmationProps {
     negotiation: NegotiationResult | null;
@@ -59,6 +61,10 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
     const shieldFee = shieldEnabled
         ? Math.min(+(negotiation.finalPrice * SHIELD_FEE_PERCENT / 100).toFixed(2), SHIELD_FEE_MAX)
         : 0;
+
+    // Card pricing breakdown
+    const processingFee = +(negotiation.finalPrice * CARD_MARKUP_PERCENT / 100).toFixed(2);
+    const totalCardCharge = +(negotiation.finalPrice * (1 + CARD_MARKUP_PERCENT / 100) + shieldFee).toFixed(2);
 
     return (
         <div
@@ -206,6 +212,30 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                         </div>
                     )}
                 </div>
+
+                {/* Card Fee Breakdown */}
+                {payMethod === 'card' && (
+                    <div className="bg-black/30 border border-white/[0.04] rounded-xl p-3 mb-4 space-y-1.5 text-[11px]">
+                        <div className="flex justify-between items-center">
+                            <span className="text-slate-500">Escrow amount</span>
+                            <span className="text-white font-mono">{negotiation.finalPrice.toFixed(2)} AlphaUSD</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-slate-500">Processing fee ({CARD_MARKUP_PERCENT}%)</span>
+                            <span className="text-slate-400 font-mono">+${processingFee.toFixed(2)}</span>
+                        </div>
+                        {shieldEnabled && (
+                            <div className="flex justify-between items-center">
+                                <span className="text-violet-400/70">Shield ZK fee ({SHIELD_FEE_PERCENT}%)</span>
+                                <span className="text-violet-300 font-mono">+${shieldFee.toFixed(2)}</span>
+                            </div>
+                        )}
+                        <div className="border-t border-white/[0.06] pt-1.5 flex justify-between items-center">
+                            <span className="text-white font-semibold">Card total</span>
+                            <span className="text-white font-mono font-bold">${totalCardCharge.toFixed(2)}</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* Actions */}
                 {payMethod === 'card' ? (

@@ -104,40 +104,79 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                 </div>
 
                 {/* Shield ZK Toggle */}
-                <button
+                <div
                     onClick={() => setShieldEnabled(!shieldEnabled)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] font-semibold transition-all mb-4 ${
+                    className={`w-full rounded-xl mb-4 cursor-pointer transition-all overflow-hidden ${
                         shieldEnabled
-                            ? 'bg-violet-500/10 text-violet-400 border border-violet-500/25'
-                            : 'bg-black/20 text-slate-500 border border-white/[0.04] hover:text-slate-300'
+                            ? 'bg-gradient-to-r from-violet-500/15 to-purple-500/10 border border-violet-500/30 shadow-[0_0_15px_rgba(139,92,246,0.1)]'
+                            : 'bg-black/20 border border-white/[0.06] hover:border-violet-500/20'
                     }`}
                 >
-                    <ShieldCheckIcon className="w-4 h-4" />
-                    <span className="flex-1 text-left">Shield ZK</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${
-                        shieldEnabled
-                            ? 'bg-violet-500/20 text-violet-300'
-                            : 'bg-white/5 text-slate-600'
-                    }`}>
-                        {shieldEnabled ? 'ON' : 'OFF'}
-                    </span>
-                </button>
-
-                {shieldEnabled && (
-                    <div className="bg-violet-500/5 border border-violet-500/10 rounded-lg p-2.5 mb-4 text-[10px] text-violet-300/70">
-                        ZK-SNARK privacy enabled. Funds route through ShieldVault with Poseidon commitment — on-chain observers cannot link payment to recipient.
+                    <div className="flex items-center gap-3 px-4 py-3">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            shieldEnabled
+                                ? 'bg-violet-500/20 text-violet-400'
+                                : 'bg-white/5 text-slate-500'
+                        }`}>
+                            <ShieldCheckIcon className="w-4.5 h-4.5" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                                <span className={`text-xs font-bold ${shieldEnabled ? 'text-violet-300' : 'text-slate-400'}`}>
+                                    Shield ZK Privacy
+                                </span>
+                                {shieldEnabled && (
+                                    <span className="text-[8px] px-1.5 py-0.5 rounded bg-violet-500/25 text-violet-300 font-bold uppercase tracking-wider">Active</span>
+                                )}
+                            </div>
+                            <p className={`text-[10px] mt-0.5 ${shieldEnabled ? 'text-violet-300/60' : 'text-slate-600'}`}>
+                                {shieldEnabled
+                                    ? 'ZK-SNARK proof hides sender-recipient link on-chain'
+                                    : 'Enable zero-knowledge privacy for this payment'}
+                            </p>
+                        </div>
+                        <div className={`w-9 h-5 rounded-full relative transition-all ${
+                            shieldEnabled ? 'bg-violet-500' : 'bg-white/10'
+                        }`}>
+                            <div className={`w-3.5 h-3.5 rounded-full bg-white absolute top-[3px] transition-all ${
+                                shieldEnabled ? 'right-[3px]' : 'left-[3px]'
+                            }`} />
+                        </div>
                     </div>
-                )}
+                    {shieldEnabled && (
+                        <div className="px-4 pb-3 flex gap-3 text-[9px] text-violet-400/50">
+                            <span className="flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                Poseidon commitment
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                ShieldVault V2
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-violet-400/50" />
+                                Nullifier anti-replay
+                            </span>
+                        </div>
+                    )}
+                </div>
 
                 {/* Actions */}
                 {payMethod === 'card' ? (
                     <div className="flex flex-col gap-3">
-                        <FiatCheckout
-                            amount={negotiation.finalPrice}
-                            userWallet={walletAddress || ''}
-                            shieldEnabled={shieldEnabled}
-                            compact
-                        />
+                        {walletAddress ? (
+                            <FiatCheckout
+                                amount={negotiation.finalPrice}
+                                userWallet={walletAddress}
+                                shieldEnabled={shieldEnabled}
+                                compact
+                            />
+                        ) : (
+                            <div className="w-full bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+                                <p className="text-amber-400 text-xs font-semibold mb-1">Wallet not connected</p>
+                                <p className="text-amber-300/50 text-[10px]">Connect your wallet to receive AlphaUSD after card payment</p>
+                            </div>
+                        )}
                         <button
                             onClick={onReject}
                             className="w-full py-2.5 text-rose-400/70 hover:text-rose-400 text-xs font-medium transition-colors"

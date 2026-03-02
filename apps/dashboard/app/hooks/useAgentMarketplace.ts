@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import { negotiate, NegotiationResult, NegotiationRound } from '../lib/negotiation-engine';
 
 // ══════════════════════════════════════
@@ -70,6 +70,7 @@ export type MarketplacePhase =
     | 'browsing'
     | 'analyzing'
     | 'results'
+    | 'task_input'
     | 'negotiating'
     | 'confirming'
     | 'executing'
@@ -93,9 +94,14 @@ export interface UseAgentMarketplaceReturn {
     activeCategory: string | null;
     isBrowseLoading: boolean;
 
+    // Task prompt (from task_input phase)
+    taskPrompt: string;
+
     // Actions
     discover: (prompt: string, budget?: number) => Promise<void>;
     selectAgent: (agent: DiscoveredAgent) => void;
+    submitTaskAndNegotiate: (prompt: string) => void;
+    backToBrowse: () => void;
     confirmDeal: (clientWallet: string, prompt: string) => Promise<void>;
     executeDeal: () => Promise<void>;
     cancelExecution: () => void;
@@ -193,10 +199,16 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [isBrowseLoading, setIsBrowseLoading] = useState(false);
 
+    const [taskPrompt, setTaskPrompt] = useState('');
+
     const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
     const executionAbortRef = useRef<AbortController | null>(null);
     const confirmLockRef = useRef(false);
+    const phaseRef = useRef<MarketplacePhase>('idle');
+
+    // Keep phaseRef in sync so callbacks can read current phase
+    useEffect(() => { phaseRef.current = phase; }, [phase]);
 
     // ════════════════════════════════════
     // BROWSE: Fetch all agents from catalog
@@ -295,26 +307,23 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     }, []);
 
     // ════════════════════════════════════
-    // 2. SELECT AGENT → AUTO-NEGOTIATE
+    // 2. SELECT AGENT → TASK INPUT or NEGOTIATE
     // ════════════════════════════════════
-    const selectAgent = useCallback((agent: DiscoveredAgent) => {
-        // Clear any previous negotiation timers
+
+    /** Shared: run negotiation engine + animate rounds */
+    const beginNegotiation = useCallback((agent: DiscoveredAgent) => {
         negotiationTimersRef.current.forEach(t => clearTimeout(t));
         negotiationTimersRef.current = [];
 
-        setSelectedAgent(agent);
         setPhase('negotiating');
 
-        // Run negotiation engine
         const budget = suggestedBudget || agent.agent.basePrice * 1.2;
         const result = negotiate(budget, agent.agent);
 
-        // Animate negotiation logs one by one
         setNegotiationLogs([]);
         result.rounds.forEach((round, i) => {
             const timer = setTimeout(() => {
                 setNegotiationLogs(prev => [...prev, round]);
-                // After all rounds, move to confirming
                 if (i === result.rounds.length - 1) {
                     setNegotiation(result);
                     setPhase('confirming');
@@ -323,6 +332,35 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
             negotiationTimersRef.current.push(timer);
         });
     }, [suggestedBudget]);
+
+    /** Click "Hire" on an agent card */
+    const selectAgent = useCallback((agent: DiscoveredAgent) => {
+        setSelectedAgent(agent);
+
+        // From AI results: user already typed a task → negotiate immediately
+        // From browse catalog: no task yet → prompt for task first
+        if (phaseRef.current === 'results') {
+            beginNegotiation(agent);
+        } else {
+            setPhase('task_input');
+        }
+    }, [beginNegotiation]);
+
+    /** Submit task description from task_input phase → start negotiation */
+    const submitTaskAndNegotiate = useCallback((prompt: string) => {
+        if (!selectedAgent) return;
+        setTaskPrompt(prompt);
+        beginNegotiation(selectedAgent);
+    }, [selectedAgent, beginNegotiation]);
+
+    /** Go back from task_input to browse catalog */
+    const backToBrowse = useCallback(() => {
+        setSelectedAgent(null);
+        setNegotiation(null);
+        setNegotiationLogs([]);
+        setTaskPrompt('');
+        setPhase('browsing');
+    }, []);
 
     // ════════════════════════════════════
     // 3. CONFIRM DEAL → CREATE JOB
@@ -477,6 +515,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         setSuggestedBudget(0);
         setError(null);
         setActiveCategory(null);
+        setTaskPrompt('');
         // Note: do NOT clear allAgents - they are cached
     }, []);
 
@@ -493,8 +532,11 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         filteredBrowseAgents,
         activeCategory,
         isBrowseLoading,
+        taskPrompt,
         discover,
         selectAgent,
+        submitTaskAndNegotiate,
+        backToBrowse,
         confirmDeal,
         executeDeal,
         cancelExecution,

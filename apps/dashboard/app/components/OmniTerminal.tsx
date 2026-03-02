@@ -11,6 +11,7 @@ import CsvUploadModal from './omni/CsvUploadModal';
 import IntentCards from './omni/IntentCards';
 import MarketplacePanel from './omni/MarketplacePanel';
 import DealConfirmation from './omni/DealConfirmation';
+import TaskPromptPanel from './omni/TaskPromptPanel';
 import JobTracker from './omni/JobTracker';
 import ReviewModal from './omni/ReviewModal';
 import TerminalFooter from './omni/TerminalFooter';
@@ -357,8 +358,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         setIsConfirmingDeal(true);
         try {
             // Use real wallet address instead of random demo wallet
-            // Use agent description as fallback prompt when user hired from browse mode (aiPrompt is empty)
-            const taskPrompt = aiPrompt.trim() || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
+            // Priority: aiPrompt (discover flow) → marketplace.taskPrompt (browse hire flow) → agent description fallback
+            const taskPrompt = aiPrompt.trim() || marketplace.taskPrompt || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
             await marketplace.confirmDeal(walletAddress, taskPrompt);
             await fetchData();
             showToast('success', 'Agent contract queued in Escrow!');
@@ -558,6 +559,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onHireAgent={marketplace.selectAgent}
                                 onFilterCategory={marketplace.filterByCategory}
                                 error={marketplace.error}
+                            />
+                        )}
+
+                        {/* A2A: Task Prompt (Hire from browse → describe task first) */}
+                        {!isPayroll && marketplace.phase === 'task_input' && marketplace.selectedAgent && (
+                            <TaskPromptPanel
+                                agent={marketplace.selectedAgent}
+                                onSubmit={marketplace.submitTaskAndNegotiate}
+                                onBack={marketplace.backToBrowse}
                             />
                         )}
 

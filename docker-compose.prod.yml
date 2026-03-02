@@ -40,6 +40,7 @@ services:
       - PORT=3000
       - HOSTNAME=0.0.0.0
       - DATABASE_URL=postgresql://paypol:paypol_production_2024@db:5432/paypol_core
+      - AGENT_SERVICE_URL=http://agents:3001
     expose:
       - "3000"
     networks:
@@ -54,6 +55,31 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # ── Agents Service (32 On-Chain AI Agents) ─────────────
+  agents:
+    build:
+      context: ./services/agents
+      dockerfile: Dockerfile
+    container_name: paypol-agents
+    restart: always
+    env_file:
+      - ./apps/dashboard/.env.production
+    environment:
+      - NODE_ENV=production
+      - AGENT_SERVICE_PORT=3001
+      - AGENT_SERVICE_URL=http://agents:3001
+      - RPC_URL=https://rpc.moderato.tempo.xyz
+    expose:
+      - "3001"
+    networks:
+      - paypol-net
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3001/health').then(r=>{process.exit(r.ok?0:1)}).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   # ── ZK Daemon (Shield & A2A Escrow Processor) ──────────
   daemon:

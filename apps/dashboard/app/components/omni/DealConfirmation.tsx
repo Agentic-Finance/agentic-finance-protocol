@@ -248,6 +248,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                                 userWallet={effectiveWallet}
                                 shieldEnabled={shieldEnabled}
                                 compact
+                                onComplete={() => onConfirm()}
                             />
                         ) : (
                             <button

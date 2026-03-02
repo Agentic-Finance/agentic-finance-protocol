@@ -31,10 +31,36 @@ export interface DiscoveredAgent {
     };
 }
 
+export interface AIProofData {
+    commitmentId: string;
+    commitTxHash: string;
+    verifyTxHash: string;
+    proofMatched: boolean | null;
+}
+
+export interface ParsedJobResult {
+    /** Human-readable summary */
+    summary: string;
+    /** Raw result for "View Details" toggle */
+    raw: any;
+    /** If result has an output field */
+    output?: string;
+    /** If result contains a txHash */
+    txHash?: string;
+    /** If the result actually contains an error despite API success */
+    hasError: boolean;
+    /** The raw error message */
+    errorMessage?: string;
+    /** Structured key-value pairs from complex objects */
+    fields?: Array<{ key: string; value: string }>;
+}
+
 export interface AgentJobData {
     id: string;
     status: string;
     result?: string;
+    parsedResult?: ParsedJobResult;
+    aiProof?: AIProofData | null;
     executionTime?: number;
     agent: DiscoveredAgent['agent'];
 }
@@ -72,10 +98,80 @@ export interface UseAgentMarketplaceReturn {
     selectAgent: (agent: DiscoveredAgent) => void;
     confirmDeal: (clientWallet: string, prompt: string) => Promise<void>;
     executeDeal: () => Promise<void>;
+    cancelExecution: () => void;
     rejectDeal: () => void;
     reset: () => void;
     startBrowsing: () => void;
     filterByCategory: (cat: string | null) => void;
+}
+
+// ══════════════════════════════════════
+// RESULT PARSING UTILITIES
+// ══════════════════════════════════════
+
+function humanizeKey(key: string): string {
+    return key.replace(/([A-Z])/g, ' $1').replace(/[_-]/g, ' ').replace(/^\w/, c => c.toUpperCase()).trim();
+}
+
+function friendlyError(error: string): string {
+    const l = error.toLowerCase();
+    if (l.includes('fetch failed') || l.includes('econnrefused'))
+        return 'Agent service is temporarily unavailable. Please try again later.';
+    if (l.includes('timeout') || l.includes('aborted'))
+        return 'Task took too long to complete. The agent may be under heavy load.';
+    if (l.includes('authentication') || l.includes('unauthorized') || l.includes('apikey') || l.includes('authtoken'))
+        return 'Authentication issue with the agent service. This is being looked into.';
+    if (l.includes('rate limit'))
+        return 'Agent is receiving too many requests. Please wait a moment and try again.';
+    if (l.includes('not found'))
+        return 'The requested agent or resource could not be found.';
+    if (l.includes('batch settle'))
+        return 'Batch settlement encountered an issue. Your escrow is safe.';
+    const first = error.split(/[.!]/)[0];
+    return first.length > 120 ? first.slice(0, 117) + '...' : first;
+}
+
+function parseAgentResult(rawResult: any): ParsedJobResult {
+    if (!rawResult) return { summary: 'No output received.', raw: null, hasError: false };
+
+    // Plain string — try to parse as JSON first
+    if (typeof rawResult === 'string') {
+        try { return parseAgentResult(JSON.parse(rawResult)); } catch { /* not JSON */ }
+        return { summary: rawResult, raw: rawResult, hasError: false };
+    }
+
+    // Has an error field → mark as error
+    if (rawResult.error) {
+        return { summary: friendlyError(rawResult.error), raw: rawResult, hasError: true, errorMessage: rawResult.error };
+    }
+
+    // Has an output field → use as summary
+    if (rawResult.output) {
+        const fields: Array<{ key: string; value: string }> = [];
+        if (rawResult.metadata) {
+            Object.entries(rawResult.metadata).forEach(([k, v]) => fields.push({ key: humanizeKey(k), value: String(v) }));
+        }
+        return {
+            summary: rawResult.output, raw: rawResult, hasError: false, output: rawResult.output,
+            txHash: rawResult.txHash || rawResult.metadata?.txHash,
+            fields: fields.length > 0 ? fields : undefined,
+        };
+    }
+
+    // Has txHash at top level
+    if (rawResult.txHash) {
+        return { summary: rawResult.message || rawResult.status || 'Transaction completed.', raw: rawResult, hasError: false, txHash: rawResult.txHash };
+    }
+
+    // Complex object → extract flat key-value fields
+    const fields: Array<{ key: string; value: string }> = [];
+    Object.entries(rawResult).forEach(([k, v]) => {
+        if (['raw', 'debug', 'logs', 'trace'].includes(k)) return;
+        if (typeof v === 'object' && v !== null) return;
+        fields.push({ key: humanizeKey(k), value: String(v) });
+    });
+
+    return { summary: rawResult.message || rawResult.status || 'Task completed.', raw: rawResult, hasError: false, fields: fields.length > 0 ? fields : undefined };
 }
 
 // ══════════════════════════════════════
@@ -99,6 +195,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
 
     const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const executionAbortRef = useRef<AbortController | null>(null);
 
     // ════════════════════════════════════
     // BROWSE: Fetch all agents from catalog
@@ -289,30 +386,62 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const executeDeal = useCallback(async () => {
         if (!activeJob) return;
 
+        executionAbortRef.current = new AbortController();
+
         try {
             const res = await fetch('/api/marketplace/execute', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jobId: activeJob.id }),
+                signal: executionAbortRef.current.signal,
             });
             if (!res.ok) throw new Error('Agent execution failed');
 
             const data = await res.json();
+            const parsed = parseAgentResult(data.result);
+
+            // If API says success but result contains an error → treat as failed
+            const effectiveSuccess = data.success && !parsed.hasError;
 
             setActiveJob(prev => prev ? {
                 ...prev,
-                status: data.status || 'COMPLETED',
+                status: effectiveSuccess ? (data.status || 'COMPLETED') : 'FAILED',
                 result: typeof data.result === 'string' ? data.result : JSON.stringify(data.result),
+                parsedResult: parsed,
+                aiProof: data.aiProof || null,
                 executionTime: data.executionTime,
             } : null);
 
-            setPhase(data.success ? 'completed' : 'failed');
+            setPhase(effectiveSuccess ? 'completed' : 'failed');
 
         } catch (err: any) {
-            setError(err.message);
+            if (err.name === 'AbortError') return; // cancelled by user, already handled
+            const errorMsg = err.message || 'An unexpected error occurred.';
+            setActiveJob(prev => prev ? {
+                ...prev,
+                status: 'FAILED',
+                result: errorMsg,
+                parsedResult: { summary: friendlyError(errorMsg), raw: errorMsg, hasError: true, errorMessage: errorMsg },
+            } : null);
+            setError(errorMsg);
             setPhase('failed');
+        } finally {
+            executionAbortRef.current = null;
         }
     }, [activeJob]);
+
+    const cancelExecution = useCallback(() => {
+        if (executionAbortRef.current) {
+            executionAbortRef.current.abort();
+            executionAbortRef.current = null;
+        }
+        setActiveJob(prev => prev ? {
+            ...prev,
+            status: 'CANCELLED',
+            parsedResult: { summary: 'Task was cancelled.', raw: null, hasError: false },
+        } : null);
+        setPhase('failed');
+    }, []);
 
     // ════════════════════════════════════
     // 5. REJECT / RESET
@@ -357,6 +486,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         selectAgent,
         confirmDeal,
         executeDeal,
+        cancelExecution,
         rejectDeal,
         reset,
         startBrowsing,

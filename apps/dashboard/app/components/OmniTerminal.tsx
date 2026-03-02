@@ -593,6 +593,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onExecute={marketplace.executeDeal}
                                 onShowReview={() => setShowReviewModal(true)}
                                 onReset={() => resetTerminal(false)}
+                                onCancel={marketplace.cancelExecution}
+                                onRetry={marketplace.executeDeal}
                             />
                         )}
 

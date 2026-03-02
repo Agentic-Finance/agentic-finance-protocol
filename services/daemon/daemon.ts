@@ -359,9 +359,23 @@ class PayPolDaemon {
         }
 
         console.log(`[DAEMON] ✅ Job ${job.id} settled on-chain via ZK proof!`);
+        console.log(`[DAEMON]    Deposit: ${storedSecrets.depositTxHash}`);
+        console.log(`[DAEMON]    Payout:  ${tx.hash}`);
+
         await this.prisma.timeVaultPayload.update({
             where: { id: job.id },
-            data: { status: 'COMPLETED', zkCommitment: commitment }
+            data: {
+                status: 'COMPLETED',
+                zkCommitment: commitment,
+                zkProof: JSON.stringify({
+                    secret: storedSecrets.secret,
+                    nullifier: storedSecrets.nullifier,
+                    nullifierHash: storedSecrets.nullifierHash,
+                    depositTxHash: storedSecrets.depositTxHash,
+                    payoutTxHash: tx.hash,
+                    amountScaled: storedSecrets.amountScaled,
+                }),
+            }
         });
     }
 

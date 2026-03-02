@@ -14,7 +14,7 @@ export default function ShieldPage() {
   const [amount, setAmount] = useState("");
   const [adminSecret, setAdminSecret] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; txHash?: string; error?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; txHash?: string; depositTxHash?: string; payoutTxHash?: string; error?: string; status?: string } | null>(null);
   const [stats, setStats] = useState<any>(null);
   const [statsError, setStatsError] = useState(false);
 
@@ -35,10 +35,13 @@ export default function ShieldPage() {
     const fetchStats = async () => {
       try {
         const res = await fetch("/api/stats");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (data.success) {
           setStats(data.stats);
           setStatsError(false);
+        } else {
+          setStatsError(true);
         }
       } catch {
         setStatsError(true);
@@ -55,13 +58,95 @@ export default function ShieldPage() {
     setResult(null);
 
     try {
-      const response = await fetch("/api/agent", {
+      // Step 1: Generate ZK commitment via Poseidon hash
+      const commitRes = await fetch("/api/shield", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipientAddress: recipient, amount, adminSecret }),
+        body: JSON.stringify({ action: "generate_commitment", amount, recipient }),
       });
-      const data = await response.json();
-      setResult(data.success ? { success: true, txHash: data.txHash } : { success: false, error: data.error });
+      const commitData = await commitRes.json();
+      if (!commitData.success) {
+        setResult({ success: false, error: commitData.error || "Failed to generate commitment" });
+        return;
+      }
+
+      // Step 2: Create shielded vault entry (daemon will pick up and execute on-chain)
+      const vaultRes = await fetch("/api/shield", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salary: amount,
+          recipientWallet: recipient,
+          shieldEnabled: true,
+        }),
+      });
+      const vaultData = await vaultRes.json();
+      if (!vaultData.success) {
+        setResult({ success: false, error: vaultData.error || "Vault creation failed" });
+        return;
+      }
+
+      const vaultId = vaultData.data?.id;
+      if (!vaultId) {
+        setResult({ success: true, status: "PENDING", txHash: commitData.commitment?.slice(0, 20) + "..." });
+        return;
+      }
+
+      // Step 3: Poll daemon for on-chain execution (every 3s, up to 90s)
+      setResult({ success: true, status: "PENDING", txHash: "Waiting for daemon to process..." });
+
+      const maxPolls = 30;
+      for (let i = 0; i < maxPolls; i++) {
+        await new Promise((r) => setTimeout(r, 3000));
+
+        try {
+          const pollRes = await fetch(`/api/shield/vault?id=${vaultId}`);
+          const pollData = await pollRes.json();
+
+          if (pollData.success && pollData.vault) {
+            const vault = pollData.vault;
+
+            if (vault.status === "COMPLETED") {
+              // Parse real tx hashes from daemon's zkProof JSON
+              let depositTx = "";
+              let payoutTx = "";
+              try {
+                const proofData = JSON.parse(vault.zkProof || "{}");
+                depositTx = proofData.depositTxHash || "";
+                payoutTx = proofData.payoutTxHash || "";
+              } catch {}
+
+              setResult({
+                success: true,
+                status: "COMPLETED",
+                depositTxHash: depositTx,
+                payoutTxHash: payoutTx,
+                txHash: payoutTx || depositTx || vault.zkCommitment?.slice(0, 20) + "...",
+              });
+              setIsLoading(false);
+              return;
+            }
+
+            if (vault.status === "FAILED") {
+              setResult({ success: false, error: "On-chain execution failed. Check daemon logs." });
+              setIsLoading(false);
+              return;
+            }
+
+            // Still processing — update UI
+            setResult({ success: true, status: vault.status, txHash: `Processing... (${vault.status})` });
+          }
+        } catch {
+          // Poll failed, continue trying
+        }
+      }
+
+      // Timeout — daemon hasn't completed yet
+      setResult({
+        success: true,
+        status: "PENDING",
+        txHash: `Vault created (${vaultId.slice(0, 8)}...). Daemon is processing — check back soon.`,
+      });
     } catch {
       setResult({ success: false, error: "Connection to ZK-Node failed." });
     } finally {
@@ -95,7 +180,7 @@ export default function ShieldPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <StatCard title="Shielded Volume" value={stats ? `${stats.totalShieldedVolume || '0'} aUSD` : null} icon={<TrendingUp className="w-4 h-4 text-emerald-400" />} error={statsError} />
+          <StatCard title="Shielded Volume" value={stats ? `${stats.totalShieldedVolume || '0'} AlphaUSD` : null} icon={<TrendingUp className="w-4 h-4 text-emerald-400" />} error={statsError} />
           <StatCard title="Executions" value={stats ? `${stats.totalExecutions || '0'}` : null} icon={<Cpu className="w-4 h-4 text-indigo-400" />} error={statsError} />
           <StatCard title="Integrity" value={stats ? `${stats.networkIntegrity || '100%'}` : null} icon={<ShieldCheck className="w-4 h-4 text-cyan-400" />} error={statsError} />
           <StatCard title="Velocity" value={stats ? `${stats.active24h || '0'} tx/d` : null} icon={<Activity className="w-4 h-4 text-amber-400" />} error={statsError} />
@@ -152,8 +237,32 @@ export default function ShieldPage() {
                     ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
                     : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
                 }`}>
-                  <strong>{result.success ? "SUCCESS" : "FAILED"}:</strong>{' '}
-                  {result.success ? result.txHash : result.error}
+                  <strong>{result.success ? (result.status === "COMPLETED" ? "✓ COMPLETED" : `⏳ ${result.status || "PENDING"}`) : "✗ FAILED"}:</strong>{' '}
+                  {!result.success && result.error}
+                  {result.success && result.status === "COMPLETED" && (
+                    <div className="mt-2 space-y-1.5">
+                      {result.depositTxHash && (
+                        <div>
+                          <span className="text-slate-400">Deposit TX: </span>
+                          <a href={`https://explore.tempo.xyz/tx/${result.depositTxHash}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline">
+                            {result.depositTxHash.slice(0, 16)}...{result.depositTxHash.slice(-8)}
+                          </a>
+                        </div>
+                      )}
+                      {result.payoutTxHash && (
+                        <div>
+                          <span className="text-slate-400">Payout TX: </span>
+                          <a href={`https://explore.tempo.xyz/tx/${result.payoutTxHash}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline">
+                            {result.payoutTxHash.slice(0, 16)}...{result.payoutTxHash.slice(-8)}
+                          </a>
+                        </div>
+                      )}
+                      {!result.depositTxHash && !result.payoutTxHash && <span>{result.txHash}</span>}
+                    </div>
+                  )}
+                  {result.success && result.status !== "COMPLETED" && (
+                    <span>{result.txHash}</span>
+                  )}
                 </div>
               )}
             </div>

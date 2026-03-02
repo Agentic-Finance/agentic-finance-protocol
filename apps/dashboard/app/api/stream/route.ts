@@ -90,15 +90,13 @@ export async function GET(req: Request) {
         const role = searchParams.get('role') || 'client'; // client | agent
         const status = searchParams.get('status'); // ACTIVE, COMPLETED, CANCELLED
 
-        if (!wallet) {
-            return NextResponse.json({ error: 'Missing wallet parameter' }, { status: 400 });
-        }
-
         const where: any = {};
-        if (role === 'agent') {
-            where.agentWallet = wallet;
-        } else {
-            where.clientWallet = wallet;
+        if (wallet) {
+            if (role === 'agent') {
+                where.agentWallet = wallet;
+            } else {
+                where.clientWallet = wallet;
+            }
         }
         if (status) {
             where.status = status;

@@ -177,7 +177,7 @@ export async function POST(req: Request) {
                 zkCommitment: finalCommitment,
                 zkProof: finalProof,
                 amount: Number(salary),
-                status: "Vaulted"
+                status: "PENDING"
             }
         });
 

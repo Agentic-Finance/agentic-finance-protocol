@@ -1,6 +1,12 @@
 'use client';
 // PayPol Protocol - Landing Page v2.1
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+
+const GlobeShowcase = dynamic(() => import('./landing/GlobeShowcase'), {
+    ssr: false,
+    loading: () => <div style={{ minHeight: '600px' }} />,
+});
 import {
     CommandLineIcon, CubeTransparentIcon, CpuChipIcon,
     ShieldCheckIcon, DocumentTextIcon, SparklesIcon,
@@ -290,6 +296,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <div style={{ width: '100%', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(11,17,32,0.6)', padding: '12px 0', position: 'relative', zIndex: 10 }}>
                 <div className="animate-ticker" style={{ display: 'flex', whiteSpace: 'nowrap', gap: '40px', width: 'max-content' }}>{[...Array(3)].map((_, i) => (<div key={i} style={{ display: 'flex', gap: '40px', fontFamily: 'monospace', fontSize: '0.8rem', color: '#64748b' }}><span><span style={{ color: '#10b981' }}>[SUCCESS]</span> Agent-03 verified PR. Vault released 5k.</span><span><span style={{ color: '#a855f7' }}>[NEXUS]</span> AuditAgent signed tx. $5 streamed.</span><span><span style={{ color: '#ec4899' }}>[BRIDGE]</span> 50k USDC bridged to Arb.</span></div>))}</div>
             </div>
+
+            {/* --- SECTION: LIVE NETWORK GLOBE --- */}
+            <GlobeShowcase />
 
             {/* --- SECTION: THE THESIS (SYMMETRICAL LAYOUT) --- */}
             <section id="overview" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10 }}>

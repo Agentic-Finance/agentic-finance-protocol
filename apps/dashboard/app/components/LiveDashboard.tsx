@@ -219,32 +219,18 @@ export default function LiveDashboard() {
   const state = useSSE();
 
   return (
-    <div className="min-h-screen bg-[#0a0d14] text-white p-6">
-      {/* Header */}
-      <div className="max-w-[1400px] mx-auto mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-3">
-              <span className="text-3xl">🧠</span>
-              PayPol Nerve Center
-              <span className={`w-2.5 h-2.5 rounded-full ${state.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Real-time protocol activity on Tempo Moderato (Chain 42431)
-            </p>
+    <div className="text-white px-4 sm:px-6 pb-6">
+      {/* Connection Status */}
+      <div className="max-w-[1400px] mx-auto mb-6 flex items-center justify-end gap-4">
+        <div className="text-right">
+          <div className="text-[10px] text-slate-500 uppercase tracking-wider">Status</div>
+          <div className={`text-sm font-medium ${state.connected ? 'text-emerald-400' : 'text-red-400'}`}>
+            {state.connected ? 'LIVE' : 'RECONNECTING...'}
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <div className="text-[10px] text-slate-500 uppercase tracking-wider">Status</div>
-              <div className={`text-sm font-medium ${state.connected ? 'text-emerald-400' : 'text-red-400'}`}>
-                {state.connected ? 'LIVE' : 'RECONNECTING...'}
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] text-slate-500 uppercase tracking-wider">Clients</div>
-              <div className="text-sm font-medium text-indigo-400">{state.connectionCount}</div>
-            </div>
-          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-[10px] text-slate-500 uppercase tracking-wider">Clients</div>
+          <div className="text-sm font-medium text-indigo-400">{state.connectionCount}</div>
         </div>
       </div>
 

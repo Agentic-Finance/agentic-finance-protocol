@@ -14,6 +14,7 @@ const LandingPage = lazy(() => import('./components/LandingPage'));
 const GatewayScreen = lazy(() => import('./components/GatewayScreen'));
 const OmniTerminal = lazy(() => import('./components/OmniTerminal'));
 const NetworkChart = lazy(() => import('./components/NetworkChart'));
+const SwarmUniverse = lazy(() => import('./components/SwarmUniverse'));
 const Boardroom = lazy(() => import('./components/Boardroom'));
 const ActiveAgents = lazy(() => import('./components/ActiveAgents'));
 const LedgerHistory = lazy(() => import('./components/LedgerHistory'));
@@ -294,10 +295,10 @@ export default function Dashboard() {
                     if (row.breakdown) { groupedMap[row.hash] = row; return; }
                     const hashKey = row.hash || row.txHash;
                     if (!groupedMap[hashKey]) {
-                        groupedMap[hashKey] = { hash: hashKey, date: row.date || new Date().toLocaleString(), amount: 0, token: row.token || "AlphaUSD", isJustSettled: false, breakdown: [], isLocalBatch: row.isLocalBatch || false, isShielded: row.isShielded };
+                        groupedMap[hashKey] = { hash: hashKey, date: row.date || new Date().toLocaleString(), amount: 0, token: row.token || "AlphaUSD", isJustSettled: false, breakdown: [], isLocalBatch: row.isLocalBatch || false, isShielded: row.isShielded, txHash: row.txHash };
                     }
                     groupedMap[hashKey].amount += parseFloat(row.amount || 0);
-                    groupedMap[hashKey].breakdown.push({ name: row.name || 'Unknown Entity', address: row.address || row.wallet_address || row.recipient, amount: row.amount, note: row.note || 'Public Transfer', zkCommitment: row.zkCommitment });
+                    groupedMap[hashKey].breakdown.push({ name: row.name || 'Unknown Entity', address: row.address || row.wallet_address || row.recipient, amount: row.amount, note: row.note || 'Public Transfer', zkCommitment: row.zkCommitment, txHash: row.txHash, depositTxHash: row.depositTxHash, payoutTxHash: row.payoutTxHash });
                 });
 
                 let mergedHistory = Object.values(groupedMap).map(h => ({ ...h, amount: typeof h.amount === 'number' ? h.amount.toFixed(3) : h.amount }));
@@ -685,16 +686,14 @@ export default function Dashboard() {
                 </Suspense>
 
                 <div className="relative z-20 mb-10">
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/40 via-purple-500/20 to-fuchsia-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
-                    <div className="absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 border-indigo-400/80 rounded-tl-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -right-1 w-10 h-10 border-b-2 border-r-2 border-fuchsia-400/80 rounded-br-xl z-10 pointer-events-none"></div><div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-fuchsia-400/80 rounded-tr-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-indigo-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
-                    <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl relative z-10 bg-[#151B27]/95 shadow-inner overflow-hidden">
-                        <div className="absolute top-0 right-0 w-[60%] h-32 bg-fuchsia-500/10 blur-[80px] pointer-events-none"></div>
-                        <div className="flex flex-wrap md:flex-nowrap justify-between items-center relative z-10 border-b border-white/[0.05] pb-6 mb-6 gap-4">
-                            <div><h3 className="text-2xl font-bold text-white flex items-center gap-3"><span className="p-2 bg-fuchsia-500/10 text-fuchsia-400 rounded-xl">📈</span> Protocol Volume</h3></div>
-                        </div>
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-fuchsia-500/40 via-amber-500/20 to-indigo-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
+                    <div className="absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 border-fuchsia-400/80 rounded-tl-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -right-1 w-10 h-10 border-b-2 border-r-2 border-amber-400/80 rounded-br-xl z-10 pointer-events-none"></div><div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-amber-400/80 rounded-tr-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-fuchsia-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
+                    <div className="flex flex-col border border-white/[0.08] rounded-3xl relative z-10 bg-[#0d0d18]/95 shadow-inner overflow-hidden">
+                        <div className="absolute top-0 left-0 w-[40%] h-32 bg-fuchsia-500/8 blur-[80px] pointer-events-none"></div>
+                        <div className="absolute bottom-0 right-0 w-[40%] h-32 bg-amber-500/8 blur-[80px] pointer-events-none"></div>
                         <div className="relative z-10 w-full">
                             <Suspense fallback={<ChartSkeleton />}>
-                                <NetworkChart />
+                                <SwarmUniverse />
                             </Suspense>
                         </div>
                     </div>

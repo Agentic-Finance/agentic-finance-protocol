@@ -1,14 +1,26 @@
-// apps/dashboard/paypol-frontend/app/api/shield/vault/route.ts
-import { NextResponse } from 'next/server';
+// apps/dashboard/app/api/shield/vault/route.ts
+import { apiSuccess, apiError } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 
 export async function GET(req: Request) {
     try {
         const url = new URL(req.url);
+        const vaultId = url.searchParams.get("id");
+
+        // ─── Single vault lookup by ID (used by Shield page polling) ───
+        if (vaultId) {
+            const vault = await prisma.timeVaultPayload.findUnique({
+                where: { id: vaultId },
+            });
+            if (!vault) {
+                return apiError("Vault entry not found", 404);
+            }
+            return apiSuccess({ vault });
+        }
+
+        // ─── List all vaults for workspace ───
         let workspaceId = url.searchParams.get("workspaceId");
 
-        // ⚡️ BUG FIX: Catch "default" sent by the frontend before workspace is fully loaded.
-        // If the ID is missing or invalid, fallback to the first available workspace in DB.
         if (!workspaceId || workspaceId === "undefined" || workspaceId === "ws_boardroom_01" || workspaceId === "default") {
             const ws = await prisma.workspace.findFirst();
             if (ws) {
@@ -16,20 +28,18 @@ export async function GET(req: Request) {
             }
         }
 
-        // If DB is completely empty, return empty array safely
         if (!workspaceId) {
-            return NextResponse.json({ success: true, data: [] });
+            return apiSuccess({ data: [] });
         }
 
-        // Fetch ALL Escrow payloads (both Vaulted and Settled)
         const vaults = await prisma.timeVaultPayload.findMany({
             where: { workspaceId: workspaceId },
-            orderBy: { createdAt: 'desc' } // Sort by newest first
+            orderBy: { createdAt: 'desc' }
         });
 
-        return NextResponse.json({ success: true, data: vaults });
+        return apiSuccess({ data: vaults });
     } catch (error: any) {
         console.error("❌ FETCH VAULT ERROR:", error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return apiError("Failed to fetch vault data", 500);
     }
 }

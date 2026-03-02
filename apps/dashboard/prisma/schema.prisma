@@ -208,6 +208,8 @@ model StreamJob {
   createdAt       DateTime     @default(now())
   milestones      Milestone[]
 
+  swarmStream     SwarmStream?
+
   @@index([clientWallet])
   @@index([agentWallet])
 }
@@ -336,4 +338,125 @@ model EmbeddedWallet {
 
   @@index([ownerType])
   @@index([address])
+}
+
+// ==========================================
+// 🐝 AGENT SWARM FEATURES
+// ==========================================
+
+// Parent container for multi-agent swarms (Features 1+5)
+model SwarmSession {
+  id              String        @id @default(uuid())
+  name            String                                  // "DeFi Audit Swarm"
+  clientWallet    String
+  totalBudget     Float                                   // Sum of all agent allocations
+  totalReleased   Float         @default(0)
+  agentCount      Int           @default(0)
+  status          String        @default("ACTIVE")        // ACTIVE, COMPLETED, CANCELLED
+
+  // Feature 5: Escrow fields
+  escrowTxHash    String?                                 // NexusV2 escrow lock tx
+  onChainJobId    Int?                                    // NexusV2 job ID
+  totalLocked     Float         @default(0)               // Amount locked in escrow
+  escrowStatus    String        @default("NONE")          // NONE, LOCKED, DISTRIBUTING, SETTLED
+
+  deadline        DateTime?
+  createdAt       DateTime      @default(now())
+  completedAt     DateTime?
+
+  streams         SwarmStream[]
+  auditEvents     AuditEvent[]
+  a2aTransfers    A2ATransfer[]
+
+  @@index([clientWallet])
+  @@index([status])
+}
+
+// Join table: SwarmSession <-> StreamJob (Feature 1)
+model SwarmStream {
+  id              String        @id @default(uuid())
+  swarmId         String
+  swarm           SwarmSession  @relation(fields: [swarmId], references: [id])
+  streamJobId     String        @unique
+  streamJob       StreamJob     @relation(fields: [streamJobId], references: [id])
+  agentId         String?                                 // MarketplaceAgent id
+  role            String        @default("worker")        // coordinator, worker, reviewer
+  allocatedBudget Float
+  releasedAmount  Float         @default(0)
+  status          String        @default("ACTIVE")        // ACTIVE, COMPLETED, FAILED
+
+  @@index([swarmId])
+}
+
+// Agent-to-agent micropayments (Feature 2)
+model A2ATransfer {
+  id                String        @id @default(uuid())
+  senderAgentId     String?                               // MarketplaceAgent id
+  receiverAgentId   String?                               // MarketplaceAgent id
+  senderWallet      String
+  receiverWallet    String
+  amount            Float
+  token             String        @default("AlphaUSD")
+  reason            String?                               // "Subcontracted security scan"
+  txHash            String?                               // On-chain tx hash
+  swarmId           String?                               // Optional link to SwarmSession
+  swarm             SwarmSession? @relation(fields: [swarmId], references: [id])
+  jobId             String?                               // Optional link to AgentJob
+  status            String        @default("PENDING")     // PENDING, CONFIRMED, FAILED
+  createdAt         DateTime      @default(now())
+
+  @@index([senderWallet])
+  @@index([receiverWallet])
+  @@index([swarmId])
+  @@index([status])
+}
+
+// ZK-verified intelligence market (Feature 3)
+model IntelSubmission {
+  id                String        @id @default(uuid())
+  sourceAgentId     String?                               // null = anonymous
+  zkCommitment      String                                // Poseidon commitment hiding identity
+  zkProof           String?                               // PLONK proof data
+  nullifierHash     String?                               // Prevents double-submit
+
+  category          String                                // security, defi, market, governance
+  title             String
+  summary           String                                // Brief description
+  dataHash          String                                // keccak256 of full intel payload
+  qualityScore      Float?                                // 0-100 post-verification
+  price             Float                                 // AlphaUSD price
+  token             String        @default("AlphaUSD")
+
+  buyerWallet       String?                               // Who purchased
+  paymentTxHash     String?                               // Payment tx
+  proofRegistryId   String?                               // AIProofRegistry on-chain ID
+
+  status            String        @default("LISTED")      // LISTED, VERIFIED, PURCHASED, EXPIRED
+  createdAt         DateTime      @default(now())
+
+  @@index([category])
+  @@index([status])
+  @@index([nullifierHash])
+}
+
+// 4D audit trail — temporal event logging (Feature 4)
+model AuditEvent {
+  id              String        @id @default(uuid())
+  swarmId         String?
+  swarm           SwarmSession? @relation(fields: [swarmId], references: [id])
+  agentId         String?                                 // MarketplaceAgent id or wallet
+  agentName       String?
+  eventType       String                                  // SWARM_CREATED, MILESTONE_APPROVED, A2A_TRANSFER, ESCROW_LOCKED, etc.
+  title           String
+  description     String?
+  metadata        Json?                                   // Arbitrary JSON payload
+  txHash          String?
+  severity        String        @default("INFO")          // INFO, SUCCESS, WARNING, ERROR
+
+  createdAt       DateTime      @default(now())
+
+  @@index([swarmId])
+  @@index([agentId])
+  @@index([eventType])
+  @@index([createdAt])
 }

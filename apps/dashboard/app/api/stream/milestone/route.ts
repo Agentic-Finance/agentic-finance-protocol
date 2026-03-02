@@ -1,6 +1,8 @@
 import prisma from '../../../lib/prisma';
 import { notify } from '../../../lib/notify';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
+import { syncSwarmProgress } from '@/app/lib/swarm-helpers';
+import { logAuditEvent } from '@/app/lib/audit-types';
 
 export const dynamic = 'force-dynamic';
 
@@ -142,6 +144,23 @@ export async function POST(req: Request) {
                         title: 'Stream Completed',
                         message: `All milestones approved! Total earned: $${stream.totalBudget} (before fees).`,
                         streamJobId: stream.id,
+                    });
+                }
+
+                // Check if this stream belongs to a swarm → sync progress
+                const swarmStream = await prisma.swarmStream.findUnique({
+                    where: { streamJobId: stream.id },
+                });
+                if (swarmStream) {
+                    await syncSwarmProgress(swarmStream.swarmId);
+                    await logAuditEvent({
+                        swarmId: swarmStream.swarmId,
+                        agentName: stream.agentName || stream.agentWallet.slice(0, 10),
+                        eventType: 'MILESTONE_APPROVED',
+                        title: `Milestone ${milestoneIndex + 1} Approved`,
+                        description: `$${milestone.amount} released to ${stream.agentName || 'agent'}`,
+                        metadata: { milestoneIndex, amount: milestone.amount, streamJobId: stream.id },
+                        severity: 'SUCCESS',
                     });
                 }
 

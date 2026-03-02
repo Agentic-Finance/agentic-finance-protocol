@@ -1,0 +1,742 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px 60px; line-height: 1.7; color: #1a1a1a; }
+  h1 { font-size: 28pt; color: #6366f1; text-align: center; margin-bottom: 5px; }
+  h2 { font-size: 18pt; color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 5px; margin-top: 35px; }
+  h3 { font-size: 14pt; color: #4f46e5; margin-top: 20px; }
+  .subtitle { text-align: center; font-size: 12pt; color: #666; margin-bottom: 30px; }
+  .time { display: inline-block; background: #6366f1; color: white; padding: 2px 10px; border-radius: 12px; font-size: 10pt; font-weight: bold; }
+  .action { background: #f0f0ff; border-left: 4px solid #6366f1; padding: 8px 15px; margin: 10px 0; font-style: italic; color: #444; }
+  .script { background: #fafafa; border-left: 4px solid #10b981; padding: 10px 15px; margin: 10px 0; font-size: 11pt; }
+  .note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 8px 15px; margin: 10px 0; font-size: 10pt; }
+  .tip { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px 15px; margin: 10px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+  th { background: #6366f1; color: white; padding: 10px 15px; text-align: left; }
+  td { border: 1px solid #ddd; padding: 8px 15px; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>PAYPOL PROTOCOL</h1>
+<h1 style="font-size: 20pt; color: #333; margin-top: 0;">Video Demo Script — Tieng Viet</h1>
+<div class="subtitle">
+  Thoi luong: 20-25 phut | Dinh dang: Screen Recording + Voice-over<br>
+  Phien ban: 1.0 | Ngay: 01/03/2026
+</div>
+
+<table>
+  <tr><th>Phan</th><th>Noi Dung</th><th>Thoi Gian</th></tr>
+  <tr><td>0</td><td>Intro — Mo dau</td><td>0:00 - 1:00</td></tr>
+  <tr><td>1</td><td>Tong Quan — PayPol la gi?</td><td>1:00 - 3:30</td></tr>
+  <tr><td>2</td><td>Ket Noi Vi & Workspace</td><td>3:30 - 5:00</td></tr>
+  <tr><td>3</td><td>OmniTerminal — Payroll, Boardroom, Daemon Queue, History</td><td>5:00 - 10:00</td></tr>
+  <tr><td>4</td><td>Shield Mode — ZK-SNARK Privacy</td><td>10:00 - 12:00</td></tr>
+  <tr><td>5</td><td>Shield Dashboard — 10 Use Cases</td><td>12:00 - 14:00</td></tr>
+  <tr><td>6</td><td>A2A Marketplace — Agents Thue Nhau</td><td>14:00 - 17:30</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6A: Kham Pha Marketplace</td><td>14:00 - 15:00</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6B: Thuc Hien A2A Deal</td><td>15:00 - 16:30</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6C: Thanh Toan Bang The (Fiat On-Ramp)</td><td>16:30 - 17:30</td></tr>
+  <tr><td>7</td><td>AI Proof Verification</td><td>17:30 - 19:00</td></tr>
+  <tr><td>8</td><td>Stream — Thanh Toan Milestone</td><td>19:00 - 20:30</td></tr>
+  <tr><td>9</td><td>Revenue & Live Dashboard</td><td>20:30 - 22:30</td></tr>
+  <tr><td>10</td><td>Embedded Wallets</td><td>22:30 - 24:00</td></tr>
+  <tr><td>11</td><td>Developer Experience & SDK</td><td>24:00 - 25:30</td></tr>
+  <tr><td>12</td><td>Admin & Arbitration</td><td>25:30 - 27:00</td></tr>
+  <tr><td>13</td><td>Closing — Ket thuc</td><td>27:00 - 28:00</td></tr>
+</table>
+
+<p><b>Cach doc kich ban:</b></p>
+<div class="action">Dong mau tim = Huong dan thao tac tren man hinh</div>
+<div class="script">Dong mau xanh = Loi thoai can doc/noi</div>
+<div class="note">Dong mau vang = Ghi chu cho nguoi quay</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">0:00 - 1:00</span> PHAN 0: MO DAU</h2>
+
+<div class="action">Man hinh: Logo PayPol hoac title card tren nen den. Sau 3 giay chuyen sang man hinh dashboard.</div>
+
+<div class="script">
+Xin chao tat ca moi nguoi, toi la [Ten ban], founder cua PayPol Protocol.
+<br><br>
+Hom nay toi se demo truc tiep toan bo PayPol — mot he thong thanh toan duoc thiet ke rieng cho AI agents, xay dung tren Tempo L1 blockchain.
+<br><br>
+Trong khoang 20 phut toi, cac ban se thay:
+<br>
+— AI agents tu dong thue nhau va thanh toan, khong can con nguoi can thiep
+<br>
+— ZK-SNARK bao ve quyen rieng tu cua moi giao dich
+<br>
+— He thong xac minh chung minh rang AI da lam dung nhung gi no hua
+<br>
+— Va tat ca deu dang chay LIVE tren blockchain that, khong phai mockup
+<br><br>
+OK, bat dau thoi!
+</div>
+
+<div class="note">Ghi chu: Noi tu tin, nhin thang vao camera. Toc do noi vua phai — de AI dub tieng Anh khop lip-sync.</div>
+
+<!-- ============================================== -->
+<h2><span class="time">1:00 - 3:30</span> PHAN 1: TONG QUAN — PAYPOL LA GI?</h2>
+
+<div class="action">Man hinh: Mo trang paypol.xyz/protocol — cuon nhe xuong phan gioi thieu.</div>
+
+<div class="script">
+PayPol giai quyet mot van de rat lon trong nganh AI: cac AI agents ngay cang thong minh, chung co the lam viec, tao noi dung, viet code, phan tich du lieu... nhung chua co cach nao de chung tu thanh toan cho nhau mot cach an toan va tu dong.
+<br><br>
+Hay tuong tuong the nay: ban co mot AI agent lam marketing. No can thue mot AI agent khac de thiet ke logo, mot agent nua de viet content, va mot agent nua de dich sang tieng Anh.
+<br><br>
+Vay ai se giu tien? Lam sao de biet agent da lam xong viec? Va neu no lam sai thi xu ly the nao?
+<br><br>
+PayPol giai quyet toan bo cac van de do.
+</div>
+
+<div class="action">Cuon xuong den muc "5 Things Only PayPol Can Do" — trang /protocol, khu vuc Competitive Moats.</div>
+
+<div class="script">
+PayPol co 5 diem khac biet cot loi ma khong platform nao khac co:
+<br><br>
+<b>Thu nhat — Agent-to-Agent Escrow.</b> Khi mot AI agent thue mot agent khac, tien se duoc khoa trong smart contract. Agent chi nhan duoc tien khi hoan thanh nhiem vu va duoc xac nhan. Neu co tranh chap, Judge se phan xu ngay tren blockchain.
+<br><br>
+<b>Thu hai — AI Execution Verification.</b> Truoc khi bat dau lam viec, agent phai commit ke hoach len blockchain. Sau khi lam xong, ket qua se duoc hash va so sanh voi ke hoach ban dau. Neu khong khop, agent se bi tru diem reputation.
+<br><br>
+<b>Thu ba — Zero-Knowledge Privacy.</b> Chung toi dung ZK-SNARK that su — Circom V2, PLONK proofs, Poseidon hash — de bao ve thong tin. Tren blockchain, khong ai biet ban tra bao nhieu cho ai.
+<br><br>
+<b>Thu tu — Universal SDK.</b> PayPol ho tro 6 framework pho bien nhat: OpenAI, Anthropic Claude, LangChain, CrewAI, Eliza, va OpenClaw. Bat ky AI agent nao cung co the tich hop duoc.
+<br><br>
+<b>Thu nam — APS-1 Standard.</b> Day la chuan mo — giong nhu ERC-20 cho token, APS-1 la chuan cho thanh toan giua cac AI agents. Co day du RFC spec, OpenAPI doc, va MIT License.
+</div>
+
+<div class="action">Cuon xuong bang 9 Smart Contracts.</div>
+
+<div class="script">
+Va day la 9 smart contracts da duoc deploy va verified tren Tempo L1 — chain ID 42431. Tat ca deu la code that, giao dich that, khong co gi la demo hay mockup.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">3:30 - 5:00</span> PHAN 2: KET NOI VI & WORKSPACE</h2>
+
+<div class="action">Man hinh: Mo trang paypol.xyz — Landing page. MetaMask chua ket noi.</div>
+
+<div class="script">
+OK, bay gio toi se demo truc tiep. Day la trang chu cua PayPol. Viec dau tien la ket noi vi MetaMask.
+</div>
+
+<div class="action">Click "Connect Wallet" — MetaMask popup hien len — approve.</div>
+
+<div class="script">
+PayPol chay tren Tempo L1, chain ID 42431. Diem dac biet la gas tren testnet hoan toan mien phi — ban khong can lo ve phi giao dich.
+</div>
+
+<div class="action">Chon hoac tao Workspace moi.</div>
+
+<div class="script">
+Moi workspace la mot khong gian lam viec doc lap. Co the la cong ty, DAO, hoac project ca nhan cua ban. Trong moi workspace, ban co danh sach nhan vien, lich su giao dich, va cau hinh rieng.
+</div>
+
+<div class="action">Vao Dashboard chinh. Chi tay len 4 stat cards phia tren.</div>
+
+<div class="script">
+Day la dashboard chinh. Phia tren cung la 4 chi so quan trong:
+<br>
+— <b>Shielded Volume</b>: tong gia tri da duoc bao ve boi ZK-SNARK
+<br>
+— <b>Executions</b>: tong so giao dich da thuc hien
+<br>
+— <b>Integrity</b>: ty le xac minh thanh cong cua mang luoi
+<br>
+— <b>Velocity</b>: toc do giao dich trung binh moi ngay
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">5:00 - 9:00</span> PHAN 3: OMNI TERMINAL</h2>
+
+<h3><span class="time">5:00 - 7:00</span> 3A: Payroll Mode — Tra Luong Bang Ngon Ngu Tu Nhien</h3>
+
+<div class="action">Man hinh: Click vao OmniTerminal — tab "Payroll".</div>
+
+<div class="script">
+Day la OmniTerminal — trai tim cua PayPol. No hoat dong nhu mot AI assistant. Ban chi can go lenh bang ngon ngu tu nhien, va PayPol se hieu ban muon lam gi.
+</div>
+
+<div class="action">Go vao terminal: "Tra 500 AlphaUSD cho 0x1234...abcd cho viec thiet ke logo"</div>
+
+<div class="script">
+Toi vua go: "Tra 500 AlphaUSD cho dia chi nay cho viec thiet ke logo". Claude AI phia sau se phan tich cau lenh va tu dong nhan dien: nguoi nhan la ai, so tien bao nhieu, va ghi chu la gi.
+</div>
+
+<div class="action">Hien thi ket qua parsing — recipient, amount, note duoc highlight.</div>
+
+<div class="script">
+Nhu cac ban thay, no da tu dong tach ra: dia chi vi nguoi nhan, so tien 500 AlphaUSD, va ghi chu "thiet ke logo". Neu ban da luu danh sach nhan vien, chi can go ten la du — khong can nho dia chi.
+</div>
+
+<div class="action">Go tiep: "Tra luong thang 3 cho tat ca nhan vien"</div>
+
+<div class="script">
+Hoac don gian hon — "Tra luong thang 3 cho tat ca nhan vien". PayPol se lay danh sach nhan vien tu Boardroom va tao hang loat giao dich cung luc qua MultisendV2 — chi mot transaction duy nhat cho tat ca.
+</div>
+
+<div class="action">Hien thi CSV upload button.</div>
+
+<div class="script">
+Neu ban co danh sach lon, chi can upload file CSV voi ten, dia chi vi, va so tien. PayPol se xu ly hang tram giao dich trong mot luc.
+</div>
+
+<h3><span class="time">7:00 - 8:00</span> 3B: The Boardroom — Quan Ly Nhan Vien</h3>
+
+<div class="action">Cuon xuong khu vuc "The Boardroom" — bang danh sach nhan vien.</div>
+
+<div class="script">
+Ngay ben duoi OmniTerminal la The Boardroom — noi ban quan ly toan bo danh sach nhan vien va nguoi nhan thanh toan.
+<br><br>
+Moi nhan vien hien thi: ten, dia chi vi, so tien, trang thai hien tai — Awaiting Approval, Pending, hay da Paid. Ban co the them nhan vien moi bang tay, hoac import tu CSV.
+<br><br>
+Khi ban go lenh "Tra luong cho tat ca" tren OmniTerminal, he thong se lay danh sach tu day va tao giao dich hang loat.
+</div>
+
+<div class="action">Click "Approve" tren mot nhan vien — chuyen trang thai tu Awaiting sang Pending.</div>
+
+<div class="script">
+Sau khi approve, giao dich se duoc chuyen sang Daemon Queue de xu ly. Neu bat Shield mode, Daemon se tu dong tao ZK proof va gui on-chain.
+</div>
+
+<h3><span class="time">8:00 - 9:00</span> 3C: Daemon Queue & Settled Batches</h3>
+
+<div class="action">Cuon xuong phan "Daemon Queue" — hien thi cac giao dich dang doi xu ly.</div>
+
+<div class="script">
+Day la Daemon Queue — hang doi xu ly. Moi entry hien thi so tien, loai giao dich (Shield hay Public), va trang thai hien tai. Daemon chay lien tuc moi 5 giay, tu dong pick up cac giao dich PENDING va xu ly chung.
+<br><br>
+Neu la Shield, Daemon se: tao ZK proof, deposit vao ShieldVault, roi execute shielded payout. Neu la Public, no gui thang qua MultisendV2.
+</div>
+
+<div class="action">Cuon xuong phan "Settled Batches & History" — hien thi cac giao dich da hoan thanh.</div>
+
+<div class="script">
+Va day la Settled Batches & History — lich su toan bo giao dich da hoan thanh. Moi batch hien thi:
+<br>
+— Loai: ZK-SHIELDED hoac PUBLIC L1
+<br>
+— So luong nguoi nhan va tong gia tri
+<br>
+— Thoi gian hoan thanh
+<br>
+— Va quan trong nhat — link den Tempo Block Explorer de xac nhan giao dich tren blockchain
+<br><br>
+Click vao "View ZK Proof" de xem chi tiet: deposit transaction, payout transaction, va trang thai cua tung nguoi nhan. Tat ca deu la giao dich that tren chain.
+</div>
+
+<div class="action">Click vao mot batch — mo chi tiet breakdown.</div>
+
+<div class="script">
+Khi expand, ban thay chi tiet tung nguoi nhan: ten, dia chi vi, so tien, va link den on-chain transaction. Moi giao dich co the verify doc lap tren block explorer.
+</div>
+
+<h3><span class="time">9:00 - 10:00</span> 3D: Shield Mode — ZK-SNARK Privacy</h3>
+
+<div class="action">Bat che do Shield trong OmniTerminal — toggle Shield ON.</div>
+
+<div class="script">
+Bay gio toi bat che do Shield — day la tinh nang bao mat cao nhat cua PayPol, su dung ZK-SNARK.
+</div>
+
+<div class="action">Go: "Tra 1000 AlphaUSD cho 0xABCD... voi ZK privacy"</div>
+
+<div class="script">
+Khi bat Shield, giao dich se duoc xu ly qua ShieldVaultV2 smart contract. Dang sau, he thong se lam nhung viec sau:
+<br><br>
+Mot — tao mot Zero-Knowledge proof bang Circom V2 va snarkjs.
+<br>
+Hai — hash dia chi nguoi nhan va so tien bang Poseidon hash.
+<br>
+Ba — tao mot nullifier de chong giao dich trung lap.
+<br>
+Bon — gui proof len PlonkVerifierV2 de xac minh tren blockchain.
+</div>
+
+<div class="action">Hien thi loading animation — proof dang duoc tao.</div>
+
+<div class="script">
+Proof dang duoc tao... Day la ZK-SNARK PLONK that su, khong phai simulation. Daemon cua chung toi da duoc toi uu hoa voi Poseidon singleton cache. Proof dau tien mat khoang 3 giay, nhung cac proof tiep theo chi mat duoi 1 giay nho co cache.
+</div>
+
+<div class="action">Hien thi thanh cong — transaction hash xuat hien.</div>
+
+<div class="script">
+Hoan tat! Giao dich da len blockchain. Va diem quan trong la: tren chain, khong ai co the biet nguoi nhan la ai hay so tien la bao nhieu. Chi co nguoi gui va nguoi nhan moi biet — dung nhu thiet ke.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">12:00 - 14:00</span> PHAN 5: SHIELD DASHBOARD — 10 USE CASES</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/shield.</div>
+
+<div class="script">
+Day la Shield Dashboard — trang tong quan cho toan bo he thong ZK privacy. Phia tren la cac chi so thoi gian thuc: Shielded Volume, so luong giao dich, Integrity, va Velocity.
+</div>
+
+<div class="action">Cuon xuong khu vuc 10 use case cards.</div>
+
+<div class="script">
+Chung toi da thiet ke 10 ung dung thuc te cho ZK privacy:
+<br><br>
+<b>Autonomous Freelancers</b> — AI freelancer nhan thanh toan ma khong lo thong tin ca nhan.
+<br>
+<b>Shielded Payroll</b> — tra luong nhan vien ma ho khong biet luong cua nhau.
+<br>
+<b>DAO Performance Grants</b> — thuong hieu suat rieng tu trong DAO.
+<br>
+<b>Supply Chain Settlement</b> — thanh toan chuoi cung ung kin dao.
+<br>
+<b>Private Bug Bounties</b> — tra tien bao cao loi bao mat ma hacker khong bi lo danh tinh.
+</div>
+
+<div class="action">Cuon them xuong 5 use cases tiep theo.</div>
+
+<div class="script">
+Va con 5 ung dung nua: A2A Micropayments cho cac giao dich sieu nho giua agents, Shielded Royalties cho ban quyen, Disaster Relief cho cuu tro thien tai, Global Remittances cho chuyen tien quoc te, va Autonomous VC cho dau tu tu dong.
+</div>
+
+<div class="action">Cuon xuong form Shield Execution. Nhap recipient, amount, admin secret.</div>
+
+<div class="script">
+Bay gio toi se thuc hien mot giao dich Shield truc tiep tu dashboard nay.
+</div>
+
+<div class="action">Click "Execute" — doi proof generation — hien thi ket qua.</div>
+
+<div class="script">
+Nhap dia chi nguoi nhan, so tien... va Execute. ZK proof dang duoc tao... Va thanh cong! Mot giao dich Shield nua da duoc ghi nhan voi zero-knowledge proof tren blockchain.
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">14:00 - 17:30</span> PHAN 6: A2A MARKETPLACE</h2>
+
+<h3><span class="time">14:00 - 15:00</span> 6A: Kham Pha Marketplace</h3>
+
+<div class="action">Chuyen sang OmniTerminal — tab "A2A Marketplace".</div>
+
+<div class="script">
+Day la phan toi thich nhat — Agent-to-Agent Marketplace. Hien tai co 32 AI agents dang chay that tren blockchain. Moi agent co ky nang chuyen mon, bang gia, va lich su lam viec rieng.
+</div>
+
+<div class="action">Hien thi danh sach agents — hover vao vai agent de thay chi tiet.</div>
+
+<div class="script">
+Moi agent hien thi:
+<br>
+— Ten va mo ta ngan
+<br>
+— Ky nang chuyen mon: translation, code audit, design, data analysis...
+<br>
+— Gia co dinh hoac gia thuong luong
+<br>
+— Diem danh gia va so job da hoan thanh
+<br>
+— Tier bao mat: Bronze, Silver, hoac Gold — dua tren so tien deposit
+</div>
+
+<h3><span class="time">15:00 - 16:30</span> 6B: Thuc Hien Mot A2A Deal</h3>
+
+<div class="action">Go vao terminal: "Thue mot agent de audit smart contract, budget 200 AlphaUSD"</div>
+
+<div class="script">
+Toi se thu thue mot agent. Go: "Thue agent audit smart contract voi budget 200 AlphaUSD".
+<br><br>
+PayPol se thuc hien 3 buoc tu dong theo chuan APS-1:
+</div>
+
+<div class="action">Hien thi qua trinh Discover.</div>
+
+<div class="script">
+<b>Buoc 1 — Discover:</b> Tim kiem agent co ky nang phu hop. He thong tra ve danh sach cac agent chuyen ve code audit.
+</div>
+
+<div class="action">Hien thi qua trinh Negotiate.</div>
+
+<div class="script">
+<b>Buoc 2 — Negotiate:</b> Agent va client tu dong thuong luong gia. Agent de xuat 180 AlphaUSD, client chap nhan.
+</div>
+
+<div class="action">Hien thi qua trinh Escrow Lock — transaction on-chain.</div>
+
+<div class="script">
+<b>Buoc 3 — Escrow Lock:</b> 180 AlphaUSD duoc khoa vao NexusV2 smart contract. Luc nay, khong ai co the rut tien — ke ca agent lan client. Tien chi duoc giai ngan khi job hoan thanh va duoc xac nhan.
+</div>
+
+<div class="action">Mo Escrow Tracker — hien thi lifecycle.</div>
+
+<div class="script">
+Day la Escrow Tracker. Moi giao dich di qua vong doi ro rang:
+<br>
+CREATED — MATCHED — ESCROW LOCKED — EXECUTING — COMPLETED — SETTLED.
+<br><br>
+Moi escrow co countdown deadline. Neu agent khong hoan thanh kip han, client se duoc tu dong hoan tien. Platform fee chi 5% — thap nhat thi truong. Va neu co tranh chap, he thong Arbitration se giai quyet.
+</div>
+
+<h3><span class="time">16:30 - 17:30</span> 6C: Thanh Toan Bang The — Fiat On-Ramp</h3>
+
+<div class="action">Man hinh: Mo Fiat Checkout — click "Pay with Card" tren mot escrow.</div>
+
+<div class="script">
+Mot tinh nang quan trong nua: ban khong can co crypto san de su dung PayPol. Chung toi tich hop Paddle — nen thanh toan Fiat-to-Crypto.
+<br><br>
+Khi ban chon "Pay with Card", he thong se:
+<br>
+— <b>Buoc 1</b>: Hien thi form thanh toan — nhap so the tin dung, email
+<br>
+— <b>Buoc 2</b>: Paddle xu ly thanh toan fiat (USD)
+<br>
+— <b>Buoc 3</b>: Tu dong convert sang AlphaUSD va gui vao escrow tren blockchain
+</div>
+
+<div class="action">Hien thi qua trinh thanh toan — Paddle checkout form.</div>
+
+<div class="script">
+Day la Paddle checkout. Ho tro Visa, Mastercard, Apple Pay, va nhieu phuong thuc khac. Sau khi thanh toan thanh cong, AlphaUSD se duoc mint va tu dong khoa vao NexusV2 escrow — toan bo dien ra trong vai giay.
+<br><br>
+Nguoi dung khong can mua crypto truoc, khong can hieu blockchain — chi can co the tin dung la du. Day la cau noi giua Web2 va Web3.
+</div>
+
+<div class="action">Hien thi confirmation — transaction hash xuat hien.</div>
+
+<div class="script">
+Hoan tat! Tien da vao escrow tu the tin dung. Agent gio co the bat dau lam viec ngay — moi thu tu dong va lien mach.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">17:30 - 19:00</span> PHAN 7: AI PROOF VERIFICATION</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/verify.</div>
+
+<div class="script">
+Day la AI Proof Verification — trang xac minh cong khai. Bat ky ai cung co the vao day de kiem tra xem AI agent co lam dung loi hua hay khong.
+</div>
+
+<div class="action">Chi vao 4 stat cards phia tren.</div>
+
+<div class="script">
+4 chi so chinh:
+<br>
+— <b>Total Commitments</b>: tong so cam ket da ghi nhan tren chain
+<br>
+— <b>Verified</b>: so luong da duoc xac minh
+<br>
+— <b>Matched</b>: so ke hoach khop voi ket qua thuc te
+<br>
+— <b>Integrity Rate</b>: ty le khop — cang cao cang tot
+</div>
+
+<div class="action">Click vao mot commitment trong bang lich su.</div>
+
+<div class="script">
+Hay xem chi tiet mot commitment. Truoc khi bat dau lam viec, agent phai commit mot hash cua ke hoach len blockchain — giong nhu mot loi hua bat bien.
+<br><br>
+Sau khi lam xong, ket qua thuc te duoc hash va so sanh voi ke hoach ban dau:
+<br>
+— Neu khop: "Verified Match" — agent da lam dung loi hua.
+<br>
+— Neu khong khop: "Mismatch" — agent se bi slash diem reputation.
+<br><br>
+Day la co che "Trust but Verify" — khong can phai tin AI, chi can xac minh tren blockchain.
+</div>
+
+<div class="action">Thu tim kiem mot commitment bang ID.</div>
+
+<div class="script">
+Ban co the tim kiem bat ky commitment nao bang ID. Tat ca du lieu deu minh bach va khong the sua doi.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">19:00 - 20:30</span> PHAN 8: STREAM — THANH TOAN THEO MILESTONE</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/stream.</div>
+
+<div class="script">
+Stream la he thong thanh toan theo tien do. Thay vi tra het tien mot lan, ban chia project thanh nhieu milestone va thanh toan khi moi milestone duoc approve.
+</div>
+
+<div class="action">Hien thi danh sach streams — chi vao cac stats phia tren.</div>
+
+<div class="script">
+Phia tren la thong ke: tong so streams, streams dang active, da hoan thanh, va tong gia tri. Ban co the loc theo trang thai: ALL, ACTIVE, COMPLETED, CANCELLED.
+</div>
+
+<div class="action">Click vao mot stream cu the — hien thi milestones.</div>
+
+<div class="script">
+Trong stream nay co 5 milestones. Milestone 1 va 2 da duoc approve va tien da chuyen. Milestone 3 da submit bang chung — dang cho client review.
+<br><br>
+Khi client approve, tien tu dong chuyen tu StreamV1 smart contract sang agent. Neu client tu choi, co the reject voi ly do cu the. Neu co tranh chap, chuyen sang he thong arbitration.
+<br><br>
+Platform fee chi 5% — da giam tu 8% sau lan cap nhat gan nhat.
+</div>
+
+<div class="action">Chi vao progress bar cua stream.</div>
+
+<div class="script">
+Thanh tien do nay cho thay bao nhieu phan tram project da hoan thanh va bao nhieu tien da duoc giai ngan. Moi thu deu truc quan va de theo doi.
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">20:30 - 22:30</span> PHAN 9: REVENUE & LIVE DASHBOARD</h2>
+
+<h3><span class="time">20:30 - 21:30</span> 9A: Revenue Dashboard</h3>
+
+<div class="action">Chuyen sang trang paypol.xyz/revenue.</div>
+
+<div class="script">
+Revenue Dashboard — moi thu deu minh bach va cong khai.
+<br><br>
+— <b>TVL</b>: Total Value Locked — tong gia tri dang bi khoa trong cac smart contract. Chia theo tung contract: NexusV2 cho escrow, ShieldVaultV2 cho ZK privacy, StreamV1 cho milestone payments.
+<br>
+— <b>Fees</b>: phi platform thu duoc — chia theo hom nay, tuan nay, thang nay.
+<br>
+— <b>Top Agents</b>: xep hang cac agent theo doanh thu va danh gia.
+<br>
+— <b>Settlement Feed</b>: cac giao dich settlement gan nhat, moi giao dich deu co link den block explorer de kiem chung.
+</div>
+
+<div class="action">Chuyen chart sang 30 ngay.</div>
+
+<div class="script">
+Chart hien thi xu huong theo thoi gian — 7 ngay, 30 ngay, hoac 90 ngay. Tat ca du lieu deu doc tu blockchain va database thoi gian thuc.
+</div>
+
+<h3><span class="time">21:30 - 22:30</span> 9B: Live Dashboard</h3>
+
+<div class="action">Chuyen sang trang paypol.xyz/live.</div>
+
+<div class="script">
+Va day la Live Dashboard — cap nhat thoi gian thuc.
+</div>
+
+<div class="action">Chi vao Transaction Feed phia trai.</div>
+
+<div class="script">
+Phia trai la feed giao dich realtime. Moi dong la mot su kien: escrow moi duoc tao, agent match thanh cong, thanh toan duoc settlement, Shield execution... Tat ca cap nhat lien tuc qua Server-Sent Events.
+</div>
+
+<div class="action">Chi vao Agent Heatmap phia phai.</div>
+
+<div class="script">
+Phia phai la Agent Heatmap. Mau cang dam nghia la agent cang active. Mau nhat la idle. Ban co the nhanh chong thay agents nao dang hoat dong nhieu nhat trong he thong.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">22:30 - 24:00</span> PHAN 10: EMBEDDED WALLETS</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/wallets.</div>
+
+<div class="script">
+Day la Embedded Wallets — he thong vi noi bo cua PayPol. Moi AI agent hoac nhan vien co the co mot vi rieng, duoc tao va quan ly truc tiep tren dashboard.
+</div>
+
+<div class="action">Chi vao danh sach wallets — hien thi vi cua agents va employees.</div>
+
+<div class="script">
+Moi vi hien thi:
+<br>
+— <b>Label</b>: ten vi — "Agent: ContractGuard" hoac "Employee: John"
+<br>
+— <b>Address</b>: dia chi vi on-chain
+<br>
+— <b>Balance</b>: so du AlphaUSD hien tai
+<br>
+— <b>Loai</b>: Agent wallet hoac Employee wallet
+<br>
+— <b>Trang thai</b>: Active hoac Inactive
+</div>
+
+<div class="action">Click "Generate New Wallet" — tao vi moi.</div>
+
+<div class="script">
+Tao vi moi chi mat vai giay. He thong tu dong tao cap khoa AES-256-GCM ma hoa — private key khong bao gio duoc luu dang plain text. Diem nay cuc ky quan trong cho bao mat.
+<br><br>
+Agent co the tu dong nhan thanh toan, gui tien, va quan ly tai chinh — tat ca thong qua vi embedded nay ma khong can MetaMask hay vi ngoai.
+</div>
+
+<div class="action">Chi vao thong ke tong quan: tong so vi, tong balance.</div>
+
+<div class="script">
+Phia tren la thong ke: tong so vi dang active, tong so du, va phan loai theo Agent/Employee. Moi vi co the theo doi lich su giao dich va thoi gian su dung gan nhat.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">24:00 - 25:30</span> PHAN 11: DEVELOPER EXPERIENCE</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/developers.</div>
+
+<div class="script">
+Phan nay danh cho cac developer — va day la phan quan trong nhat cho su phat trien cua ecosystem.
+<br><br>
+PayPol la mot platform mo. Bat ky AI developer nao cung co the dang ky agent va bat dau kiem tien.
+</div>
+
+<div class="action">Chi vao phan Revenue Model.</div>
+
+<div class="script">
+Mo hinh chia se doanh thu cua chung toi:
+<br>
+— <b>95 den 98 phan tram ve tay developer</b> — PayPol chi giu 2 den 5 phan tram platform fee
+<br>
+— Phi arbitration toi da 3%, tran 10 do
+<br>
+— Khong co phi an, khong subscription fee
+</div>
+
+<div class="action">Chi vao 6 framework integrations.</div>
+
+<div class="script">
+Chung toi ho tro 6 AI framework pho bien nhat:
+<br>
+— <b>OpenAI</b> voi Function Calling adapters
+<br>
+— <b>Anthropic Claude</b> voi Tool Use va MCP protocol
+<br>
+— <b>LangChain</b> voi StructuredTool wrappers
+<br>
+— <b>CrewAI</b> voi Python BaseTool
+<br>
+— <b>Eliza</b> voi plugin gom 18 pattern-matched actions
+<br>
+— <b>OpenClaw</b> voi Skill marketplace
+<br><br>
+Bat ky agent nao, xay tren bat ky framework nao, deu co the tham gia PayPol ecosystem.
+</div>
+
+<div class="action">Chi vao Quick Start Guide — 5 buoc.</div>
+
+<div class="script">
+Bat dau chi can 5 buoc: cai SDK, tao config, dang ky tren marketplace, implement logic xu ly, va deploy. That su don gian.
+</div>
+
+<div class="action">Cuon xuong form Agent Registration.</div>
+
+<div class="script">
+Va day la form dang ky agent truc tiep tu dashboard. Dien ten, mo ta, skills, gia, va webhook URL. Agent cua ban se xuat hien tren marketplace chi trong vai giay.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">25:30 - 27:00</span> PHAN 12: ADMIN & ARBITRATION</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/admin.</div>
+
+<div class="script">
+Nhanh qua phan Admin. Day la trung tam quan ly cua PayPol.
+</div>
+
+<div class="action">Chi vao Overview tab — 4 KPI cards.</div>
+
+<div class="script">
+Overview hien thi cac KPI chinh: tong giao dich, khoi luong, conditional rules dang active, va so luong escrows.
+</div>
+
+<div class="action">Click vao tab Conditional Rules.</div>
+
+<div class="script">
+Conditional Rules cho phep tao tu dong hoa: "Neu dieu kien X xay ra, thi tu dong thanh toan Y". Vi du: "Neu agent hoan thanh 3 jobs lien tiep dat 5 sao, tu dong tang rate 10 phan tram".
+</div>
+
+<div class="action">Click vao tab Arbitration.</div>
+
+<div class="script">
+Va phan Arbitration. Khi co tranh chap giua client va agent, Judge se xem xet bang chung va dua ra quyet dinh:
+<br>
+— <b>Release</b>: giai ngan cho agent, tru 5% fee
+<br>
+— <b>Refund</b>: tra lai cho client, tru 3% penalty
+<br>
+— <b>Timeout</b>: tu dong refund neu agent khong phan hoi dung han
+<br><br>
+Tat ca deu minh bach va ghi nhan tren blockchain.
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">27:00 - 28:00</span> PHAN 13: KET THUC</h2>
+
+<div class="action">Quay lai trang /protocol — cuon xuong bang so sanh.</div>
+
+<div class="script">
+De tong ket — tai sao PayPol khac biet so voi tat ca cac giai phap hien tai?
+</div>
+
+<div class="action">Chi vao bang so sanh PayPol vs Stripe vs PayPal vs Coinbase.</div>
+
+<div class="script">
+So voi Stripe, PayPal, hay Coinbase Commerce:
+<br>
+— Ho khong ho tro thanh toan giua cac AI agents voi nhau
+<br>
+— Ho khong co ZK privacy
+<br>
+— Ho khong co on-chain verification
+<br>
+— Va ho khong co escrow tu dong cho AI
+<br><br>
+PayPol duoc xay dung tu con so khong, thiet ke rieng cho the gioi AI agents.
+</div>
+
+<div class="action">Hien thi traction numbers.</div>
+
+<div class="script">
+Hien tai chung toi da co: 9 smart contracts da verified tren Tempo L1, 32 AI agents dang chay production, ho tro 6 AI frameworks, va platform fee chi 2 den 5 phan tram — thap nhat trong nganh.
+</div>
+
+<div class="action">Man hinh cuoi: Logo PayPol + cac link.</div>
+
+<div class="script">
+Cam on tat ca cac ban da theo doi!
+<br><br>
+Truy cap paypol.xyz de trai nghiem ngay — gas hoan toan mien phi, ban co the thu moi tinh nang ma khong ton bat ky chi phi nao.
+<br><br>
+Neu ban la AI developer, hay dang ky agent va bat dau kiem tien ngay hom nay. 95 phan tram doanh thu thuoc ve ban.
+<br><br>
+Hen gap lai cac ban!
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2>PHU LUC: GHI CHU SAN XUAT</h2>
+
+<h3>Checklist truoc khi quay:</h3>
+<table>
+  <tr><th>#</th><th>Hang muc</th><th>Trang thai</th></tr>
+  <tr><td>1</td><td>MetaMask da ket noi, co du AlphaUSD trong vi</td><td></td></tr>
+  <tr><td>2</td><td>Mo san tat ca tab: /, /protocol, /shield, /stream, /verify, /revenue, /live, /developers, /admin</td><td></td></tr>
+  <tr><td>3</td><td>Co it nhat 2-3 escrows dang active de demo</td><td></td></tr>
+  <tr><td>4</td><td>Co it nhat 1 stream voi milestones de demo</td><td></td></tr>
+  <tr><td>5</td><td>Co proof commitments trong /verify</td><td></td></tr>
+  <tr><td>6</td><td>Browser zoom 110-125%</td><td></td></tr>
+  <tr><td>7</td><td>Tat tat ca notifications/popups khong lien quan</td><td></td></tr>
+  <tr><td>8</td><td>Mic da test — am thanh sach, khong echo</td><td></td></tr>
+  <tr><td>9</td><td>Do phan giai man hinh: 1920x1080 tro len</td><td></td></tr>
+  <tr><td>10</td><td>Dong tat ca app khac de may chay muot</td><td></td></tr>
+</table>
+
+<h3>Tips cho AI Dubbing (HeyGen / Rask AI):</h3>
+<div class="tip">
+  <b>1. Toc do noi:</b> Cham hon binh thuong 10-20%. Tieng Anh thuong dai hon tieng Viet, noi cham giup lip-sync khop hon.
+  <br><br>
+  <b>2. Micro:</b> Dung mic ngoai hoac AirPods Pro. Am thanh cang sach, voice clone cang chinh xac.
+  <br><br>
+  <b>3. Anh sang:</b> Quay mat ro rang — lip-sync can thay ro moi.
+  <br><br>
+  <b>4. Nhac nen:</b> Chi dung lofi/ambient am luong nho (10-15%). Khong dung nhac co loi.
+  <br><br>
+  <b>5. Review ban dich:</b> Sau khi AI dub, kiem tra lai cac thuat ngu: escrow, ZK-SNARK, PLONK, blockchain, smart contract — de chac la AI khong dich sai.
+  <br><br>
+  <b>6. Export:</b> Xuat 1080p hoac cao hon. Nen co subtitle tieng Anh de tang do tiep can.
+</div>
+
+</body>
+</html>

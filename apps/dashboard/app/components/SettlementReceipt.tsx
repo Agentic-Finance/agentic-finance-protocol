@@ -12,6 +12,8 @@ interface BreakdownItem {
     note: string;
     zkCommitment?: string;
     txHash?: string;
+    depositTxHash?: string;
+    payoutTxHash?: string;
     isShielded?: boolean;
 }
 
@@ -200,7 +202,7 @@ function BatchCard({ batch, isExpanded, onToggle }: {
                                 </div>
                                 <div className="col-span-2 flex justify-end">
                                     <a
-                                        href={`https://explore.moderato.tempo.xyz/tx/${b.zkCommitment || b.txHash || batch.hash}`}
+                                        href={`https://explore.tempo.xyz/tx/${b.txHash || b.payoutTxHash || b.depositTxHash || batch.hash}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className={`text-[9px] font-bold transition-all flex items-center gap-1 px-2.5 py-1.5 rounded-lg border ${
@@ -243,7 +245,7 @@ function BatchCard({ batch, isExpanded, onToggle }: {
                         <div className="mt-3 pt-3 border-t border-white/5 flex justify-between items-center text-[10px] text-slate-500">
                             <span>Batch TX: <span className="font-mono text-slate-400">{truncHash(batch.hash)}</span></span>
                             <a
-                                href={`https://explore.moderato.tempo.xyz/tx/${batch.hash}`}
+                                href={`https://explore.tempo.xyz/tx/${batch.hash}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1"

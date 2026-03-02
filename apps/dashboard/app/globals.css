@@ -125,19 +125,46 @@ input[type=number] { -moz-appearance: textfield; }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
+/* ── War Room Animations ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Showcase / Cinematic Animations ── */
+@keyframes fadeOutTagline {
+  0% { opacity: 1; transform: scale(1); }
+  80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.02); pointer-events: none; }
+}
+
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 10px rgba(99,102,241,0.3); }
+  50% { text-shadow: 0 0 25px rgba(99,102,241,0.6), 0 0 50px rgba(99,102,241,0.15); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes globeReveal {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* ── Firefox scrollbar support ── */
 .cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
 .cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
 
 /* ── Focus indicators (accessibility) ── */
 *:focus-visible {
-  outline: 2px solid var(--pp-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--pp-accent);
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* ── Respect user motion preferences ── */

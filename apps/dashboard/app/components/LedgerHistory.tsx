@@ -115,11 +115,11 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                                                     <span className="text-sm font-bold text-emerald-400">{b.amount}</span>
                                                 </div>
                                                 <div className="col-span-3 flex justify-end">
-                                                    {/* CHANGED L2 to L1 in text, uses zkCommitment for the link */}
-                                                    <a 
-                                                        href={`https://explore.moderato.tempo.xyz/tx/${b.zkCommitment || b.txHash || tx.hash}`} 
-                                                        target="_blank" 
-                                                        rel="noreferrer" 
+                                                    {/* Use real on-chain tx hash for explorer link (not zkCommitment/Poseidon) */}
+                                                    <a
+                                                        href={`https://explore.tempo.xyz/tx/${b.txHash || b.payoutTxHash || b.depositTxHash || tx.hash}`}
+                                                        target="_blank"
+                                                        rel="noreferrer"
                                                         className={`text-[10px] font-bold transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${isShieldedBatch ? 'bg-fuchsia-500/10 text-fuchsia-400 hover:bg-fuchsia-500/20 border-fuchsia-500/30' : 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-blue-500/30'}`}
                                                     >
                                                         {isShieldedBatch ? 'View ZK Proof' : 'View L1 TX'}

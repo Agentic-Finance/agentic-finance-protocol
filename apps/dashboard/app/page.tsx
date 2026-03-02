@@ -599,7 +599,7 @@ export default function Dashboard() {
 
                 setAwaitingTxs([]);
                 await fetchData();
-                setTimeout(() => document.getElementById('escrow-vault-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+                setTimeout(() => document.getElementById('daemon-queue-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
                 showToast('success', `${zkCommitments.length} Shield deposit(s) confirmed! Daemon will generate ZK proofs.`);
                 return; // Skip the generic PUT call below
             } else {
@@ -624,7 +624,7 @@ export default function Dashboard() {
 
             setAwaitingTxs([]);
             await fetchData();
-            setTimeout(() => document.getElementById('escrow-vault-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+            setTimeout(() => document.getElementById('daemon-queue-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 
         } catch (error: any) {
             console.error("Transaction Error:", error);
@@ -727,9 +727,11 @@ export default function Dashboard() {
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
-                        <Suspense fallback={<SidebarSkeleton />}>
-                            <TimeVault localEscrow={localEscrow} />
-                        </Suspense>
+                        <div id="daemon-queue-section" className="scroll-mt-20">
+                            <Suspense fallback={<SidebarSkeleton />}>
+                                <TimeVault localEscrow={localEscrow} />
+                            </Suspense>
+                        </div>
                         <Suspense fallback={<SidebarSkeleton />}>
                             <EscrowTracker walletAddress={walletAddress} />
                         </Suspense>

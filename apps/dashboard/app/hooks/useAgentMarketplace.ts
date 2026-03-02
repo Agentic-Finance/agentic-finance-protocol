@@ -196,6 +196,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
     const executionAbortRef = useRef<AbortController | null>(null);
+    const confirmLockRef = useRef(false);
 
     // ════════════════════════════════════
     // BROWSE: Fetch all agents from catalog
@@ -331,52 +332,60 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
             throw new Error('Missing agent or negotiation data');
         }
 
-        setError(null);
+        // Prevent double-confirmation (ref-based lock survives re-renders)
+        if (confirmLockRef.current) return;
+        confirmLockRef.current = true;
 
-        const res = await fetch('/api/marketplace/jobs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                agentId: selectedAgent.agent.id,
-                clientWallet,
-                prompt: prompt || selectedAgent.agent.description || 'Agent task via marketplace',
-                taskDescription: selectedAgent.agent.description,
-                budget: suggestedBudget || negotiation.finalPrice || selectedAgent.agent.basePrice,
-                negotiatedPrice: negotiation.finalPrice,
-                platformFee: negotiation.platformFee,
-            }),
-        });
-
-        if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.error || 'Failed to create job');
-        }
-
-        const data = await res.json();
-        setActiveJob({
-            id: data.job.id,
-            status: 'MATCHED',
-            agent: selectedAgent.agent,
-        });
-        setPhase('executing');
-
-        // Also queue in boardroom for on-chain escrow
         try {
-            const escrowRes = await fetch('/api/employees', {
+            setError(null);
+
+            const res = await fetch('/api/marketplace/jobs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: selectedAgent.agent.name,
-                    wallet: selectedAgent.agent.ownerWallet,
-                    amount: String(negotiation.finalPrice),
-                    token: 'AlphaUSD',
-                    note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
-                    isDiscovery: true,
+                    agentId: selectedAgent.agent.id,
+                    clientWallet,
+                    prompt: prompt || selectedAgent.agent.description || 'Agent task via marketplace',
+                    taskDescription: selectedAgent.agent.description,
+                    budget: suggestedBudget || negotiation.finalPrice || selectedAgent.agent.basePrice,
+                    negotiatedPrice: negotiation.finalPrice,
+                    platformFee: negotiation.platformFee,
                 }),
             });
-            if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
-        } catch (escrowErr) {
-            console.error('Escrow queue error:', escrowErr);
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Failed to create job');
+            }
+
+            const data = await res.json();
+            setActiveJob({
+                id: data.job.id,
+                status: 'MATCHED',
+                agent: selectedAgent.agent,
+            });
+            setPhase('executing');
+
+            // Also queue in boardroom for on-chain escrow
+            try {
+                const escrowRes = await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: selectedAgent.agent.name,
+                        wallet: selectedAgent.agent.ownerWallet,
+                        amount: String(negotiation.finalPrice),
+                        token: 'AlphaUSD',
+                        note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
+                        isDiscovery: true,
+                    }),
+                });
+                if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
+            } catch (escrowErr) {
+                console.error('Escrow queue error:', escrowErr);
+            }
+        } finally {
+            // Lock remains held — only released on reset() to prevent re-confirmation
         }
     }, [selectedAgent, negotiation, suggestedBudget]);
 
@@ -447,6 +456,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     // 5. REJECT / RESET
     // ════════════════════════════════════
     const rejectDeal = useCallback(() => {
+        confirmLockRef.current = false; // Release lock when rejecting
         setSelectedAgent(null);
         setNegotiation(null);
         setNegotiationLogs([]);
@@ -457,6 +467,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         if (jobPollingRef.current) clearInterval(jobPollingRef.current);
         negotiationTimersRef.current.forEach(t => clearTimeout(t));
         negotiationTimersRef.current = [];
+        confirmLockRef.current = false; // Release confirm lock for new tasks
         setPhase('idle');
         setMatchedAgents([]);
         setSelectedAgent(null);

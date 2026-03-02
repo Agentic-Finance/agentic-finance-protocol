@@ -58,12 +58,23 @@ export async function POST(req: Request) {
         // 🌟 SAFETY FIX: Normalize payload to an array to prevent .map() undefined errors
         const intentsArray = Array.isArray(payload) ? payload : (payload.intents || [payload]);
 
-        const operations = intentsArray.map((intent: any) => 
+        // 🛡️ Validate all wallet addresses before creating any payloads
+        const isValidAddress = (addr: string) => /^0x[a-fA-F0-9]{40}$/.test(addr);
+        const invalidIntents = intentsArray.filter((intent: any) => {
+            const wallet = intent.wallet || intent.wallet_address || "";
+            return !isValidAddress(wallet) || wallet === "0x0000000000000000000000000000000000000000";
+        });
+        if (invalidIntents.length > 0) {
+            const names = invalidIntents.map((i: any) => i.name || 'Unknown').join(', ');
+            return apiError(`Invalid wallet address for: ${names}. Please assign valid wallet addresses before queuing.`, 400);
+        }
+
+        const operations = intentsArray.map((intent: any) =>
             prisma.timeVaultPayload.create({
                 data: {
                     workspaceId: defaultWorkspace!.id,
                     name: intent.name || "Unknown Entity",
-                    recipientWallet: intent.wallet || intent.wallet_address || "0x0000000000000000000000000000000000000000",
+                    recipientWallet: intent.wallet || intent.wallet_address,
                     amount: safeParseFloat(intent.amount),
                     token: intent.token || "AlphaUSD",
                     note: intent.note || "",

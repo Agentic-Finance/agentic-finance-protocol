@@ -264,6 +264,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // ==========================================
     const executePayroll = useCallback(async () => {
         if (liveIntents.length === 0) return;
+
+        // 🛡️ Block deployment if any wallet is unresolved
+        const unresolvedIntents = liveIntents.filter(i => !i.wallet || i.wallet === '0x00...00' || !/^0x[a-fA-F0-9]{40}$/i.test(i.wallet));
+        if (unresolvedIntents.length > 0) {
+            const names = unresolvedIntents.map(i => i.name).join(', ');
+            showToast('error', `Cannot deploy: ${names} ${unresolvedIntents.length === 1 ? 'has' : 'have'} no valid wallet address. Assign a wallet first.`);
+            return;
+        }
+
         setIsDeployingAnimation(true);
 
         // Build recipients array (shared by both modes)

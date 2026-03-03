@@ -168,11 +168,11 @@ export default function GlobeShowcase() {
                         Enter Cinematic Mode
                     </a>
                     <div style={{ marginTop: '12px' }}>
-                        <a href="/warroom" style={{ color: '#64748b', fontSize: '0.8rem', textDecoration: 'none', transition: 'color 0.2s' }}
+                        <a href="/sentinel" style={{ color: '#64748b', fontSize: '0.8rem', textDecoration: 'none', transition: 'color 0.2s' }}
                             onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#94a3b8'}
                             onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#64748b'}
                         >
-                            or explore the War Room &rarr;
+                            or explore Sentinel &rarr;
                         </a>
                     </div>
                 </div>

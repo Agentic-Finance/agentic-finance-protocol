@@ -1,19 +1,21 @@
-# APS-1: Agent Payment Standard v1.0
+# APS-1: Agent Payment Standard v2.1
 
-> The open protocol standard for AI agent payments on blockchain.
+> **The global open standard for AI agent payments.** Chain-agnostic. Framework-agnostic. The HTTP of agent commerce.
 
-**APS-1** defines how AI agents discover, negotiate, escrow, execute, verify, and settle payments - providing a universal interface for the AI agent economy.
+**APS-1** defines how AI agents discover, negotiate, escrow, execute, verify, and settle payments — providing a universal payment layer for the global AI agent economy. It works across any blockchain, any AI framework, and any jurisdiction.
 
 ## Why APS-1?
 
-Today, every AI agent platform has its own payment mechanism. APS-1 standardizes this into a single protocol that works across frameworks (OpenAI, Anthropic, LangChain, CrewAI, MCP, Eliza) and chains.
+Today, every AI agent platform builds its own payment mechanism. Google's A2A handles communication but not payments. OpenAI, Anthropic, LangChain, and dozens of others have incompatible approaches. APS-1 standardizes this into a single protocol.
 
 | Before APS-1 | After APS-1 |
 |---|---|
-| Every platform = custom integration | One standard, every framework |
-| Trust the agent blindly | Verifiable execution proofs |
-| Pay upfront, hope for the best | Escrow-protected payments |
-| No reputation portability | On-chain reputation scores |
+| Every platform = custom integration | **One standard, every framework, every chain** |
+| Trust the agent blindly | **Verifiable execution proofs (on-chain)** |
+| Pay upfront, hope for the best | **Escrow-protected payments with dispute resolution** |
+| No reputation portability | **Portable on-chain reputation scores** |
+| Single-chain only | **Cross-chain settlement (any EVM chain)** |
+| No regulatory framework | **Pluggable compliance adapters per jurisdiction** |
 
 ## Protocol Overview
 
@@ -282,10 +284,12 @@ After successful execution and verification:
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `APS1_VERSION` | `1.0` | Protocol version |
-| `APS1_CHAIN_ID` | `42431` | Tempo L1 Moderato |
+| `APS1_VERSION` | `2.1` | Protocol version |
+| `APS1_CHAIN_ID` | `42431` | Tempo L1 Moderato (reference chain) |
 | `APS1_PLATFORM_FEE_BPS` | `500` | 5% platform fee |
-| `APS1_NETWORK` | `Tempo L1 Moderato` | Network name |
+| `APS1_NETWORK` | `Tempo L1 Moderato` | Reference network |
+| `APS1_MAX_A2A_DEPTH` | `5` | Maximum agent delegation depth |
+| `APS1_MAX_NEGOTIATION_ROUNDS` | `10` | Maximum negotiation rounds |
 
 ## Smart Contracts
 
@@ -328,9 +332,26 @@ import { PayPolCrewAITool } from 'paypol-sdk/crewai';
 import { PayPolMCPServer } from 'paypol-sdk/mcp';
 ```
 
+## Global Adoption Roadmap
+
+APS-1 is designed to become the universal agent payment standard:
+
+| Phase | Timeline | Milestones |
+|-------|----------|-----------|
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 framework adapters, 32+ agents on Tempo L1 |
+| **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum deployment; Google A2A integration |
+| **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents across 10+ chains |
+| **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, 100+ chains, $1B+ settlement |
+
+See the full [APS-1 RFC](./APS-1-RFC.md) for the complete roadmap and governance framework.
+
 ## Contributing
 
-Want to build APS-1 compliant agents? See the [Contributing Guide](../../CONTRIBUTING.md).
+APS-1 is an **open global standard**. Contributions welcome:
+- **Build APS-1 agents** — See the [Contributing Guide](../../CONTRIBUTING.md)
+- **Submit AIPs** — Propose protocol improvements via [APS Improvement Proposals](https://github.com/PayPol-Foundation/aps-1/issues)
+- **Build framework adapters** — Integrate APS-1 with new AI frameworks
+- **Deploy on new chains** — Bring APS-1 to your blockchain
 
 ## License
 

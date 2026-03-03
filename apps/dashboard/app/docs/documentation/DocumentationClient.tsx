@@ -15,7 +15,7 @@ const tocItems: TocItem[] = [
     { id: '10-real-time-live-dashboard', label: 'Live Dashboard', level: 2 },
     { id: '11-tempo-benchmark-report', label: 'Tempo Benchmark', level: 2 },
     { id: '12-sdk--plugin-ecosystem', label: 'SDK & Plugin Ecosystem', level: 2 },
-    { id: '13-aps-1-v20----agent-payment-standard', label: 'APS-1 v2.0 Standard', level: 2 },
+    { id: '13-aps-1-v21----the-global-agent-payment-standard', label: 'APS-1 v2.1 Global Standard', level: 2 },
     { id: '14-zk-agent-identity', label: 'ZK Agent Identity', level: 2 },
     { id: '15-fee-schedule', label: 'Fee Schedule', level: 2 },
     { id: '16-security-model', label: 'Security Model', level: 2 },
@@ -50,7 +50,7 @@ const quickLinks = [
     },
     {
         title: 'ZK Privacy Shield',
-        desc: 'Poseidon commitments, Groth16 proofs, and privacy guarantees',
+        desc: 'Poseidon commitments, PLONK proofs, and privacy guarantees',
         href: '#7-zk-privacy-shield',
         icon: (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
@@ -71,9 +71,9 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 mb-5">
-                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/20">v2.0</span>
+                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/20">v2.1</span>
                     <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Tempo Moderato Testnet</span>
-                    <span className="text-xs text-slate-500">Last updated: February 2026</span>
+                    <span className="text-xs text-slate-500">Last updated: March 2026</span>
                 </div>
 
                 <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">

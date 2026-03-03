@@ -1,7 +1,7 @@
 # PayPol Protocol Documentation
 
-**Version 2.0 | Tempo Moderato Testnet**
-**Last Updated: February 2026**
+**Version 2.1 | Tempo Moderato Testnet**
+**Last Updated: March 2026**
 
 ---
 
@@ -54,7 +54,7 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 | 7 | **Tempo Benchmark** | 5 real operations comparing Tempo vs Ethereum costs (99%+ savings) |
 | 8 | **SDK Plugin Ecosystem** | Self-registration, webhook health check, community agent marketplace |
 | 9 | **On-Chain Reputation** | Composite reputation score (0-100) from ratings, completions, and AI proof reliability |
-| 10 | **APS-1 v2.0 Standard** | Agent Payment Standard v2.0 --- 6-phase lifecycle, pluggable EscrowProvider/ProofProvider, A2A delegation, OpenAPI 3.1 spec |
+| 10 | **APS-1 v2.1 Global Standard** | The universal agent payment standard --- 6-phase lifecycle, cross-chain interoperability, pluggable EscrowProvider/ProofProvider, compliance adapters, global adoption roadmap |
 | 11 | **Security Deposits** | Stablecoin deposits with Bronze/Silver/Gold tiers for fee discounts and trust signals |
 | 12 | **Revenue Dashboard** | Live TVL, volume charts, fee tracking, and top agent leaderboards |
 | 13 | **Cross-Framework SDK v2.0** | Native adapters for OpenAI, Anthropic Claude MCP, LangChain, CrewAI, Eliza, OpenClaw |
@@ -824,13 +824,16 @@ Every agent must implement:
 
 ---
 
-## 13. APS-1 v2.0 --- Agent Payment Standard
+## 13. APS-1 v2.1 --- The Global Agent Payment Standard
 
 ### 13.1 Overview
 
-APS-1 (Agent Payment Standard) is the open protocol specification for agent-to-agent payments. Version 2.0 introduces pluggable provider interfaces, A2A delegation, structured error codes, and lifecycle events.
+APS-1 (Agent Payment Standard) is the **open, chain-agnostic protocol standard** for AI agent payments — designed to become the **HTTP of agent commerce**. Like ERC-20 standardized tokens, APS-1 standardizes how agents pay each other across any blockchain, any AI framework, and any jurisdiction.
 
-**Package:** `@paypol-protocol/aps-1@2.0.0` (MIT License)
+Version 2.1 introduces cross-chain interoperability, a global governance framework, compliance adapters, and a roadmap to become the universal agent payment standard.
+
+**Package:** `@paypol-protocol/aps-1@2.1.0` (MIT License)
+**Status:** Proposed Standard
 
 ### 13.2 Six-Phase Lifecycle
 
@@ -882,7 +885,28 @@ await client.delegateA2A({
 });
 ```
 
-### 13.5 Resources
+### 13.5 Cross-Chain Support
+
+APS-1 v2.1 is designed to work on **any EVM-compatible chain**:
+
+| Chain | Status | Timeline |
+|---|---|---|
+| Tempo L1 Moderato | Live (Reference Chain) | Now |
+| Ethereum Mainnet | Planned | Q2 2026 |
+| Base L2 | Planned | Q3 2026 |
+| Arbitrum One | Planned | Q3 2026 |
+| Polygon PoS | Planned | Q4 2026 |
+
+### 13.6 Global Adoption Roadmap
+
+| Phase | Timeline | Key Milestones |
+|---|---|---|
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 adapters, Tempo L1 deployment |
+| **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum; Google A2A integration |
+| **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents |
+| **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, $1B+ settlement |
+
+### 13.7 Resources
 
 | Resource | Location |
 |---|---|
@@ -890,7 +914,7 @@ await client.delegateA2A({
 | OpenAPI 3.1 Spec | `packages/aps-1/openapi.yaml` |
 | TypeScript Types | `packages/aps-1/src/types.ts` |
 | Zod Validators | `packages/aps-1/src/validator.ts` |
-| npm Package | `@paypol-protocol/aps-1@2.0.0` |
+| npm Package | `@paypol-protocol/aps-1@2.1.0` |
 
 ---
 

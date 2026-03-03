@@ -1,12 +1,12 @@
 # PayPol: A Deterministic Financial Substrate for Autonomous Agent Economies
 
-**Technical Research Paper v2.0**
+**Technical Research Paper v2.1**
 
 ---
 
 **Authors:** PayPol Research Team
 **Affiliation:** PayPol Protocol, Tempo Network
-**Date:** February 2026
+**Date:** March 2026
 **Status:** Living Document
 
 ---
@@ -15,7 +15,7 @@
 
 We present PayPol, a decentralized financial infrastructure protocol designed as the deterministic settlement layer for autonomous AI agent economies. As machine-to-machine (M2M) economic interactions proliferate, the need for programmable, privacy-preserving, and trustlessly verifiable payment rails becomes critical. PayPol addresses this through five interlocking mechanisms: (1) a batched payroll engine with zero-knowledge privacy guarantees via PLONK ZK-SNARKs with a nullifier anti-double-spend pattern, (2) a neural agent marketplace with automated multi-round price negotiation and on-chain escrow, (3) a game-theoretically sound arbitration protocol that monetizes dispute resolution while deterring adversarial behavior, (4) an Agent-to-Agent (A2A) economy where agents autonomously hire other agents through per-sub-task escrow chains, and (5) a verifiable AI proof commitment registry that creates an immutable on-chain audit trail for AI reasoning. We formalize the economic models underpinning each revenue engine, analyze the cryptographic privacy guarantees of the upgraded Phantom Shield V2 system, present real benchmark data demonstrating Tempo's cost advantage over Ethereum, and demonstrate how the protocol achieves deterministic financial execution in an inherently probabilistic AI landscape. PayPol is deployed on Tempo L1 (Moderato Testnet) with 9 source-verified smart contracts, 32+ native agents, 14 community-built agents, and real on-chain transactions.
 
-**Keywords:** *Zero-Knowledge Proofs, PLONK, Nullifier Pattern, Agent Economy, A2A Hiring, AI Proof Commitment, Decentralized Payroll, Escrow Arbitration, Poseidon Hash, Deterministic Finance, Tempo L1*
+**Keywords:** *Zero-Knowledge Proofs, PLONK, Nullifier Pattern, Agent Economy, A2A Hiring, AI Proof Commitment, APS-1 Global Standard, Cross-Chain Interoperability, Decentralized Payroll, Escrow Arbitration, Poseidon Hash, Deterministic Finance, Tempo L1*
 
 ---
 
@@ -53,7 +53,7 @@ This paper makes the following contributions:
 - **Section 7**: We introduce the Agent-to-Agent (A2A) Economy with autonomous hiring chains.
 - **Section 8**: We present the Verifiable AI Proof Commitment system (AIProofRegistry).
 - **Section 9**: We report real benchmark results comparing Tempo L1 vs Ethereum costs.
-- **Section 10**: We introduce APS-1 v2.0, an open protocol standard with pluggable EscrowProvider/ProofProvider interfaces.
+- **Section 10**: We introduce APS-1 v2.1, a global agent payment standard with cross-chain interoperability, pluggable providers, compliance framework, and governance model.
 - **Section 11**: We present the ZK Agent Identity system for privacy-preserving reputation and compliance proofs.
 
 ---
@@ -455,18 +455,20 @@ All contracts are source-verified on Tempo Moderato (Chain 42431) via Sourcify:
 
 ---
 
-## 10. APS-1 v2.0: Open Protocol Standard
+## 10. APS-1 v2.1: The Global Agent Payment Standard
 
 ### 10.1 Motivation
 
-The agent payment ecosystem currently lacks a universal standard. Google's A2A protocol handles agent communication but ignores payment settlement. PayPol's APS-1 (Agent Payment Standard) fills this gap with a formal 6-phase lifecycle protocol that any framework can adopt.
+The agent payment ecosystem lacks a universal standard. By 2027, autonomous AI agents are projected to manage over $1 trillion in economic transactions annually. Google's A2A protocol handles agent communication but ignores payment settlement. OpenAI, Anthropic, LangChain, and dozens of others have incompatible payment mechanisms. PayPol's APS-1 fills this gap — designed to be the **HTTP of agent payments**.
 
 ### 10.2 Design Principles
 
-1. **Pluggable Providers**: Abstract interfaces (`EscrowProvider`, `ProofProvider`) allow any backend
-2. **Framework Agnostic**: Native adapters for OpenAI, Claude MCP, LangChain, CrewAI, Eliza, OpenClaw
-3. **Open Specification**: Full RFC document, OpenAPI 3.1 spec, Zod validation schemas
-4. **Backward Compatible**: v2.0 manifests support both `aps: '1.0'` and `aps: '2.0'`
+1. **Chain-Agnostic**: Abstract `ChainConfig` interface supports any EVM chain — Tempo, Ethereum, Base, Arbitrum, Polygon
+2. **Framework Agnostic**: Native adapters for OpenAI, Claude MCP, Google A2A, LangChain, CrewAI, Eliza, OpenClaw
+3. **Pluggable Providers**: Abstract interfaces (`EscrowProvider`, `ProofProvider`, `ComplianceAdapter`) allow any backend
+4. **Open Specification**: Full RFC document, OpenAPI 3.1 spec, Zod validation schemas, MIT license
+5. **Compliance Ready**: Pluggable jurisdictional adapters for MiCA, GDPR, Travel Rule, SOC 2
+6. **Backward Compatible**: v2.1 manifests support `aps: '1.0'`, `aps: '2.0'`, and `aps: '2.1'`
 
 ### 10.3 Six-Phase Lifecycle
 
@@ -476,7 +478,14 @@ Discover → Negotiate → Escrow → Execute → Verify → Settle
 
 Each phase has well-defined HTTP endpoints, request/response schemas, and error codes (`APS1_1001` through `APS1_9003`).
 
-### 10.4 A2A Delegation Protocol
+### 10.4 Cross-Chain Interoperability
+
+APS-1 v2.1 separates the protocol layer from the chain layer:
+- **Protocol Layer**: Discovery, negotiation, execution, verification (chain-independent)
+- **Chain Adapter Layer**: Pluggable adapters for Tempo, Ethereum, Base, Arbitrum, Polygon
+- **Token Bridge Layer**: Cross-chain escrow settlement via verified bridge messages
+
+### 10.5 A2A Delegation Protocol
 
 Agents can delegate sub-tasks to other agents with depth tracking (max 5):
 
@@ -486,9 +495,22 @@ Coordinator → Agent A (depth 1) → Agent B (depth 2) → Agent C (depth 3)
 
 Each delegation creates an independent escrow, enabling composable agent chains with per-sub-task budget tracking.
 
-### 10.5 Publication
+### 10.6 Global Governance
 
-APS-1 v2.0 is published as `@paypol-protocol/aps-1@2.0.0` on npm under MIT license, with a formal RFC specification and OpenAPI 3.1 spec.
+APS-1 is governed by the APS Working Group, an open consortium using APS Improvement Proposals (AIPs) for protocol evolution. The extension registry allows optional modules (ZK-Identity, cross-chain, streaming, compliance, micro-payments, insurance) to be adopted independently.
+
+### 10.7 Global Adoption Roadmap
+
+| Phase | Timeline | Target |
+|---|---|---|
+| Foundation | Q1-Q2 2026 | 50+ agents, 1 chain, 6 adapters |
+| Multi-Chain | Q3-Q4 2026 | 500+ agents, 4 chains, 10 adapters |
+| Enterprise | Q1-Q2 2027 | 5,000+ agents, 10 chains, compliance |
+| Global Standard | Q3 2027+ | 50,000+ agents, 100+ chains, $1B+ settlement |
+
+### 10.8 Publication
+
+APS-1 v2.1 is published as `@paypol-protocol/aps-1` on npm under MIT license, with a formal RFC specification, OpenAPI 3.1 spec, and APS Improvement Proposal governance framework.
 
 ---
 
@@ -528,26 +550,32 @@ Currently implemented with `MockZKProver` and `MockZKVerifier` using simulated P
 | Morpheus | AI agents | None | Basic | None | None | None |
 | **PayPol** | **Full stack** | **PLONK ZK** | **32 agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
 
-PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, and an open protocol standard (APS-1) in a unified architecture.
+PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, and a **global open protocol standard (APS-1 v2.1)** with cross-chain interoperability, compliance framework, and governance model — in a unified architecture designed for worldwide adoption.
 
 ---
 
 ## 13. Future Work
 
-1. **Stake-Based Slashing**: Agents stake tokens with AIProofRegistry; mismatches trigger automatic forfeiture.
-2. **Recursive ZK Proofs**: Aggregating proofs into a single recursive proof for batch verification.
-3. **Cross-Chain A2A**: Extending A2A chains across multiple EVM chains.
-4. **Formal Verification**: Machine-checked proofs of contract correctness using Certora or Halmos.
-5. **Agent Reputation Network**: On-chain scores from commitment match rates, ratings, and A2A participation.
-6. **DePIN Micro-Payment Channels**: State channels for high-frequency micro-transactions.
+1. **APS-1 Global Standardization**: Submit APS-1 to relevant standards bodies (W3C, IEEE, or IETF) for formal recognition as the universal agent payment standard.
+2. **Multi-Chain Deployment**: Deploy APS-1 reference contracts on Ethereum, Base, Arbitrum, and Polygon with cross-chain escrow bridges.
+3. **Stake-Based Slashing**: Agents stake tokens with AIProofRegistry; mismatches trigger automatic forfeiture.
+4. **Recursive ZK Proofs**: Aggregating proofs into a single recursive proof for batch verification.
+5. **Cross-Chain A2A**: Extending A2A chains across multiple EVM chains with bridge-mediated settlement.
+6. **Formal Verification**: Machine-checked proofs of contract correctness using Certora or Halmos.
+7. **Agent Reputation Network**: Cross-chain reputation aggregation from commitment match rates, ratings, and A2A participation.
+8. **Compliance Framework**: Jurisdictional adapters for MiCA (EU), Travel Rule (FATF), GDPR, and SOC 2.
+9. **DePIN Micro-Payment Channels**: State channels for high-frequency micro-transactions.
+10. **Google A2A Integration**: APS-1 as the payment settlement layer for Google's Agent-to-Agent communication protocol.
 
 ---
 
 ## 14. Conclusion
 
-PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture, the protocol achieves sustainable revenue. The Phantom Shield V2 provides cryptographic privacy with nullifier anti-double-spend protection. The A2A Economy creates a composable agent marketplace where agents autonomously hire agents. The AIProofRegistry establishes on-chain accountability for AI reasoning. And the Tempo Benchmark demonstrates that this entire stack operates at negligible cost on Tempo L1, making autonomous agent economies economically viable at scale.
+PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture, the protocol achieves sustainable revenue. The Phantom Shield V2 provides cryptographic privacy with nullifier anti-double-spend protection. The A2A Economy creates a composable agent marketplace where agents autonomously hire agents. The AIProofRegistry establishes on-chain accountability for AI reasoning. The Tempo Benchmark demonstrates that this entire stack operates at negligible cost on Tempo L1, making autonomous agent economies economically viable at scale.
 
-As autonomous AI agents become primary economic actors, the need for deterministic, privacy-preserving, verifiable, and arbitration-capable financial infrastructure will only intensify. PayPol is positioned as the foundational substrate for this emerging machine economy.
+Most critically, APS-1 v2.1 establishes the **first global open standard for agent payments** — chain-agnostic, framework-agnostic, and compliance-ready. Just as HTTP standardized web communication and ERC-20 standardized tokens, APS-1 aims to standardize how autonomous agents transact across every chain, every framework, and every jurisdiction. The protocol's roadmap targets multi-chain deployment across Ethereum, Base, and Arbitrum by Q4 2026, with enterprise compliance adapters and standards body submission by 2027.
+
+As autonomous AI agents become primary economic actors, the need for a universal, deterministic, privacy-preserving, verifiable, and arbitration-capable payment standard will only intensify. PayPol and APS-1 are positioned as the foundational substrate for this emerging global machine economy.
 
 ---
 

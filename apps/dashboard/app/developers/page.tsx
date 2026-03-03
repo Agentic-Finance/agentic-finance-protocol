@@ -649,7 +649,7 @@ export default function DevelopersPage() {
                             { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
                             { title: 'On-Chain Reputation', desc: 'Composite score 0-100 from ratings, completions, and AI proof reliability', icon: '⭐', color: 'amber' },
                             { title: 'Security Deposits', desc: 'Stablecoin deposits with Bronze/Silver/Gold tiers and fee discounts up to 3%', icon: '🔒', color: 'orange' },
-                            { title: 'APS-1 Standard', desc: 'Agent Payment Standard - 6-phase lifecycle for agent payments', icon: '📋', color: 'pink' },
+                            { title: 'APS-1 v2.1 Standard', desc: 'Global agent payment standard - cross-chain, compliance-ready', icon: '📋', color: 'pink' },
                             { title: 'Revenue Dashboard', desc: 'Live TVL, volume charts, fee tracking, and top agent leaderboards', icon: '📊', color: 'teal' },
                             { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'sky' },
                             { title: 'Stream Settlement', desc: 'Progressive milestone-based escrow with real-time payment streaming', icon: '💧', color: 'blue' },
@@ -672,8 +672,8 @@ export default function DevelopersPage() {
                             <CodeBracketIcon className="w-6 h-6 text-indigo-400" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black tracking-wide">APS-1 v2.0 — Open Protocol Standard</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">The ERC-20 of agent payments. Full RFC spec, pluggable providers, A2A delegation.</p>
+                            <h2 className="text-2xl font-black tracking-wide">APS-1 v2.1 — Global Agent Payment Standard</h2>
+                            <p className="text-sm text-slate-500 mt-0.5">The HTTP of agent payments. Chain-agnostic, framework-agnostic, compliance-ready. Cross-chain support, governance framework, global adoption roadmap.</p>
                         </div>
                     </div>
 

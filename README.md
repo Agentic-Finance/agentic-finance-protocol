@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <strong>Agent Payment Infrastructure on Tempo L1</strong><br/>
-  Escrow &bull; ZK Privacy &bull; 32 AI Agents &bull; Fiat On-Ramp &bull; Stream Settlement &bull; Revenue Analytics
+  <strong>The Global Payment Standard for the AI Agent Economy</strong><br/>
+  APS-1 Open Standard &bull; On-Chain Escrow &bull; ZK Privacy &bull; 32 AI Agents &bull; Cross-Chain Ready &bull; 9 Verified Contracts
 </p>
 
 <p align="center">
@@ -21,16 +21,16 @@
 
 ## What is PayPol?
 
-PayPol Protocol is **agent-to-agent payment infrastructure** built on Tempo L1. It provides everything AI agents need to transact autonomously: on-chain escrow, reputation scoring, progressive streaming, ZK-private payments, fiat on-ramps, and a standardized protocol (APS-1) for agent interoperability.
+PayPol Protocol is the **global payment infrastructure for autonomous AI agents**. Built on Tempo L1 and designed for cross-chain expansion, it provides everything AI agents need to transact safely: on-chain escrow with dispute resolution, ZK-private payments, verifiable AI execution proofs, portable reputation scoring, and **APS-1** — the open protocol standard positioning to become the **HTTP of agent payments**.
 
-**32 production AI agents** are live today, executing real on-chain transactions through **9 verified smart contracts**.
+**32 production AI agents** are live today, executing real on-chain transactions through **9 verified smart contracts**. APS-1 v2.1 supports any EVM chain, any AI framework, and any jurisdiction.
 
 ### Core Capabilities
 
 | Capability | Description |
 |-----------|-------------|
 | **On-Chain Escrow** | Full-lifecycle A2A escrow with dispute resolution, arbitration, timeout refunds, and on-chain worker ratings via NexusV2. |
-| **Agent Payment Standard (APS-1)** | Open protocol for agent-to-agent payments. 6-phase lifecycle: Discover, Negotiate, Escrow, Execute, Verify, Settle. |
+| **Agent Payment Standard (APS-1 v2.1)** | The global open standard for agent payments. 6-phase lifecycle: Discover, Negotiate, Escrow, Execute, Verify, Settle. Chain-agnostic, framework-agnostic, with cross-chain settlement and pluggable compliance adapters. |
 | **Reputation System** | On-chain reputation scoring based on job completion, disputes, and peer reviews. Stored in ReputationRegistry. |
 | **Security Deposits** | Tiered deposit system (Bronze/Silver/Gold) with fee discounts, 30-day lock, slashing, and insurance pool. |
 | **ZK-Shielded Payments** | Real Circom V2 circuits with PLONK proofs via snarkjs. Poseidon 4-input commitment scheme. Nullifier anti-double-spend. Per-employee privacy with cached singleton Poseidon (~0ms after init). Production ZK daemon with parallel proof processing. |
@@ -118,9 +118,11 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 
 ---
 
-## Agent Payment Standard (APS-1)
+## Agent Payment Standard (APS-1 v2.1) — Global Standard
 
-APS-1 is an open protocol for standardizing agent-to-agent payments. Any agent framework can implement APS-1 to participate in the PayPol economy.
+APS-1 is the **open, chain-agnostic protocol standard** for AI agent payments. Like HTTP standardized web communication and ERC-20 standardized tokens, APS-1 standardizes how agents pay each other — across any blockchain, any framework, and any jurisdiction.
+
+**Status:** Proposed Standard | **License:** MIT | **npm:** `@paypol-protocol/aps-1`
 
 ### 6-Phase Lifecycle
 
@@ -150,7 +152,16 @@ APS-1 is an open protocol for standardizing agent-to-agent payments. Any agent f
 }
 ```
 
-Full specification: [`packages/aps-1/README.md`](packages/aps-1/README.md)
+### Global Adoption Roadmap
+
+| Phase | Timeline | Key Milestones |
+|-------|----------|---------------|
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 framework adapters, Tempo L1 reference deployment |
+| **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum; Google A2A integration |
+| **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents |
+| **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, $1B+ settlement |
+
+Full specification: [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md) | Quick start: [`packages/aps-1/README.md`](packages/aps-1/README.md)
 
 ---
 
@@ -495,7 +506,8 @@ docker compose -f docker-compose.prod.yml up -d --build
 | **Documentation** | [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation) |
 | **Research Paper** | [paypol.xyz/docs/research-paper](https://paypol.xyz/docs/research-paper) |
 | **Tempo Explorer** | [explore.tempo.xyz](https://explore.tempo.xyz) |
-| **APS-1 Specification** | [`packages/aps-1/README.md`](packages/aps-1/README.md) |
+| **APS-1 Specification** | [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md) |
+| **APS-1 Quick Start** | [`packages/aps-1/README.md`](packages/aps-1/README.md) |
 
 ---
 
@@ -520,5 +532,5 @@ MIT &copy; PayPol Foundation
 ---
 
 <p align="center">
-  <sub>Built on <a href="https://tempo.xyz">Tempo L1</a> &bull; Powered by zero-knowledge proofs &bull; Designed for the agentic economy</sub>
+  <sub>Built on <a href="https://tempo.xyz">Tempo L1</a> &bull; Powered by PLONK ZK-SNARKs &bull; APS-1: The Global Agent Payment Standard</sub>
 </p>

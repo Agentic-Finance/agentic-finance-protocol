@@ -32,7 +32,7 @@ function useLiveMetrics(): LiveMetrics | null {
         totalAgents: Array.isArray(agents) ? agents.length : 32,
         proofCommitments: proof.totalCommitments ?? 0,
         proofMatchRate: proof.matchRate ?? '--',
-        contracts: 8,
+        contracts: 9,
       });
     });
   }, []);
@@ -103,10 +103,10 @@ export default function ProtocolPage() {
 
           {/* Live Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
-            <MetricCard label="Smart Contracts" value="8" sub="Deployed on Tempo L1" />
+            <MetricCard label="Smart Contracts" value="9" sub="Verified on Tempo L1" />
             <MetricCard label="AI Agents" value="32+" sub="Native agents live" />
             <MetricCard label="AI Proofs" value={metrics?.proofCommitments?.toString() ?? '--'} sub="On-chain commitments" />
-            <MetricCard label="SDK Frameworks" value="6" sub="OpenAI, Claude, LangChain..." />
+            <MetricCard label="SDK Frameworks" value="7+" sub="OpenAI, Claude, LangChain, CrewAI..." />
           </div>
         </div>
       </section>
@@ -196,7 +196,7 @@ export default function ProtocolPage() {
             description="AI Agent A hires AI Agent B, locks payment in NexusV2 escrow. Agent B only gets paid after verified completion. Dispute? Judge arbitrates on-chain. Timeout? Auto-refund."
             tags={['NexusV2', 'StreamV1', 'A2A Delegation', 'Dispute Resolution']}
             color="indigo"
-            status="Live — 8 contracts deployed on Tempo L1"
+            status="Live — 9 contracts deployed on Tempo L1"
           />
           <MoatCard
             number="02"
@@ -224,11 +224,11 @@ export default function ProtocolPage() {
           />
           <MoatCard
             number="05"
-            title="Open Protocol Standard (APS-1 v2.0)"
-            description="APS-1 is the ERC-20 of agent payments. Full RFC specification, OpenAPI 3.1 spec, Zod validation schemas, pluggable EscrowProvider/ProofProvider interfaces. Any chain, any framework, any agent."
-            tags={['RFC Spec', 'OpenAPI 3.1', 'MIT License', 'npm Package', 'Pluggable Providers']}
+            title="Global Payment Standard (APS-1 v2.1)"
+            description="APS-1 is the HTTP of agent payments — the global open standard for AI agent commerce. Chain-agnostic, framework-agnostic, compliance-ready. Full RFC spec, OpenAPI 3.1, cross-chain interoperability, governance framework, and roadmap to $1B+ settlement volume."
+            tags={['Global Standard', 'Cross-Chain', 'RFC Spec', 'OpenAPI 3.1', 'MIT License', 'Compliance Ready']}
             color="amber"
-            status="Published — @paypol-protocol/aps-1@2.0.0"
+            status="Published — @paypol-protocol/aps-1@2.1.0 | Roadmap: 100+ chains by 2027"
           />
         </div>
       </section>
@@ -386,14 +386,14 @@ export default function ProtocolPage() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Smart Contracts', value: '8', detail: 'Source-verified on Tempo L1', color: 'indigo' },
-            { label: 'Native AI Agents', value: '32+', detail: '11 categories, real on-chain execution', color: 'emerald' },
-            { label: 'Framework Adapters', value: '6', detail: 'OpenAI, Claude, LangChain, CrewAI, Eliza, OpenClaw', color: 'violet' },
-            { label: 'SDK Packages', value: '7', detail: 'Published on npm', color: 'amber' },
+            { label: 'Smart Contracts', value: '9', detail: 'Source-verified on Tempo L1', color: 'indigo' },
+            { label: 'Native AI Agents', value: '32+', detail: '10 categories, real on-chain execution', color: 'emerald' },
+            { label: 'Framework Adapters', value: '7+', detail: 'OpenAI, Claude, LangChain, CrewAI, Eliza, OpenClaw, MCP', color: 'violet' },
+            { label: 'SDK Packages', value: '8', detail: 'Published on npm', color: 'amber' },
             { label: 'AI Proof Commitments', value: metrics?.proofCommitments?.toString() ?? '--', detail: 'On-chain verified', color: 'cyan' },
             { label: 'ZK Proof System', value: 'PLONK', detail: 'With nullifier anti-double-spend', color: 'rose' },
             { label: 'Escrow Protocol', value: 'NexusV2', detail: '48h deadline, dispute, auto-refund', color: 'orange' },
-            { label: 'Protocol Standard', value: 'APS-1', detail: 'v2.0 RFC + OpenAPI spec', color: 'sky' },
+            { label: 'Global Standard', value: 'APS-1', detail: 'v2.1 — Cross-chain, compliance-ready', color: 'sky' },
           ].map(s => (
             <div key={s.label} className="bg-[#0B1215] border border-white/10 rounded-xl p-5">
               <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">{s.label}</p>
@@ -427,7 +427,7 @@ export default function ProtocolPage() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600">
-        PayPol Protocol &bull; APS-1 v2.0 &bull; MIT License &bull; Tempo L1 Moderato (Chain 42431)
+        PayPol Protocol &bull; APS-1 v2.1 Global Standard &bull; MIT License &bull; Tempo L1 Moderato (Chain 42431)
       </footer>
     </div>
   );

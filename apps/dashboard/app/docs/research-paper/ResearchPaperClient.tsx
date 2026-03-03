@@ -16,7 +16,7 @@ const tocItems: TocItem[] = [
     { id: '7-verifiable-ai-proof-commitments', label: '7. AI Proof Commitments', level: 2 },
     { id: '8-tempo-l1-benchmark-analysis', label: '8. Tempo Benchmark', level: 2 },
     { id: '9-system-architecture', label: '9. System Architecture', level: 2 },
-    { id: '10-aps-1-v20-open-protocol-standard', label: '10. APS-1 v2.0 Standard', level: 2 },
+    { id: '10-aps-1-v21-the-global-agent-payment-standard', label: '10. APS-1 v2.1 Global Standard', level: 2 },
     { id: '11-zk-agent-identity', label: '11. ZK Agent Identity', level: 2 },
     { id: '12-related-work', label: '12. Related Work', level: 2 },
     { id: '13-future-work', label: '13. Future Work', level: 2 },
@@ -27,7 +27,7 @@ const tocItems: TocItem[] = [
 const paperStats = [
     { label: 'Sections', value: '15' },
     { label: 'References', value: '7' },
-    { label: 'Smart Contracts', value: '8' },
+    { label: 'Smart Contracts', value: '9' },
     { label: 'ZK Circuits', value: '1' },
 ];
 
@@ -45,8 +45,8 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
 
                 <div className="flex flex-wrap items-center gap-3 mb-5">
                     <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20">Research</span>
-                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Technical Paper v2.0</span>
-                    <span className="text-xs text-slate-500">February 2026</span>
+                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Technical Paper v2.1</span>
+                    <span className="text-xs text-slate-500">March 2026</span>
                 </div>
 
                 <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
@@ -82,7 +82,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2 pt-3 border-t border-white/5">
-                        {['Zero-Knowledge Proofs', 'Agent Economy', 'Escrow Arbitration', 'ZK-SNARKs', 'Deterministic Finance'].map((kw) => (
+                        {['Zero-Knowledge Proofs', 'Agent Economy', 'APS-1 Global Standard', 'Cross-Chain', 'ZK-SNARKs', 'Deterministic Finance'].map((kw) => (
                             <span key={kw} className="px-2 py-0.5 bg-white/5 text-slate-500 text-[10px] rounded-full border border-white/5 font-medium">
                                 {kw}
                             </span>

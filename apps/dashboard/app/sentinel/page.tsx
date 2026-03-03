@@ -18,7 +18,7 @@ const WarRoomShell = dynamic(() => import('../components/warroom/WarRoomShell'),
 
 export default function SentinelPage() {
     return (
-        <div className="min-h-screen text-white" style={{ background: 'linear-gradient(180deg, #0a0a12 0%, #0d0d1a 50%, #0a0a12 100%)' }}>
+        <div className="min-h-screen text-white" style={{ background: 'linear-gradient(180deg, #0f1420 0%, #111B2E 50%, #0f1420 100%)' }}>
             <SubPageNav />
 
             <div className="max-w-[1600px] mx-auto px-4 sm:px-6 pt-5 pb-2">

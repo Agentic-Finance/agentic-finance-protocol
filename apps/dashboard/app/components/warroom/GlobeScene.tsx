@@ -67,14 +67,15 @@ export default function GlobeScene({ agents, arcs, selectedAgentId, onSelectAgen
                 frameloop={quality === 'low' ? 'demand' : 'always'}
             >
                 <Suspense fallback={null}>
-                    {/* Subtle ambient + directional lighting for blue marble visibility */}
-                    <ambientLight intensity={0.35} />
+                    {/* Brighter lighting for vivid blue marble globe */}
+                    <ambientLight intensity={0.6} />
                     <directionalLight
                         position={[5, 3, 5]}
-                        intensity={0.8}
-                        color="#e0e8ff"
+                        intensity={1.2}
+                        color="#e8eeff"
                     />
-                    <pointLight position={[-4, -2, 3]} intensity={0.2} color="#6366f1" />
+                    <pointLight position={[-4, -2, 3]} intensity={0.4} color="#818cf8" />
+                    <pointLight position={[0, 4, -2]} intensity={0.3} color="#38bdf8" />
 
                     <GlobeCore quality={quality} />
                     <AgentNodes

@@ -80,11 +80,11 @@ export default function GlobeCore({ quality }: Props) {
                     map={earthTexture}
                     bumpMap={quality !== 'low' ? bumpTexture : undefined}
                     bumpScale={0.04}
-                    roughness={0.85}
-                    metalness={0.05}
+                    roughness={0.7}
+                    metalness={0.08}
                     emissiveMap={earthTexture}
-                    emissive="#4488cc"
-                    emissiveIntensity={0.25}
+                    emissive="#66aaee"
+                    emissiveIntensity={0.45}
                 />
             </mesh>
 

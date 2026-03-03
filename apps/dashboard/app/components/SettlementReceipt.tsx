@@ -242,6 +242,16 @@ function BatchCard({ batch, isExpanded, onToggle }: {
                             </div>
                         </div>
 
+                        {/* Agent execution hint for A2A batches */}
+                        {batch.breakdown?.some(b => b.note?.includes('A2A')) && (
+                            <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-2 text-[10px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 animate-pulse" />
+                                <span className="text-fuchsia-400/80 font-semibold">
+                                    Escrow locked — agent is executing your task. Check the Agent tab for live status.
+                                </span>
+                            </div>
+                        )}
+
                         <div className="mt-3 pt-3 border-t border-white/5 flex justify-between items-center text-[10px] text-slate-500">
                             <span>Batch TX: <span className="font-mono text-slate-400">{truncHash(batch.hash)}</span></span>
                             <a
@@ -290,9 +300,9 @@ function SettlementReceipt({ settlements, settlementRef }: SettlementReceiptProp
                     <div>
                         <h3 className="text-2xl font-bold text-white flex items-center gap-3">
                             <span className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]">{'📋'}</span>
-                            Settlement Receipt
+                            Settled Batches
                         </h3>
-                        <p className="text-sm text-slate-400 mt-2 ml-14">Real-time transparency for recent settlements (24h).</p>
+                        <p className="text-sm text-slate-400 mt-2 ml-14">On-chain settlement history (24h).</p>
                     </div>
                     <span className="text-[10px] font-bold bg-amber-500/15 text-amber-400 px-3 py-1.5 rounded-lg border border-amber-500/20">
                         {settlements.length} {settlements.length === 1 ? 'batch' : 'batches'}

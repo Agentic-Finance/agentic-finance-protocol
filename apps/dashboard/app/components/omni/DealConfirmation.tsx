@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon, DocumentCheckIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 import FiatCheckout from '../FiatCheckout';
@@ -71,21 +71,21 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
     return (
         <div
             ref={confirmationRef}
-            className="mt-6 max-w-xl mx-auto w-full bg-[#0A0E17] border border-emerald-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
+            className="mt-6 max-w-xl mx-auto w-full bg-[#0A0E17] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
         >
-            {/* Green accent line */}
-            <div className="h-0.5 bg-emerald-500"></div>
+            {/* Accent line */}
+            <div className="h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
 
             <div className="p-6">
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-                        <CheckBadgeIcon className="w-5 h-5" />
+                    <div className="w-10 h-10 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+                        <DocumentCheckIcon className="w-5 h-5" />
                     </div>
                     <div>
-                        <h4 className="text-white font-bold text-base">Deal Secured</h4>
+                        <h4 className="text-white font-bold text-base">Review Deal</h4>
                         <p className="text-slate-500 text-xs">
-                            with {agent.avatarEmoji} {agent.name}
+                            Negotiated with {agent.avatarEmoji} {agent.name}
                         </p>
                     </div>
                 </div>
@@ -103,6 +103,14 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                         <span className="text-emerald-400/70 font-mono font-bold text-lg">{negotiation.savings.toFixed(2)}</span>
                         <span className="text-[10px] text-slate-600 block mt-0.5">AlphaUSD</span>
                     </div>
+                </div>
+
+                {/* Conversion rate note */}
+                <div className="flex items-center gap-1.5 mb-4 px-1">
+                    <InformationCircleIcon className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                    <span className="text-[10px] text-slate-600">
+                        1 AlphaUSD = 1 USD (stablecoin peg){payMethod === 'card' && ` • Card total: $${totalCardCharge.toFixed(2)} incl. processing`}
+                    </span>
                 </div>
 
                 {/* Agent mini card */}
@@ -243,13 +251,18 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                 {payMethod === 'card' ? (
                     <div className="flex flex-col gap-3">
                         {effectiveWallet ? (
-                            <FiatCheckout
-                                amount={negotiation.finalPrice}
-                                userWallet={effectiveWallet}
-                                shieldEnabled={shieldEnabled}
-                                compact
-                                onComplete={() => onConfirm()}
-                            />
+                            <>
+                                <FiatCheckout
+                                    amount={negotiation.finalPrice}
+                                    userWallet={effectiveWallet}
+                                    shieldEnabled={shieldEnabled}
+                                    compact
+                                    onComplete={() => onConfirm()}
+                                />
+                                <p className="text-[10px] text-slate-600 text-center leading-relaxed">
+                                    After payment, funds will be queued in Escrow Vault for signing. The agent will start working once escrow is confirmed.
+                                </p>
+                            </>
                         ) : (
                             <button
                                 onClick={connectWallet}

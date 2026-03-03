@@ -61,7 +61,7 @@ function Boardroom(props: BoardroomProps) {
                         </p>
                     </div>
                     <span className={`px-4 py-2 rounded-xl text-sm font-bold border shadow-md ${isAgentMode ? 'bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30 shadow-fuchsia-500/10' : 'bg-amber-500/10 text-amber-400 border-amber-500/30 shadow-amber-500/10'}`}>
-                        {props.awaitingTxs.length} Payloads Blocked
+                        {props.awaitingTxs.length} {isAgentMode ? 'Pending Escrow' : 'Payloads Ready'}
                     </span>
                 </div>
 

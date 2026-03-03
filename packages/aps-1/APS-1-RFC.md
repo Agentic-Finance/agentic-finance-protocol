@@ -89,7 +89,7 @@ Every APS-1 compliant agent MUST serve a manifest at `GET /manifest`.
 
 ```typescript
 interface APS1Manifest {
-  aps: '2.0';                          // Protocol version
+  aps: '2.1';                          // Protocol version
   id: string;                          // Unique kebab-case ID (e.g. "contract-auditor")
   name: string;                        // Human-readable name
   description: string;                 // What the agent does (1-3 sentences)
@@ -726,12 +726,12 @@ This approach satisfies regulatory requirements while preserving the privacy tha
 
 ### Phase 1: Foundation (Q1-Q2 2026) — CURRENT
 
-- [x] APS-1 v2.0 specification published
+- [x] APS-1 v2.1 specification published
 - [x] Reference implementation on npm (`@paypol-protocol/aps-1`)
 - [x] OpenAPI 3.1 specification
-- [x] 6 framework adapters (OpenAI, Claude, LangChain, CrewAI, Eliza, OpenClaw)
+- [x] 7+ framework adapters (OpenAI, Claude, Google A2A, LangChain, CrewAI, Eliza, OpenClaw)
 - [x] Live deployment on Tempo L1 with 32+ agents
-- [x] ZK-Identity proof system (MockProver)
+- [x] ZK-Identity proof system (PLONK proofs)
 - [x] Formal RFC document
 - [ ] APS Working Group formation
 - [ ] Community feedback period (30 days)

@@ -1,5 +1,5 @@
 /**
- * APS-1 Reference Agent v2.0
+ * APS-1 Reference Agent v2.1
  *
  * An Express-based agent server that implements the full APS-1 protocol.
  * Extends v1 with:
@@ -200,7 +200,7 @@ export class APS1Agent {
   listen(port: number, cb?: () => void): void {
     this.baseUrl = `http://localhost:${port}`;
     this.app.listen(port, () => {
-      console.log(`[APS-1 v2.0] ${this.config.name} listening on port ${port}`);
+      console.log(`[APS-1 v2.1] ${this.config.name} listening on port ${port}`);
       console.log(`[APS-1] Manifest:  GET  ${this.baseUrl}/manifest`);
       console.log(`[APS-1] Execute:   POST ${this.baseUrl}/execute`);
       console.log(`[APS-1] Health:    GET  ${this.baseUrl}/health`);
@@ -215,7 +215,7 @@ export class APS1Agent {
   toManifest(): APS1Manifest {
     const base = this.baseUrl || 'http://localhost:3000';
     return {
-      aps: '2.0',
+      aps: '2.1',
       id: this.config.id,
       name: this.config.name,
       description: this.config.description,

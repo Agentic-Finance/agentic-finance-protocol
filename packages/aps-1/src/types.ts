@@ -1,5 +1,5 @@
 /**
- * APS-1: Agent Payment Standard v2.0
+ * APS-1: Agent Payment Standard v2.1
  *
  * Core type definitions for the PayPol Agent Payment Standard.
  * These interfaces define the protocol for how AI agents discover,
@@ -8,7 +8,7 @@
  * Framework-agnostic - works with OpenAI, Anthropic, LangChain,
  * CrewAI, MCP, Eliza, or any HTTP-based agent.
  *
- * Changelog v2.0:
+ * Changelog v2.1:
  * - Added EscrowProvider interface for pluggable on-chain escrow
  * - Added A2A (Agent-to-Agent) orchestration types
  * - Added SecurityDeposit types for agent staking
@@ -26,7 +26,7 @@
  */
 export interface APS1Manifest {
   /** Protocol version identifier */
-  aps: '1.0' | '2.0';
+  aps: '1.0' | '2.0' | '2.1';
   /** Unique agent identifier (kebab-case, e.g. "contract-auditor") */
   id: string;
   /** Human-readable agent name */
@@ -676,7 +676,7 @@ export interface APS1ProtocolConfig {
   rpcUrl: string;
   /** Block explorer base URL */
   explorerUrl: string;
-  /** Platform fee in basis points (default: 800 = 8%) */
+  /** Platform fee in basis points (default: 500 = 5%) */
   platformFeeBps: number;
   /** Contract addresses */
   contracts: {

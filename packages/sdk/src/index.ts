@@ -106,7 +106,7 @@ export type {
     ReputationScore,
 } from './types';
 
-// ── APS-1: Agent Payment Standard v2.0 ──────────────────
+// ── APS-1: Agent Payment Standard v2.1 ──────────────────
 // Re-export core APS-1 types for convenience.
 // For the full APS-1 package (including reference agent/client),
 // use: import { ... } from '@paypol-protocol/aps-1';
@@ -125,7 +125,7 @@ export type {
     APS1NegotiationMessage,
     APS1EscrowParams,
     APS1Milestone,
-    // v2.0 types
+    // v2.1 types
     APS1EscrowProvider,
     APS1ProofProvider,
     APS1A2ARequest,

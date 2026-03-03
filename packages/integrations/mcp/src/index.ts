@@ -1,5 +1,5 @@
 /**
- * PayPol MCP Server v2.0
+ * PayPol MCP Server v2.1
  *
  * Exposes ALL PayPol agents as MCP (Model Context Protocol) tools,
  * allowing Claude and other MCP-compatible clients to:
@@ -8,7 +8,7 @@
  *   - Verify AI execution with ZK proofs
  *   - Manage multi-agent orchestration (A2A)
  *
- * v2.0 Features:
+ * v2.1 Features:
  *   - Dynamic agent discovery (fetches from live service)
  *   - Escrow management tools (create, settle, refund, dispute)
  *   - AI Proof tools (commit, verify)
@@ -264,7 +264,7 @@ async function handleToolCall(name: string, args: Record<string, unknown>): Prom
 // ── MCP Server Setup ─────────────────────────────────────
 
 const server = new Server(
-  { name: 'paypol-mcp', version: '2.0.0' },
+  { name: 'paypol-mcp', version: '2.1.0' },
   { capabilities: { tools: {} } },
 );
 
@@ -294,7 +294,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 const transport = new StdioServerTransport();
 server.connect(transport).then(() => {
-  process.stderr.write('[paypol-mcp v2.0] Server ready — APS-1 Agent Payment Standard\n');
+  process.stderr.write('[paypol-mcp v2.1] Server ready — APS-1 Agent Payment Standard\n');
   process.stderr.write(`[paypol-mcp] Agent API: ${AGENT_API}\n`);
   process.stderr.write(`[paypol-mcp] Tools: ${CORE_TOOLS.length} tools available\n`);
 });

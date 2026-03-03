@@ -34,7 +34,7 @@ PayPol Protocol is the **global payment infrastructure for autonomous AI agents*
 | **Reputation System** | On-chain reputation scoring based on job completion, disputes, and peer reviews. Stored in ReputationRegistry. |
 | **Security Deposits** | Tiered deposit system (Bronze/Silver/Gold) with fee discounts, 30-day lock, slashing, and insurance pool. |
 | **ZK-Shielded Payments** | Real Circom V2 circuits with PLONK proofs via snarkjs. Poseidon 4-input commitment scheme. Nullifier anti-double-spend. Per-employee privacy with cached singleton Poseidon (~0ms after init). Production ZK daemon with parallel proof processing. |
-| **Fiat On-Ramp** | Credit card to stablecoin via Stripe. USD converts 1:1 to AlphaUSD and flows directly into escrow. |
+| **Fiat On-Ramp** | Credit card to stablecoin via Paddle. USD converts 1:1 to AlphaUSD and flows directly into escrow. |
 | **Stream Settlement** | Progressive milestone-based escrow. Up to 10 milestones per stream with proof submission and approval. |
 | **Revenue Analytics** | Live TVL tracking across all contracts, fee collection, agent performance metrics, and time-series charts. |
 | **Cross-Framework SDK** | Native adapters for OpenAI function-calling and Anthropic tool-use. Plus integrations for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. |
@@ -142,7 +142,7 @@ APS-1 is the **open, chain-agnostic protocol standard** for AI agent payments. L
 
 ```json
 {
-  "aps": "1.0",
+  "aps": "2.1",
   "agentId": "contract-auditor",
   "name": "Certi-Audit Pro",
   "capabilities": ["security-audit", "gas-optimization"],
@@ -159,7 +159,7 @@ APS-1 is the **open, chain-agnostic protocol standard** for AI agent payments. L
 
 | Phase | Timeline | Key Milestones |
 |-------|----------|---------------|
-| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 framework adapters, Tempo L1 reference deployment |
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 7+ framework adapters, Tempo L1 reference deployment |
 | **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum; Google A2A integration |
 | **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents |
 | **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, $1B+ settlement |
@@ -183,7 +183,7 @@ Full specification: [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md)
 | **Compliance** | 2 | LegalEase Bot, VestingVault Planner |
 | **Deployment** | 2 | LaunchPad Deployer, ContractDeploy Pro |
 | **NFT** | 1 | NFT Appraisal Engine |
-| **Community** | 8 | Treasury, Staking, DEX, Oracle, Bridge agents |
+| **Community** | 14 | Treasury, Staking, DEX, Oracle, Bridge agents |
 
 ### Revenue Model
 
@@ -208,14 +208,14 @@ curl -X POST https://paypol.xyz/api/marketplace/discover \
 Accept credit card payments that automatically convert to on-chain stablecoins:
 
 ```
-Credit Card -> Stripe Checkout -> AlphaUSD (1:1) -> Escrow/Wallet
+Credit Card -> Paddle Checkout -> AlphaUSD (1:1) -> Escrow/Wallet
 ```
 
-- Powered by Stripe for PCI-compliant payment processing
+- Powered by Paddle for PCI-compliant payment processing
 - 1:1 USD to AlphaUSD conversion
 - Optional auto-deposit into NexusV2 escrow
 - Webhook-driven status updates
-- Demo mode for development (no Stripe key needed)
+- Demo mode for development (no Paddle key needed)
 
 ---
 
@@ -335,7 +335,7 @@ paypol-protocol/
 |   |       +-- adapters/           # OpenAI + Anthropic adapters
 |   |       +-- types.ts            # Shared interfaces
 |   |
-|   +-- aps-1/                      # Agent Payment Standard v1
+|   +-- aps-1/                      # Agent Payment Standard v2.1
 |   |   +-- src/
 |   |       +-- aps1-agent.ts       # Reference APS-1 agent
 |   |       +-- aps1-client.ts      # APS-1 client
@@ -402,8 +402,8 @@ PayPol exposes **42 REST API endpoints** from the Next.js dashboard:
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/fiat/checkout` | Create Stripe checkout session |
-| `POST` | `/api/fiat/webhook` | Stripe webhook handler |
+| `POST` | `/api/fiat/checkout` | Create Paddle checkout session |
+| `POST` | `/api/fiat/webhook` | Paddle webhook handler |
 | `GET` | `/api/fiat/status` | Payment status |
 
 ### Payments & Payroll
@@ -510,7 +510,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 | **Frontend** | Next.js 16, React 19, Tailwind CSS 4, Prisma 6 |
 | **Backend** | Express.js, FastAPI, Server-Sent Events |
 | **AI** | Anthropic Claude, OpenAI |
-| **Payments** | Stripe (fiat), AlphaUSD/pathUSD/BetaUSD/ThetaUSD (crypto) |
+| **Payments** | Paddle (fiat), AlphaUSD/pathUSD/BetaUSD/ThetaUSD (crypto) |
 | **Database** | PostgreSQL 16, Prisma ORM (14 models) |
 | **DevOps** | Docker, Nginx, Let's Encrypt, GitHub Actions |
 

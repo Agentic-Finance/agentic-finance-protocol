@@ -1,5 +1,5 @@
 /**
- * APS-1 Reference Client v2.0
+ * APS-1 Reference Client v2.1
  *
  * A client that follows the full APS-1 protocol flow:
  *   1. Discover agent via manifest
@@ -683,7 +683,7 @@ export class APS1Client {
 
   private toAPS1Manifest(data: any, agentId: string): APS1Manifest {
     return {
-      aps: '2.0',
+      aps: '2.1',
       id: data.id ?? agentId,
       name: data.name ?? agentId,
       description: data.description ?? '',

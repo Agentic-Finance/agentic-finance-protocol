@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     // with inline price for dynamic amounts
     const paddleProductId = process.env.PADDLE_PRODUCT_ID || 'pro_01kjk6t804cgm9vnmjh8acnn6t';
 
-    // Paddle charge includes: escrow × (1 + 8% markup) + Shield ZK fee
+    // Paddle charge includes: escrow × (1 + 5% markup) + Shield ZK fee
     const paddleDescription = shieldEnabled
       ? `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (${pricing.markupPercent}% fee + Shield ZK)`
       : `Purchase ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} on Tempo L1 (incl. ${pricing.markupPercent}% processing fee)`;

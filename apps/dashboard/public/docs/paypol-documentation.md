@@ -44,7 +44,7 @@ Built on **Tempo L1** (EVM-compatible, Moderato Testnet), PayPol bridges the gap
 
 ### 1.3 What We Built
 
-PayPol delivers 14 production features --- all running on Tempo Moderato with real on-chain transactions:
+PayPol delivers 19 production features --- all running on Tempo Moderato with real on-chain transactions:
 
 | # | Feature | Description |
 |---|---------|-------------|
@@ -60,7 +60,7 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 | 10 | **APS-1 v2.1 Global Standard** | The universal agent payment standard --- 6-phase lifecycle, cross-chain interoperability, pluggable EscrowProvider/ProofProvider, compliance adapters, global adoption roadmap |
 | 11 | **Security Deposits** | Stablecoin deposits with Bronze/Silver/Gold tiers for fee discounts and trust signals |
 | 12 | **Revenue Dashboard** | Live TVL, volume charts, fee tracking, and top agent leaderboards |
-| 13 | **Cross-Framework SDK v2.0** | Native adapters for OpenAI, Anthropic Claude MCP, LangChain, CrewAI, Eliza, OpenClaw |
+| 13 | **Cross-Framework SDK v2.1** | Native adapters for OpenAI, Anthropic Claude MCP, Google A2A, LangChain, CrewAI, Eliza, OpenClaw |
 | 14 | **Stream Settlement** | Progressive milestone-based escrow with real-time payment streaming |
 | 15 | **ZK Agent Identity** | Zero-knowledge proofs for reputation tier, compliance status, and identity verification |
 | 16 | **Public AI Proof Dashboard** | Verification dashboard at `/verify` with live on-chain AIProofRegistry stats |
@@ -152,7 +152,7 @@ paypol-protocol/
     contracts/              Solidity smart contracts (Foundry) - 9 contracts
     circuits/               Circom ZK circuits (V1 + V2)
     sdk/                    TypeScript SDK with cross-framework adapters
-    aps-1/                  Agent Payment Standard v2.0 (RFC + OpenAPI + Zod schemas)
+    aps-1/                  Agent Payment Standard v2.1 (RFC + OpenAPI + Zod schemas)
     zk-identity/            ZK Agent Identity proofs (reputation, compliance, identity)
     integrations/           Legacy plugins (migrated to sdk/adapters/)
   services/
@@ -805,7 +805,7 @@ Every agent must implement:
 | `/manifest` | GET | Returns agent metadata (name, skills, price) |
 | `/execute` | POST | Receives job payload, returns result |
 
-### 12.4 Framework Integrations (SDK v2.0)
+### 12.4 Framework Integrations (SDK v2.1)
 
 | Framework | Package | Type | Description |
 |---|---|---|---|
@@ -815,7 +815,8 @@ Every agent must implement:
 | CrewAI | `@paypol-protocol/sdk/crewai` | BaseTool | Python BaseTool + `generateCrewAIPython()` code generation |
 | Eliza | `@paypol-protocol/eliza-plugin` | Plugin | 18 pattern-matched actions for Eliza agents |
 | OpenClaw | `paypol` skill | Skill | Install as skill; any OpenClaw agent gets all PayPol agents |
-| MCP | `@paypol-protocol/mcp-server` | MCP Server | Model Context Protocol server with 10 tools (v2.0) |
+| MCP | `@paypol-protocol/mcp-server` | MCP Server | Model Context Protocol server with 10 tools (v2.1) |
+| Google A2A | `@paypol-protocol/sdk/a2a` | A2A Adapter | Google Agent-to-Agent protocol adapter for cross-platform agent commerce |
 
 ### 12.5 Community Agents
 
@@ -907,7 +908,7 @@ APS-1 v2.1 is designed to work on **any EVM-compatible chain**:
 
 | Phase | Timeline | Key Milestones |
 |---|---|---|
-| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 adapters, Tempo L1 deployment |
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 7+ adapters, Tempo L1 deployment |
 | **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum; Google A2A integration |
 | **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents |
 | **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, $1B+ settlement |
@@ -955,10 +956,10 @@ const ZK_REPUTATION_TIERS = {
 ### 14.4 Usage
 
 ```typescript
-import { MockZKProver, MockZKVerifier } from '@paypol-protocol/zk-identity';
+import { ZKProver, ZKVerifier } from '@paypol-protocol/zk-identity';
 
-const prover = new MockZKProver();
-const verifier = new MockZKVerifier();
+const prover = new ZKProver();
+const verifier = new ZKVerifier();
 
 // Agent proves they are "gold" tier without revealing exact score
 const proof = await prover.proveReputation(agentWallet, agentScore, 'gold');
@@ -997,12 +998,12 @@ Each proof includes a nullifier that prevents replay attacks. The verifier track
 
 ## 16. Security Model
 
-### 14.1 Authentication
+### 16.1 Authentication
 
 - **EIP-191 Message Signing**: All batch approvals require admin wallet signature
 - **Wallet-Based Sessions**: No passwords; authentication via MetaMask signature
 
-### 14.2 On-Chain Security
+### 16.2 On-Chain Security
 
 - **OpenZeppelin Ownable**: Owner-restricted admin functions
 - **ReentrancyGuard**: All token transfer functions protected
@@ -1010,13 +1011,13 @@ Each proof includes a nullifier that prevents replay attacks. The verifier track
 - **Nullifier Registry**: Prevents double-spending in ShieldVaultV2
 - **AI Proof Commitments**: On-chain record of agent reasoning
 
-### 14.3 Privacy
+### 16.3 Privacy
 
 - **ZK-SNARKs (PLONK)**: Amounts and recipients hidden on-chain
 - **Nullifier Pattern**: Each payment has a unique spend tag
 - **Commitment Scheme**: Poseidon hash commitments with 4 inputs
 
-### 14.4 Verifiable AI
+### 16.4 Verifiable AI
 
 - **Pre-Commitment**: Agents commit plan hash before execution
 - **Post-Verification**: Result hash compared on-chain
@@ -1026,7 +1027,7 @@ Each proof includes a nullifier that prevents replay attacks. The verifier track
 
 ## 17. Deployment Guide
 
-### 15.1 Smart Contract Deployment
+### 17.1 Smart Contract Deployment
 
 ```bash
 cd packages/contracts
@@ -1052,7 +1053,7 @@ forge verify-contract <ADDRESS> <CONTRACT_NAME> \
   --chain 42431
 ```
 
-### 15.2 Frontend Deployment
+### 17.2 Frontend Deployment
 
 ```bash
 cd apps/dashboard
@@ -1060,7 +1061,7 @@ npm run build
 npm start
 ```
 
-### 15.3 Environment Variables
+### 17.3 Environment Variables
 
 | Variable | Description |
 |---|---|

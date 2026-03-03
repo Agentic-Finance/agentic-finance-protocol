@@ -1,11 +1,11 @@
 /**
- * @paypol-protocol/aps-1 - Agent Payment Standard v2.0
+ * @paypol-protocol/aps-1 - Agent Payment Standard v2.1
  *
  * The open protocol standard for AI agent payments.
  * Framework-agnostic — works with OpenAI, Anthropic, LangChain,
  * CrewAI, MCP, Eliza, or any HTTP-based agent framework.
  *
- * v2.0 Features:
+ * v2.1 Features:
  * - Pluggable EscrowProvider for on-chain escrow (NexusV2, StreamV1, custom)
  * - Pluggable ProofProvider for AI execution verification
  * - A2A (Agent-to-Agent) sub-task delegation with depth limits
@@ -104,7 +104,7 @@ export type {
   APS1Settlement,
 } from './types';
 
-// ── v2.0 Types ───────────────────────────────────────────
+// ── v2.1 Types ───────────────────────────────────────────
 export type {
   // Escrow Provider
   APS1EscrowProvider,

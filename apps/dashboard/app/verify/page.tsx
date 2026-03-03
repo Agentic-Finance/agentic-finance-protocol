@@ -274,7 +274,7 @@ export default function VerifyPage() {
               </div>
               <div>
                 <span className="text-slate-600">Protocol</span>
-                <p className="text-white mt-1">APS-1 v2.0 — Agent Payment Standard</p>
+                <p className="text-white mt-1">APS-1 v2.1 — Agent Payment Standard</p>
               </div>
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function VerifyPage() {
 
         {/* Footer */}
         <div className="text-center text-[10px] text-slate-600 py-4">
-          Powered by PayPol Protocol &bull; AIProofRegistry on Tempo L1 &bull; APS-1 v2.0
+          Powered by PayPol Protocol &bull; AIProofRegistry on Tempo L1 &bull; APS-1 v2.1
         </div>
       </div>
     </div>

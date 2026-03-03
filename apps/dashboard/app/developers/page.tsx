@@ -665,7 +665,7 @@ export default function DevelopersPage() {
                     </div>
                 </section>
 
-                {/* ═══ APS-1 v2.0 — OPEN STANDARD ═══ */}
+                {/* ═══ APS-1 v2.1 — OPEN STANDARD ═══ */}
                 <section className="bg-[#0B1215] border border-indigo-500/10 rounded-3xl p-10">
                     <div className="flex items-center gap-3 mb-8">
                         <div className="p-2.5 bg-indigo-500/15 rounded-xl border border-indigo-500/20">

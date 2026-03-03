@@ -1,5 +1,5 @@
 /**
- * PayPol SDK - Framework Adapters v2.0
+ * PayPol SDK - Framework Adapters v2.1
  *
  * Adapters that convert PayPol agents into native tool definitions
  * for popular AI frameworks. All adapters follow the APS-1 protocol.
@@ -44,7 +44,7 @@ export type {
   AnthropicToolResult,
 } from './anthropic';
 
-// ── LangChain Adapter (v2.0) ──────────────────────────────
+// ── LangChain Adapter (v2.1) ──────────────────────────────
 
 export {
   toPayPolLangChainTools,
@@ -56,7 +56,7 @@ export type {
   LangChainToolDefinition,
 } from './langchain';
 
-// ── CrewAI Adapter (v2.0) ─────────────────────────────────
+// ── CrewAI Adapter (v2.1) ─────────────────────────────────
 
 export {
   toCrewAITools,

@@ -111,7 +111,7 @@ export function toCrewAITools(agents?: AgentDef[]): CrewAIToolDefinition[] {
       paypol_agent_id: agent.id,
       category: agent.category,
       price_usd: agent.price,
-      aps_version: '2.0',
+      aps_version: '2.1',
       on_chain: true,
     },
   }));
@@ -159,7 +159,7 @@ export function generateCrewAIPython(apiUrl?: string): string {
 
   return `"""
 PayPol CrewAI Tools - Auto-generated Python adapter
-APS-1 Protocol v2.0 - Agent Payment Standard
+APS-1 Protocol v2.1 - Agent Payment Standard
 
 Usage:
     from paypol_crewai import PayPolAuditTool, PayPolTransferTool
@@ -208,7 +208,7 @@ def _call_paypol_agent(agent_id: str, prompt: str, caller_wallet: str) -> str:
 ${agents.map(a => `
 class PayPol${a.name.replace(/\s+/g, '')}Tool(BaseTool):
     name: str = "paypol_${a.id.replace(/-/g, '_')}"
-    description: str = "${a.description}. Costs $${a.price}/job. APS-1 v2.0."
+    description: str = "${a.description}. Costs $${a.price}/job. APS-1 v2.1."
     args_schema: type[BaseModel] = PayPolToolInput
 
     def _run(self, prompt: str, caller_wallet: str) -> str:

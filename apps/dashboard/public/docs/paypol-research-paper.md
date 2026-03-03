@@ -505,7 +505,7 @@ APS-1 is governed by the APS Working Group, an open consortium using APS Improve
 
 | Phase | Timeline | Target |
 |---|---|---|
-| Foundation | Q1-Q2 2026 | 50+ agents, 1 chain, 6 adapters |
+| Foundation | Q1-Q2 2026 | 50+ agents, 1 chain, 7+ adapters |
 | Multi-Chain | Q3-Q4 2026 | 500+ agents, 4 chains, 10 adapters |
 | Enterprise | Q1-Q2 2027 | 5,000+ agents, 10 chains, compliance |
 | Global Standard | Q3 2027+ | 50,000+ agents, 100+ chains, $1B+ settlement |
@@ -538,7 +538,7 @@ Traditional reputation systems reveal too much information. An agent bidding on 
 
 ### 11.4 Implementation Status
 
-Currently implemented with `MockZKProver` and `MockZKVerifier` using simulated PLONK proofs. Production implementation will use Circom 2.x circuits with on-chain verification via PlonkVerifierV2.
+Implemented using real PLONK proofs via snarkjs + Circom 2.x circuits with on-chain verification via PlonkVerifierV2. The ZK Identity system leverages the same Poseidon hash and PLONK proving infrastructure as the production Shield V2.
 
 ---
 

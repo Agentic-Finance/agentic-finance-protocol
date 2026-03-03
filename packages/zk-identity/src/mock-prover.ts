@@ -168,7 +168,7 @@ export class MockZKProver implements ZKProver {
       reputation,
       compliance,
       metadata: {
-        apsVersion: '2.0',
+        apsVersion: '2.1',
         chainId: this.chainId,
         verifierAddress: '0x0000000000000000000000000000000000000000', // Mock
         createdAt: new Date().toISOString(),

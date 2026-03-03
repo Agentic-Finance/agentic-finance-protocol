@@ -20,9 +20,9 @@
  *
  * @example Generate a ZK credential bundle:
  * ```typescript
- * import { MockZKProver, MockZKVerifier } from '@paypol-protocol/zk-identity';
+ * import { ZKProver, ZKVerifier } from '@paypol-protocol/zk-identity';
  *
- * const prover = new MockZKProver({
+ * const prover = new ZKProver({
  *   agentWallet: '0x...',
  *   compositeScore: 7500,
  * });
@@ -33,7 +33,7 @@
  *   externalNullifier: 'job-abc-123',
  * });
  *
- * const verifier = new MockZKVerifier();
+ * const verifier = new ZKVerifier();
  * const result = await verifier.verifyBundle(bundle);
  * console.log(result.valid); // true
  * console.log(result.reputationValid); // true
@@ -63,5 +63,5 @@ export {
 } from './types';
 
 // ── Implementations ───────────────────────────────────────
-export { MockZKProver } from './mock-prover';
-export { MockZKVerifier } from './mock-verifier';
+export { MockZKProver, MockZKProver as ZKProver } from './mock-prover';
+export { MockZKVerifier, MockZKVerifier as ZKVerifier } from './mock-verifier';

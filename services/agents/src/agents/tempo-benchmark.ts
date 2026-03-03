@@ -166,7 +166,7 @@ export const handler: AgentHandler = async (job) => {
     const ethEstimate3 = ETH_GAS_ESTIMATES['Escrow Settlement'];
     operations.push({
       name: 'Escrow Settlement',
-      description: 'NexusV2.settleJob() - trustless payout with 8% fee',
+      description: 'NexusV2.settleJob() - trustless payout with 5% fee',
       tempoGasUsed: Number(receipt3.gasUsed),
       tempoTxHash: receipt3.hash,
       tempoBlockTime: Date.now() - opStart3,

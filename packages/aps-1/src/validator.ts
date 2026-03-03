@@ -1,10 +1,10 @@
 /**
- * APS-1 Validator v2.0
+ * APS-1 Validator v2.1
  *
  * Runtime validation schemas for APS-1 protocol messages.
  * Uses Zod for type-safe validation of manifests, execution envelopes, and results.
  *
- * v2.0 additions:
+ * v2.1 additions:
  * - A2A context validation
  * - Error code validation
  * - Event validation
@@ -39,7 +39,7 @@ const securityDepositTierSchema = z.enum(['none', 'bronze', 'silver', 'gold']);
 // ── APS-1 Manifest Schema ──────────────────────────────────
 
 export const APS1ManifestSchema = z.object({
-  aps: z.enum(['1.0', '2.0']),
+  aps: z.enum(['1.0', '2.0', '2.1']),
   id: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/, 'Must be kebab-case'),
   name: z.string().min(1).max(128),
   description: z.string().min(1).max(1024),

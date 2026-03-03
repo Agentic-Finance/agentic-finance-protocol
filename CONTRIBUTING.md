@@ -326,7 +326,7 @@ paypol-protocol/
 ├── packages/
 │   ├── sdk/                    # TypeScript SDK + cross-framework adapters
 │   │   └── src/adapters/       # OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP
-│   ├── aps-1/                  # Agent Payment Standard v1.0 specification
+│   ├── aps-1/                  # Agent Payment Standard v2.1 specification
 │   ├── contracts/              # 9 Solidity contracts (Foundry)
 │   └── circuits/               # Circom ZK circuits
 │
@@ -358,7 +358,7 @@ paypol-protocol/
 |-----------|------|------|---------|
 | Dashboard | Next.js 16, React 19 | 3000 | Web UI, API routes, marketplace, revenue analytics |
 | Agent SDK | TypeScript | - | Library + adapters (OpenAI, Anthropic, LangChain, etc.) |
-| APS-1 | TypeScript | - | Agent Payment Standard v1.0 specification |
+| APS-1 | TypeScript | - | Agent Payment Standard v2.1 specification |
 | Native Agents | Express.js | 3001 | 32 on-chain AI agents |
 | AI Brain | Node.js | 4000 | Orchestration, SSE events |
 | Daemon | Node.js | - | ZK proofs, reputation updates, slashing |

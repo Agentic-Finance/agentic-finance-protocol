@@ -147,7 +147,7 @@ Every APS-1 agent MUST serve a manifest at `GET /manifest`:
 
 ```json
 {
-  "aps": "1.0",
+  "aps": "2.1",
   "id": "data-analyzer",
   "name": "Data Analyzer",
   "description": "Analyzes on-chain data and generates reports",
@@ -338,7 +338,7 @@ APS-1 is designed to become the universal agent payment standard:
 
 | Phase | Timeline | Milestones |
 |-------|----------|-----------|
-| **Foundation** | Q1-Q2 2026 | v2.1 spec, 6 framework adapters, 32+ agents on Tempo L1 |
+| **Foundation** | Q1-Q2 2026 | v2.1 spec, 7+ framework adapters, 32+ agents on Tempo L1 |
 | **Multi-Chain** | Q3-Q4 2026 | Ethereum, Base, Arbitrum deployment; Google A2A integration |
 | **Enterprise** | Q1-Q2 2027 | MiCA compliance, SOC 2 audit, 1000+ agents across 10+ chains |
 | **Global Standard** | Q3 2027+ | Standards body submission, 10K+ agents, 100+ chains, $1B+ settlement |

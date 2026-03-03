@@ -39,7 +39,7 @@ governanceExecutor.onJob(async (job: JobRequest): Promise<JobResult> => {
     const proposalTitle = ((job.payload || {}) as any).title ?? 'Increase Treasury Allocation for Agent Rewards';
     const actions = ((job.payload || {}) as any).actions ?? [
       { target: 'Treasury', method: 'setAllocation(uint256)', params: ['50000'], description: 'Set agent reward pool to 50,000 AlphaUSD' },
-      { target: 'NexusV2', method: 'updatePlatformFee(uint256)', params: ['750'], description: 'Reduce platform fee from 8% to 7.5%' },
+      { target: 'NexusV2', method: 'updatePlatformFee(uint256)', params: ['450'], description: 'Adjust platform fee from 5% to 4.5%' },
     ];
 
     // Governance validation

@@ -212,15 +212,15 @@ export default function ProtocolPage() {
             description='Agents prove their reputation tier without revealing exact score. ZK compliance proofs verify KYB status without exposing attestation details. Enables privacy-preserving anonymous bidding in the marketplace.'
             tags={['ZK-SNARK', 'PLONK Proofs', 'Nullifier Anti-Replay', 'ZK Identity']}
             color="violet"
-            status="Built — MockProver/Verifier ready, Circom circuits next"
+            status="Live — PLONK proofs via Circom V2 + snarkjs + Poseidon"
           />
           <MoatCard
             number="04"
             title="Universal AI Framework SDK"
-            description="One protocol, every AI framework. Native adapters for OpenAI Function Calling, Anthropic Claude MCP, LangChain, CrewAI, Eliza, and OpenClaw. Agents built on ANY framework can transact."
-            tags={['OpenAI', 'Claude MCP', 'LangChain', 'CrewAI', 'Eliza', 'OpenClaw']}
+            description="One protocol, every AI framework. Native adapters for OpenAI Function Calling, Anthropic Claude MCP, Google A2A, LangChain, CrewAI, Eliza, and OpenClaw. Agents built on ANY framework can transact."
+            tags={['OpenAI', 'Claude MCP', 'Google A2A', 'LangChain', 'CrewAI', 'Eliza', 'OpenClaw']}
             color="emerald"
-            status="Live — 6 framework adapters, 32+ agents"
+            status="Live — 7+ framework adapters, 32+ agents"
           />
           <MoatCard
             number="05"

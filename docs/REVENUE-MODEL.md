@@ -1,4 +1,4 @@
-# PayPol Protocol — Revenue Model v2.0
+# PayPol Protocol — Revenue Model v2.1
 
 > Last updated: 2026-03-03
 > Status: Active

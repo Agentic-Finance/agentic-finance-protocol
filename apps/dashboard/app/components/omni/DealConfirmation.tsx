@@ -15,7 +15,7 @@ const CARD_FIXED_FEE = 1.00;
 interface DealConfirmationProps {
     negotiation: NegotiationResult | null;
     selectedAgent: DiscoveredAgent | null;
-    onConfirm: () => void;
+    onConfirm: (options?: { skipEscrow?: boolean }) => void;
     onReject: () => void;
     confirmationRef: React.RefObject<HTMLDivElement | null>;
     isLoading?: boolean;
@@ -257,7 +257,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                                     userWallet={effectiveWallet}
                                     shieldEnabled={shieldEnabled}
                                     compact
-                                    onComplete={() => onConfirm()}
+                                    onComplete={() => onConfirm({ skipEscrow: true })}
                                 />
                                 <p className="text-[10px] text-slate-600 text-center leading-relaxed">
                                     After payment, funds will be queued in Escrow Vault for signing. The agent will start working once escrow is confirmed.
@@ -287,7 +287,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                             Reject
                         </button>
                         <button
-                            onClick={onConfirm}
+                            onClick={() => onConfirm()}
                             disabled={isLoading}
                             className={`flex-[2] py-3 bg-emerald-500 text-slate-900 font-bold text-sm rounded-xl transition-all flex items-center justify-center gap-2 ${
                                 isLoading ? 'opacity-60 cursor-not-allowed' : 'hover:bg-emerald-400'

@@ -102,7 +102,7 @@ export interface UseAgentMarketplaceReturn {
     selectAgent: (agent: DiscoveredAgent) => void;
     submitTaskAndNegotiate: (prompt: string) => void;
     backToBrowse: () => void;
-    confirmDeal: (clientWallet: string, prompt: string) => Promise<void>;
+    confirmDeal: (clientWallet: string, prompt: string, skipEscrowQueue?: boolean) => Promise<void>;
     executeDeal: () => Promise<void>;
     cancelExecution: () => void;
     rejectDeal: () => void;
@@ -365,7 +365,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     // ════════════════════════════════════
     // 3. CONFIRM DEAL → CREATE JOB
     // ════════════════════════════════════
-    const confirmDeal = useCallback(async (clientWallet: string, prompt: string) => {
+    const confirmDeal = useCallback(async (clientWallet: string, prompt: string, skipEscrowQueue?: boolean) => {
         if (!selectedAgent || !negotiation) {
             throw new Error('Missing agent or negotiation data');
         }
@@ -404,23 +404,26 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
             });
             setPhase('executing');
 
-            // Also queue in boardroom for on-chain escrow
-            try {
-                const escrowRes = await fetch('/api/employees', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: selectedAgent.agent.name,
-                        wallet: selectedAgent.agent.ownerWallet,
-                        amount: String(negotiation.finalPrice),
-                        token: 'AlphaUSD',
-                        note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
-                        isDiscovery: true,
-                    }),
-                });
-                if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
-            } catch (escrowErr) {
-                console.error('Escrow queue error:', escrowErr);
+            // Queue in boardroom for on-chain escrow — SKIP for card payments
+            // (card path handles funds via FiatCheckout/Shield deposit; Boardroom is only for crypto signing)
+            if (!skipEscrowQueue) {
+                try {
+                    const escrowRes = await fetch('/api/employees', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: selectedAgent.agent.name,
+                            wallet: selectedAgent.agent.ownerWallet,
+                            amount: String(negotiation.finalPrice),
+                            token: 'AlphaUSD',
+                            note: `A2A Task Escrow (Fee: ${negotiation.platformFee.toFixed(2)}) | Job: ${data.job.id}`,
+                            isDiscovery: true,
+                        }),
+                    });
+                    if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
+                } catch (escrowErr) {
+                    console.error('Escrow queue error:', escrowErr);
+                }
             }
         } finally {
             // Lock remains held — only released on reset() to prevent re-confirmation

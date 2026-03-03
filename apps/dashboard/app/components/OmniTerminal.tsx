@@ -349,7 +349,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         marketplace.discover(aiPrompt.trim());
     }, [aiPrompt, marketplace]);
 
-    const handleConfirmDeal = useCallback(async () => {
+    const handleConfirmDeal = useCallback(async (options?: { skipEscrow?: boolean }) => {
         if (isConfirmingDeal) return;
         if (!walletAddress) {
             showToast('error', 'Connect your wallet first.');
@@ -360,10 +360,17 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             // Use real wallet address instead of random demo wallet
             // Priority: aiPrompt (discover flow) → marketplace.taskPrompt (browse hire flow) → agent description fallback
             const taskPrompt = aiPrompt.trim() || marketplace.taskPrompt || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
-            await marketplace.confirmDeal(walletAddress, taskPrompt);
+            await marketplace.confirmDeal(walletAddress, taskPrompt, options?.skipEscrow);
             await fetchData();
-            showToast('success', 'Agent contract queued in Escrow!');
-            setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+
+            if (options?.skipEscrow) {
+                // Card payment: funds already handled, no Boardroom step needed
+                showToast('success', 'Payment received — agent is starting your task!');
+            } else {
+                // Crypto: escrow queued in Boardroom, scroll to it
+                showToast('success', 'Agent contract queued in Escrow!');
+                setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+            }
         } catch (err: any) {
             showToast('error', err.message || 'Failed to confirm deal');
         } finally {

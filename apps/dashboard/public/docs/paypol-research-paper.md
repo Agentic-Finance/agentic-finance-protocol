@@ -55,6 +55,8 @@ This paper makes the following contributions:
 - **Section 9**: We report real benchmark results comparing Tempo L1 vs Ethereum costs.
 - **Section 10**: We introduce APS-1 v2.1, a global agent payment standard with cross-chain interoperability, pluggable providers, compliance framework, and governance model.
 - **Section 11**: We present the ZK Agent Identity system for privacy-preserving reputation and compliance proofs.
+- **Section 12**: We describe the Swarm Coordination system for multi-agent collaboration with shared budgets and role-based execution.
+- **Section 13**: We present Cortex Intelligence Hub and Sentinel Command Center for real-time protocol monitoring and 3D visualization.
 
 ---
 
@@ -540,7 +542,141 @@ Currently implemented with `MockZKProver` and `MockZKVerifier` using simulated P
 
 ---
 
-## 12. Related Work
+## 12. Swarm Coordination: Multi-Agent Collaboration
+
+### 12.1 Motivation
+
+Individual agent-to-agent hiring (Section 6) enables linear task delegation. However, real-world complex tasks require **simultaneous coordination** of multiple agents working in parallel with shared context, budgets, and audit trails. Swarm Coordination extends the A2A Economy into a multi-agent collaboration framework.
+
+### 12.2 Swarm Session Model
+
+A Swarm Session is a bounded coordination context:
+
+```
+SwarmSession {
+  id: string
+  coordinator: AgentAddress
+  agents: AgentAddress[]        // 2-10 agents
+  budget: TokenAmount           // shared budget pool
+  budgetUsed: TokenAmount
+  status: FORMING | ACTIVE | COMPLETED | DISSOLVED
+  createdAt: Timestamp
+}
+```
+
+**Lifecycle:**
+```
+FORMING → ACTIVE → COMPLETED
+                  → DISSOLVED (on failure/timeout)
+```
+
+### 12.3 Role-Based Execution
+
+Swarm agents operate in three distinct roles:
+
+| Role | Capabilities | Budget Authority |
+|---|---|---|
+| **Coordinator** | Task decomposition, agent recruitment, final aggregation | Full budget control |
+| **Worker** | Task execution, result submission, A2A micro-payments | Per-task allocation |
+| **Reviewer** | Quality verification, approval/rejection, audit logging | Review fee only |
+
+### 12.4 A2A Economy Integration
+
+Within a Swarm, agents transact via A2A micropayments tracked as `A2ATransfer` records:
+
+```
+A2ATransfer {
+  from: AgentAddress
+  to: AgentAddress
+  amount: TokenAmount
+  purpose: "subtask" | "review" | "bonus" | "penalty"
+  swarmSessionId: string
+}
+```
+
+Each transfer creates an independent NexusV2 escrow, inheriting the 5% platform fee. A Swarm session with 5 workers and 2 reviewers generates up to 7 separate escrow settlements.
+
+### 12.5 ZK Intelligence Market
+
+Swarm introduces an **Intel Market** where agents trade intelligence (data, analysis, insights) using ZK-verified submissions:
+
+```
+IntelSubmission {
+  agentId: string
+  contentHash: bytes32         // keccak256 of intelligence payload
+  zkProof: PLONKProof          // proves quality without revealing content
+  price: TokenAmount
+  category: "market" | "security" | "compliance" | "technical"
+}
+```
+
+Buyers purchase intelligence without seeing the content — the ZK proof guarantees the data meets quality thresholds. This creates a privacy-preserving knowledge economy within agent swarms.
+
+### 12.6 Audit Trail
+
+Every Swarm action generates an immutable `AuditEvent`:
+
+```
+AuditEvent {
+  type: "agent_joined" | "task_assigned" | "payment_sent" | "intel_submitted" | "dispute_raised"
+  timestamp: Timestamp
+  agentId: string
+  metadata: JSON
+}
+```
+
+The audit trail provides complete transparency into multi-agent coordination, enabling post-hoc analysis and dispute resolution.
+
+---
+
+## 13. Cortex Intelligence Hub & Sentinel Command Center
+
+### 13.1 Cortex: Protocol Operations Dashboard
+
+Cortex is the real-time intelligence hub for PayPol protocol operations:
+
+**Live Transaction Feed:**
+Real-time stream of all on-chain transactions (escrow creates, settlements, shield deposits, payroll batches) with sub-second latency. Each event includes transaction hash, block number, gas used, and decoded function parameters.
+
+**Shield Panel:**
+Operational dashboard for ZK privacy features — active commitments, pending proofs, nullifier registry size, proof generation latency, and ShieldVaultV2 TVL (Total Value Locked).
+
+**Revenue Dashboard:**
+Aggregated revenue metrics across all three engines:
+- Card processing margins (per-transaction and cumulative)
+- Marketplace platform fees (direct + A2A)
+- Shield privacy premiums
+- Arbitration penalty collections
+
+**Embedded Wallet Management:**
+Multi-wallet overview showing treasury balance, daemon wallet, and agent wallets with real-time balance tracking.
+
+### 13.2 Sentinel: 3D Surveillance & Threat Detection
+
+Sentinel provides a cinematic 3D visualization of protocol activity using Three.js:
+
+**Globe Visualization:**
+A rotating 3D globe displays payment arcs between agent locations. Arc color encodes transaction type (green = settlement, blue = escrow, purple = shield). Arc intensity correlates with transaction value.
+
+**Agent Heartbeat Grid:**
+Real-time agent status grid showing online/offline status, current task, response latency, and reputation score for all 32+ native agents and community agents.
+
+**Threat Detection Radar:**
+Anomaly detection panel monitoring for:
+- Unusual transaction patterns (volume spikes, value outliers)
+- Failed proof attempts (potential replay attacks)
+- Agent behavior anomalies (sudden rating drops, dispute frequency)
+- Smart contract interaction anomalies
+
+**Data Architecture:**
+Sentinel processes data from three sources:
+1. **On-chain events** — Parsed from Tempo RPC WebSocket subscriptions
+2. **API telemetry** — Agent response times, error rates, throughput
+3. **ZK daemon metrics** — Proof generation times, queue depth, cache hit rates
+
+---
+
+## 14. Related Work
 
 | System | Scope | Privacy | Agent Support | A2A Economy | AI Verification | Arbitration |
 |---|---|---|---|---|---|---|
@@ -550,11 +686,11 @@ Currently implemented with `MockZKProver` and `MockZKVerifier` using simulated P
 | Morpheus | AI agents | None | Basic | None | None | None |
 | **PayPol** | **Full stack** | **PLONK ZK** | **32 agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
 
-PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, and a **global open protocol standard (APS-1 v2.1)** with cross-chain interoperability, compliance framework, and governance model — in a unified architecture designed for worldwide adoption.
+PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, multi-agent swarm coordination with ZK intelligence markets, real-time 3D protocol surveillance, and a **global open protocol standard (APS-1 v2.1)** with cross-chain interoperability, compliance framework, and governance model — in a unified architecture designed for worldwide adoption.
 
 ---
 
-## 13. Future Work
+## 15. Future Work
 
 1. **APS-1 Global Standardization**: Submit APS-1 to relevant standards bodies (W3C, IEEE, or IETF) for formal recognition as the universal agent payment standard.
 2. **Multi-Chain Deployment**: Deploy APS-1 reference contracts on Ethereum, Base, Arbitrum, and Polygon with cross-chain escrow bridges.
@@ -569,7 +705,7 @@ PayPol is, to our knowledge, the first protocol to combine ZK-private payments w
 
 ---
 
-## 14. Conclusion
+## 16. Conclusion
 
 PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture, the protocol achieves sustainable revenue. The Phantom Shield V2 provides cryptographic privacy with nullifier anti-double-spend protection. The A2A Economy creates a composable agent marketplace where agents autonomously hire agents. The AIProofRegistry establishes on-chain accountability for AI reasoning. The Tempo Benchmark demonstrates that this entire stack operates at negligible cost on Tempo L1, making autonomous agent economies economically viable at scale.
 
@@ -579,7 +715,7 @@ As autonomous AI agents become primary economic actors, the need for a universal
 
 ---
 
-## 15. References
+## 17. References
 
 [1] Gabizon, A., Williamson, Z.J., & Ciobotaru, O. (2019). PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge. *IACR ePrint 2019/953*.
 

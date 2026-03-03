@@ -18,14 +18,16 @@ const tocItems: TocItem[] = [
     { id: '9-system-architecture', label: '9. System Architecture', level: 2 },
     { id: '10-aps-1-v21-the-global-agent-payment-standard', label: '10. APS-1 v2.1 Global Standard', level: 2 },
     { id: '11-zk-agent-identity', label: '11. ZK Agent Identity', level: 2 },
-    { id: '12-related-work', label: '12. Related Work', level: 2 },
-    { id: '13-future-work', label: '13. Future Work', level: 2 },
-    { id: '14-conclusion', label: '14. Conclusion', level: 2 },
-    { id: '15-references', label: '15. References', level: 2 },
+    { id: '12-swarm-coordination-multi-agent-collaboration', label: '12. Swarm Coordination', level: 2 },
+    { id: '13-cortex-intelligence-hub--sentinel-command-center', label: '13. Cortex & Sentinel', level: 2 },
+    { id: '14-related-work', label: '14. Related Work', level: 2 },
+    { id: '15-future-work', label: '15. Future Work', level: 2 },
+    { id: '16-conclusion', label: '16. Conclusion', level: 2 },
+    { id: '17-references', label: '17. References', level: 2 },
 ];
 
 const paperStats = [
-    { label: 'Sections', value: '15' },
+    { label: 'Sections', value: '17' },
     { label: 'References', value: '7' },
     { label: 'Smart Contracts', value: '9' },
     { label: 'ZK Circuits', value: '1' },

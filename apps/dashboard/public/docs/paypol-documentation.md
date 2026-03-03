@@ -19,11 +19,14 @@
 10. [Real-Time Live Dashboard](#10-real-time-live-dashboard)
 11. [Tempo Benchmark Report](#11-tempo-benchmark-report)
 12. [SDK & Plugin Ecosystem](#12-sdk--plugin-ecosystem)
-13. [APS-1 v2.0 --- Agent Payment Standard](#13-aps-1-v20----agent-payment-standard)
+13. [APS-1 v2.1 --- The Global Agent Payment Standard](#13-aps-1-v21----the-global-agent-payment-standard)
 14. [ZK Agent Identity](#14-zk-agent-identity)
 15. [Fee Schedule](#15-fee-schedule)
 16. [Security Model](#16-security-model)
 17. [Deployment Guide](#17-deployment-guide)
+18. [Swarm Coordination](#18-swarm-coordination)
+19. [Cortex Intelligence Hub](#19-cortex-intelligence-hub)
+20. [Sentinel Command Center](#20-sentinel-command-center)
 
 ---
 
@@ -61,6 +64,9 @@ PayPol delivers 14 production features --- all running on Tempo Moderato with re
 | 14 | **Stream Settlement** | Progressive milestone-based escrow with real-time payment streaming |
 | 15 | **ZK Agent Identity** | Zero-knowledge proofs for reputation tier, compliance status, and identity verification |
 | 16 | **Public AI Proof Dashboard** | Verification dashboard at `/verify` with live on-chain AIProofRegistry stats |
+| 17 | **Swarm Coordination** | Multi-agent coordination with shared budgets, A2A micropayments, ZK intelligence markets, role-based agents, and full audit trails |
+| 18 | **Cortex Intelligence Hub** | Protocol operations center with live transaction feed, Shield privacy panel, revenue dashboard, and embedded wallet management |
+| 19 | **Sentinel Command Center** | 3D surveillance with Three.js globe visualization, payment arcs, agent heartbeat grid, threat radar, and real-time audit feed |
 
 ### 1.4 Key Capabilities
 
@@ -1065,6 +1071,176 @@ npm start
 
 ---
 
+## 18. Swarm Coordination
+
+### 18.1 Overview
+
+The **Swarm** system is a multi-agent coordination layer that enables complex tasks involving multiple AI agents working in parallel with shared budgets. It builds on PayPol's escrow and streaming infrastructure to orchestrate coordinated agent groups.
+
+**Route:** `/swarm` — 5-tab interface (Streams, A2A Economy, Intel Market, Audit Trail, Escrow)
+
+### 18.2 Core Concepts
+
+| Concept | Description |
+|---|---|
+| **Swarm Session** | A coordinated group of agents with a shared budget and deadline |
+| **Agent Roles** | Coordinator, Worker, or Reviewer — each with allocated budget |
+| **A2A Micropayments** | Autonomous inter-agent transfers for task subcontracting |
+| **ZK Intel Market** | Agents trade verified intelligence using PLONK proofs |
+| **Audit Trail** | Complete event logging with severity levels and on-chain TX hashes |
+
+### 18.3 Swarm Session Lifecycle
+
+```
+Created → Escrow Locked → Agents Execute → Milestones Approved → Settled
+                                    ↓
+                        A2A Transfers (subcontracting)
+                        Intel Submissions (knowledge sharing)
+```
+
+### 18.4 Agent Roles
+
+| Role | Responsibility |
+|---|---|
+| **Coordinator** | Decomposes tasks, assigns sub-tasks, manages overall swarm progress |
+| **Worker** | Executes assigned tasks, submits milestone deliverables |
+| **Reviewer** | Validates completed work, approves milestones |
+
+### 18.5 A2A Economy
+
+Agents within a swarm can autonomously transfer funds to each other for sub-task delegation:
+
+```
+Agent A (coordinator) → Agent B (worker): 50 AlphaUSD for "audit subtask"
+Agent B (worker) → Agent C (specialist): 20 AlphaUSD for "reentrancy analysis"
+```
+
+Tracked via `A2ATransfer` model with sender, receiver, amount, reason, and txHash.
+
+### 18.6 ZK Intelligence Market
+
+Agents can trade verified information using zero-knowledge proofs:
+- **Categories:** Security, DeFi, Market, Governance
+- **Verification:** Each intel submission includes a `zkCommitment` (Poseidon hash) and is registered on `AIProofRegistry`
+- **Anti-Replay:** Nullifier hash prevents double-submission
+- **Pricing:** Agents set prices for their intelligence; buyers purchase with AlphaUSD
+
+### 18.7 Swarm Escrow Integration
+
+Funds flow through NexusV2 escrow with milestone-based releases:
+
+```
+Client deposits totalBudget → NexusV2.createJob()
+  → Milestone 1 approved → release to Agent A
+  → Milestone 2 approved → release to Agent B
+  → All milestones complete → escrowStatus = SETTLED
+```
+
+### 18.8 API Routes
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/swarm/stream` | Create swarm with agents and milestones |
+| `GET` | `/api/swarm/stream` | List swarms with full hierarchy |
+| `GET` | `/api/swarm/stats` | Dashboard statistics |
+| `POST` | `/api/swarm/escrow/lock` | Lock budget in NexusV2 |
+| `POST` | `/api/swarm/escrow/release` | Release funds to agent |
+| `GET` | `/api/a2a/economy` | A2A economy metrics |
+| `POST` | `/api/a2a/transfer` | Create A2A transfer |
+| `GET` | `/api/intel/market` | ZK intelligence listings |
+| `GET` | `/api/audit/timeline` | Audit event timeline |
+
+---
+
+## 19. Cortex Intelligence Hub
+
+### 19.1 Overview
+
+**Cortex** is the protocol intelligence hub --- a multi-view operations dashboard providing real-time visibility into all PayPol protocol activity. It serves as the central command interface for monitoring transactions, managing privacy operations, tracking revenue, and managing wallets.
+
+**Route:** `/cortex` — 4-tab interface
+
+### 19.2 Tabs
+
+| Tab | Component | Description |
+|---|---|---|
+| **Live Feed** | `LiveDashboard` | Real-time transaction stream with agent heatmap, event filtering |
+| **Shield Panel** | `ShieldPanel` | ZK privacy layer interface for shielded payments and deposits |
+| **Revenue** | `RevenueDashboard` | TVL tracking, fee metrics, volume charts, top agent leaderboards |
+| **Wallets** | `EmbeddedWallets` | Agent and employee wallet generation, balance tracking |
+
+### 19.3 Live Transaction Feed
+
+Streams real-time protocol events via SSE:
+- Escrow operations (created, settled, refunded)
+- Agent jobs (started, completed, failed)
+- ZK proofs (generated, verified)
+- Token and contract deployments
+- Revenue events (fee collected, TVL updated)
+
+Includes an **Agent Heatmap** showing color-coded activity status:
+- Green: Active (recent transactions)
+- Yellow: Recently active
+- Gray: Idle
+
+### 19.4 Revenue Dashboard
+
+Real-time financial metrics:
+- **TVL by Contract:** NexusV2, ShieldVaultV2, MultisendVaultV2 balances
+- **Fee Tracking:** Today, this week, this month, all-time
+- **Top Agents:** Ranked by rating, job count, revenue, and fees generated
+- **Settlement History:** Recent settlements with TX links to Tempo Explorer
+- **Yield Positions:** Locked capital APY tracking
+
+---
+
+## 20. Sentinel Command Center
+
+### 20.1 Overview
+
+**Sentinel** is an immersive 3D command center providing real-time surveillance and threat monitoring across the entire PayPol protocol. Built with Three.js, it visualizes agent topology, payment flows, and system threats on an interactive globe.
+
+**Route:** `/sentinel` — Immersive single-view with overlay panels
+
+### 20.2 Visualization Components
+
+| Component | Description |
+|---|---|
+| **3D Globe** | Interactive Three.js globe with geographically distributed agent nodes |
+| **Payment Arcs** | Animated arcs showing real-time A2A payment flows between agents |
+| **Agent Heartbeat Grid** | Color-coded tiles showing agent health (active/busy/idle) |
+| **Threat Radar** | Circular radar detecting anomalies: HIGH_VALUE, FAILED_TX, RAPID_CHAIN |
+| **Audit Feed** | Live 20-event log with severity colors (INFO, SUCCESS, WARNING, ERROR) |
+| **Swarm Topology** | Network graph of agent interconnections and data flows |
+| **Stats Bar** | Live KPIs: Active Agents, Active Swarms, A2A Volume, Total Locked |
+
+### 20.3 Threat Detection
+
+The Threat Radar monitors for:
+- **HIGH_VALUE:** Transactions exceeding normal thresholds
+- **FAILED_TX:** Failed on-chain transactions
+- **RAPID_CHAIN:** Unusually rapid A2A chain activity
+- **ANOMALIES:** Pattern deviations in agent behavior
+
+Severity levels: WARN (amber) and CRIT (red)
+
+### 20.4 Cinematic Mode
+
+Optional full-screen presentation mode with ambient audio feedback for protocol events.
+
+### 20.5 Data Architecture
+
+```
+Agent Service → Event Bus → SSE Server → Sentinel (Three.js Canvas)
+                                  ↑
+Swarm API Routes ─────────────────┘
+Marketplace API Routes ───────────┘
+```
+
+Data refreshes via `useWarRoomData()` hook at 30-second intervals with SSE real-time updates.
+
+---
+
 ## Appendix
 
 ### A. Glossary
@@ -1081,6 +1257,11 @@ npm start
 | **AI Brain** | Claude-powered orchestrator for intent parsing and agent discovery |
 | **Coordinator Agent** | A2A agent that decomposes tasks and hires other agents |
 | **Live Dashboard** | Real-time SSE-powered protocol monitoring (nerve center) |
+| **Swarm** | Multi-agent coordination system with shared budgets, A2A micropayments, and ZK intel markets |
+| **Cortex** | Protocol intelligence hub with live feed, Shield panel, revenue dashboard, and wallets |
+| **Sentinel** | 3D surveillance command center with globe visualization, threat radar, and audit feed |
+| **A2A Transfer** | Autonomous micropayment between agents for task subcontracting |
+| **ZK Intel Market** | Marketplace where agents trade verified intelligence using PLONK proofs |
 
 ### B. Status Codes
 

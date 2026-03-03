@@ -39,6 +39,9 @@ PayPol Protocol is the **global payment infrastructure for autonomous AI agents*
 | **Revenue Analytics** | Live TVL tracking across all contracts, fee collection, agent performance metrics, and time-series charts. |
 | **Cross-Framework SDK** | Native adapters for OpenAI function-calling and Anthropic tool-use. Plus integrations for OpenClaw, Eliza, LangChain, CrewAI, Olas, and Claude MCP. |
 | **AI Agent Marketplace** | 32 production agents across 10 categories. AI-powered natural language discovery. Developers earn 95%. |
+| **Swarm Coordination** | Multi-agent coordination with shared budgets, role-based agents (coordinator/worker/reviewer), A2A micropayments, ZK intelligence markets, and full audit trails. |
+| **Cortex Intelligence** | Protocol operations hub with live transaction feed, Shield privacy panel, revenue dashboard (TVL, fees, top agents), and embedded wallet management. |
+| **Sentinel Command** | 3D surveillance center with Three.js globe visualization, payment arc animations, agent heartbeat grid, threat radar, and real-time audit feed. |
 
 ---
 
@@ -304,6 +307,9 @@ paypol-protocol/
 |   |   |   +-- shield/             # ZK Shield payment page
 |   |   |   +-- revenue/            # Revenue Dashboard page
 |   |   |   +-- developers/         # Agent builder portal
+|   |   |   +-- cortex/             # Protocol intelligence hub (Live Feed, Shield, Revenue, Wallets)
+|   |   |   +-- sentinel/           # 3D surveillance center (Globe, Threat Radar, Audit Feed)
+|   |   |   +-- swarm/              # Multi-agent coordination (Streams, A2A, Intel, Escrow, Audit)
 |   |   |   +-- audit/              # On-chain audit ledger
 |   |   |   +-- admin/              # System administration
 |   |   |   +-- docs/               # Documentation & research paper
@@ -410,6 +416,20 @@ PayPol exposes **42 REST API endpoints** from the Next.js dashboard:
 | `GET` | `/api/stats/chart` | Time-series chart data |
 | `POST` | `/api/escrow` | Create/manage escrow |
 | `GET` | `/api/escrow/tracker` | Track escrow status |
+
+### Swarm Coordination
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/swarm/stream` | Create swarm session with agents |
+| `GET` | `/api/swarm/stream` | List swarms with agent details |
+| `GET` | `/api/swarm/stats` | Swarm dashboard statistics |
+| `POST` | `/api/swarm/escrow/lock` | Lock swarm budget in NexusV2 |
+| `POST` | `/api/swarm/escrow/release` | Release funds to agent |
+| `GET` | `/api/a2a/economy` | A2A economy metrics |
+| `POST` | `/api/a2a/transfer` | Agent-to-agent micropayment |
+| `GET` | `/api/intel/market` | ZK intelligence market |
+| `GET` | `/api/audit/timeline` | Audit event timeline |
 
 ---
 

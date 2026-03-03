@@ -20,6 +20,9 @@ const tocItems: TocItem[] = [
     { id: '15-fee-schedule', label: 'Fee Schedule', level: 2 },
     { id: '16-security-model', label: 'Security Model', level: 2 },
     { id: '17-deployment-guide', label: 'Deployment Guide', level: 2 },
+    { id: '18-swarm-coordination', label: 'Swarm Coordination', level: 2 },
+    { id: '19-cortex-intelligence-hub', label: 'Cortex Intelligence', level: 2 },
+    { id: '20-sentinel-command-center', label: 'Sentinel Command', level: 2 },
     { id: 'appendix', label: 'Appendix', level: 2 },
 ];
 

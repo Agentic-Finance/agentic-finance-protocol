@@ -135,37 +135,37 @@ export default function RevenueDashboard() {
         <StatCard
           icon={<BanknotesIcon className="w-5 h-5" />}
           label="Total Value Locked"
-          value={formatUSD(data?.tvl.total ?? 0)}
+          value={formatUSD(data?.tvl?.total ?? 0)}
           color="emerald"
           subtitle="Across all contracts"
         />
         <StatCard
           icon={<ArrowTrendingUpIcon className="w-5 h-5" />}
           label="24h Volume"
-          value={formatUSD(data?.volume.today ?? 0)}
+          value={formatUSD(data?.volume?.today ?? 0)}
           color="indigo"
-          subtitle={`Week: ${formatUSD(data?.volume.week ?? 0)}`}
+          subtitle={`Week: ${formatUSD(data?.volume?.week ?? 0)}`}
         />
         <StatCard
           icon={<CurrencyDollarIcon className="w-5 h-5" />}
           label="Fees Collected"
-          value={formatUSD(data?.fees.allTime ?? 0)}
+          value={formatUSD(data?.fees?.allTime ?? 0)}
           color="amber"
-          subtitle={`Today: ${formatUSD(data?.fees.today ?? 0)}`}
+          subtitle={`Today: ${formatUSD(data?.fees?.today ?? 0)}`}
         />
         <StatCard
           icon={<ChartBarIcon className="w-5 h-5" />}
           label="Active Streams"
-          value={String(data?.summary.activeStreams ?? 0)}
+          value={String(data?.summary?.activeStreams ?? 0)}
           color="violet"
-          subtitle={`${data?.summary.totalJobs ?? 0} total jobs`}
+          subtitle={`${data?.summary?.totalJobs ?? 0} total jobs`}
         />
         <StatCard
           icon={<SparklesIcon className="w-5 h-5" />}
           label="Escrow Yield"
-          value={formatUSD(yieldData?.summary.totalYield ?? 0)}
+          value={formatUSD(yieldData?.summary?.totalYield ?? 0)}
           color="cyan"
-          subtitle={`${yieldData?.summary.activePositions ?? 0} active · ${yieldData?.summary.avgAPY ?? 0}% APY`}
+          subtitle={`${yieldData?.summary?.activePositions ?? 0} active · ${yieldData?.summary?.avgAPY ?? 0}% APY`}
         />
       </div>
 
@@ -303,22 +303,22 @@ export default function RevenueDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <FeeCard
           label="Today's Fees"
-          value={data?.fees.today ?? 0}
-          previousValue={(data?.fees.week ?? 0) / 7}
+          value={data?.fees?.today ?? 0}
+          previousValue={(data?.fees?.week ?? 0) / 7}
         />
         <FeeCard
           label="This Week"
-          value={data?.fees.week ?? 0}
-          previousValue={(data?.fees.month ?? 0) / 4}
+          value={data?.fees?.week ?? 0}
+          previousValue={(data?.fees?.month ?? 0) / 4}
         />
         <FeeCard
           label="This Month"
-          value={data?.fees.month ?? 0}
-          previousValue={(data?.fees.allTime ?? 0) / 12}
+          value={data?.fees?.month ?? 0}
+          previousValue={(data?.fees?.allTime ?? 0) / 12}
         />
         <FeeCard
           label="All Time"
-          value={data?.fees.allTime ?? 0}
+          value={data?.fees?.allTime ?? 0}
           previousValue={0}
           hideIndicator
         />
@@ -329,7 +329,7 @@ export default function RevenueDashboard() {
         <div className="pp-card p-6">
           <h3 className="text-white font-bold text-lg mb-4">TVL Breakdown</h3>
           <div className="space-y-3">
-            {(data?.tvl.byContract ?? []).map(c => (
+            {(data?.tvl?.byContract ?? []).map(c => (
               <div key={c.name} className="flex items-center justify-between">
                 <div>
                   <span className="text-white text-sm font-medium">{c.label}</span>

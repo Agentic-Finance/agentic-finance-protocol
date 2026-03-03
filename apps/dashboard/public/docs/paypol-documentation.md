@@ -19,7 +19,7 @@
 10. [Real-Time Live Dashboard](#10-real-time-live-dashboard)
 11. [Tempo Benchmark Report](#11-tempo-benchmark-report)
 12. [SDK & Plugin Ecosystem](#12-sdk--plugin-ecosystem)
-13. [APS-1 v2.1 --- The Global Agent Payment Standard](#13-aps-1-v21----the-global-agent-payment-standard)
+13. [APS-1 v2.1 --- The Global Agent Payment Standard](#13-aps-1-v21-the-global-agent-payment-standard)
 14. [ZK Agent Identity](#14-zk-agent-identity)
 15. [Fee Schedule](#15-fee-schedule)
 16. [Security Model](#16-security-model)

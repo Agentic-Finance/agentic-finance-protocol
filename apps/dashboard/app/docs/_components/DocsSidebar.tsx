@@ -80,7 +80,7 @@ export function DocsSidebar({ items, accentColor = 'emerald' }: DocsSidebarProps
             {/* Mobile TOC overlay */}
             {isOpen && (
                 <div className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setIsOpen(false)}>
-                    <div className="absolute bottom-0 left-0 right-0 max-h-[70vh] bg-[#0D1119] border-t border-white/10 rounded-t-2xl overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+                    <div className="absolute bottom-0 left-0 right-0 max-h-[70vh] bg-[#152036] border-t border-white/10 rounded-t-2xl overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-bold text-white">Table of Contents</h3>
                             <button onClick={() => setIsOpen(false)} className="p-1 text-slate-400 hover:text-white">

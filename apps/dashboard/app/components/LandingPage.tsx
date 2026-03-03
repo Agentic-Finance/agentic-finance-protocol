@@ -139,7 +139,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
     ];
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#0B1120', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#111B2E', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
 
             {/* BACKGROUND - Vibrant gradient mesh */}
             <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
@@ -263,7 +263,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                     <div style={{ backgroundColor: 'rgba(168,85,247,0.1)', padding: '5px 10px', borderRadius: '8px', border: '1px solid rgba(168,85,247,0.3)' }}><span style={{ fontSize: '0.7rem', color: '#c084fc', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><ClockIcon style={{ width: '13px', height: '13px' }} /> In Escrow</span></div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: '#14203A', border: '1px solid #374151', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#94a3b8' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Dev Agent</span><span style={{ color: '#64748b', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{agentData ? `${agentData.devAddress.slice(0, 6)}...` : "..."}</span></div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1A2844', border: '1px solid #374151', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#94a3b8' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Dev Agent</span><span style={{ color: '#64748b', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{agentData ? `${agentData.devAddress.slice(0, 6)}...` : "..."}</span></div>
                                     <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                                         {outputStep >= 3 && (<div style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '999px', marginBottom: '6px', zIndex: 10 }}><span style={{ fontSize: '0.6rem', color: '#c084fc', fontWeight: '900', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckBadgeIcon style={{ width: '11px', height: '11px' }} /> AI IS JUDGE</span></div>)}
                                         <div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_2s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#a855f7', boxShadow: '0 0 10px #a855f7' }}></div></div><span style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', marginTop: '6px', fontFamily: 'monospace' }}>+$5.00 Stream</span>
@@ -358,7 +358,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* UNIFIED PROTOCOL STACK TABLE */}
-                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#14203A', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
+                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#1A2844', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
                         {/* Gradient accent line on left */}
                         <div style={{ position: 'absolute', left: 0, top: 0, width: '3px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #22d3ee, #f59e0b, #818cf8, #10b981, #ec4899, #94a3b8)', zIndex: 2 }}></div>
 
@@ -662,7 +662,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard - formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v2.1' },
                             { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, Google A2A, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '7+ Adapters' },
                         ].map((f, i) => (
-                            <div key={i} className="reveal-child" style={{ backgroundColor: '#14203A', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
+                            <div key={i} className="reveal-child" style={{ backgroundColor: '#1A2844', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
                                 <div style={{ color: f.color, marginBottom: '16px' }}>{f.icon}</div>
                                 <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '800', marginBottom: '8px' }}>{f.title}</h3>
@@ -673,7 +673,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     </div>
 
                     {/* Deployed Contracts Strip */}
-                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#14203A', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
+                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#1A2844', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
                         <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>9 Source-Verified Contracts on Tempo Moderato</p>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                             {[
@@ -827,7 +827,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                 </div>
             </section>
 
-            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '50px 0', textAlign: 'center', backgroundColor: '#0B1120', width: '100%' }}>
+            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '50px 0', textAlign: 'center', backgroundColor: '#111B2E', width: '100%' }}>
                 <Image src="/logo.png" alt="PayPol" width={160} height={40} style={{ height: '40px', width: 'auto', opacity: 0.5, margin: '0 auto 20px' }} />
                 <p style={{ color: '#5a6a80', fontSize: '0.9rem', fontWeight: 'bold' }}>© 2026 PayPol Foundation.</p>
             </footer>

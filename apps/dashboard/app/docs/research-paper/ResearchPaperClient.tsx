@@ -63,7 +63,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                 </p>
 
                 {/* Author Card */}
-                <div className="p-5 rounded-xl bg-[#0D1119] border border-white/[0.06] max-w-2xl">
+                <div className="p-5 rounded-xl bg-[#152036] border border-white/[0.06] max-w-2xl">
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-4">
                         <div>
                             <div className="text-xs text-slate-500 mb-1">Authors</div>
@@ -96,7 +96,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
             {/* Paper Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-14">
                 {paperStats.map((stat) => (
-                    <div key={stat.label} className="p-4 rounded-xl bg-[#0D1119] border border-white/[0.06] text-center">
+                    <div key={stat.label} className="p-4 rounded-xl bg-[#152036] border border-white/[0.06] text-center">
                         <div className="text-2xl font-black text-white mb-1">{stat.value}</div>
                         <div className="text-xs text-slate-500">{stat.label}</div>
                     </div>

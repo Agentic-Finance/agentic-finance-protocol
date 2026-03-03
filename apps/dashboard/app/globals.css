@@ -5,19 +5,19 @@
    ══════════════════════════════════════════════ */
 :root {
   /* Core palette */
-  --pp-bg-primary: #0B1120;
-  --pp-bg-secondary: #111827;
-  --pp-bg-card: #141B2D;
-  --pp-bg-elevated: #1A2237;
+  --pp-bg-primary: #111B2E;
+  --pp-bg-secondary: #162035;
+  --pp-bg-card: #1A2640;
+  --pp-bg-elevated: #1F2D47;
 
   /* Surface overlays */
-  --pp-surface-1: rgba(255, 255, 255, 0.03);
-  --pp-surface-2: rgba(255, 255, 255, 0.06);
-  --pp-surface-3: rgba(255, 255, 255, 0.10);
+  --pp-surface-1: rgba(255, 255, 255, 0.04);
+  --pp-surface-2: rgba(255, 255, 255, 0.08);
+  --pp-surface-3: rgba(255, 255, 255, 0.12);
 
   /* Borders */
-  --pp-border: rgba(255, 255, 255, 0.08);
-  --pp-border-hover: rgba(255, 255, 255, 0.15);
+  --pp-border: rgba(255, 255, 255, 0.12);
+  --pp-border-hover: rgba(255, 255, 255, 0.20);
 
   /* Text */
   --pp-text-primary: #F1F5F9;
@@ -39,7 +39,7 @@
   --pp-radius-xl: 20px;
 
   /* Enforce dark */
-  --background: #0B1120;
+  --background: #111B2E;
   --foreground: #F1F5F9;
 }
 
@@ -72,7 +72,7 @@ body {
 
 /* ── Glass effect ── */
 .pp-glass {
-  background: rgba(11, 17, 32, 0.85);
+  background: rgba(17, 27, 46, 0.85);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }

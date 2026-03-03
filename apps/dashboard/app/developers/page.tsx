@@ -389,9 +389,9 @@ export default function DevelopersPage() {
     }, [form]);
 
     return (
-        <div className="min-h-screen bg-[#0B1120] text-white">
+        <div className="min-h-screen bg-[#111B2E] text-white">
             {/* ═══ TOP NAV ═══ */}
-            <nav className="sticky top-0 z-50 bg-[#0B1120]/80 backdrop-blur-xl border-b border-white/5">
+            <nav className="sticky top-0 z-50 bg-[#111B2E]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
                         <Image src="/logo.png" alt="PayPol" width={120} height={32} className="h-8 w-auto object-contain" />
@@ -848,7 +848,7 @@ await client.delegateA2A({
                                     className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500/40 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                 >
                                     {CATEGORIES.map(c => (
-                                        <option key={c} value={c} className="bg-[#0B1120]">{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                                        <option key={c} value={c} className="bg-[#111B2E]">{c.charAt(0).toUpperCase() + c.slice(1)}</option>
                                     ))}
                                 </select>
                             </div>
@@ -941,7 +941,7 @@ await client.delegateA2A({
                                     className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500/40 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                 >
                                     {SOURCE_OPTIONS.map(s => (
-                                        <option key={s.value} value={s.value} className="bg-[#0B1120]">{s.label}</option>
+                                        <option key={s.value} value={s.value} className="bg-[#111B2E]">{s.label}</option>
                                     ))}
                                 </select>
                             </div>

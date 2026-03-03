@@ -13,7 +13,7 @@ export function DocsNavbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <header className="sticky top-0 z-50 border-b border-white/5 bg-[#0B1120]/80 backdrop-blur-xl">
+        <header className="sticky top-0 z-50 border-b border-white/5 bg-[#111B2E]/80 backdrop-blur-xl">
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <a href="/" className="flex items-center hover:opacity-90 transition-opacity">
@@ -61,7 +61,7 @@ export function DocsNavbar() {
 
             {/* Mobile menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden border-t border-white/5 bg-[#0B1120]/95 backdrop-blur-xl">
+                <div className="md:hidden border-t border-white/5 bg-[#111B2E]/95 backdrop-blur-xl">
                     <div className="px-4 py-4 flex flex-col gap-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;

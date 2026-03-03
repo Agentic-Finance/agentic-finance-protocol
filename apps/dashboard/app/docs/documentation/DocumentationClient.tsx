@@ -15,7 +15,7 @@ const tocItems: TocItem[] = [
     { id: '10-real-time-live-dashboard', label: 'Live Dashboard', level: 2 },
     { id: '11-tempo-benchmark-report', label: 'Tempo Benchmark', level: 2 },
     { id: '12-sdk--plugin-ecosystem', label: 'SDK & Plugin Ecosystem', level: 2 },
-    { id: '13-aps-1-v21----the-global-agent-payment-standard', label: 'APS-1 v2.1 Global Standard', level: 2 },
+    { id: '13-aps-1-v21-the-global-agent-payment-standard', label: 'APS-1 v2.1 Global Standard', level: 2 },
     { id: '14-zk-agent-identity', label: 'ZK Agent Identity', level: 2 },
     { id: '15-fee-schedule', label: 'Fee Schedule', level: 2 },
     { id: '16-security-model', label: 'Security Model', level: 2 },
@@ -93,7 +93,7 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                     <a
                         key={link.href}
                         href={link.href}
-                        className="group p-4 rounded-xl bg-[#0D1119] border border-white/[0.06] hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] transition-all"
+                        className="group p-4 rounded-xl bg-[#152036] border border-white/[0.06] hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] transition-all"
                     >
                         <div className="text-slate-500 group-hover:text-emerald-400 transition-colors mb-2.5">
                             {link.icon}

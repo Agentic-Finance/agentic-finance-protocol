@@ -7,7 +7,7 @@ import ShieldPanel from "../components/ShieldPanel";
 
 export default function ShieldPage() {
   return (
-    <div className="min-h-screen bg-[#0B1120]">
+    <div className="min-h-screen bg-[#111B2E]">
       <SubPageNav />
       <div className="max-w-7xl mx-auto space-y-8 p-4 sm:p-6">
 

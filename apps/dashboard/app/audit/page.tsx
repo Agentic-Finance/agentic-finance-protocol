@@ -34,7 +34,7 @@ export default function AuditLogPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-300 font-mono p-4 sm:p-6 lg:p-8 selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-[#111B2E] text-slate-300 font-mono p-4 sm:p-6 lg:p-8 selection:bg-indigo-500/30">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header */}

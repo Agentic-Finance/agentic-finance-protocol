@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="min-h-screen bg-[#0B1120] text-slate-300">
+        <div className="min-h-screen bg-[#111B2E] text-slate-300">
             <DocsNavbar />
 
             {/* Main Content */}

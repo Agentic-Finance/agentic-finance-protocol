@@ -35,7 +35,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             if (this.props.fallback) return this.props.fallback;
 
             return (
-                <div className="min-h-screen bg-[#0B1120] flex items-center justify-center p-6">
+                <div className="min-h-screen bg-[#111B2E] flex items-center justify-center p-6">
                     <div className="pp-card p-8 max-w-lg w-full text-center space-y-6">
                         {/* Icon */}
                         <div className="mx-auto w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-3xl">

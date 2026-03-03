@@ -103,7 +103,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                         const codeText = extractCodeText(children);
                         return (
                             <div className="relative group mb-6" style={{ maxWidth: '100%', overflow: 'hidden' }}>
-                                <pre className="bg-[#0D1119] border border-white/[0.06] rounded-xl p-5 overflow-x-auto text-sm leading-relaxed shadow-lg shadow-black/20" style={{ maxWidth: '100%' }}>
+                                <pre className="bg-[#152036] border border-white/[0.06] rounded-xl p-5 overflow-x-auto text-sm leading-relaxed shadow-lg shadow-black/20" style={{ maxWidth: '100%' }}>
                                     {children}
                                 </pre>
                                 <CopyButton text={codeText} />
@@ -128,7 +128,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                         </div>
                     ),
                     thead: ({ children, ...props }) => (
-                        <thead className="bg-[#0D1119] border-b border-white/[0.06]" {...props}>{children}</thead>
+                        <thead className="bg-[#152036] border-b border-white/[0.06]" {...props}>{children}</thead>
                     ),
                     tbody: ({ children, ...props }) => (
                         <tbody className="divide-y divide-white/[0.03]" {...props}>{children}</tbody>

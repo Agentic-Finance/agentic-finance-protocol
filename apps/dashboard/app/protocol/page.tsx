@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // ── Data Fetching ─────────────────────────────────────────
 
@@ -46,11 +47,13 @@ export default function ProtocolPage() {
   const metrics = useLiveMetrics();
 
   return (
-    <div className="min-h-screen bg-[#050A0E] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0F1724] text-white overflow-x-hidden">
       {/* ── Nav ──────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-[#050A0E]/80 backdrop-blur-xl border-b border-white/5">
+      <nav className="sticky top-0 z-50 bg-[#0F1724]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <a href="/" className="text-sm font-bold text-white/80 hover:text-white transition-colors">PayPol Protocol</a>
+          <a href="/" className="flex items-center group">
+            <Image src="/logo.png" alt="PayPol" width={140} height={36} className="h-7 w-auto object-contain" priority />
+          </a>
           <div className="flex items-center gap-5">
             <a href="/developers" className="text-xs text-slate-400 hover:text-white transition-colors">Developers</a>
             <a href="/verify" className="text-xs text-slate-400 hover:text-white transition-colors">AI Proofs</a>

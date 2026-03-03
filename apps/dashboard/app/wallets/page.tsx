@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function WalletsPage() {
     return (
-        <div className="min-h-screen bg-[#0B1120]">
+        <div className="min-h-screen bg-[#111B2E]">
             <SubPageNav />
             {/* Header */}
             <div className="border-b border-white/[0.08] pp-glass">

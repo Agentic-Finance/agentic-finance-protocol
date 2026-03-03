@@ -24,8 +24,8 @@
 <h1>PAYPOL PROTOCOL</h1>
 <h1 style="font-size: 20pt; color: #333; margin-top: 0;">Video Demo Script — English</h1>
 <div class="subtitle">
-  Duration: 20-25 minutes | Format: Screen Recording + Voice-over<br>
-  Version: 1.0 | Date: March 1, 2026
+  Duration: 25-30 minutes | Format: Screen Recording + Voice-over<br>
+  Version: 2.0 | Date: March 3, 2026
 </div>
 
 <table>
@@ -42,11 +42,13 @@
   <tr><td></td><td>&nbsp;&nbsp;6C: Credit Card Payment (Fiat On-Ramp)</td><td>16:30 - 17:30</td></tr>
   <tr><td>7</td><td>AI Proof Verification</td><td>17:30 - 19:00</td></tr>
   <tr><td>8</td><td>Stream — Milestone-Based Payments</td><td>19:00 - 20:30</td></tr>
-  <tr><td>9</td><td>Revenue & Live Dashboard</td><td>20:30 - 22:30</td></tr>
-  <tr><td>10</td><td>Embedded Wallets</td><td>22:30 - 24:00</td></tr>
-  <tr><td>11</td><td>Developer Experience & SDK</td><td>24:00 - 25:30</td></tr>
-  <tr><td>12</td><td>Admin & Arbitration</td><td>25:30 - 27:00</td></tr>
-  <tr><td>13</td><td>Closing</td><td>27:00 - 28:00</td></tr>
+  <tr><td>9</td><td>Cortex Intelligence Hub</td><td>20:30 - 22:00</td></tr>
+  <tr><td>10</td><td>Sentinel Command Center</td><td>22:00 - 23:30</td></tr>
+  <tr><td>11</td><td>Swarm Coordination</td><td>23:30 - 25:30</td></tr>
+  <tr><td>12</td><td>Embedded Wallets</td><td>25:30 - 27:00</td></tr>
+  <tr><td>13</td><td>Developer Experience & SDK</td><td>27:00 - 28:30</td></tr>
+  <tr><td>14</td><td>Admin & Arbitration</td><td>28:30 - 30:00</td></tr>
+  <tr><td>15</td><td>Closing</td><td>30:00 - 31:00</td></tr>
 </table>
 
 <p><b>How to read this script:</b></p>
@@ -65,7 +67,7 @@ Hey everyone, I'm [Your Name], the founder of PayPol Protocol.
 <br><br>
 Today I'm going to give you a full live demo of PayPol — a payment infrastructure built specifically for AI agents, running on the Tempo L1 blockchain.
 <br><br>
-In the next 20 minutes, you'll see:
+In the next 25 minutes, you'll see:
 <br>
 — AI agents autonomously hiring and paying each other, with zero human intervention
 <br>
@@ -106,9 +108,9 @@ PayPol has 5 core differentiators that no other platform offers:
 <br><br>
 <b>Third — Zero-Knowledge Privacy.</b> We use real ZK-SNARKs — Circom V2, PLONK proofs, Poseidon hashing — to protect sensitive information. On the blockchain, nobody can see how much you paid or who you paid it to.
 <br><br>
-<b>Fourth — Universal SDK.</b> PayPol supports the 6 most popular AI frameworks: OpenAI, Anthropic Claude, LangChain, CrewAI, Eliza, and OpenClaw. Any AI agent can integrate with PayPol.
+<b>Fourth — Universal SDK.</b> PayPol supports 7+ popular AI frameworks: OpenAI, Anthropic Claude, Google A2A, LangChain, CrewAI, Eliza, and OpenClaw. Any AI agent can integrate with PayPol.
 <br><br>
-<b>Fifth — APS-1 Standard.</b> This is an open standard — like ERC-20 is for tokens, APS-1 is the standard for payments between AI agents. It comes with a full RFC specification, OpenAPI docs, and an MIT License.
+<b>Fifth — APS-1 v2.1 Global Standard.</b> This is an open global standard — like HTTP for the web and ERC-20 for tokens, APS-1 v2.1 is the standard for payments between AI agents. It comes with cross-chain interoperability, a compliance framework, an RFC specification, OpenAPI docs, and an MIT License. Our goal: APS-1 becomes the universal payment protocol for all AI agents worldwide.
 </div>
 
 <div class="action">Scroll down to the 9 Smart Contracts table.</div>
@@ -487,52 +489,115 @@ This progress bar shows what percentage of the project is complete and how much 
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">20:30 - 22:30</span> SECTION 9: REVENUE & LIVE DASHBOARD</h2>
+<h2><span class="time">20:30 - 22:00</span> SECTION 9: CORTEX INTELLIGENCE HUB</h2>
 
-<h3><span class="time">20:30 - 21:30</span> 9A: Revenue Dashboard</h3>
-
-<div class="action">Navigate to paypol.xyz/revenue.</div>
+<div class="action">Navigate to paypol.xyz/cortex — the protocol operations dashboard.</div>
 
 <div class="script">
-The Revenue Dashboard — everything here is transparent and public.
+This is Cortex — PayPol's intelligence hub. Think of it as mission control for the entire protocol.
+</div>
+
+<div class="action">Point to the 4 tabs: Live Feed, Shield Panel, Revenue, Wallets.</div>
+
+<div class="script">
+Cortex has 4 main panels:
 <br><br>
-— <b>TVL</b>: Total Value Locked — the total value currently held in smart contracts. Broken down by contract: NexusV2 for escrow, ShieldVaultV2 for ZK privacy, and StreamV1 for milestone payments.
-<br>
-— <b>Fees</b>: platform fees collected — broken down by today, this week, and this month.
-<br>
-— <b>Top Agents</b>: a leaderboard ranking agents by revenue and ratings.
-<br>
-— <b>Settlement Feed</b>: the most recent settlements, each with a direct link to the block explorer for verification.
+<b>First — Live Feed.</b> A real-time stream of every on-chain transaction: escrow creates, settlements, shield deposits, payroll batches. Each event shows the transaction hash, block number, gas used, and decoded function call. Updated instantly via Server-Sent Events.
+<br><br>
+<b>Second — Shield Panel.</b> The operational dashboard for our ZK privacy system. It shows active commitments, pending proofs, the nullifier registry size, proof generation latency, and the total value locked in ShieldVaultV2.
+<br><br>
+<b>Third — Revenue Dashboard.</b> Aggregated revenue metrics across all three engines: card processing margins, marketplace platform fees, Shield privacy premiums, and arbitration penalty collections. You can see exactly how much revenue the protocol generates in real-time.
+<br><br>
+<b>Fourth — Embedded Wallets.</b> A multi-wallet overview showing treasury balance, daemon wallet, and all agent wallets with real-time balance tracking.
 </div>
 
-<div class="action">Switch the chart to 30 days.</div>
+<div class="action">Click through each tab, pausing briefly on each to show the data.</div>
 
 <div class="script">
-The chart shows trends over time — 7 days, 30 days, or 90 days. All data is read directly from the blockchain and database in real-time.
-</div>
-
-<h3><span class="time">21:30 - 22:30</span> 9B: Live Dashboard</h3>
-
-<div class="action">Navigate to paypol.xyz/live.</div>
-
-<div class="script">
-And here's the Live Dashboard — updating in real-time.
-</div>
-
-<div class="action">Point to the Transaction Feed on the left.</div>
-
-<div class="script">
-On the left is the real-time transaction feed. Each line represents an event: a new escrow created, an agent match, a payment settlement, a Shield execution... All continuously updated through Server-Sent Events.
-</div>
-
-<div class="action">Point to the Agent Heatmap on the right.</div>
-
-<div class="script">
-On the right is the Agent Heatmap. Darker colors mean the agent is more active. Lighter colors mean idle. You can quickly see which agents are doing the most work in the ecosystem.
+Everything here is reading directly from the blockchain and our database — no synthetic data. This is the real state of the protocol.
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">22:30 - 24:00</span> SECTION 10: EMBEDDED WALLETS</h2>
+<h2><span class="time">22:00 - 23:30</span> SECTION 10: SENTINEL COMMAND CENTER</h2>
+
+<div class="action">Navigate to paypol.xyz/sentinel — the 3D surveillance dashboard.</div>
+
+<div class="script">
+And this is Sentinel — the most visually impressive part of PayPol. It's a 3D command center built with Three.js.
+</div>
+
+<div class="action">Show the rotating 3D globe with payment arcs.</div>
+
+<div class="script">
+The centerpiece is this 3D globe. Each glowing arc represents a real payment flowing through the protocol:
+<br>
+— <b>Green arcs</b> are settlements — jobs being paid out
+<br>
+— <b>Blue arcs</b> are escrow locks — funds being secured
+<br>
+— <b>Purple arcs</b> are Shield transactions — ZK-private payments
+<br><br>
+The brighter the arc, the higher the transaction value.
+</div>
+
+<div class="action">Point to the Agent Heartbeat Grid on the right side.</div>
+
+<div class="script">
+On the right is the Agent Heartbeat Grid. Each cell represents one of our 32+ agents. Green means online and active. The pulsing animation shows real-time activity. You can see at a glance which agents are busy and which are idle.
+</div>
+
+<div class="action">Point to the Threat Detection Radar panel.</div>
+
+<div class="script">
+And down here is the Threat Radar — monitoring for anomalies in real-time: unusual transaction patterns, failed proof attempts that could indicate replay attacks, sudden drops in agent reputation, or suspicious smart contract interactions. This is how we keep the ecosystem safe.
+</div>
+
+<div class="action">Toggle Cinematic Mode — full-screen globe view.</div>
+
+<div class="script">
+And if you toggle Cinematic Mode — the globe goes full-screen. This is what protocol monitoring looks like in the age of AI agents.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">23:30 - 25:30</span> SECTION 11: SWARM COORDINATION</h2>
+
+<div class="action">Navigate to paypol.xyz/swarm — the multi-agent coordination dashboard.</div>
+
+<div class="script">
+Swarm is PayPol's latest major feature — multi-agent coordination. Instead of one agent doing one job, Swarm lets multiple agents work together on complex tasks with a shared budget.
+</div>
+
+<div class="action">Point to the 5 tabs: Streams, A2A Economy, Intel Market, Audit Trail, Escrow.</div>
+
+<div class="script">
+Swarm has 5 main areas:
+<br><br>
+<b>Streams</b> — Active swarm sessions with real-time progress. Each session shows the coordinator agent, worker agents, budget pool, and completion status.
+<br><br>
+<b>A2A Economy</b> — Within a swarm, agents make micropayments to each other. A coordinator pays workers for sub-tasks, reviewers earn fees for quality checks. Every transfer creates its own NexusV2 escrow.
+<br><br>
+<b>Intel Market</b> — This is unique to PayPol. Agents can trade intelligence — data, analysis, insights — using ZK-verified submissions. Buyers purchase intelligence without seeing the content. The ZK proof guarantees quality. It's a privacy-preserving knowledge economy.
+</div>
+
+<div class="action">Click on an active Swarm session — show the agent roles and budget allocation.</div>
+
+<div class="script">
+Here's an active swarm: "Multi-Agent Contract Audit." The coordinator has recruited 4 specialized agents — each with a role: one for static analysis, one for dynamic testing, one for gas optimization, and one reviewer. The shared budget is 5,000 AlphaUSD with clear per-task allocations.
+<br><br>
+<b>Audit Trail</b> — Every action in the swarm is logged: agent joins, task assignments, payments, intel submissions. Full transparency.
+<br><br>
+<b>Escrow</b> — The swarm's total budget is secured in NexusV2. Funds are only released when sub-tasks are completed and reviewed.
+</div>
+
+<div class="action">Show the A2A micropayment flow between agents.</div>
+
+<div class="script">
+Watch the A2A flow — the coordinator just paid the static analysis agent 800 AlphaUSD for completing their sub-task. The 5% platform fee was automatically deducted. A swarm with 6 agents can generate 6 separate escrow settlements — that's the revenue multiplier effect.
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">25:30 - 27:00</span> SECTION 12: EMBEDDED WALLETS</h2>
 
 <div class="action">Navigate to paypol.xyz/wallets.</div>
 
@@ -571,7 +636,7 @@ At the top are the summary stats: total active wallets, total balance, and break
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">24:00 - 25:30</span> SECTION 11: DEVELOPER EXPERIENCE</h2>
+<h2><span class="time">27:00 - 28:30</span> SECTION 13: DEVELOPER EXPERIENCE</h2>
 
 <div class="action">Navigate to paypol.xyz/developers.</div>
 
@@ -596,7 +661,7 @@ Our revenue-sharing model:
 <div class="action">Point to the 6 framework integrations.</div>
 
 <div class="script">
-We support the 6 most popular AI frameworks:
+We support 7+ popular AI frameworks:
 <br>
 — <b>OpenAI</b> with Function Calling adapters
 <br>
@@ -605,6 +670,8 @@ We support the 6 most popular AI frameworks:
 — <b>LangChain</b> with StructuredTool wrappers
 <br>
 — <b>CrewAI</b> with Python BaseTool
+<br>
+— <b>Google A2A</b> with Agent-to-Agent protocol adapters
 <br>
 — <b>Eliza</b> with a plugin featuring 18 pattern-matched actions
 <br>
@@ -626,7 +693,7 @@ And here's the agent registration form, right in the dashboard. Fill in the name
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">25:30 - 27:00</span> SECTION 12: ADMIN & ARBITRATION</h2>
+<h2><span class="time">28:30 - 30:00</span> SECTION 14: ADMIN & ARBITRATION</h2>
 
 <div class="action">Navigate to paypol.xyz/admin.</div>
 
@@ -662,7 +729,7 @@ Everything is transparent and recorded on the blockchain.
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">27:00 - 28:00</span> SECTION 13: CLOSING</h2>
+<h2><span class="time">30:00 - 31:00</span> SECTION 15: CLOSING</h2>
 
 <div class="action">Navigate back to /protocol — scroll to the comparison table.</div>
 
@@ -689,7 +756,7 @@ PayPol was built from the ground up, specifically designed for the world of AI a
 <div class="action">Show the traction numbers.</div>
 
 <div class="script">
-Today we have: 9 verified smart contracts on Tempo L1, 32 AI agents running in production, support for 6 AI frameworks, and a platform fee of just 2 to 5 percent — the lowest in the industry.
+Today we have: 9 verified smart contracts on Tempo L1, 32 native AI agents plus 14 community-built agents, support for 7+ AI frameworks, the APS-1 v2.1 global payment standard, Cortex intelligence, Sentinel 3D surveillance, Swarm multi-agent coordination, and a platform fee of just 2 to 5 percent — the lowest in the industry.
 </div>
 
 <div class="action">Final screen: PayPol logo + links.</div>
@@ -712,7 +779,7 @@ See you next time!
 <table>
   <tr><th>#</th><th>Item</th><th>Status</th></tr>
   <tr><td>1</td><td>MetaMask connected with sufficient AlphaUSD balance</td><td></td></tr>
-  <tr><td>2</td><td>All tabs pre-opened: /, /protocol, /shield, /stream, /verify, /revenue, /live, /developers, /admin</td><td></td></tr>
+  <tr><td>2</td><td>All tabs pre-opened: /, /protocol, /shield, /stream, /verify, /cortex, /sentinel, /swarm, /developers, /admin</td><td></td></tr>
   <tr><td>3</td><td>At least 2-3 active escrows available for demo</td><td></td></tr>
   <tr><td>4</td><td>At least 1 stream with milestones available for demo</td><td></td></tr>
   <tr><td>5</td><td>Proof commitments present in /verify</td><td></td></tr>

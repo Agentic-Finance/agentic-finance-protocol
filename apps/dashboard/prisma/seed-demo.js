@@ -102,7 +102,7 @@ async function seed() {
     for (let i = 0; i < jobCount; i++) {
       const budget = randomBetween(500, 8000);
       const negotiatedPrice = budget * (0.85 + Math.random() * 0.15);
-      const platformFee = negotiatedPrice * 0.08;
+      const platformFee = negotiatedPrice * 0.05;
       const dayOffset = Math.floor(Math.random() * 85) + 1; // spread over 85 days for upward trend
       completedJobs.push({
         agentId: agent.id,
@@ -129,7 +129,7 @@ async function seed() {
     for (let i = 0; i < jobCount; i++) {
       const budget = randomBetween(200, 3000);
       const negotiatedPrice = budget * (0.85 + Math.random() * 0.15);
-      const platformFee = negotiatedPrice * 0.08;
+      const platformFee = negotiatedPrice * 0.05;
       const dayOffset = Math.floor(Math.random() * 60) + 1;
       completedJobs.push({
         agentId: agent.id,
@@ -166,7 +166,7 @@ async function seed() {
       prompt: PROMPTS[Math.floor(Math.random() * PROMPTS.length)],
       budget,
       negotiatedPrice: budget,
-      platformFee: budget * 0.08,
+      platformFee: budget * 0.05,
       token: randomToken(),
       status: 'ESCROW_LOCKED',
       createdAt: daysAgo(Math.floor(Math.random() * 7) + 1),
@@ -388,6 +388,55 @@ async function seed() {
   }
   console.log(`[seed-demo] Created ${walletData.length} Embedded Wallets`);
 
+  // ── 12. Create Swarm Sessions (3) — Swarm Coordination demo ──
+  const swarmConfigs = [
+    {
+      name: 'Multi-Agent Contract Audit',
+      status: 'ACTIVE',
+      agentCount: 4,
+      budget: 5000,
+      budgetUsed: 2200,
+    },
+    {
+      name: 'DApp Launch Campaign',
+      status: 'COMPLETED',
+      agentCount: 6,
+      budget: 8000,
+      budgetUsed: 7800,
+    },
+    {
+      name: 'Cross-Chain Bridge Analysis',
+      status: 'ACTIVE',
+      agentCount: 3,
+      budget: 3000,
+      budgetUsed: 900,
+    },
+  ];
+
+  let swarmCount = 0;
+  for (const config of swarmConfigs) {
+    const coordinator = agents[Math.floor(Math.random() * 5)];
+    const sessionAgents = agents.slice(0, config.agentCount).map(a => a.ownerWallet);
+
+    try {
+      await prisma.swarmSession.create({
+        data: {
+          coordinatorWallet: coordinator.ownerWallet,
+          name: config.name,
+          agents: sessionAgents,
+          budget: config.budget,
+          budgetUsed: config.budgetUsed,
+          status: config.status,
+          createdAt: daysAgo(Math.floor(Math.random() * 14) + 1),
+        },
+      });
+      swarmCount++;
+    } catch (e) { /* skip if SwarmSession model not yet in schema */ }
+  }
+  if (swarmCount > 0) {
+    console.log(`[seed-demo] Created ${swarmCount} SwarmSessions`);
+  }
+
   // ── Summary ─────────────────────────────────────────────
   console.log('\n[seed-demo] ═══════════════════════════════════');
   console.log(`[seed-demo] ✅ Demo data seeded successfully!`);
@@ -400,6 +449,7 @@ async function seed() {
   console.log(`[seed-demo]    Employees:      ${employees.length}`);
   console.log(`[seed-demo]    Yield Positions:${yieldPositions.length}`);
   console.log(`[seed-demo]    Wallets:        ${walletData.length}`);
+  if (swarmCount > 0) console.log(`[seed-demo]    Swarm Sessions: ${swarmCount}`);
   console.log('[seed-demo] ═══════════════════════════════════\n');
 }
 

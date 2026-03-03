@@ -24,8 +24,8 @@
 <h1>PAYPOL PROTOCOL</h1>
 <h1 style="font-size: 20pt; color: #333; margin-top: 0;">Video Demo Script — Tieng Viet</h1>
 <div class="subtitle">
-  Thoi luong: 20-25 phut | Dinh dang: Screen Recording + Voice-over<br>
-  Phien ban: 1.0 | Ngay: 01/03/2026
+  Thoi luong: 25-30 phut | Dinh dang: Screen Recording + Voice-over<br>
+  Phien ban: 2.0 | Ngay: 03/03/2026
 </div>
 
 <table>
@@ -42,11 +42,13 @@
   <tr><td></td><td>&nbsp;&nbsp;6C: Thanh Toan Bang The (Fiat On-Ramp)</td><td>16:30 - 17:30</td></tr>
   <tr><td>7</td><td>AI Proof Verification</td><td>17:30 - 19:00</td></tr>
   <tr><td>8</td><td>Stream — Thanh Toan Milestone</td><td>19:00 - 20:30</td></tr>
-  <tr><td>9</td><td>Revenue & Live Dashboard</td><td>20:30 - 22:30</td></tr>
-  <tr><td>10</td><td>Embedded Wallets</td><td>22:30 - 24:00</td></tr>
-  <tr><td>11</td><td>Developer Experience & SDK</td><td>24:00 - 25:30</td></tr>
-  <tr><td>12</td><td>Admin & Arbitration</td><td>25:30 - 27:00</td></tr>
-  <tr><td>13</td><td>Closing — Ket thuc</td><td>27:00 - 28:00</td></tr>
+  <tr><td>9</td><td>Cortex Intelligence Hub</td><td>20:30 - 22:00</td></tr>
+  <tr><td>10</td><td>Sentinel Command Center</td><td>22:00 - 23:30</td></tr>
+  <tr><td>11</td><td>Swarm Coordination</td><td>23:30 - 25:30</td></tr>
+  <tr><td>12</td><td>Embedded Wallets</td><td>25:30 - 27:00</td></tr>
+  <tr><td>13</td><td>Developer Experience & SDK</td><td>27:00 - 28:30</td></tr>
+  <tr><td>14</td><td>Admin & Arbitration</td><td>28:30 - 30:00</td></tr>
+  <tr><td>15</td><td>Closing — Ket thuc</td><td>30:00 - 31:00</td></tr>
 </table>
 
 <p><b>Cach doc kich ban:</b></p>
@@ -65,7 +67,7 @@ Xin chao tat ca moi nguoi, toi la [Ten ban], founder cua PayPol Protocol.
 <br><br>
 Hom nay toi se demo truc tiep toan bo PayPol — mot he thong thanh toan duoc thiet ke rieng cho AI agents, xay dung tren Tempo L1 blockchain.
 <br><br>
-Trong khoang 20 phut toi, cac ban se thay:
+Trong khoang 25 phut toi, cac ban se thay:
 <br>
 — AI agents tu dong thue nhau va thanh toan, khong can con nguoi can thiep
 <br>
@@ -106,9 +108,9 @@ PayPol co 5 diem khac biet cot loi ma khong platform nao khac co:
 <br><br>
 <b>Thu ba — Zero-Knowledge Privacy.</b> Chung toi dung ZK-SNARK that su — Circom V2, PLONK proofs, Poseidon hash — de bao ve thong tin. Tren blockchain, khong ai biet ban tra bao nhieu cho ai.
 <br><br>
-<b>Thu tu — Universal SDK.</b> PayPol ho tro 6 framework pho bien nhat: OpenAI, Anthropic Claude, LangChain, CrewAI, Eliza, va OpenClaw. Bat ky AI agent nao cung co the tich hop duoc.
+<b>Thu tu — Universal SDK.</b> PayPol ho tro 7+ framework pho bien nhat: OpenAI, Anthropic Claude, Google A2A, LangChain, CrewAI, Eliza, va OpenClaw. Bat ky AI agent nao cung co the tich hop duoc.
 <br><br>
-<b>Thu nam — APS-1 Standard.</b> Day la chuan mo — giong nhu ERC-20 cho token, APS-1 la chuan cho thanh toan giua cac AI agents. Co day du RFC spec, OpenAPI doc, va MIT License.
+<b>Thu nam — APS-1 v2.1 Global Standard.</b> Day la tieu chuan toan cau mo — giong nhu HTTP cho web va ERC-20 cho token, APS-1 v2.1 la tieu chuan thanh toan giua cac AI agents. Co cross-chain interoperability, compliance framework, RFC spec, OpenAPI doc, va MIT License. Muc tieu: APS-1 tro thanh giao thuc thanh toan chuan cho tat ca AI agents tren toan the gioi.
 </div>
 
 <div class="action">Cuon xuong bang 9 Smart Contracts.</div>
@@ -487,52 +489,115 @@ Thanh tien do nay cho thay bao nhieu phan tram project da hoan thanh va bao nhie
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">20:30 - 22:30</span> PHAN 9: REVENUE & LIVE DASHBOARD</h2>
+<h2><span class="time">20:30 - 22:00</span> PHAN 9: CORTEX INTELLIGENCE HUB</h2>
 
-<h3><span class="time">20:30 - 21:30</span> 9A: Revenue Dashboard</h3>
-
-<div class="action">Chuyen sang trang paypol.xyz/revenue.</div>
+<div class="action">Chuyen sang trang paypol.xyz/cortex — dashboard dieu hanh giao thuc.</div>
 
 <div class="script">
-Revenue Dashboard — moi thu deu minh bach va cong khai.
+Day la Cortex — trung tam tinh bao cua PayPol. Hay nghi no nhu phong dieu khien cho toan bo giao thuc.
+</div>
+
+<div class="action">Chi vao 4 tab: Live Feed, Shield Panel, Revenue, Wallets.</div>
+
+<div class="script">
+Cortex co 4 panel chinh:
 <br><br>
-— <b>TVL</b>: Total Value Locked — tong gia tri dang bi khoa trong cac smart contract. Chia theo tung contract: NexusV2 cho escrow, ShieldVaultV2 cho ZK privacy, StreamV1 cho milestone payments.
-<br>
-— <b>Fees</b>: phi platform thu duoc — chia theo hom nay, tuan nay, thang nay.
-<br>
-— <b>Top Agents</b>: xep hang cac agent theo doanh thu va danh gia.
-<br>
-— <b>Settlement Feed</b>: cac giao dich settlement gan nhat, moi giao dich deu co link den block explorer de kiem chung.
+<b>Thu nhat — Live Feed.</b> Luong giao dich thoi gian thuc: escrow tao moi, settlements, shield deposits, payroll batches. Moi su kien hien thi transaction hash, block number, gas used, va decoded function call. Cap nhat tuc thoi qua Server-Sent Events.
+<br><br>
+<b>Thu hai — Shield Panel.</b> Dashboard dieu hanh cho he thong ZK privacy. Hien thi commitments dang active, proofs dang pending, kich thuoc nullifier registry, do tre tao proof, va tong gia tri khoa trong ShieldVaultV2.
+<br><br>
+<b>Thu ba — Revenue Dashboard.</b> Chi so doanh thu tong hop tu ca 3 engine: margin xu ly the, phi platform marketplace, Shield privacy premium, va penalty arbitration. Ban thay chinh xac giao thuc tao ra bao nhieu doanh thu theo thoi gian thuc.
+<br><br>
+<b>Thu tu — Embedded Wallets.</b> Tong quan vi da nguon: so du treasury, vi daemon, va tat ca vi agent voi theo doi so du realtime.
 </div>
 
-<div class="action">Chuyen chart sang 30 ngay.</div>
+<div class="action">Click qua tung tab, dung lai vai giay de hien thi du lieu.</div>
 
 <div class="script">
-Chart hien thi xu huong theo thoi gian — 7 ngay, 30 ngay, hoac 90 ngay. Tat ca du lieu deu doc tu blockchain va database thoi gian thuc.
-</div>
-
-<h3><span class="time">21:30 - 22:30</span> 9B: Live Dashboard</h3>
-
-<div class="action">Chuyen sang trang paypol.xyz/live.</div>
-
-<div class="script">
-Va day la Live Dashboard — cap nhat thoi gian thuc.
-</div>
-
-<div class="action">Chi vao Transaction Feed phia trai.</div>
-
-<div class="script">
-Phia trai la feed giao dich realtime. Moi dong la mot su kien: escrow moi duoc tao, agent match thanh cong, thanh toan duoc settlement, Shield execution... Tat ca cap nhat lien tuc qua Server-Sent Events.
-</div>
-
-<div class="action">Chi vao Agent Heatmap phia phai.</div>
-
-<div class="script">
-Phia phai la Agent Heatmap. Mau cang dam nghia la agent cang active. Mau nhat la idle. Ban co the nhanh chong thay agents nao dang hoat dong nhieu nhat trong he thong.
+Tat ca du lieu o day deu doc truc tiep tu blockchain va database — khong co du lieu tong hop. Day la trang thai that cua giao thuc.
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">22:30 - 24:00</span> PHAN 10: EMBEDDED WALLETS</h2>
+<h2><span class="time">22:00 - 23:30</span> PHAN 10: SENTINEL COMMAND CENTER</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/sentinel — dashboard giam sat 3D.</div>
+
+<div class="script">
+Va day la Sentinel — phan an tuong nhat cua PayPol. Day la trung tam chi huy 3D duoc xay dung bang Three.js.
+</div>
+
+<div class="action">Hien thi qua cau 3D xoay voi cac cung thanh toan.</div>
+
+<div class="script">
+Trung tam la qua cau 3D nay. Moi cung sang dai dien cho mot giao dich thuc dang chay qua giao thuc:
+<br>
+— <b>Cung xanh la</b> la settlements — job dang duoc thanh toan
+<br>
+— <b>Cung xanh duong</b> la escrow locks — tien dang duoc bao dam
+<br>
+— <b>Cung tim</b> la Shield transactions — thanh toan ZK-private
+<br><br>
+Cung cang sang, gia tri giao dich cang cao.
+</div>
+
+<div class="action">Chi vao Agent Heartbeat Grid ben phai.</div>
+
+<div class="script">
+Ben phai la Agent Heartbeat Grid. Moi o dai dien cho mot trong 32+ agents. Mau xanh la online va dang hoat dong. Hieu ung nhap nhay cho thay hoat dong thoi gian thuc. Ban thay ngay agents nao dang ban va agents nao dang ranh.
+</div>
+
+<div class="action">Chi vao Threat Detection Radar panel.</div>
+
+<div class="script">
+Va phia duoi la Threat Radar — giam sat bat thuong theo thoi gian thuc: giao dich bat thuong, proof that bai co the la replay attack, reputation agent giam dot ngot, hoac tuong tac smart contract dang ngo. Day la cach chung toi bao ve he sinh thai.
+</div>
+
+<div class="action">Bat Cinematic Mode — qua cau toan man hinh.</div>
+
+<div class="script">
+Va khi bat Cinematic Mode — qua cau hien thi toan man hinh. Day chinh la giao dien giam sat giao thuc trong ky nguyen AI agents.
+</div>
+
+<!-- ============================================== -->
+<h2><span class="time">23:30 - 25:30</span> PHAN 11: SWARM COORDINATION</h2>
+
+<div class="action">Chuyen sang trang paypol.xyz/swarm — dashboard phoi hop da agent.</div>
+
+<div class="script">
+Swarm la tinh nang lon moi nhat cua PayPol — phoi hop da agent. Thay vi mot agent lam mot viec, Swarm cho phep nhieu agents cung lam viec tren nhiem vu phuc tap voi ngan sach chung.
+</div>
+
+<div class="action">Chi vao 5 tab: Streams, A2A Economy, Intel Market, Audit Trail, Escrow.</div>
+
+<div class="script">
+Swarm co 5 khu vuc chinh:
+<br><br>
+<b>Streams</b> — Cac phien swarm dang active voi tien trinh thoi gian thuc. Moi phien hien thi agent dieu phoi, agents tham gia, ngan sach chung, va trang thai hoan thanh.
+<br><br>
+<b>A2A Economy</b> — Trong swarm, cac agents thanh toan vi mo cho nhau. Agent dieu phoi tra cho workers cho sub-tasks, reviewers nhan phi kiem tra chat luong. Moi giao dich tao escrow NexusV2 rieng.
+<br><br>
+<b>Intel Market</b> — Day la dac trung cua PayPol. Agents co the mua ban thong tin — du lieu, phan tich, insights — bang ZK-verified submissions. Nguoi mua mua thong tin ma khong can thay noi dung. ZK proof dam bao chat luong. Day la nen kinh te tri thuc bao mat quyen rieng tu.
+</div>
+
+<div class="action">Click vao mot Swarm session dang active — hien thi vai tro agent va phan bo ngan sach.</div>
+
+<div class="script">
+Day la mot swarm dang chay: "Multi-Agent Contract Audit." Agent dieu phoi da tuyen 4 agents chuyen biet — moi agent mot vai tro: mot cho phan tich tinh, mot cho kiem thu dong, mot cho toi uu gas, va mot reviewer. Ngan sach chung la 5,000 AlphaUSD voi phan bo ro rang cho tung nhiem vu.
+<br><br>
+<b>Audit Trail</b> — Moi hanh dong trong swarm deu duoc ghi lai: agent tham gia, phan cong nhiem vu, thanh toan, nop thong tin. Minh bach hoan toan.
+<br><br>
+<b>Escrow</b> — Toan bo ngan sach cua swarm duoc bao dam trong NexusV2. Tien chi duoc giai ngan khi sub-tasks hoan thanh va duoc review.
+</div>
+
+<div class="action">Hien thi luong A2A micropayment giua cac agents.</div>
+
+<div class="script">
+Hay xem luong A2A — agent dieu phoi vua tra cho agent phan tich tinh 800 AlphaUSD khi hoan thanh sub-task. Phi platform 5% tu dong duoc tru. Mot swarm voi 6 agents co the tao ra 6 escrow settlements rieng biet — do chinh la hieu ung nhan doanh thu.
+</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">25:30 - 27:00</span> PHAN 12: EMBEDDED WALLETS</h2>
 
 <div class="action">Chuyen sang trang paypol.xyz/wallets.</div>
 
@@ -571,7 +636,7 @@ Phia tren la thong ke: tong so vi dang active, tong so du, va phan loai theo Age
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">24:00 - 25:30</span> PHAN 11: DEVELOPER EXPERIENCE</h2>
+<h2><span class="time">27:00 - 28:30</span> PHAN 13: DEVELOPER EXPERIENCE</h2>
 
 <div class="action">Chuyen sang trang paypol.xyz/developers.</div>
 
@@ -596,7 +661,7 @@ Mo hinh chia se doanh thu cua chung toi:
 <div class="action">Chi vao 6 framework integrations.</div>
 
 <div class="script">
-Chung toi ho tro 6 AI framework pho bien nhat:
+Chung toi ho tro 7+ AI framework pho bien nhat:
 <br>
 — <b>OpenAI</b> voi Function Calling adapters
 <br>
@@ -605,6 +670,8 @@ Chung toi ho tro 6 AI framework pho bien nhat:
 — <b>LangChain</b> voi StructuredTool wrappers
 <br>
 — <b>CrewAI</b> voi Python BaseTool
+<br>
+— <b>Google A2A</b> voi Agent-to-Agent protocol adapters
 <br>
 — <b>Eliza</b> voi plugin gom 18 pattern-matched actions
 <br>
@@ -626,7 +693,7 @@ Va day la form dang ky agent truc tiep tu dashboard. Dien ten, mo ta, skills, gi
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">25:30 - 27:00</span> PHAN 12: ADMIN & ARBITRATION</h2>
+<h2><span class="time">28:30 - 30:00</span> PHAN 14: ADMIN & ARBITRATION</h2>
 
 <div class="action">Chuyen sang trang paypol.xyz/admin.</div>
 
@@ -662,7 +729,7 @@ Tat ca deu minh bach va ghi nhan tren blockchain.
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">27:00 - 28:00</span> PHAN 13: KET THUC</h2>
+<h2><span class="time">30:00 - 31:00</span> PHAN 15: KET THUC</h2>
 
 <div class="action">Quay lai trang /protocol — cuon xuong bang so sanh.</div>
 
@@ -689,7 +756,7 @@ PayPol duoc xay dung tu con so khong, thiet ke rieng cho the gioi AI agents.
 <div class="action">Hien thi traction numbers.</div>
 
 <div class="script">
-Hien tai chung toi da co: 9 smart contracts da verified tren Tempo L1, 32 AI agents dang chay production, ho tro 6 AI frameworks, va platform fee chi 2 den 5 phan tram — thap nhat trong nganh.
+Hien tai chung toi da co: 9 smart contracts da verified tren Tempo L1, 32 native AI agents cong 14 community agents, ho tro 7+ AI frameworks, tieu chuan thanh toan toan cau APS-1 v2.1, Cortex intelligence, Sentinel giam sat 3D, Swarm phoi hop da agent, va platform fee chi 2 den 5 phan tram — thap nhat trong nganh.
 </div>
 
 <div class="action">Man hinh cuoi: Logo PayPol + cac link.</div>
@@ -712,7 +779,7 @@ Hen gap lai cac ban!
 <table>
   <tr><th>#</th><th>Hang muc</th><th>Trang thai</th></tr>
   <tr><td>1</td><td>MetaMask da ket noi, co du AlphaUSD trong vi</td><td></td></tr>
-  <tr><td>2</td><td>Mo san tat ca tab: /, /protocol, /shield, /stream, /verify, /revenue, /live, /developers, /admin</td><td></td></tr>
+  <tr><td>2</td><td>Mo san tat ca tab: /, /protocol, /shield, /stream, /verify, /cortex, /sentinel, /swarm, /developers, /admin</td><td></td></tr>
   <tr><td>3</td><td>Co it nhat 2-3 escrows dang active de demo</td><td></td></tr>
   <tr><td>4</td><td>Co it nhat 1 stream voi milestones de demo</td><td></td></tr>
   <tr><td>5</td><td>Co proof commitments trong /verify</td><td></td></tr>

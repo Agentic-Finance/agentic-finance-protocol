@@ -64,7 +64,7 @@ export default function RevenueDashboard() {
   }, [period]);
 
   useEffect(() => {
-    if (chart && chart.labels.length > 0) {
+    if (chart && chart.labels && chart.labels.length > 0) {
       const timer = setTimeout(() => setChartMounted(true), 50);
       return () => clearTimeout(timer);
     }
@@ -74,7 +74,9 @@ export default function RevenueDashboard() {
     try {
       const res = await fetch('/api/revenue');
       const json = await res.json();
-      setData(json);
+      if (json && json.tvl && json.fees && !json.error) {
+        setData(json);
+      }
     } catch {
       // Silent fail, keep existing data
     } finally {
@@ -86,7 +88,9 @@ export default function RevenueDashboard() {
     try {
       const res = await fetch('/api/escrow/yields');
       const json = await res.json();
-      setYieldData(json);
+      if (json && json.positions && Array.isArray(json.positions)) {
+        setYieldData(json);
+      }
     } catch {
       // Silent fail
     }
@@ -96,7 +100,9 @@ export default function RevenueDashboard() {
     try {
       const res = await fetch(`/api/revenue/chart?period=${period}`);
       const json = await res.json();
-      setChart(json);
+      if (json && json.labels && Array.isArray(json.labels)) {
+        setChart(json);
+      }
     } catch {
       // Silent fail
     }
@@ -197,7 +203,7 @@ export default function RevenueDashboard() {
         </div>
 
         {/* Enhanced CSS Bar Chart */}
-        {chart && chart.labels.length > 0 ? (() => {
+        {chart && chart.labels && chart.labels.length > 0 ? (() => {
           const maxVol = Math.max(...chart.volume, 1);
           const yAxisSteps = [0, 0.25, 0.5, 0.75, 1.0];
           return (
@@ -400,7 +406,7 @@ export default function RevenueDashboard() {
       </div>
 
       {/* Escrow Yield Positions */}
-      {yieldData && yieldData.positions.length > 0 && (
+      {yieldData && yieldData.positions && yieldData.positions.length > 0 && (
         <div className="pp-card p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">

@@ -87,7 +87,6 @@ export async function getSwarmStats() {
     a2aStats,
     intelCount,
     auditCount,
-    feeResult,
   ] = await Promise.all([
     prisma.swarmSession.count(),
     prisma.swarmSession.count({ where: { status: 'ACTIVE' } }),
@@ -101,16 +100,26 @@ export async function getSwarmStats() {
     }),
     prisma.intelSubmission.count(),
     prisma.auditEvent.count(),
-    // Platform fees from AgentJobs linked to swarm streams
-    prisma.agentJob.aggregate({
-      where: {
-        StreamJob: {
-          swarmStream: { isNot: null },
-        },
-      },
-      _sum: { platformFee: true },
-    }),
   ]);
+
+  // Platform fees: get agentJobIds linked to swarm streams, then aggregate
+  let totalFees = 0;
+  try {
+    const swarmStreamJobs = await prisma.streamJob.findMany({
+      where: { swarmStream: { isNot: null }, agentJobId: { not: null } },
+      select: { agentJobId: true },
+    });
+    const agentJobIds = swarmStreamJobs.map(s => s.agentJobId).filter(Boolean) as string[];
+    if (agentJobIds.length > 0) {
+      const feeResult = await prisma.agentJob.aggregate({
+        where: { id: { in: agentJobIds } },
+        _sum: { platformFee: true },
+      });
+      totalFees = feeResult._sum.platformFee || 0;
+    }
+  } catch {
+    // Fee query is optional — don't break stats if it fails
+  }
 
   return {
     totalSwarms,
@@ -123,6 +132,6 @@ export async function getSwarmStats() {
     a2aCount: a2aStats._count || 0,
     intelCount,
     auditCount,
-    totalFees: feeResult._sum.platformFee || 0,
+    totalFees,
   };
 }

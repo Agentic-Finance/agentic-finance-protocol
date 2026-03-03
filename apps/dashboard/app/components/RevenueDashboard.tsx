@@ -49,6 +49,7 @@ export default function RevenueDashboard() {
   const [yieldData, setYieldData] = useState<YieldData | null>(null);
   const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
   const [loading, setLoading] = useState(true);
+  const [chartMounted, setChartMounted] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -58,8 +59,16 @@ export default function RevenueDashboard() {
   }, []);
 
   useEffect(() => {
+    setChartMounted(false);
     fetchChart();
   }, [period]);
+
+  useEffect(() => {
+    if (chart && chart.labels.length > 0) {
+      const timer = setTimeout(() => setChartMounted(true), 50);
+      return () => clearTimeout(timer);
+    }
+  }, [chart]);
 
   async function fetchData() {
     try {
@@ -158,58 +167,155 @@ export default function RevenueDashboard() {
       <div className="pp-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-white font-bold text-lg">Volume & Fees Over Time</h3>
-          <div className="flex gap-1">
-            {(['7d', '30d', '90d'] as const).map(p => (
-              <button
-                key={p}
-                onClick={() => setPeriod(p)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
-                  period === p
-                    ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
-                    : 'text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {p}
-              </button>
-            ))}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 text-[10px]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-sm bg-gradient-to-t from-indigo-600 to-cyan-400" />
+                <span className="text-slate-500">Volume</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                <span className="text-slate-500">Fees</span>
+              </span>
+            </div>
+            <div className="flex gap-1">
+              {(['7d', '30d', '90d'] as const).map(p => (
+                <button
+                  key={p}
+                  onClick={() => setPeriod(p)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${
+                    period === p
+                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                      : 'text-slate-500 hover:text-slate-300'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Simple CSS Bar Chart */}
-        {chart && chart.labels.length > 0 ? (
-          <div className="space-y-1">
-            <div className="flex items-end gap-[2px] h-40">
-              {chart.volume.map((v, i) => {
-                const max = Math.max(...chart.volume, 1);
-                const heightPct = (v / max) * 100;
-                return (
-                  <div key={i} className="flex-1 flex flex-col justify-end group relative">
+        {/* Enhanced CSS Bar Chart */}
+        {chart && chart.labels.length > 0 ? (() => {
+          const maxVol = Math.max(...chart.volume, 1);
+          const yAxisSteps = [0, 0.25, 0.5, 0.75, 1.0];
+          return (
+            <div className="space-y-1">
+              <div className="flex">
+                {/* Y-Axis Labels */}
+                <div className="flex flex-col justify-between h-48 pr-3 py-0">
+                  {[...yAxisSteps].reverse().map((step) => (
+                    <span key={step} className="text-[9px] text-slate-600 font-mono text-right leading-none">
+                      {formatUSD(maxVol * step)}
+                    </span>
+                  ))}
+                </div>
+                {/* Chart Area */}
+                <div className="flex-1 relative h-48">
+                  {/* Grid Lines */}
+                  {yAxisSteps.slice(1).map((step) => (
                     <div
-                      className="bg-gradient-to-t from-indigo-600 to-indigo-400 rounded-t transition-all hover:from-indigo-500 hover:to-indigo-300"
-                      style={{ height: `${Math.max(heightPct, 2)}%` }}
+                      key={step}
+                      className="absolute left-0 right-0 border-t border-dashed border-white/[0.06]"
+                      style={{ bottom: `${step * 100}%` }}
                     />
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black/90 border border-white/10 rounded-lg px-2 py-1 text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                      <div>{chart.labels[i]}</div>
-                      <div className="text-indigo-400">Vol: {formatUSD(v)}</div>
-                      <div className="text-amber-400">Fee: {formatUSD(chart.fees[i])}</div>
-                      <div className="text-slate-400">{chart.jobs[i]} jobs</div>
-                    </div>
+                  ))}
+                  {/* Bars */}
+                  <div className="flex items-end gap-[2px] h-full relative z-[1]">
+                    {chart.volume.map((v, i) => {
+                      const heightPct = (v / maxVol) * 100;
+                      return (
+                        <div key={i} className="flex-1 flex flex-col items-center justify-end group relative">
+                          {/* Value label on top */}
+                          <span
+                            className="text-[8px] font-mono text-slate-500 mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            {formatUSD(v)}
+                          </span>
+                          <div
+                            className="w-full rounded-t transition-all duration-700 ease-out hover:brightness-125"
+                            style={{
+                              height: chartMounted ? `${Math.max(heightPct, 2)}%` : '0%',
+                              background: 'linear-gradient(to top, #4f46e5, #6366f1, #06b6d4)',
+                              transitionDelay: `${i * 30}ms`,
+                            }}
+                          />
+                          {/* Tooltip */}
+                          <div className="absolute bottom-full mb-6 left-1/2 -translate-x-1/2 bg-black/90 border border-white/10 rounded-lg px-2.5 py-1.5 text-[10px] text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                            <div className="font-semibold">{chart.labels[i]}</div>
+                            <div className="text-indigo-400">Vol: {formatUSD(v)}</div>
+                            <div className="text-amber-400">Fee: {formatUSD(chart.fees[i])}</div>
+                            <div className="text-slate-400">{chart.jobs[i]} jobs</div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
+                  {/* Fee Overlay Dots */}
+                  <div className="absolute inset-0 flex items-end pointer-events-none z-[2]">
+                    {chart.fees.map((fee, i) => {
+                      const feePct = (fee / maxVol) * 100;
+                      const clampedPct = Math.min(feePct, 100);
+                      return (
+                        <div
+                          key={i}
+                          className="flex-1 flex justify-center"
+                          style={{ height: '100%', position: 'relative' }}
+                        >
+                          <div
+                            className="absolute w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(245,158,11,0.5)] transition-all duration-700 ease-out"
+                            style={{
+                              bottom: chartMounted ? `${clampedPct}%` : '0%',
+                              transform: 'translateX(-50%)',
+                              left: '50%',
+                              transitionDelay: `${i * 30}ms`,
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              {/* X-Axis Labels */}
+              <div className="flex justify-between text-[9px] text-slate-600 pl-12 pr-1">
+                <span>{chart.labels[0]}</span>
+                <span>{chart.labels[Math.floor(chart.labels.length / 2)]}</span>
+                <span>{chart.labels[chart.labels.length - 1]}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-[9px] text-slate-600 px-1">
-              <span>{chart.labels[0]}</span>
-              <span>{chart.labels[Math.floor(chart.labels.length / 2)]}</span>
-              <span>{chart.labels[chart.labels.length - 1]}</span>
-            </div>
-          </div>
-        ) : (
-          <div className="h-40 flex items-center justify-center text-slate-600 text-sm">
+          );
+        })() : (
+          <div className="h-48 flex items-center justify-center text-slate-600 text-sm">
             No data for selected period
           </div>
         )}
+      </div>
+
+      {/* Fee Breakdown */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <FeeCard
+          label="Today's Fees"
+          value={data?.fees.today ?? 0}
+          previousValue={(data?.fees.week ?? 0) / 7}
+        />
+        <FeeCard
+          label="This Week"
+          value={data?.fees.week ?? 0}
+          previousValue={(data?.fees.month ?? 0) / 4}
+        />
+        <FeeCard
+          label="This Month"
+          value={data?.fees.month ?? 0}
+          previousValue={(data?.fees.allTime ?? 0) / 12}
+        />
+        <FeeCard
+          label="All Time"
+          value={data?.fees.allTime ?? 0}
+          previousValue={0}
+          hideIndicator
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -235,28 +341,57 @@ export default function RevenueDashboard() {
         <div className="pp-card p-6">
           <h3 className="text-white font-bold text-lg mb-4">Top Agents by Revenue</h3>
           <div className="space-y-3">
-            {(data?.topAgents ?? []).slice(0, 5).map((agent, i) => (
-              <div key={agent.agentId} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-slate-600 text-xs font-mono w-4">{i + 1}.</span>
-                  <span className="text-lg">{agent.emoji}</span>
-                  <div>
-                    <span className="text-white text-sm font-medium">{agent.name}</span>
-                    <div className="text-[10px] text-slate-500">
-                      {agent.jobs} jobs &bull; ⭐ {agent.rating.toFixed(1)}
+            {(() => {
+              const agents = (data?.topAgents ?? []).slice(0, 5);
+              const maxRevenue = Math.max(...agents.map(a => a.revenue), 1);
+              const rankColors = ['#eab308', '#94a3b8', '#cd7f32', '#475569', '#475569'];
+              const rankBgColors = ['rgba(234,179,8,0.12)', 'rgba(148,163,184,0.10)', 'rgba(205,127,50,0.10)', 'rgba(71,85,105,0.08)', 'rgba(71,85,105,0.08)'];
+              return agents.map((agent, i) => {
+                const pct = (agent.revenue / maxRevenue) * 100;
+                return (
+                  <div key={agent.agentId} className="group">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="text-xs font-mono font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                          style={{
+                            backgroundColor: rankBgColors[i] ?? rankBgColors[4],
+                            color: rankColors[i] ?? rankColors[4],
+                          }}
+                        >
+                          {i + 1}
+                        </span>
+                        <span className="text-lg">{agent.emoji}</span>
+                        <div>
+                          <span className="text-white text-sm font-medium">{agent.name}</span>
+                          <div className="text-[10px] text-slate-500">
+                            {agent.jobs} jobs &bull; {agent.rating.toFixed(1)} rating
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-emerald-400 font-mono font-bold text-sm block">
+                          {formatUSD(agent.revenue)}
+                        </span>
+                        <span className="text-[10px] text-slate-600">
+                          fee: {formatUSD(agent.fees)}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Horizontal revenue proportion bar */}
+                    <div className="ml-8 h-1.5 rounded-full bg-white/[0.03] overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-700 ease-out"
+                        style={{
+                          width: `${pct}%`,
+                          background: `linear-gradient(to right, ${rankColors[i] ?? rankColors[4]}88, ${rankColors[i] ?? rankColors[4]})`,
+                        }}
+                      />
                     </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-emerald-400 font-mono font-bold text-sm block">
-                    {formatUSD(agent.revenue)}
-                  </span>
-                  <span className="text-[10px] text-slate-600">
-                    fee: {formatUSD(agent.fees)}
-                  </span>
-                </div>
-              </div>
-            ))}
+                );
+              });
+            })()}
             {(!data?.topAgents || data.topAgents.length === 0) && (
               <p className="text-slate-600 text-sm text-center py-4">No agent revenue data yet</p>
             )}
@@ -381,6 +516,39 @@ function StatCard({ icon, label, value, color, subtitle }: {
       </div>
       <div className={`${c.text} font-mono font-black text-3xl`}>{value}</div>
       {subtitle && <p className="text-[10px] text-slate-600 mt-1">{subtitle}</p>}
+    </div>
+  );
+}
+
+function FeeCard({ label, value, previousValue, hideIndicator }: {
+  label: string;
+  value: number;
+  previousValue: number;
+  hideIndicator?: boolean;
+}) {
+  const isUp = value >= previousValue;
+  const pctChange = previousValue > 0 ? Math.abs(((value - previousValue) / previousValue) * 100) : 0;
+
+  return (
+    <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4">
+      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{label}</span>
+      <div className="flex items-end justify-between mt-2">
+        <span className="text-amber-400 font-mono font-black text-xl">{formatUSD(value)}</span>
+        {!hideIndicator && (
+          <span className={`flex items-center gap-0.5 text-[10px] font-semibold ${isUp ? 'text-emerald-400' : 'text-red-400'}`}>
+            <svg
+              className={`w-3 h-3 ${isUp ? '' : 'rotate-180'}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+            {pctChange > 0 ? `${pctChange.toFixed(0)}%` : '--'}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

@@ -53,10 +53,14 @@ const roleColors: Record<string, string> = {
     reviewer: '#10b981',
 };
 
+type StatusFilter = 'ALL' | 'ACTIVE' | 'COMPLETED' | 'FAILED';
+
 export default function SwarmStreamsTab() {
     const [swarms, setSwarms] = useState<SwarmData[]>([]);
     const [loading, setLoading] = useState(true);
     const [expandedSwarm, setExpandedSwarm] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
 
     const fetchSwarms = useCallback(async () => {
         try {
@@ -96,9 +100,58 @@ export default function SwarmStreamsTab() {
         );
     }
 
+    const statusOptions: StatusFilter[] = ['ALL', 'ACTIVE', 'COMPLETED', 'FAILED'];
+
+    const filteredSwarms = swarms.filter((swarm) => {
+        const matchesSearch = searchQuery.trim() === '' ||
+            swarm.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = statusFilter === 'ALL' ||
+            (statusFilter === 'ACTIVE' && swarm.status !== 'COMPLETED' && swarm.status !== 'CANCELLED' && swarm.status !== 'FAILED') ||
+            (statusFilter === 'COMPLETED' && swarm.status === 'COMPLETED') ||
+            (statusFilter === 'FAILED' && (swarm.status === 'CANCELLED' || swarm.status === 'FAILED'));
+        return matchesSearch && matchesStatus;
+    });
+
     return (
         <div className="space-y-4">
-            {swarms.map((swarm) => {
+            {/* Search & Filter Bar */}
+            <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-4 space-y-3">
+                <input
+                    type="text"
+                    placeholder="Search swarm sessions by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-slate-500 px-4 py-2.5 outline-none focus:border-amber-500/40 transition-colors"
+                />
+                <div className="flex items-center gap-2">
+                    {statusOptions.map((status) => (
+                        <button
+                            key={status}
+                            onClick={() => setStatusFilter(status)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                statusFilter === status
+                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                                    : 'bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08]'
+                            }`}
+                        >
+                            {status === 'ALL' ? 'All' : status.charAt(0) + status.slice(1).toLowerCase()}
+                        </button>
+                    ))}
+                    <span className="ml-auto text-[10px] text-slate-500">
+                        {filteredSwarms.length} of {swarms.length} sessions
+                    </span>
+                </div>
+            </div>
+
+            {filteredSwarms.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <span className="text-4xl mb-3">🔍</span>
+                    <h3 className="text-lg font-bold text-white mb-1">No matching sessions</h3>
+                    <p className="text-sm text-slate-400">Try adjusting your search or filter criteria.</p>
+                </div>
+            )}
+
+            {filteredSwarms.map((swarm) => {
                 const isExpanded = expandedSwarm === swarm.id;
                 const progress = swarm.totalBudget > 0 ? (swarm.totalReleased / swarm.totalBudget) * 100 : 0;
                 const statusColor = swarm.status === 'COMPLETED' ? '#10b981' : swarm.status === 'CANCELLED' ? '#ef4444' : '#f59e0b';

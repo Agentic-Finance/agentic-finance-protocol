@@ -23,9 +23,22 @@ const CATEGORY_COLORS: Record<string, string> = {
     deployment: 'text-lime-400 bg-lime-500/8 border-lime-500/15',
 };
 
+function getTrustScore(avgRating: number, successRate: number, totalJobs: number): { score: number; label: string; color: string; barColor: string } {
+    // Weighted: 40% rating (normalized to 100), 40% success rate, 20% job volume (capped at 100 jobs)
+    const ratingNorm = (avgRating / 5) * 100;
+    const jobNorm = Math.min(totalJobs / 100, 1) * 100;
+    const score = Math.round(ratingNorm * 0.4 + successRate * 0.4 + jobNorm * 0.2);
+
+    if (totalJobs < 3) return { score, label: 'New', color: 'text-slate-400', barColor: 'bg-slate-500' };
+    if (score >= 80) return { score, label: 'Highly Trusted', color: 'text-emerald-400', barColor: 'bg-emerald-500' };
+    if (score >= 50) return { score, label: 'Trusted', color: 'text-amber-400', barColor: 'bg-amber-500' };
+    return { score, label: 'Building Trust', color: 'text-orange-400', barColor: 'bg-orange-500' };
+}
+
 function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps) {
     const a = agent.agent;
     const catColor = CATEGORY_COLORS[a.category] || CATEGORY_COLORS.analytics;
+    const trust = getTrustScore(a.avgRating, a.successRate, a.totalJobs);
 
     return (
         <div
@@ -87,6 +100,23 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
                     {a.skills.length > 3 && <span className="text-[9px] text-slate-600">+{a.skills.length - 3}</span>}
                 </div>
             )}
+
+            {/* Trust Score Bar */}
+            <div className="mb-2.5">
+                <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-slate-500 font-medium">Trust Score</span>
+                    <div className="flex items-center gap-1.5">
+                        <span className={`text-[10px] font-bold ${trust.color}`}>{trust.score}%</span>
+                        <span className={`text-[9px] font-semibold ${trust.color}`}>{trust.label}</span>
+                    </div>
+                </div>
+                <div className="w-full h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                    <div
+                        className={`h-full rounded-full transition-all duration-500 ${trust.barColor}`}
+                        style={{ width: `${trust.score}%` }}
+                    />
+                </div>
+            </div>
 
             {/* Row 4: Description */}
             <p className="text-[11px] text-slate-400/80 leading-relaxed mb-3 flex-1 line-clamp-2">

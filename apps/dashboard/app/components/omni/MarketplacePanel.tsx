@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import AgentCard from './AgentCard';
 import type { DiscoveredAgent, MarketplacePhase } from '../../hooks/useAgentMarketplace';
 
@@ -57,17 +57,30 @@ function MarketplacePanel({
 }: MarketplacePanelProps) {
 
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Reset to page 1 when category changes
+    // Reset to page 1 when category or search changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [activeCategory]);
+    }, [activeCategory, searchQuery]);
 
     // ── BROWSE MODE ──
     if (phase === 'browsing') {
-        const displayAgents = activeCategory
+        const categoryFiltered = activeCategory
             ? allAgents.filter(a => a.agent.category === activeCategory)
             : allAgents;
+
+        const displayAgents = searchQuery.trim()
+            ? categoryFiltered.filter(a => {
+                const q = searchQuery.toLowerCase();
+                return (
+                    a.agent.name.toLowerCase().includes(q) ||
+                    a.agent.description.toLowerCase().includes(q) ||
+                    a.agent.category.toLowerCase().includes(q) ||
+                    (a.agent.skills && a.agent.skills.some(s => s.toLowerCase().includes(q)))
+                );
+            })
+            : categoryFiltered;
 
         const totalPages = Math.ceil(displayAgents.length / AGENTS_PER_PAGE);
         const safePage = Math.min(currentPage, totalPages || 1);
@@ -86,6 +99,35 @@ function MarketplacePanel({
                         <h3 className="text-sm font-semibold text-white">Agent Marketplace</h3>
                         <span className="text-[10px] text-slate-500 font-mono">{allAgents.length} agents</span>
                     </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className="px-5 pt-3 pb-2">
+                    <div className="relative">
+                        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search agents by name, skill, or category..."
+                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl text-sm text-white placeholder-slate-500 pl-9 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/30 transition-all"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <XMarkIcon className="w-4 h-4" />
+                            </button>
+                        )}
+                    </div>
+                    {searchQuery.trim() && (
+                        <p className="text-[11px] text-slate-500 mt-1.5 px-1">
+                            {displayAgents.length} result{displayAgents.length !== 1 ? 's' : ''} found
+                            {activeCategory && <span> in <span className="text-indigo-400 capitalize">{activeCategory}</span></span>}
+                        </p>
+                    )}
                 </div>
 
                 {/* Category Tabs */}
@@ -122,7 +164,10 @@ function MarketplacePanel({
                         </div>
                     ) : displayAgents.length === 0 ? (
                         <div className="text-center py-12 text-slate-600 text-sm">
-                            No agents in this category
+                            {searchQuery.trim()
+                                ? `No agents matching "${searchQuery}"${activeCategory ? ` in ${activeCategory}` : ''}`
+                                : 'No agents in this category'
+                            }
                         </div>
                     ) : (
                         <>

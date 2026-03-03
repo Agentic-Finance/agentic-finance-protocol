@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSSE, ProtocolEvent } from '../hooks/useSSE';
 
 // ── Sub-Components ──────────────────────────────────────────
 
 /** Scrolling feed of protocol transactions */
 function TxFeed({ events }: { events: ProtocolEvent[] }) {
+  const [visibleCount, setVisibleCount] = useState(20);
   const txEvents = events.filter(e => e.type.startsWith('tx:') || e.type.startsWith('agent:'));
-  const recent = txEvents.slice(-20).reverse();
+  const totalEvents = txEvents.length;
+  const recent = txEvents.slice(-visibleCount).reverse();
 
   const getEventIcon = (type: string) => {
     if (type.includes('escrow_created')) return '🔐';
@@ -82,6 +84,33 @@ function TxFeed({ events }: { events: ProtocolEvent[] }) {
           </div>
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {totalEvents > 0 && (
+        <div className="mt-3 flex items-center justify-between">
+          <span className="text-[10px] text-slate-500">
+            Showing {Math.min(visibleCount, totalEvents)} of {totalEvents} events
+          </span>
+          <div className="flex items-center gap-2">
+            {visibleCount > 20 && (
+              <button
+                onClick={() => setVisibleCount(Math.max(20, visibleCount - 20))}
+                className="px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[10px] text-slate-400 hover:text-white hover:bg-white/[0.08] transition-all"
+              >
+                Show Less
+              </button>
+            )}
+            {visibleCount < totalEvents && (
+              <button
+                onClick={() => setVisibleCount(Math.min(totalEvents, visibleCount + 20))}
+                className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-[10px] text-indigo-400 hover:bg-indigo-500/20 transition-all"
+              >
+                Show More
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

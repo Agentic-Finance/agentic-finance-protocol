@@ -107,23 +107,26 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
-/* ── Animations ── */
+/* ── GPU-accelerated Animations ── */
 @keyframes shrink { from { width: 100%; } to { width: 0%; } }
-.animate-shrink { animation: shrink 6s linear forwards; }
+.animate-shrink { animation: shrink 6s linear forwards; will-change: width; }
 
 @keyframes moveStripes { 0% { background-position: 0 0; } 100% { background-position: 30px 0; } }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
-.animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; will-change: transform, opacity; }
 
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.2); }
   50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
 }
-.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; will-change: box-shadow; }
+
+/* GPU-accelerated reveal animations */
+.reveal { will-change: transform, opacity; }
 
 /* ── War Room Animations ── */
 @keyframes spin {
@@ -139,8 +142,8 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @keyframes slideInFromLeft {
-  from { opacity: 0; transform: translateX(-24px); }
-  to { opacity: 1; transform: translateX(0); }
+  from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes glowPulse {
@@ -149,8 +152,8 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @keyframes countUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 @keyframes globeReveal {

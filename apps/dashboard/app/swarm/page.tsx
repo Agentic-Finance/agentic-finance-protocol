@@ -59,7 +59,7 @@ export default function SwarmPage() {
 
     useEffect(() => {
         fetchStats();
-        const interval = setInterval(fetchStats, 30000);
+        const interval = setInterval(() => { if (!document.hidden) fetchStats(); }, 30000);
         return () => clearInterval(interval);
     }, [fetchStats]);
 

@@ -32,6 +32,16 @@ void main() {
 }
 `;
 
+// Preload textures as early as possible (runs at module load time)
+if (typeof window !== 'undefined') {
+    const preload = (src: string) => {
+        const img = new Image();
+        img.src = src;
+    };
+    preload('/textures/earth-blue-marble.jpg');
+    preload('/textures/earth-topology.png');
+}
+
 export default function GlobeCore({ quality }: Props) {
     const globeRef = useRef<THREE.Group>(null);
     const segments = quality === 'high' ? 64 : quality === 'medium' ? 48 : 32;

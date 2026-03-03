@@ -48,6 +48,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* Preload critical assets for faster rendering */}
+        <link rel="preload" href="/textures/earth-blue-marble.jpg" as="image" />
+        <link rel="preload" href="/textures/earth-topology.png" as="image" />
+        <link rel="preload" href="/logo.png" as="image" />
+        {/* DNS prefetch for external services */}
+        <link rel="dns-prefetch" href="https://explore.tempo.xyz" />
+        <link rel="dns-prefetch" href="https://rpc.tempo.xyz" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#111B2E] text-slate-100 min-h-screen`}
       >

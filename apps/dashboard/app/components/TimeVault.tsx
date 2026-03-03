@@ -11,9 +11,19 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
     const [now, setNow] = useState(Math.floor(Date.now() / 1000));
 
     useEffect(() => {
-        const timer = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
-        return () => clearInterval(timer);
-    }, []);
+        if (localEscrow.length === 0) return;
+        let raf: number;
+        let lastUpdate = 0;
+        const tick = (time: number) => {
+            if (time - lastUpdate >= 1000) {
+                if (!document.hidden) setNow(Math.floor(Date.now() / 1000));
+                lastUpdate = time;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [localEscrow.length]);
 
     return (
         <div className="relative z-20">

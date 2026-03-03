@@ -306,11 +306,21 @@ function EscrowTracker({ walletAddress }: EscrowTrackerProps) {
     const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
     const [now, setNow] = useState(Math.floor(Date.now() / 1000));
 
-    // 1-second timer for deadline countdown
+    // Update countdown only when component is visible and has active escrows
     useEffect(() => {
-        const timer = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
-        return () => clearInterval(timer);
-    }, []);
+        if (activeEscrows.length === 0) return;
+        let raf: number;
+        let lastUpdate = 0;
+        const tick = (time: number) => {
+            if (time - lastUpdate >= 1000) {
+                if (!document.hidden) setNow(Math.floor(Date.now() / 1000));
+                lastUpdate = time;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [activeEscrows.length]);
 
     // Self-contained polling (10s)
     const expandedJobIdRef = React.useRef(expandedJobId);

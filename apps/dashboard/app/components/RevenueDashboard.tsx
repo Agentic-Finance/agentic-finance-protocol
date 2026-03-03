@@ -54,7 +54,7 @@ export default function RevenueDashboard() {
   useEffect(() => {
     fetchData();
     fetchYields();
-    const interval = setInterval(() => { fetchData(); fetchYields(); }, 30000);
+    const interval = setInterval(() => { if (!document.hidden) { fetchData(); fetchYields(); } }, 30000);
     return () => clearInterval(interval);
   }, []);
 

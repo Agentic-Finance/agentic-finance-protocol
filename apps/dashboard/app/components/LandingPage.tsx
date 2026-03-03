@@ -29,10 +29,19 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
     const [agentData, setAgentData] = useState<any>(null);
     const [nexusLog, setNexusLog] = useState<string[]>([]);
 
-    // Navbar Scroll
+    // Navbar Scroll — debounced for performance
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 20);
-        window.addEventListener('scroll', handleScroll);
+        let ticking = false;
+        const handleScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setScrolled(window.scrollY > 20);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 

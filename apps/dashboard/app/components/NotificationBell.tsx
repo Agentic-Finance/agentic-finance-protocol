@@ -40,7 +40,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
     useEffect(() => {
         if (!walletAddress) return;
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 15000);
+        const interval = setInterval(() => { if (!document.hidden) fetchNotifications(); }, 15000);
         return () => clearInterval(interval);
     }, [walletAddress, fetchNotifications]);
 

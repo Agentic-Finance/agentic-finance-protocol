@@ -46,7 +46,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
 
     useEffect(() => {
         fetchEscrows();
-        const interval = setInterval(fetchEscrows, 3000);
+        const interval = setInterval(() => { if (!document.hidden) fetchEscrows(); }, 15000);
         return () => clearInterval(interval);
     }, []);
 

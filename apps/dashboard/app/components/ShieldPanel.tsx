@@ -88,7 +88,7 @@ export default function ShieldPanel() {
       }
     };
     fetchStats();
-    const interval = setInterval(fetchStats, 15000);
+    const interval = setInterval(() => { if (!document.hidden) fetchStats(); }, 15000);
     return () => clearInterval(interval);
   }, []);
 

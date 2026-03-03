@@ -1129,7 +1129,7 @@ function SwarmUniverse() {
         if (containerRef.current) resizeObs.observe(containerRef.current);
 
         animRef.current = requestAnimationFrame(animate);
-        const dataInterval = setInterval(fetchData, 30000);
+        const dataInterval = setInterval(() => { if (!document.hidden) fetchData(); }, 30000);
 
         return () => {
             cancelAnimationFrame(animRef.current);

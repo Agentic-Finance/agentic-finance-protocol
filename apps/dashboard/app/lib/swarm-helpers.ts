@@ -87,6 +87,7 @@ export async function getSwarmStats() {
     a2aStats,
     intelCount,
     auditCount,
+    feeResult,
   ] = await Promise.all([
     prisma.swarmSession.count(),
     prisma.swarmSession.count({ where: { status: 'ACTIVE' } }),
@@ -100,6 +101,15 @@ export async function getSwarmStats() {
     }),
     prisma.intelSubmission.count(),
     prisma.auditEvent.count(),
+    // Platform fees from AgentJobs linked to swarm streams
+    prisma.agentJob.aggregate({
+      where: {
+        StreamJob: {
+          swarmStream: { isNot: null },
+        },
+      },
+      _sum: { platformFee: true },
+    }),
   ]);
 
   return {
@@ -113,5 +123,6 @@ export async function getSwarmStats() {
     a2aCount: a2aStats._count || 0,
     intelCount,
     auditCount,
+    totalFees: feeResult._sum.platformFee || 0,
   };
 }

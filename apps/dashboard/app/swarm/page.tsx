@@ -23,6 +23,7 @@ interface Stats {
     a2aCount: number;
     totalEscrowLocked: number;
     totalReleased: number;
+    totalFees: number;
 }
 
 const tabs: { id: TabId; label: string; icon: string; color: string; desc: string }[] = [
@@ -112,6 +113,13 @@ export default function SwarmPage() {
             </svg>
           ),
         },
+        { label: 'Fees Earned', value: stats ? `$${(stats.totalFees || 0).toLocaleString()}` : '-', color: '#06b6d4', sub: '5% platform fee',
+          icon: (
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth={1.5} opacity={0.4}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ),
+        },
     ];
 
     return (
@@ -139,7 +147,7 @@ export default function SwarmPage() {
                 </div>
 
                 {/* Stat Cards */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
                     {statCards.map((card) => (
                         <div key={card.label}
                             className="relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all"

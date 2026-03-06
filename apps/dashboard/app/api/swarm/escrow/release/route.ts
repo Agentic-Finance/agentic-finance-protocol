@@ -7,6 +7,7 @@
 import prisma from '../../../../lib/prisma';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 import { logAuditEvent } from '@/app/lib/audit-types';
+import { notify } from '@/app/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,6 +80,24 @@ export async function POST(req: Request) {
       txHash,
       severity: 'SUCCESS',
     });
+
+    // Notify agent about escrow release
+    notify({
+      wallet: agentWallet,
+      type: 'swarm:released',
+      title: 'Escrow Released',
+      message: `$${amount} released from "${swarm.name}" — Total: $${newReleased}/$${swarm.totalLocked}`,
+    }).catch(() => {});
+
+    // If fully distributed, notify client
+    if (allDistributed) {
+      notify({
+        wallet: swarm.clientWallet,
+        type: 'swarm:settled',
+        title: 'Swarm Settled',
+        message: `All $${swarm.totalLocked} distributed for "${swarm.name}"`,
+      }).catch(() => {});
+    }
 
     return apiSuccess({
       released: amount,

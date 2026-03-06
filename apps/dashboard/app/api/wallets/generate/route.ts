@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { generateWallet } from '../../../lib/wallet-crypto';
+import { notify } from '../../../lib/notify';
 
 const prisma = new PrismaClient();
 
@@ -54,6 +55,14 @@ export async function POST(request: Request) {
                 createdAt: true,
             },
         });
+
+        // Notify about new wallet
+        notify({
+            wallet: address,
+            type: 'wallet:generated',
+            title: 'Wallet Generated',
+            message: `New embedded wallet: ${address.slice(0, 10)}... \u2014 Label: ${label}`,
+        }).catch(() => {});
 
         return NextResponse.json({
             success: true,

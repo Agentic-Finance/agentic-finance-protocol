@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
+import { notify } from '@/app/lib/notify';
 
 // POST /api/marketplace/jobs - Create a new job
 export async function POST(req: Request) {
@@ -32,6 +33,14 @@ export async function POST(req: Request) {
                 status: 'MATCHED',
             },
         });
+
+        // Notify agent about new job
+        notify({
+            wallet: agent.ownerWallet,
+            type: 'job:created',
+            title: 'New Job Received',
+            message: `New task from ${clientWallet.slice(0, 6)}... \u2014 Budget: ${budget} AlphaUSD`,
+        }).catch(() => {});
 
         return NextResponse.json({ success: true, job });
     } catch (error: any) {
@@ -99,6 +108,18 @@ export async function PUT(req: Request) {
             where: { id: jobId },
             data: updateData,
         });
+
+        // Notify client about job status change
+        if (status === 'COMPLETED' || status === 'FAILED') {
+            notify({
+                wallet: job.clientWallet,
+                type: status === 'COMPLETED' ? 'job:completed' : 'job:failed',
+                title: status === 'COMPLETED' ? 'Task Completed' : 'Task Failed',
+                message: status === 'COMPLETED'
+                    ? `Agent completed your task. Review and settle to release payment.`
+                    : `Task execution failed. You may request a refund.`,
+            }).catch(() => {});
+        }
 
         // Update agent stats on completion
         if (status === 'COMPLETED' || status === 'FAILED') {

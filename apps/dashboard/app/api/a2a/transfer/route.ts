@@ -8,6 +8,7 @@
 import prisma from '../../../lib/prisma';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 import { logAuditEvent } from '@/app/lib/audit-types';
+import { notify } from '@/app/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,14 @@ export async function POST(req: Request) {
       txHash,
       severity: 'INFO',
     });
+
+    // Notify receiver about incoming transfer
+    notify({
+      wallet: receiverWallet,
+      type: 'a2a:transfer',
+      title: 'A2A Transfer Received',
+      message: `$${amount} ${token} from ${senderName !== 'Unknown Agent' ? senderName : senderWallet.slice(0, 8) + '...'}${reason ? ` — ${reason}` : ''}`,
+    }).catch(() => {});
 
     return apiSuccess({ transfer }, 201);
   } catch (error: any) {

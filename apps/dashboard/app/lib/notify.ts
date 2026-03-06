@@ -1,7 +1,7 @@
 /**
  * Notification Service - Multi-Channel Notification Dispatch
  *
- * Fires on every stream event:
+ * Fires on ALL user-facing events across the platform:
  *   1. Save to PostgreSQL (Notification model)
  *   2. Push via SSE event bus (POST to orchestrator)
  *   3. Webhook callback (if agent has webhookUrl)
@@ -15,13 +15,55 @@ import prisma from './prisma';
 // ── Types ────────────────────────────────────────────────────
 
 export type NotificationType =
+  // Stream
   | 'stream:created'
   | 'stream:milestone_submitted'
   | 'stream:milestone_approved'
   | 'stream:milestone_rejected'
   | 'stream:completed'
   | 'stream:cancelled'
-  | 'stream:timeout';
+  | 'stream:timeout'
+  // Marketplace Jobs
+  | 'job:created'
+  | 'job:executing'
+  | 'job:completed'
+  | 'job:failed'
+  // Escrow / Settlement
+  | 'escrow:locked'
+  | 'escrow:settled'
+  | 'escrow:refunded'
+  | 'escrow:disputed'
+  // Fiat On-Ramp
+  | 'fiat:checkout'
+  | 'fiat:completed'
+  | 'fiat:failed'
+  // Swarm
+  | 'swarm:created'
+  | 'swarm:escrow_locked'
+  | 'swarm:released'
+  | 'swarm:settled'
+  // A2A Micropayments
+  | 'a2a:transfer'
+  // Intelligence Market
+  | 'intel:listed'
+  // Payroll
+  | 'payroll:recorded'
+  | 'payroll:rule_triggered'
+  // Wallet
+  | 'wallet:generated'
+  // Reviews
+  | 'review:received'
+  // Agent Registration
+  | 'agent:registered';
+
+export type NotificationCategory =
+  | 'stream' | 'job' | 'escrow' | 'fiat' | 'swarm'
+  | 'a2a' | 'intel' | 'payroll' | 'wallet' | 'review' | 'agent';
+
+/** Extract category prefix from notification type */
+export function getCategoryFromType(type: string): NotificationCategory {
+  return (type.split(':')[0] || 'stream') as NotificationCategory;
+}
 
 export interface NotifyPayload {
   wallet: string;
@@ -70,7 +112,7 @@ export async function notify(payload: NotifyPayload): Promise<string | null> {
       );
     }
 
-    console.log(`[notify] 🔔 ${type} → ${wallet.slice(0, 8)}... "${title}"`);
+    console.log(`[notify] \u{1F514} ${type} \u2192 ${wallet.slice(0, 8)}... "${title}"`);
     return notification.id;
   } catch (error: any) {
     console.error('[notify] Failed to create notification:', error.message);

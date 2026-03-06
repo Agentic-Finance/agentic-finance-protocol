@@ -7,6 +7,7 @@
 import prisma from '../../../../lib/prisma';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 import { logAuditEvent } from '@/app/lib/audit-types';
+import { notify } from '@/app/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,14 @@ export async function POST(req: Request) {
       txHash: escrowTxHash,
       severity: 'SUCCESS',
     });
+
+    // Notify client about escrow lock
+    notify({
+      wallet: swarm.clientWallet,
+      type: 'swarm:escrow_locked',
+      title: 'Swarm Escrow Locked',
+      message: `$${totalLocked || swarm.totalBudget} locked for "${swarm.name}"`,
+    }).catch(() => {});
 
     return apiSuccess({ swarm: updated });
   } catch (error: any) {

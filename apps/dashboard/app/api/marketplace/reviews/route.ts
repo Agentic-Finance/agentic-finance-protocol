@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
+import { notify } from '@/app/lib/notify';
 
 // POST /api/marketplace/reviews - Submit a review
 export async function POST(req: Request) {
@@ -49,6 +50,16 @@ export async function POST(req: Request) {
                     ratingCount: newCount,
                 },
             });
+        }
+
+        // Notify agent about the review
+        if (agent) {
+            notify({
+                wallet: agent.ownerWallet,
+                type: 'review:received',
+                title: `${rating}\u2B50 Review Received`,
+                message: comment ? `"${comment.slice(0, 80)}${comment.length > 80 ? '...' : ''}"` : `You received a ${rating}-star review`,
+            }).catch(() => {});
         }
 
         return NextResponse.json({ success: true, review });

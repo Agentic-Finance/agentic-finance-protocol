@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from "@/app/lib/prisma";
+import { notify } from '@/app/lib/notify';
 
 /**
  * POST /api/marketplace/settle
@@ -65,6 +66,14 @@ export async function POST(req: Request) {
                     });
                 }
 
+                // Notify client about escrow lock
+                notify({
+                    wallet: agentJob.clientWallet,
+                    type: 'escrow:locked',
+                    title: 'Escrow Locked',
+                    message: `$${agentJob.budget} locked in NexusV2 escrow for job #${jobId.slice(0, 8)}...`,
+                }).catch(() => {});
+
                 return NextResponse.json({
                     success: true,
                     message: 'Escrow locked on-chain',
@@ -105,6 +114,14 @@ export async function POST(req: Request) {
                 // Sync TimeVaultPayload
                 await syncTimeVaultStatus(agentJob, 'SETTLED');
 
+                // Notify both parties about settlement
+                notify({
+                    wallet: agentJob.clientWallet,
+                    type: 'escrow:settled',
+                    title: 'Payment Settled',
+                    message: `$${agentJob.budget} released to agent. TX: ${(txHash || '').slice(0, 10)}...`,
+                }).catch(() => {});
+
                 return NextResponse.json({ success: true, message: 'Job settled on-chain' });
             }
 
@@ -121,6 +138,14 @@ export async function POST(req: Request) {
                 // Sync TimeVaultPayload
                 await syncTimeVaultStatus(agentJob, 'REFUNDED');
 
+                // Notify client about refund
+                notify({
+                    wallet: agentJob.clientWallet,
+                    type: 'escrow:refunded',
+                    title: 'Refund Processed',
+                    message: `$${agentJob.budget} refunded to your wallet. TX: ${(txHash || '').slice(0, 10)}...`,
+                }).catch(() => {});
+
                 return NextResponse.json({ success: true, message: 'Job refunded on-chain' });
             }
 
@@ -136,6 +161,14 @@ export async function POST(req: Request) {
 
                 // Sync TimeVaultPayload
                 await syncTimeVaultStatus(agentJob, 'DISPUTED');
+
+                // Notify client about dispute
+                notify({
+                    wallet: agentJob.clientWallet,
+                    type: 'escrow:disputed',
+                    title: 'Dispute Raised',
+                    message: `Job #${jobId.slice(0, 8)}... disputed: ${reason || 'No reason provided'}`,
+                }).catch(() => {});
 
                 return NextResponse.json({ success: true, message: 'Job disputed' });
             }

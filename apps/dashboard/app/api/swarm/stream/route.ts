@@ -8,6 +8,7 @@
 import prisma from '../../../lib/prisma';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 import { logAuditEvent } from '@/app/lib/audit-types';
+import { notify } from '@/app/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,6 +104,14 @@ export async function POST(req: Request) {
       metadata: { agentCount: agents.length, totalBudget },
       severity: 'SUCCESS',
     });
+
+    // Notify client about swarm creation
+    notify({
+      wallet: clientWallet,
+      type: 'swarm:created',
+      title: 'Swarm Created',
+      message: `"${name}" — ${agents.length} agents, $${totalBudget} budget`,
+    }).catch(() => {});
 
     return apiSuccess({ swarm: result.swarm, streams: result.swarmStreams }, 201);
   } catch (error: any) {

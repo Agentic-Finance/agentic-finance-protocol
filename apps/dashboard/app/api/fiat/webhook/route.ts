@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { transferStablecoin, depositToShieldVault, FIAT_CONFIG } from '../../../lib/fiat-onramp';
+import { notify } from '../../../lib/notify';
 import crypto from 'crypto';
 
 const prisma = new PrismaClient();
@@ -198,12 +199,28 @@ export async function POST(req: NextRequest) {
 
             console.log(`[fiat/webhook] Transferred ${cryptoToSend} ${FIAT_CONFIG.defaultToken} to ${payment.userWallet} - tx: ${txHash}`);
           }
+
+          // Notify user — payment confirmed
+          notify({
+            wallet: payment.userWallet,
+            type: 'fiat:completed',
+            title: 'Payment Confirmed',
+            message: `${cryptoToSend} ${FIAT_CONFIG.defaultToken} ${isShielded ? 'deposited to Shield Vault' : 'sent to your wallet'}`,
+          }).catch(() => {});
         } catch (transferErr: any) {
           console.error(`[fiat/webhook] Transfer failed:`, transferErr);
           await prisma.fiatPayment.update({
             where: { id: payment.id },
             data: { status: 'FAILED' },
           });
+
+          // Notify user — transfer failed
+          notify({
+            wallet: payment.userWallet,
+            type: 'fiat:failed',
+            title: 'Transfer Failed',
+            message: `Crypto transfer failed after payment — our team is investigating`,
+          }).catch(() => {});
         }
 
         break;
@@ -219,6 +236,19 @@ export async function POST(req: NextRequest) {
         });
 
         console.log(`[fiat/webhook] Payment failed: ${transactionId}`);
+
+        // Notify user — payment failed
+        const failedPayment = await prisma.fiatPayment.findFirst({
+          where: { paddleTransactionId: transactionId },
+        });
+        if (failedPayment) {
+          notify({
+            wallet: failedPayment.userWallet,
+            type: 'fiat:failed',
+            title: 'Payment Failed',
+            message: `Card payment failed — please retry with a different payment method`,
+          }).catch(() => {});
+        }
         break;
       }
 

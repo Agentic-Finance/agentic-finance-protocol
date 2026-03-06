@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app/lib/constants';
 import { verifyTxOnChain } from '@/app/lib/verify-tx';
 import { apiError, logAndReturn } from '@/app/lib/api-response';
+import { notify } from '@/app/lib/notify';
 
 const AGENT_SERVICE_URL = process.env.AGENT_SERVICE_URL || 'http://localhost:3001';
 
@@ -235,6 +236,16 @@ export async function POST(req: Request) {
                 responseTime: Math.round((agent.responseTime * agent.totalJobs + executionTime) / newTotal),
             },
         });
+
+        // Notify client about execution result
+        notify({
+            wallet: job.clientWallet,
+            type: finalStatus === 'COMPLETED' ? 'job:completed' : 'job:failed',
+            title: finalStatus === 'COMPLETED' ? 'Task Completed' : 'Task Failed',
+            message: finalStatus === 'COMPLETED'
+                ? `${job.agent.name} completed your task in ${executionTime}s`
+                : `Execution failed: ${(result as any)?.error || 'Unknown error'}`,
+        }).catch(() => {});
 
         return NextResponse.json({
             success: finalStatus === 'COMPLETED',

@@ -1,5 +1,6 @@
 import { apiSuccess, apiError, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
+import { notify } from "@/app/lib/notify";
 
 export async function GET() {
     try {
@@ -85,6 +86,16 @@ export async function POST(req: Request) {
                     data: { status: 'DISPUTED', disputeReason: reason || 'Employer dispute' }
                 });
             }
+            // Notify about dispute
+            const disputedItem = await prisma.timeVaultPayload.findUnique({ where: { id: String(id) } });
+            if (disputedItem) {
+                notify({
+                    wallet: disputedItem.recipientWallet,
+                    type: 'escrow:disputed',
+                    title: 'Escrow Disputed',
+                    message: `Dispute raised: ${reason || 'No reason provided'} — $${disputedItem.amount}`,
+                }).catch(() => {});
+            }
             return apiSuccess({ message: 'Transaction disputed successfully.' });
         }
 
@@ -101,6 +112,16 @@ export async function POST(req: Request) {
                     data: { status: 'SETTLED', settleTxHash: txHash || null }
                 });
             }
+            // Notify about settlement
+            const settledItem = await prisma.timeVaultPayload.findUnique({ where: { id: String(id) } });
+            if (settledItem) {
+                notify({
+                    wallet: settledItem.recipientWallet,
+                    type: 'escrow:settled',
+                    title: 'Escrow Settled',
+                    message: `$${settledItem.amount} ${settledItem.token || 'AlphaUSD'} released to your wallet`,
+                }).catch(() => {});
+            }
             return apiSuccess({ message: 'Funds released to Agent.' });
         }
 
@@ -116,6 +137,16 @@ export async function POST(req: Request) {
                     where: { id: agentJobId },
                     data: { status: 'REFUNDED', settleTxHash: txHash || null }
                 });
+            }
+            // Notify about refund
+            const refundedItem = await prisma.timeVaultPayload.findUnique({ where: { id: String(id) } });
+            if (refundedItem) {
+                notify({
+                    wallet: refundedItem.recipientWallet,
+                    type: 'escrow:refunded',
+                    title: 'Escrow Refunded',
+                    message: `$${refundedItem.amount} ${refundedItem.token || 'AlphaUSD'} refunded to company`,
+                }).catch(() => {});
             }
             return apiSuccess({ message: 'Funds refunded to Company.' });
         }

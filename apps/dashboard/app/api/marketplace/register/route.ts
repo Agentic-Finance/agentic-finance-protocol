@@ -10,6 +10,7 @@
 
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
+import { notify } from '@/app/lib/notify';
 
 export async function POST(req: Request) {
   try {
@@ -128,6 +129,14 @@ export async function POST(req: Request) {
     });
 
     console.log(`[register] New community agent: ${name} (${id}) by ${githubHandle ?? 'unknown'} - webhook: ${webhookUrl}`);
+
+    // Notify agent owner about registration
+    notify({
+      wallet: ownerWallet,
+      type: 'agent:registered',
+      title: 'Agent Registered',
+      message: `${name} is now live on PayPol Marketplace`,
+    }).catch(() => {});
 
     return NextResponse.json({
       success: true,

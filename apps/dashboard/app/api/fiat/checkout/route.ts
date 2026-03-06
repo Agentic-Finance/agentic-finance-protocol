@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { validateCheckoutParams, buildCheckoutMetadata, calculateMarkup, paddleApiRequest, FIAT_CONFIG } from '../../../lib/fiat-onramp';
+import { notify } from '../../../lib/notify';
 
 const prisma = new PrismaClient();
 
@@ -63,6 +64,14 @@ export async function POST(req: NextRequest) {
           status: 'PENDING',
         },
       });
+
+      // Notify user about demo checkout
+      notify({
+        wallet: userWallet,
+        type: 'fiat:checkout',
+        title: 'Checkout Created',
+        message: `$${totalCharge} → ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} (demo mode)`,
+      }).catch(() => {});
 
       return NextResponse.json({
         transactionId: mockTransactionId,
@@ -125,6 +134,14 @@ export async function POST(req: NextRequest) {
         status: 'PENDING',
       },
     });
+
+    // Notify user about checkout
+    notify({
+      wallet: userWallet,
+      type: 'fiat:checkout',
+      title: 'Checkout Created',
+      message: `$${totalCharge} → ${pricing.cryptoAmount} ${FIAT_CONFIG.defaultToken} — Complete payment to receive funds`,
+    }).catch(() => {});
 
     // Return transaction ID for Paddle.js overlay checkout
     return NextResponse.json({

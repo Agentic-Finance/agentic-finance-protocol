@@ -8,6 +8,7 @@ import prisma from '../../../lib/prisma';
 import { apiSuccess, apiError, logAndReturn } from '@/app/lib/api-response';
 import { getPoseidon } from '@/app/lib/poseidon-cache';
 import { logAuditEvent } from '@/app/lib/audit-types';
+import { notify } from '@/app/lib/notify';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,6 +95,19 @@ export async function POST(req: Request) {
       metadata: { category, price, dataHash: dataHash.slice(0, 16) },
       severity: 'INFO',
     });
+
+    // Notify source agent about intel listing
+    if (sourceAgentId) {
+      const sourceAgent = await prisma.marketplaceAgent.findUnique({ where: { id: sourceAgentId } });
+      if (sourceAgent) {
+        notify({
+          wallet: sourceAgent.ownerWallet,
+          type: 'intel:listed',
+          title: 'Intel Listed',
+          message: `"${title}" — Price: $${price} — Category: ${category}`,
+        }).catch(() => {});
+      }
+    }
 
     return apiSuccess({ submission }, 201);
   } catch (error: any) {

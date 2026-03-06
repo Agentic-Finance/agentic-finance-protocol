@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import NotificationBell from './NotificationBell';
 
 const navLinks = [
     { href: '/?app=1', label: 'Dashboard', icon: (
@@ -40,6 +41,27 @@ const navLinks = [
 
 export default function SubPageNav() {
     const pathname = usePathname();
+    const [walletAddress, setWalletAddress] = useState<string | null>(null);
+
+    // Auto-detect wallet from MetaMask
+    useEffect(() => {
+        const checkWallet = async () => {
+            if (typeof window !== 'undefined' && (window as any).ethereum) {
+                try {
+                    const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
+                    if (accounts?.[0]) setWalletAddress(accounts[0]);
+                } catch { /* silent */ }
+            }
+        };
+        checkWallet();
+
+        // Listen for account changes
+        if (typeof window !== 'undefined' && (window as any).ethereum) {
+            (window as any).ethereum.on?.('accountsChanged', (accs: string[]) => {
+                setWalletAddress(accs?.[0] || null);
+            });
+        }
+    }, []);
 
     return (
         <nav className="border-b border-white/[0.08] pp-glass sticky top-0 z-50" aria-label="Sub-page navigation">
@@ -70,8 +92,16 @@ export default function SubPageNav() {
                     })}
                 </div>
 
-                {/* Spacer for alignment */}
-                <div className="w-[120px] hidden sm:block" />
+                {/* Notification Bell + Wallet indicator */}
+                <div className="flex items-center gap-2 min-w-[120px] justify-end">
+                    <NotificationBell walletAddress={walletAddress} />
+                    {walletAddress && (
+                        <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08]">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-500 shadow-[0_0_6px_rgba(99,102,241,0.4)]"></div>
+                            <span className="text-[10px] font-mono text-slate-400">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </nav>
     );

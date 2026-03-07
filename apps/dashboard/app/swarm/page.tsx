@@ -11,22 +11,6 @@ const IntelMarketTab = dynamic(() => import('../components/swarm/IntelMarketTab'
 const AuditTimelineTab = dynamic(() => import('../components/swarm/AuditTimelineTab'), { ssr: false });
 const SwarmEscrowTab = dynamic(() => import('../components/swarm/SwarmEscrowTab'), { ssr: false });
 
-// 3D Topology Visualization (heavy — lazy loaded)
-const SwarmTopology3D = dynamic(() => import('../components/swarm/SwarmTopology3D'), {
-    ssr: false,
-    loading: () => (
-        <div className="w-full h-[420px] rounded-2xl border border-white/[0.06] overflow-hidden relative"
-            style={{ background: 'radial-gradient(ellipse at center, rgba(17,27,46,1) 0%, rgba(8,12,21,1) 100%)' }}>
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="text-4xl mb-3 animate-pulse">{'\u{1F41D}'}</div>
-                    <p className="text-sm text-slate-500">Loading 3D Swarm Topology...</p>
-                </div>
-            </div>
-        </div>
-    ),
-});
-
 type TabId = 'streams' | 'a2a' | 'intel' | 'audit' | 'escrow';
 
 interface Stats {
@@ -74,7 +58,6 @@ function SkeletonLoader() {
 export default function SwarmPage() {
     const [activeTab, setActiveTab] = useState<TabId>('streams');
     const [stats, setStats] = useState<Stats | null>(null);
-    const [show3D, setShow3D] = useState(true);
 
     const fetchStats = useCallback(async () => {
         try {
@@ -145,44 +128,23 @@ export default function SwarmPage() {
 
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
                 {/* Header */}
-                <div className="mb-6">
-                    <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center border border-amber-500/25 text-xl shadow-[0_0_15px_rgba(245,158,11,0.15)]">
-                                {'\u{1F41D}'}
-                            </div>
-                            <div>
-                                <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
-                                    <span className="bg-gradient-to-r from-amber-400 via-rose-400 to-violet-400 bg-clip-text text-transparent">
-                                        Agent Swarm Hub
-                                    </span>
-                                </h1>
-                            </div>
+                <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center border border-amber-500/25 text-xl shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+                            {'\u{1F41D}'}
                         </div>
-                        {/* Toggle 3D Viz */}
-                        <button
-                            onClick={() => setShow3D(!show3D)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border ${
-                                show3D
-                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                                    : 'bg-white/[0.04] border-white/[0.08] text-slate-500 hover:text-white'
-                            }`}
-                        >
-                            <span>{show3D ? '\u{1F30D}' : '\u{1F4CA}'}</span>
-                            {show3D ? '3D Topology' : 'Show 3D'}
-                        </button>
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                                <span className="bg-gradient-to-r from-amber-400 via-rose-400 to-violet-400 bg-clip-text text-transparent">
+                                    Agent Swarm Hub
+                                </span>
+                            </h1>
+                        </div>
                     </div>
                     <p className="text-[13px] text-slate-500 max-w-2xl leading-relaxed">
                         Multi-agent coordination, autonomous micropayments, ZK intelligence markets, and real-time audit trails — the financial backbone for AI agent swarms.
                     </p>
                 </div>
-
-                {/* ── 3D Swarm Topology Visualization ── */}
-                {show3D && (
-                    <div className="mb-8">
-                        <SwarmTopology3D stats={stats} onSelectTab={(tab) => setActiveTab(tab as TabId)} />
-                    </div>
-                )}
 
                 {/* Stat Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">

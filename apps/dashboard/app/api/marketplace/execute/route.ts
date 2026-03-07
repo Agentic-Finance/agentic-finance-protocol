@@ -30,8 +30,8 @@ export async function POST(req: Request) {
             return apiError('Rate limit exceeded. Try again later.', 429);
         }
 
-        // Auth check (optional — validates if key provided)
-        const auth = await validateApiKey(req, 'execute');
+        // Auth check (optional — validates if API key provided, allows browser calls without key)
+        const auth = await validateApiKey(req);
         if (!auth.valid && auth.response) return auth.response;
 
         const { jobId } = await req.json();

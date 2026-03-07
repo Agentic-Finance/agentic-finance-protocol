@@ -113,6 +113,9 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const handleNoteChange = useCallback((indexId: number, newNote: string) =>
         setCardNotes(prev => ({ ...prev, [indexId]: newNote })), []);
 
+    const handleWalletAssign = useCallback((indexId: number, wallet: string) =>
+        setLiveIntents(prev => prev.map(i => i.indexId === indexId ? { ...i, wallet } : i)), []);
+
     const resetTerminal = useCallback((preventFocus = false) => {
         marketplace.reset();
         setShowReviewModal(false);
@@ -547,6 +550,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 handleAliasLock={handleAliasLock}
                                 handleAliasKeyDown={handleAliasKeyDown}
                                 handleNoteChange={handleNoteChange}
+                                handleWalletAssign={handleWalletAssign}
                             />
                         )}
 

@@ -14,7 +14,7 @@ const LandingPage = lazy(() => import('./components/LandingPage'));
 const GatewayScreen = lazy(() => import('./components/GatewayScreen'));
 const OmniTerminal = lazy(() => import('./components/OmniTerminal'));
 const NetworkChart = lazy(() => import('./components/NetworkChart'));
-const SwarmUniverse = lazy(() => import('./components/SwarmUniverse'));
+const ProtocolDashboard = lazy(() => import('./components/ProtocolDashboard'));
 const Boardroom = lazy(() => import('./components/Boardroom'));
 const ActiveAgents = lazy(() => import('./components/ActiveAgents'));
 const LedgerHistory = lazy(() => import('./components/LedgerHistory'));
@@ -693,7 +693,7 @@ export default function Dashboard() {
                         <div className="absolute bottom-0 right-0 w-[40%] h-32 bg-amber-500/8 blur-[80px] pointer-events-none"></div>
                         <div className="relative z-10 w-full">
                             <Suspense fallback={<ChartSkeleton />}>
-                                <SwarmUniverse />
+                                <ProtocolDashboard />
                             </Suspense>
                         </div>
                     </div>

@@ -445,7 +445,10 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                 body: JSON.stringify({ jobId: activeJob.id }),
                 signal: executionAbortRef.current.signal,
             });
-            if (!res.ok) throw new Error('Agent execution failed');
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || errData.message || `Agent execution failed (${res.status})`);
+            }
 
             const data = await res.json();
             const parsed = parseAgentResult(data.result);

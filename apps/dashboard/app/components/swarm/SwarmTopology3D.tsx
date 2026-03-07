@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useMemo, useState, useCallback, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import React, { useRef, useMemo, useState, useCallback, useEffect, Suspense } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Billboard, Text, Float } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -168,7 +168,6 @@ function GlowSphere({
             anchorY="bottom"
             outlineWidth={0.02}
             outlineColor="#000000"
-            font="/fonts/inter-bold.woff"
           >
             {emoji ? `${emoji} ` : ''}{label}
           </Text>
@@ -663,26 +662,6 @@ function Legend() {
 // ── Main Component ─────────────────────────────────────────
 
 export default function SwarmTopology3D({ stats, onSelectTab }: Props) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return (
-      <div className="w-full h-[420px] rounded-2xl border border-white/[0.06] overflow-hidden relative"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(17,27,46,1) 0%, rgba(8,12,21,1) 100%)' }}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-4xl mb-3 animate-pulse">🐝</div>
-            <p className="text-sm text-slate-500">Loading Swarm Topology...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full h-[420px] rounded-2xl border border-white/[0.06] overflow-hidden relative"
       style={{ background: 'radial-gradient(ellipse at center, rgba(17,27,46,1) 0%, rgba(8,12,21,1) 100%)' }}>
@@ -704,7 +683,9 @@ export default function SwarmTopology3D({ stats, onSelectTab }: Props) {
         gl={{ antialias: true, alpha: false }}
         style={{ background: 'transparent' }}
       >
-        <SwarmScene stats={stats} onNodeClick={onSelectTab} />
+        <Suspense fallback={null}>
+          <SwarmScene stats={stats} onNodeClick={onSelectTab} />
+        </Suspense>
       </Canvas>
 
       <InfoOverlay stats={stats} />

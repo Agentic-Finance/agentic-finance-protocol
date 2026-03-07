@@ -19,18 +19,19 @@ function useLiveMetrics(): LiveMetrics | null {
 
   useEffect(() => {
     Promise.allSettled([
-      fetch('/api/tvl').then(r => r.json()),
+      fetch('/api/live/tvl').then(r => r.json()),
       fetch('/api/proof/stats').then(r => r.json()),
       fetch('/api/marketplace/agents').then(r => r.json()),
     ]).then(([tvlR, proofR, agentsR]) => {
       const tvl = tvlR.status === 'fulfilled' ? (tvlR as PromiseFulfilledResult<any>).value : {};
       const proof = proofR.status === 'fulfilled' ? (proofR as PromiseFulfilledResult<any>).value : {};
-      const agents = agentsR.status === 'fulfilled' ? (agentsR as PromiseFulfilledResult<any>).value : {};
+      const agentsData = agentsR.status === 'fulfilled' ? (agentsR as PromiseFulfilledResult<any>).value : {};
+      const agentsList = agentsData.agents || [];
 
       setMetrics({
-        tvl: tvl.totalUSD ? `$${Number(tvl.totalUSD).toLocaleString()}` : '$--',
+        tvl: tvl.total != null ? `$${Number(tvl.total).toLocaleString()}` : '$--',
         totalJobs: proof.totalCommitments ?? 0,
-        totalAgents: Array.isArray(agents) ? agents.length : 32,
+        totalAgents: agentsList.length || 32,
         proofCommitments: proof.totalCommitments ?? 0,
         proofMatchRate: proof.matchRate ?? '--',
         contracts: 9,
@@ -107,7 +108,7 @@ export default function ProtocolPage() {
           {/* Live Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
             <MetricCard label="Smart Contracts" value="9" sub="Verified on Tempo L1" />
-            <MetricCard label="AI Agents" value="32+" sub="Native agents live" />
+            <MetricCard label="AI Agents" value={metrics ? `${metrics.totalAgents}+` : '--'} sub="Registered agents live" />
             <MetricCard label="AI Proofs" value={metrics?.proofCommitments?.toString() ?? '--'} sub="On-chain commitments" />
             <MetricCard label="SDK Frameworks" value="7+" sub="OpenAI, Claude, LangChain, CrewAI..." />
           </div>
@@ -442,11 +443,12 @@ const CONTRACTS = [
   { name: 'PayPolNexusV2', purpose: 'A2A Escrow + Dispute Resolution', addr: '0x6A467Cd...52Fab' },
   { name: 'PayPolStreamV1', purpose: 'Milestone-based Payment Streaming', addr: '0x4fE37c4...36C' },
   { name: 'AIProofRegistry', purpose: 'AI Execution Verification', addr: '0x8fDB8E8...014' },
-  { name: 'ReputationRegistry', purpose: 'Agent Scoring (0-10K composite)', addr: '0x9332c1B...4D0' },
-  { name: 'SecurityDepositVault', purpose: 'Agent Staking + Tier System', addr: '0x8C1d4da...A80' },
+  { name: 'PlonkVerifierV2', purpose: 'On-chain ZK Proof Verifier', addr: '0x9FB90e9...50B' },
   { name: 'PayPolShieldVaultV2', purpose: 'ZK-SNARK Shielded Payments', addr: '0x3B4b479...055' },
   { name: 'PayPolMultisendV2', purpose: 'Batch Payroll Distribution', addr: '0x25f4d3f...575' },
-  { name: 'PlonkVerifierV2', purpose: 'On-chain ZK Proof Verifier', addr: '0x9FB90e9...50B' },
+  { name: 'ReputationRegistry', purpose: 'Agent Scoring (0-10K composite)', addr: '0x9332c1B...4D0' },
+  { name: 'SecurityDepositVault', purpose: 'Agent Staking + Tier System', addr: '0x8C1d4da...A80' },
+  { name: 'AlphaUSD (TIP-20)', purpose: 'Native Stablecoin Token', addr: '0x20c000...00001' },
 ];
 
 // ── Components ────────────────────────────────────────────

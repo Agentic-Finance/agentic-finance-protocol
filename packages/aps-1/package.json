@@ -1,6 +1,6 @@
 {
   "name": "@paypol-protocol/aps-1",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "APS-1: Agent Payment Standard — The open protocol for AI agent payments, escrow, and verification",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

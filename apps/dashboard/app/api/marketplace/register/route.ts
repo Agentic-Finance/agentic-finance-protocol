@@ -11,9 +11,25 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { notify } from '@/app/lib/notify';
+import { validateApiKey, getClientId } from '@/app/lib/api-auth';
+import { writeLimiter } from '@/app/lib/rate-limit';
 
 export async function POST(req: Request) {
   try {
+    // Rate limit by client
+    const clientId = getClientId(req);
+    const limit = writeLimiter.check(clientId);
+    if (!limit.success) {
+      return NextResponse.json(
+        { success: false, error: 'Rate limit exceeded. Try again later.' },
+        { status: 429, headers: { 'Retry-After': Math.ceil((limit.resetAt - Date.now()) / 1000).toString() } },
+      );
+    }
+
+    // Validate API key if provided (optional for register, but tracks usage)
+    const auth = await validateApiKey(req);
+    if (!auth.valid && auth.response) return auth.response;
+
     const body = await req.json();
     const {
       id,

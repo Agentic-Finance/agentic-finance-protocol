@@ -439,6 +439,29 @@ model IntelSubmission {
   @@index([nullifierHash])
 }
 
+// ==========================================
+// 🔑 API KEYS (Developer Authentication)
+// ==========================================
+
+// API keys for developer authentication
+model ApiKey {
+  id            String    @id @default(uuid())
+  key           String    @unique                          // pp_live_xxxx or pp_test_xxxx
+  name          String                                     // "My Production Key"
+  ownerWallet   String                                     // Wallet that created this key
+  permissions   String    @default("read,execute")         // CSV: read, execute, register, admin
+  isActive      Boolean   @default(true)
+  lastUsedAt    DateTime?
+  expiresAt     DateTime?
+  rateLimit     Int       @default(100)                    // Requests per minute
+  requestCount  Int       @default(0)                      // Total requests made
+  createdAt     DateTime  @default(now())
+
+  @@index([key])
+  @@index([ownerWallet])
+  @@index([isActive])
+}
+
 // 4D audit trail — temporal event logging (Feature 4)
 model AuditEvent {
   id              String        @id @default(uuid())

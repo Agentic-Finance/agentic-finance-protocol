@@ -26,6 +26,7 @@ import {
 // ══════════════════════════════════════════════════════
 
 interface AgentFormData {
+    id: string;
     name: string;
     description: string;
     category: string;
@@ -321,6 +322,7 @@ function CopyButton({ text }: { text: string }) {
 
 export default function DevelopersPage() {
     const [form, setForm] = useState<AgentFormData>({
+        id: '',
         name: '',
         description: '',
         category: 'analytics',
@@ -337,18 +339,28 @@ export default function DevelopersPage() {
     const [stats, setStats] = useState<MarketplaceStats>({ totalAgents: 0, totalJobs: 0, totalEarnings: 0 });
     const [activeTemplate, setActiveTemplate] = useState(0);
 
-    // Fetch marketplace stats
+    // Fetch marketplace stats (real data from DB)
     useEffect(() => {
         (async () => {
             try {
-                const res = await fetch('/api/marketplace/agents');
-                const data = await res.json();
-                const agents = data.agents || [];
+                const [agentsRes, earningsRes] = await Promise.all([
+                    fetch('/api/marketplace/agents'),
+                    fetch('/api/marketplace/earnings'),
+                ]);
+                const agentsData = await agentsRes.json();
+                const agents = agentsData.agents || [];
                 const totalJobs = agents.reduce((s: number, a: any) => s + (a.totalJobs || 0), 0);
+
+                let totalEarnings = 0;
+                if (earningsRes.ok) {
+                    const earningsData = await earningsRes.json();
+                    totalEarnings = earningsData.totalEarnings ?? 0;
+                }
+
                 setStats({
                     totalAgents: agents.length,
                     totalJobs,
-                    totalEarnings: totalJobs * 68, // average est.
+                    totalEarnings,
                 });
             } catch { /* fallback */ }
         })();
@@ -364,23 +376,23 @@ export default function DevelopersPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    id: form.id,
                     name: form.name,
                     description: form.description,
                     category: form.category,
-                    skills: JSON.stringify(form.skills.split(',').map(s => s.trim()).filter(Boolean)),
-                    basePrice: form.basePrice,
+                    capabilities: form.skills.split(',').map(s => s.trim()).filter(Boolean),
+                    price: parseFloat(form.basePrice) || 5,
                     webhookUrl: form.webhookUrl,
                     ownerWallet: form.ownerWallet,
                     avatarEmoji: form.avatarEmoji || undefined,
-                    source: form.source,
-                    sourceUrl: form.sourceUrl || undefined,
+                    githubHandle: form.sourceUrl ? form.sourceUrl.replace('https://github.com/', '').split('/')[0] : undefined,
                 }),
             });
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Submission failed');
-            setSubmitResult({ ok: true, msg: `Agent "${form.name}" registered successfully!` });
-            setForm(prev => ({ ...prev, name: '', description: '', skills: '', basePrice: '', webhookUrl: '', ownerWallet: '', avatarEmoji: '', sourceUrl: '' }));
+            setSubmitResult({ ok: true, msg: `Agent "${form.name}" registered successfully! ID: ${data.agentId}` });
+            setForm(prev => ({ ...prev, id: '', name: '', description: '', skills: '', basePrice: '', webhookUrl: '', ownerWallet: '', avatarEmoji: '', sourceUrl: '' }));
         } catch (err: any) {
             setSubmitResult({ ok: false, msg: err.message });
         } finally {
@@ -800,8 +812,10 @@ await client.delegateA2A({
                             { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats (commitments, verified, match rate)' },
                             { method: 'GET', path: '/api/proof/verify?id=N', desc: 'Verify a specific AI proof commitment by ID' },
                             { method: 'GET', path: '/api/proof/history', desc: 'Recent proof commitments with pagination' },
-                            { method: 'GET', path: '/api/tvl', desc: 'Total Value Locked across all protocol contracts' },
-                            { method: 'GET', path: '/api/agents/reputation?wallet=0x', desc: 'On-chain reputation score for an agent wallet' },
+                            { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across all protocol contracts' },
+                            { method: 'GET', path: '/api/reputation?wallet=0x', desc: 'On-chain reputation score for an agent wallet' },
+                            { method: 'GET', path: '/api/marketplace/earnings', desc: 'Total platform earnings from completed jobs' },
+                            { method: 'POST', path: '/api/keys', desc: 'Generate a new API key (requires wallet)' },
                         ].map((ep) => (
                             <div key={ep.path} className="flex items-center gap-4 bg-black/20 border border-white/[0.04] rounded-xl px-5 py-3 hover:border-cyan-500/20 transition-all">
                                 <span className={`text-[10px] font-black px-2.5 py-1 rounded-md shrink-0 ${ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{ep.method}</span>
@@ -826,6 +840,21 @@ await client.delegateA2A({
 
                     <form onSubmit={handleSubmit} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {/* Agent ID */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Agent ID *</label>
+                                <input
+                                    type="text"
+                                    value={form.id}
+                                    onChange={e => setForm(p => ({ ...p, id: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }))}
+                                    placeholder="e.g. whale-tracker-pro"
+                                    required
+                                    pattern="[a-z0-9-]+"
+                                    className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-indigo-500/40 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 transition-all font-mono text-[13px]"
+                                />
+                                <p className="text-[10px] text-slate-600">Lowercase, hyphens only. Used as unique identifier.</p>
+                            </div>
+
                             {/* Name */}
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Agent Name *</label>

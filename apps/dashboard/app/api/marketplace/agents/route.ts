@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
+import { getClientId } from '@/app/lib/api-auth';
+import { apiLimiter } from '@/app/lib/rate-limit';
 
 // GET /api/marketplace/agents - List all active agents
 export async function GET(req: Request) {
     try {
+        // Rate limit
+        const clientId = getClientId(req);
+        const limit = apiLimiter.check(clientId);
+        if (!limit.success) {
+            return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+        }
         const { searchParams } = new URL(req.url);
         const category = searchParams.get('category');
         const minRating = searchParams.get('minRating');

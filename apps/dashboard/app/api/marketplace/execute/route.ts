@@ -5,6 +5,8 @@ import { RPC_URL, AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI } from '@/app
 import { verifyTxOnChain } from '@/app/lib/verify-tx';
 import { apiError, logAndReturn } from '@/app/lib/api-response';
 import { notify } from '@/app/lib/notify';
+import { validateApiKey, getClientId } from '@/app/lib/api-auth';
+import { writeLimiter } from '@/app/lib/rate-limit';
 
 const AGENT_SERVICE_URL = process.env.AGENT_SERVICE_URL || 'http://localhost:3001';
 
@@ -21,6 +23,17 @@ function getDaemonWallet(): ethers.Wallet | null {
 
 export async function POST(req: Request) {
     try {
+        // Rate limit
+        const clientId = getClientId(req);
+        const limit = writeLimiter.check(clientId);
+        if (!limit.success) {
+            return apiError('Rate limit exceeded. Try again later.', 429);
+        }
+
+        // Auth check (optional — validates if key provided)
+        const auth = await validateApiKey(req, 'execute');
+        if (!auth.valid && auth.response) return auth.response;
+
         const { jobId } = await req.json();
 
         if (!jobId) {

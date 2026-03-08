@@ -20,6 +20,7 @@ const ActiveAgents = lazy(() => import('./components/ActiveAgents'));
 const LedgerHistory = lazy(() => import('./components/LedgerHistory'));
 const TimeVault = lazy(() => import('./components/TimeVault'));
 const JudgeDashboard = lazy(() => import('./components/JudgeDashboard'));
+const AutoJudgePanel = lazy(() => import('./components/AutoJudgePanel'));
 const EscrowTracker = lazy(() => import('./components/EscrowTracker'));
 const SettlementReceipt = lazy(() => import('./components/SettlementReceipt'));
 
@@ -710,6 +711,10 @@ export default function Dashboard() {
                                 <SettlementReceipt settlements={recentSettlements} settlementRef={settlementRef} />
                             </Suspense>
                         )}
+
+                        <Suspense fallback={<SectionSkeleton />}>
+                            <AutoJudgePanel />
+                        </Suspense>
 
                         <Suspense fallback={<SectionSkeleton />}>
                             <JudgeDashboard />

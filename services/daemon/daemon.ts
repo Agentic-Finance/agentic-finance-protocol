@@ -227,6 +227,7 @@ class PayPolDaemon {
         }
 
         let a2aCycleCounter = 0;
+        let judgeCycleCounter = 0;
 
         while (this.isRunning) {
             try {
@@ -247,6 +248,13 @@ class PayPolDaemon {
                     a2aCycleCounter = 0;
                     await this.processA2ATimeouts();
                     await this.processCompletedJobs();
+                }
+
+                // ═══ Auto-Judge Processing (every ~60s) ═══
+                judgeCycleCounter++;
+                if (judgeCycleCounter >= 12) {
+                    judgeCycleCounter = 0;
+                    await this.processAutoJudge();
                 }
             } catch (error) {
                 console.error("[DAEMON] 🚨 Polling Error:", error);
@@ -653,6 +661,113 @@ class PayPolDaemon {
             }
         } catch (error) {
             console.error("[DAEMON] 🚨 A2A Settlement Processing Error:", error);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // AUTO-JUDGE — Trigger automated dispute resolution
+    // Calls dashboard API to evaluate eligible jobs
+    // ═══════════════════════════════════════════════════════════
+    private async processAutoJudge() {
+        try {
+            const dashboardUrl = process.env.DASHBOARD_URL || 'http://dashboard:3000';
+            const res = await fetch(`${dashboardUrl}/api/judge/auto`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                signal: AbortSignal.timeout(30000),
+            });
+
+            if (!res.ok) {
+                console.error(`[DAEMON] [AutoJudge] Dashboard returned ${res.status}`);
+                return;
+            }
+
+            const data = await res.json();
+            if (data.evaluated > 0) {
+                console.log(`[DAEMON] [AutoJudge] Evaluated ${data.evaluated} jobs: ${data.settled} settle, ${data.refunded} refund, ${data.escalated} escalate (${data.duration}ms)`);
+
+                // Auto-execute high-confidence verdicts on-chain
+                for (const v of (data.verdicts || [])) {
+                    if (v.confidence >= 0.85 && v.verdict !== 'ESCALATE') {
+                        await this.executeVerdict(v.jobId, v.verdict);
+                    }
+                }
+            }
+        } catch (error: any) {
+            // Don't crash daemon if dashboard is unavailable
+            if (error.name === 'TimeoutError' || error.code === 'ECONNREFUSED') {
+                console.warn(`[DAEMON] [AutoJudge] Dashboard unreachable — skipping cycle`);
+            } else {
+                console.error(`[DAEMON] [AutoJudge] Error:`, error.message);
+            }
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // AUTO-JUDGE — Execute verdict on-chain (settle or refund)
+    // ═══════════════════════════════════════════════════════════
+    private async executeVerdict(jobId: string, verdict: 'SETTLE' | 'REFUND') {
+        try {
+            const job = await this.prisma.agentJob.findUnique({ where: { id: jobId } });
+            if (!job || !job.onChainJobId) return;
+
+            // Skip if already settled/refunded
+            if (['SETTLED', 'REFUNDED'].includes(job.status)) return;
+
+            console.log(`[DAEMON] [AutoJudge] Executing ${verdict} for Job #${job.onChainJobId}...`);
+
+            const currentNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
+
+            let tx: any;
+            if (verdict === 'SETTLE') {
+                tx = await this.nexusV2Contract.settleJob(
+                    job.onChainJobId,
+                    { nonce: currentNonce, gasLimit: 500_000, type: 0 }
+                );
+            } else {
+                // For refund, check timeout first
+                try {
+                    const isTimeout = await this.nexusV2Contract.isTimedOut(job.onChainJobId);
+                    if (isTimeout) {
+                        tx = await this.nexusV2Contract.claimTimeout(
+                            job.onChainJobId,
+                            { nonce: currentNonce, gasLimit: 500_000, type: 0 }
+                        );
+                    } else {
+                        // Can't refund if not timed out and job isn't in correct state
+                        console.warn(`[DAEMON] [AutoJudge] Job #${job.onChainJobId} not timed out — skipping refund`);
+                        return;
+                    }
+                } catch {
+                    console.warn(`[DAEMON] [AutoJudge] Could not check timeout for Job #${job.onChainJobId}`);
+                    return;
+                }
+            }
+
+            console.log(`[DAEMON] [AutoJudge] TX sent: ${tx.hash}`);
+            try { await tx.wait(1); } catch (e: any) {
+                if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                    await verifyTxOnChain(tx.hash, `AutoJudge.${verdict}`);
+                } else { throw e; }
+            }
+
+            const newStatus = verdict === 'SETTLE' ? 'SETTLED' : 'REFUNDED';
+            await this.prisma.agentJob.update({
+                where: { id: jobId },
+                data: { status: newStatus, settleTxHash: tx.hash },
+            });
+
+            // Update verdict record
+            await this.prisma.judgeVerdict.updateMany({
+                where: { jobId, executedOnChain: false },
+                data: { executedOnChain: true, txHash: tx.hash, executedAt: new Date() },
+            });
+
+            await this.syncTimeVaultPayload(job.clientWallet, jobId, newStatus);
+            console.log(`[DAEMON] [AutoJudge] Job #${job.onChainJobId} ${verdict === 'SETTLE' ? 'settled' : 'refunded'} on-chain!`);
+
+        } catch (error: any) {
+            console.error(`[DAEMON] [AutoJudge] Execution failed for job ${jobId}:`, error.reason || error.message);
         }
     }
 

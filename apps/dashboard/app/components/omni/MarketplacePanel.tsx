@@ -163,11 +163,38 @@ function MarketplacePanel({
                             {[1, 2, 3, 4, 5, 6].map(i => <SkeletonCard key={i} />)}
                         </div>
                     ) : displayAgents.length === 0 ? (
-                        <div className="text-center py-12 text-slate-600 text-sm">
-                            {searchQuery.trim()
-                                ? `No agents matching "${searchQuery}"${activeCategory ? ` in ${activeCategory}` : ''}`
-                                : 'No agents in this category'
-                            }
+                        <div className="text-center py-12 px-6">
+                            <MagnifyingGlassIcon className="w-8 h-8 text-slate-700 mx-auto mb-3" />
+                            <p className="text-slate-400 text-sm font-medium mb-1">
+                                {searchQuery.trim()
+                                    ? `No agents matching "${searchQuery}"${activeCategory ? ` in ${activeCategory}` : ''}`
+                                    : 'No agents in this category'
+                                }
+                            </p>
+                            <p className="text-slate-600 text-xs mb-4">
+                                {searchQuery.trim()
+                                    ? 'Try a broader search term or check a different category'
+                                    : 'Browse other categories above to find agents'
+                                }
+                            </p>
+                            <div className="flex items-center justify-center gap-2">
+                                {searchQuery.trim() && (
+                                    <button
+                                        onClick={() => setSearchQuery('')}
+                                        className="px-4 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/15 border border-indigo-500/20 text-indigo-400 text-[11px] font-semibold rounded-lg transition-all"
+                                    >
+                                        Clear Search
+                                    </button>
+                                )}
+                                {activeCategory && (
+                                    <button
+                                        onClick={() => onFilterCategory(null)}
+                                        className="px-4 py-1.5 bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.06] text-slate-400 text-[11px] font-semibold rounded-lg transition-all"
+                                    >
+                                        View All Categories
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <>

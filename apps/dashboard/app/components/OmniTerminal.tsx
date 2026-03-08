@@ -64,6 +64,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const [showConditionBuilder, setShowConditionBuilder] = useState(false);
     const [conditions, setConditions] = useState<Condition[]>([]);
     const [conditionLogic, setConditionLogic] = useState<'AND' | 'OR'>('AND');
+    const [recurringMode, setRecurringMode] = useState<'once' | 'weekly' | 'monthly'>('once');
 
     // Invoice-to-Pay state
     const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -122,7 +123,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         setIsDeployingAnimation(false);
         setAiPrompt(''); setLiveIntents([]); setChatAnswer(null);
         setWalletAliases({}); setLockedAliases(new Set()); setCardNotes({});
-        setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND');
+        setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND'); setRecurringMode('once');
         if (!preventFocus) setTimeout(() => inputRef.current?.focus(), 50);
     }, [marketplace]);
 
@@ -192,6 +193,30 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             }
                         });
                         setLiveIntents(finalParsed);
+
+                        // Auto-detect scheduling/conditional from AI response
+                        if (data.scheduling && data.scheduling.conditions && data.scheduling.conditions.length > 0) {
+                            const aiConditions: Condition[] = data.scheduling.conditions.map((c: any) => ({
+                                id: crypto.randomUUID(),
+                                type: c.type || 'date_time',
+                                param: c.param || '',
+                                operator: c.operator || '>=',
+                                value: c.value || '',
+                            }));
+                            setConditions(aiConditions);
+                            setConditionLogic(data.scheduling.conditionLogic || 'AND');
+                            setShowConditionBuilder(true);
+
+                            // Set recurring mode
+                            const recur = data.scheduling.recurring;
+                            if (recur === 'monthly') setRecurringMode('monthly');
+                            else if (recur === 'weekly') setRecurringMode('weekly');
+                            else setRecurringMode('once');
+
+                            // Notify user about auto-detected scheduling
+                            const freqLabel = recur === 'monthly' ? 'Monthly' : recur === 'weekly' ? 'Weekly' : 'Scheduled';
+                            showToast('success', `⚡ ${freqLabel} payment detected! Review conditions below, then press Enter or click "Deploy Conditional".`);
+                        }
                     } else { setLiveIntents([]); }
                 }
             } catch (error) { console.error("AI Parsing Error:", error); if (!cancelled) showToast('error', 'Failed to parse intent. Try again.'); } finally { if (!cancelled) setIsAiParsing(false); }
@@ -218,31 +243,82 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     }, []);
 
     const processCSV = useCallback((file: File) => {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            const csvText = e.target?.result as string;
-            if (!csvText || !csvText.trim()) { resetFileUI(); return showToast('error', "CSV file is empty."); }
+        // Validate file type
+        const validExtensions = ['.csv', '.txt', '.xls', '.xlsx'];
+        const ext = file.name.toLowerCase().slice(file.name.lastIndexOf('.'));
+        if (!validExtensions.includes(ext)) {
+            showToast('error', `Unsupported file format "${ext}". Please use CSV, TXT, XLS, or XLSX files.`);
+            resetFileUI();
+            return;
+        }
+
+        const isExcel = ext === '.xls' || ext === '.xlsx';
+
+        // Helper: send text to AI parse and process results
+        const parseAndProcess = async (csvText: string) => {
+            if (!csvText || !csvText.trim()) { resetFileUI(); return showToast('error', "File is empty or could not be read."); }
             setIsAiParsing(true); setAiPrompt(`[AI is analyzing data file: ${file.name}...]`);
             try {
                 const { SUPPORTED_TOKENS: currentTokens, contacts: currentContacts } = latestDataRef.current;
                 const safeContacts = currentContacts.length > 0 ? currentContacts : [{ name: 'Tony', wallet: '0xe89b...' }];
-                const response = await fetch('/api/ai-parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: `Extract payroll intents.\nRaw Data:\n${csvText}`, supportedTokens: currentTokens.map((t: any) => t.symbol), addressBook: safeContacts.map(c => c.name) }) });
-                if (!response.ok) throw new Error('CSV parsing failed');
+                const response = await fetch('/api/ai-parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: `Extract payroll intents. Each row should have: name, wallet (0x address), amount, token, note.\nRaw Data:\n${csvText}`, supportedTokens: currentTokens.map((t: any) => t.symbol), addressBook: safeContacts.map(c => c.name) }) });
+                if (!response.ok) throw new Error('File parsing failed');
                 const data = await response.json();
                 if (data.intents && data.intents.length > 0) {
                     let finalParsed: ParsedIntent[] = []; let indexCounter = 0;
                     data.intents.forEach((intent: any) => {
                         let resolvedWallet = '0x00...00'; let isRaw = false;
-                        if (intent.name && /^0x[a-fA-F0-9]{40}$/i.test(intent.name.trim())) { resolvedWallet = intent.name; isRaw = true; }
-                        else if (intent.name) { const foundContact = safeContacts.find(c => c.name.toLowerCase() === intent.name.toLowerCase()); if (foundContact) resolvedWallet = foundContact.wallet; }
-                        finalParsed.push({ name: intent.name || 'Unknown Entity', wallet: resolvedWallet, isRawWallet: isRaw, amount: intent.amount || '0', token: intent.token || 'AlphaUSD', indexId: indexCounter++ });
+                        let finalName = intent.name || 'Unknown Entity';
+                        // Priority 1: AI extracted a valid wallet address
+                        if (intent.wallet && /^0x[a-fA-F0-9]{40}$/i.test(intent.wallet.trim())) {
+                            resolvedWallet = intent.wallet.trim(); isRaw = true;
+                        }
+                        // Priority 2: Name field is actually a wallet address
+                        else if (finalName && /^0x[a-fA-F0-9]{40}$/i.test(finalName.trim())) {
+                            resolvedWallet = finalName; isRaw = true;
+                        }
+                        // Priority 3: Match name to known contacts
+                        else if (finalName) {
+                            const foundContact = safeContacts.find(c => c.name.toLowerCase() === finalName.toLowerCase());
+                            if (foundContact) resolvedWallet = foundContact.wallet;
+                        }
+                        if (finalName === 'Unknown' || /^0x[a-fA-F0-9]{6,}$/i.test(finalName)) finalName = 'Unknown Entity';
+                        finalParsed.push({ name: finalName, wallet: resolvedWallet, isRawWallet: isRaw, amount: intent.amount || '0', token: intent.token || 'AlphaUSD', note: intent.note, indexId: indexCounter++ });
                     });
                     setLiveIntents(finalParsed);
-                    setAiPrompt(`[Extracted ${finalParsed.length} intents from CSV. Please review and Deploy.]`);
-                } else { showToast('error', "AI couldn't find valid data."); setAiPrompt(''); }
-            } catch (error) { setAiPrompt(''); } finally { setIsAiParsing(false); resetFileUI(); }
+                    const resolvedCount = finalParsed.filter(i => i.wallet !== '0x00...00').length;
+                    setAiPrompt(`[Extracted ${finalParsed.length} recipients from ${file.name}. ${resolvedCount}/${finalParsed.length} wallets resolved. Review and Deploy.]`);
+                } else { showToast('error', "Could not extract payment data from this file. Make sure it has Name, Wallet, Amount columns."); setAiPrompt(''); }
+            } catch (error: any) {
+                showToast('error', `Failed to parse ${file.name}: ${error.message || 'Unknown error'}`);
+                setAiPrompt('');
+            } finally { setIsAiParsing(false); resetFileUI(); }
         };
-        reader.readAsText(file);
+
+        if (isExcel) {
+            // Excel files: read as ArrayBuffer → convert to CSV via xlsx library
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const XLSX = (await import('xlsx')).default;
+                    const workbook = XLSX.read(e.target?.result, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const csvText = XLSX.utils.sheet_to_csv(firstSheet);
+                    await parseAndProcess(csvText);
+                } catch (err: any) {
+                    showToast('error', `Failed to read Excel file: ${err.message || 'Unknown error'}`);
+                    resetFileUI();
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            // CSV/TXT files: read as text directly
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                await parseAndProcess(e.target?.result as string);
+            };
+            reader.readAsText(file);
+        }
     }, [showToast, resetFileUI]);
 
     // ==========================================
@@ -266,14 +342,34 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // ==========================================
     // EXECUTION - PAYROLL (handles both standard and conditional)
     // ==========================================
+    // Delete individual intent
+    const handleDeleteIntent = useCallback((indexId: number) => {
+        setLiveIntents(prev => {
+            const updated = prev.filter(i => i.indexId !== indexId);
+            if (updated.length === 0) setAiPrompt('');
+            return updated;
+        });
+    }, []);
+
+    // Calculate total for display
+    const totalPayrollAmount = liveIntents.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+
     const executePayroll = useCallback(async () => {
         if (liveIntents.length === 0) return;
 
-        // 🛡️ Block deployment if any wallet is unresolved
+        // Validate wallet addresses
         const unresolvedIntents = liveIntents.filter(i => !i.wallet || i.wallet === '0x00...00' || !/^0x[a-fA-F0-9]{40}$/i.test(i.wallet));
         if (unresolvedIntents.length > 0) {
             const names = unresolvedIntents.map(i => i.name).join(', ');
             showToast('error', `Cannot deploy: ${names} ${unresolvedIntents.length === 1 ? 'has' : 'have'} no valid wallet address. Assign a wallet first.`);
+            return;
+        }
+
+        // Validate amounts (must be > 0)
+        const invalidAmounts = liveIntents.filter(i => !i.amount || parseFloat(i.amount) <= 0);
+        if (invalidAmounts.length > 0) {
+            const names = invalidAmounts.map(i => i.name).join(', ');
+            showToast('error', `Invalid amount for: ${names}. Amount must be greater than 0.`);
             return;
         }
 
@@ -296,12 +392,27 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         });
 
         try {
-            // ⚡ CONDITIONAL MODE: If conditions are set, create a ConditionalRule
+            // CONDITIONAL MODE: If conditions are set, create a ConditionalRule
             if (conditions.length > 0) {
+                // Validate: all conditions must have param and value filled
+                const incompleteConditions = conditions.filter(c => !c.param.trim() || (!c.value.trim() && c.type !== 'webhook'));
+                if (incompleteConditions.length > 0) {
+                    showToast('error', `Incomplete condition${incompleteConditions.length > 1 ? 's' : ''}: Please fill in all condition fields before deploying.`);
+                    setIsDeployingAnimation(false);
+                    return;
+                }
+
                 const conditionLabel = conditions.map(c => {
                     const typeLabel = c.type.replace(/_/g, ' ');
                     return `${typeLabel} ${c.param} ${c.operator} ${c.value}`;
                 }).join(` ${conditionLogic} `);
+
+                // Compute recurring parameters from recurringMode
+                const recurringParams = recurringMode === 'weekly'
+                    ? { maxTriggers: -1, cooldownMinutes: 10080 }   // 7 * 24 * 60
+                    : recurringMode === 'monthly'
+                        ? { maxTriggers: -1, cooldownMinutes: 43200 }  // 30 * 24 * 60
+                        : { maxTriggers: 1, cooldownMinutes: 0 };      // one-time
 
                 const condRes = await fetch('/api/conditional-payroll', {
                     method: 'POST',
@@ -316,33 +427,37 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             value: c.value,
                         })),
                         conditionLogic,
+                        maxTriggers: recurringParams.maxTriggers,
+                        cooldownMinutes: recurringParams.cooldownMinutes,
                     })
                 });
                 if (!condRes.ok) throw new Error('Failed to deploy conditional rule.');
 
-                showToast('success', `Conditional rule deployed! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
+                const freqLabel = recurringMode === 'monthly' ? ' (Monthly)' : recurringMode === 'weekly' ? ' (Weekly)' : '';
+                showToast('success', `Conditional rule deployed${freqLabel}! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
                 resetTerminal(true);
                 await fetchData();
             } else {
-                // STANDARD MODE: Push directly to Boardroom
-                for (const r of recipients) {
-                    const empRes = await fetch('/api/employees', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(r)
-                    });
-                    if (!empRes.ok) throw new Error(`Failed to queue ${r.name}`);
+                // STANDARD MODE: Send all intents as a batch to Boardroom
+                const empRes = await fetch('/api/employees', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ intents: recipients })
+                });
+                if (!empRes.ok) {
+                    const errData = await empRes.json().catch(() => ({}));
+                    throw new Error(errData.error || 'Failed to queue payloads');
                 }
-                showToast('success', 'Payloads queued in Boardroom!');
+                showToast('success', `${recipients.length} payload${recipients.length > 1 ? 's' : ''} queued in Boardroom! Total: ${totalPayrollAmount.toFixed(2)} AlphaUSD`);
                 resetTerminal(true);
                 await fetchData();
                 setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
             }
-        } catch (error) {
-            showToast('error', conditions.length > 0 ? 'Failed to deploy conditional rule.' : 'Failed to push to queue.');
+        } catch (error: any) {
+            showToast('error', error.message || (conditions.length > 0 ? 'Failed to deploy conditional rule.' : 'Failed to push to queue.'));
         }
         setIsDeployingAnimation(false);
-    }, [liveIntents, walletAliases, cardNotes, conditions, conditionLogic, showToast, resetTerminal, fetchData, boardroomRef]);
+    }, [liveIntents, walletAliases, cardNotes, conditions, conditionLogic, showToast, resetTerminal, fetchData, boardroomRef, totalPayrollAmount]);
 
     // ==========================================
     // EXECUTION - A2A MARKETPLACE
@@ -363,12 +478,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             // Use real wallet address instead of random demo wallet
             // Priority: aiPrompt (discover flow) → marketplace.taskPrompt (browse hire flow) → agent description fallback
             const taskPrompt = aiPrompt.trim() || marketplace.taskPrompt || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
-            await marketplace.confirmDeal(walletAddress, taskPrompt, options?.skipEscrow);
+            const result = await marketplace.confirmDeal(walletAddress, taskPrompt, options?.skipEscrow);
             await fetchData();
 
             if (options?.skipEscrow) {
                 // Card payment: funds already handled, no Boardroom step needed
                 showToast('success', 'Payment received — agent is starting your task!');
+            } else if (result?.escrowQueued === false) {
+                // Escrow queue failed — agent still executes but warn user
+                showToast('error', 'Agent started but escrow queue failed. Check Boardroom manually or retry the payment.');
             } else {
                 // Crypto: escrow queued in Boardroom, scroll to it
                 showToast('success', 'Agent contract queued in Escrow!');
@@ -534,24 +652,48 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 setConditions={setConditions}
                                 conditionLogic={conditionLogic}
                                 setConditionLogic={setConditionLogic}
-                                onClose={() => { setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND'); }}
+                                recurringMode={recurringMode}
+                                setRecurringMode={setRecurringMode}
+                                onClose={() => { setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND'); setRecurringMode('once'); }}
                             />
                         )}
 
                         {/* Intent Cards (Payroll only) */}
                         {isPayroll && (
-                            <IntentCards
-                                liveIntents={liveIntents}
-                                chatAnswer={chatAnswer}
-                                walletAliases={walletAliases}
-                                lockedAliases={lockedAliases}
-                                cardNotes={cardNotes}
-                                handleAliasChange={handleAliasChange}
-                                handleAliasLock={handleAliasLock}
-                                handleAliasKeyDown={handleAliasKeyDown}
-                                handleNoteChange={handleNoteChange}
-                                handleWalletAssign={handleWalletAssign}
-                            />
+                            <>
+                                <IntentCards
+                                    liveIntents={liveIntents}
+                                    chatAnswer={chatAnswer}
+                                    walletAliases={walletAliases}
+                                    lockedAliases={lockedAliases}
+                                    cardNotes={cardNotes}
+                                    handleAliasChange={handleAliasChange}
+                                    handleAliasLock={handleAliasLock}
+                                    handleAliasKeyDown={handleAliasKeyDown}
+                                    handleNoteChange={handleNoteChange}
+                                    handleWalletAssign={handleWalletAssign}
+                                    handleDeleteIntent={handleDeleteIntent}
+                                />
+
+                                {/* Total Preview (shown when intents exist) */}
+                                {liveIntents.length > 0 && !chatAnswer && (
+                                    <div className="mt-1 flex items-center justify-between p-3 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-xl animate-in fade-in duration-300">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                                {liveIntents.length} recipient{liveIntents.length > 1 ? 's' : ''}
+                                            </span>
+                                            {liveIntents.some(i => !i.wallet || i.wallet === '0x00...00') && (
+                                                <span className="text-[9px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                                                    {liveIntents.filter(i => !i.wallet || i.wallet === '0x00...00').length} wallet{liveIntents.filter(i => !i.wallet || i.wallet === '0x00...00').length > 1 ? 's' : ''} missing
+                                                </span>
+                                            )}
+                                        </div>
+                                        <span className="text-sm font-bold font-mono text-emerald-400">
+                                            {totalPayrollAmount.toFixed(2)} <span className="text-emerald-400/60 text-xs">AlphaUSD</span>
+                                        </span>
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         {/* A2A: Suggested Prompts (show when browsing + empty input) */}
@@ -638,6 +780,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     setShowConditionBuilder(false);
                                     setConditions([]);
                                     setConditionLogic('AND');
+                                    setRecurringMode('once');
                                 } else {
                                     setShowConditionBuilder(true);
                                     if (conditions.length === 0) {
@@ -652,6 +795,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 }
                             }}
                             hasConditions={hasConditions}
+                            totalAmount={totalPayrollAmount}
+                            intentCount={liveIntents.length}
                         />
                     </div>
                 </div>

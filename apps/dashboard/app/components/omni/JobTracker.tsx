@@ -26,6 +26,9 @@ const STEPS = [
 ];
 
 function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, onRetry }: JobTrackerProps) {
+    const [elapsed, setElapsed] = useState(0);
+    const TIMEOUT_SECONDS = 120;
+
     // Auto-execute when phase enters 'executing'
     useEffect(() => {
         if (phase === 'executing' && job && job.status === 'MATCHED') {
@@ -33,6 +36,13 @@ function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, on
             return () => clearTimeout(timer);
         }
     }, [phase, job, onExecute]);
+
+    // Countdown timer during execution
+    useEffect(() => {
+        if (phase !== 'executing') { setElapsed(0); return; }
+        const interval = setInterval(() => setElapsed(prev => prev + 1), 1000);
+        return () => clearInterval(interval);
+    }, [phase]);
 
     if (!job) return null;
 
@@ -98,25 +108,52 @@ function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, on
                 </div>
 
                 {/* ═══ Executing ═══ */}
-                {phase === 'executing' && (
-                    <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 animate-in fade-in duration-500">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <ArrowPathIcon className="w-4 h-4 text-indigo-400 animate-spin" />
-                                <span className="text-indigo-400 font-semibold text-sm">
-                                    {job.agent.name} is working...
-                                </span>
+                {phase === 'executing' && (() => {
+                    const remaining = Math.max(0, TIMEOUT_SECONDS - elapsed);
+                    const mins = Math.floor(remaining / 60);
+                    const secs = remaining % 60;
+                    const progress = Math.min((elapsed / TIMEOUT_SECONDS) * 100, 100);
+                    const isNearTimeout = remaining <= 20;
+
+                    return (
+                        <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4 animate-in fade-in duration-500">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <ArrowPathIcon className="w-4 h-4 text-indigo-400 animate-spin" />
+                                    <span className="text-indigo-400 font-semibold text-sm">
+                                        {job.agent.name} is working...
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-mono tabular-nums ${isNearTimeout ? 'text-amber-400' : 'text-slate-500'}`}>
+                                        {mins}:{secs.toString().padStart(2, '0')}
+                                    </span>
+                                    <button
+                                        onClick={onCancel}
+                                        className="px-3 py-1.5 bg-white/[0.03] hover:bg-rose-500/10 border border-white/[0.06] hover:border-rose-500/20 text-slate-500 hover:text-rose-400 text-[10px] font-semibold rounded-lg transition-all flex items-center gap-1"
+                                    >
+                                        <XMarkIcon className="w-3 h-3" /> Cancel
+                                    </button>
+                                </div>
                             </div>
-                            <button
-                                onClick={onCancel}
-                                className="px-3 py-1.5 bg-white/[0.03] hover:bg-rose-500/10 border border-white/[0.06] hover:border-rose-500/20 text-slate-500 hover:text-rose-400 text-[10px] font-semibold rounded-lg transition-all flex items-center gap-1"
-                            >
-                                <XMarkIcon className="w-3 h-3" /> Cancel
-                            </button>
+                            {/* Progress bar */}
+                            <div className="mt-3 h-1 bg-white/[0.04] rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full rounded-full transition-all duration-1000 ease-linear ${
+                                        isNearTimeout ? 'bg-amber-500/60' : 'bg-indigo-500/40'
+                                    }`}
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                            <p className="text-[11px] text-slate-500 mt-1.5">
+                                {isNearTimeout
+                                    ? 'Almost at timeout — agent may need more time for complex tasks'
+                                    : `Estimated ${remaining > 60 ? `${mins}m ${secs}s` : `${secs}s`} remaining`
+                                }
+                            </p>
                         </div>
-                        <p className="text-[11px] text-slate-500 mt-1.5 ml-6">This may take up to 2 minutes</p>
-                    </div>
-                )}
+                    );
+                })()}
 
                 {/* ═══ Completed ═══ */}
                 {phase === 'completed' && (

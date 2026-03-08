@@ -102,7 +102,7 @@ export interface UseAgentMarketplaceReturn {
     selectAgent: (agent: DiscoveredAgent) => void;
     submitTaskAndNegotiate: (prompt: string) => void;
     backToBrowse: () => void;
-    confirmDeal: (clientWallet: string, prompt: string, skipEscrowQueue?: boolean) => Promise<void>;
+    confirmDeal: (clientWallet: string, prompt: string, skipEscrowQueue?: boolean) => Promise<{ escrowQueued: boolean }>;
     executeDeal: () => Promise<void>;
     cancelExecution: () => void;
     rejectDeal: () => void;
@@ -365,14 +365,16 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     // ════════════════════════════════════
     // 3. CONFIRM DEAL → CREATE JOB
     // ════════════════════════════════════
-    const confirmDeal = useCallback(async (clientWallet: string, prompt: string, skipEscrowQueue?: boolean) => {
+    const confirmDeal = useCallback(async (clientWallet: string, prompt: string, skipEscrowQueue?: boolean): Promise<{ escrowQueued: boolean }> => {
         if (!selectedAgent || !negotiation) {
             throw new Error('Missing agent or negotiation data');
         }
 
         // Prevent double-confirmation (ref-based lock survives re-renders)
-        if (confirmLockRef.current) return;
+        if (confirmLockRef.current) return { escrowQueued: false };
         confirmLockRef.current = true;
+
+        let escrowQueued = true;
 
         try {
             setError(null);
@@ -420,14 +422,20 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                             isDiscovery: true,
                         }),
                     });
-                    if (!escrowRes.ok) console.error('Failed to queue escrow in boardroom');
+                    if (!escrowRes.ok) {
+                        console.error('Failed to queue escrow in boardroom');
+                        escrowQueued = false;
+                    }
                 } catch (escrowErr) {
                     console.error('Escrow queue error:', escrowErr);
+                    escrowQueued = false;
                 }
             }
         } finally {
             // Lock remains held — only released on reset() to prevent re-confirmation
         }
+
+        return { escrowQueued };
     }, [selectedAgent, negotiation, suggestedBudget]);
 
     // ════════════════════════════════════

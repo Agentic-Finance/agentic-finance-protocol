@@ -256,6 +256,11 @@ class PayPolDaemon {
                     judgeCycleCounter = 0;
                     await this.processAutoJudge();
                 }
+
+                // ═══ Off-Ramp Status Sync (every ~30s) ═══
+                if (a2aCycleCounter === 3) {
+                    await this.processOffRampStatusSync();
+                }
             } catch (error) {
                 console.error("[DAEMON] 🚨 Polling Error:", error);
             }
@@ -661,6 +666,43 @@ class PayPolDaemon {
             }
         } catch (error) {
             console.error("[DAEMON] 🚨 A2A Settlement Processing Error:", error);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // OFF-RAMP — Sync PayPal payout statuses
+    // Calls dashboard API to check PROCESSING withdrawals
+    // ═══════════════════════════════════════════════════════════
+    private async processOffRampStatusSync() {
+        try {
+            const processingWithdrawals = await this.prisma.withdrawalRequest.findMany({
+                where: { status: 'PROCESSING', paypalPayoutId: { not: null } },
+                take: 10,
+            });
+
+            if (processingWithdrawals.length === 0) return;
+
+            const dashboardUrl = process.env.DASHBOARD_URL || 'http://dashboard:3000';
+
+            for (const w of processingWithdrawals) {
+                try {
+                    const res = await fetch(`${dashboardUrl}/api/offramp/status?id=${w.id}`, {
+                        signal: AbortSignal.timeout(10000),
+                    });
+                    if (!res.ok) continue;
+
+                    const data = await res.json();
+                    if (data.status === 'COMPLETED') {
+                        console.log(`[DAEMON] [OffRamp] Withdrawal ${w.id.slice(0, 8)} completed! $${w.amountUSD} → ${w.paypalEmail}`);
+                    } else if (data.status === 'FAILED') {
+                        console.log(`[DAEMON] [OffRamp] Withdrawal ${w.id.slice(0, 8)} failed: ${data.reason}`);
+                    }
+                } catch { /* skip */ }
+            }
+        } catch (error: any) {
+            if (error.name !== 'TimeoutError' && error.code !== 'ECONNREFUSED') {
+                console.error(`[DAEMON] [OffRamp] Status sync error:`, error.message);
+            }
         }
     }
 

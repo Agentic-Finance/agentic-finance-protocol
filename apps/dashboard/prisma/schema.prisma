@@ -279,6 +279,35 @@ model FiatPayment {
 }
 
 // ==========================================
+// 💸 FIAT OFF-RAMP (PayPal Payouts)
+// ==========================================
+
+// Tracks crypto → fiat withdrawal flow
+model WithdrawalRequest {
+  id                   String    @id @default(uuid())
+  userWallet           String
+  paypalEmail          String                                    // Recipient's PayPal email
+  amountCrypto         Float                                     // AlphaUSD amount to withdraw
+  amountUSD            Float                                     // USD amount after fees
+  platformFee          Float                                     // PayPol fee (2.5%)
+  paypalFee            Float     @default(0)                     // PayPal's fee
+  token                String    @default("AlphaUSD")
+  status               String    @default("PENDING")             // PENDING, CRYPTO_LOCKED, PROCESSING, COMPLETED, FAILED, CANCELLED
+  lockTxHash           String?                                   // On-chain AlphaUSD lock/burn tx
+  paypalPayoutId       String?   @unique                         // PayPal batch payout ID
+  paypalPayoutItemId   String?                                   // PayPal individual payout item ID
+  paypalTransactionId  String?                                   // PayPal transaction ID (after completion)
+  failureReason        String?                                   // Why it failed
+  createdAt            DateTime  @default(now())
+  processedAt          DateTime?
+  completedAt          DateTime?
+
+  @@index([userWallet])
+  @@index([status])
+  @@index([paypalPayoutId])
+}
+
+// ==========================================
 // ⚡ CONDITIONAL PAYROLL
 // ==========================================
 

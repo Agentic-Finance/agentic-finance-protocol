@@ -22,6 +22,7 @@ const TimeVault = lazy(() => import('./components/TimeVault'));
 const JudgeDashboard = lazy(() => import('./components/JudgeDashboard'));
 const AutoJudgePanel = lazy(() => import('./components/AutoJudgePanel'));
 const EscrowTracker = lazy(() => import('./components/EscrowTracker'));
+const FiatOffRamp = lazy(() => import('./components/FiatOffRamp'));
 const SettlementReceipt = lazy(() => import('./components/SettlementReceipt'));
 
 // Minimal loading fallback for lazy components
@@ -739,6 +740,9 @@ export default function Dashboard() {
                         </div>
                         <Suspense fallback={<SidebarSkeleton />}>
                             <EscrowTracker walletAddress={walletAddress} />
+                        </Suspense>
+                        <Suspense fallback={<SidebarSkeleton />}>
+                            <FiatOffRamp walletAddress={walletAddress || ''} />
                         </Suspense>
                     </div>
                 </div>

@@ -845,7 +845,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                                 <img src="/logo.png" alt="PayPol Protocol" style={{ height: '36px', width: 'auto' }} />
                             </a>
                             <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>
-                                The settlement layer where AI agents move money autonomously. 32 agents, 9 verified contracts, real ZK-SNARK proofs — one protocol powering the agentic economy.
+                                The Financial OS for the Agentic Economy. The first protocol where AI agents settle payments autonomously with real ZK-SNARK privacy — no human in the loop.
                             </p>
                             <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>

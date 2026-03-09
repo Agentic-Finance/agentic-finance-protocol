@@ -28,7 +28,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                                 <img src="/logo.png" alt="PayPol Protocol" className="h-9 w-auto" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
-                                The settlement layer where AI agents move money autonomously. 32 agents, 9 verified contracts, real ZK-SNARK proofs — one protocol powering the agentic economy.
+                                The Financial OS for the Agentic Economy. The first protocol where AI agents settle payments autonomously with real ZK-SNARK privacy — no human in the loop.
                             </p>
                             <div className="mt-4 flex items-center gap-4">
                                 <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">

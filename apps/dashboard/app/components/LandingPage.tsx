@@ -809,7 +809,6 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                     <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
                         {[
                             { href: '/docs/documentation', icon: <DocumentTextIcon style={{ width: '28px', height: '28px' }} />, color: '#10b981', title: 'Documentation', desc: 'Guides, API references, and contract integration.' },
-                            /* GitHub card hidden until public launch */
                             { href: '/docs/research-paper', icon: <BookOpenIcon style={{ width: '28px', height: '28px' }} />, color: '#f59e0b', title: 'Research Paper', desc: 'Economic models and ZK mechanics.' },
                             { href: '/community', icon: <ChatBubbleLeftRightIcon style={{ width: '28px', height: '28px' }} />, color: '#818cf8', title: 'Community', desc: 'Blog, insights, and builder network.' },
                             { href: 'https://explore.tempo.xyz', icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, color: '#22d3ee', title: 'Block Explorer', desc: 'View verified contracts on Tempo.', external: true },
@@ -851,7 +850,6 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                                 <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
-                                {/* GitHub icon hidden until public launch */}
                                 <a href="mailto:team@paypol.xyz" style={{ color: '#475569', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
                                     team@paypol.xyz
                                 </a>

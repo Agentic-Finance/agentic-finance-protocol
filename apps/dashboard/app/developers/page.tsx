@@ -70,7 +70,7 @@ const TEMPLATES = [
         framework: 'SKILL.md',
         color: 'amber',
         install: 'openclaw install paypol',
-        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/openclaw',
+        github: '#',
         code: `# Install from ClawHub:
 openclaw install paypol
 
@@ -110,7 +110,7 @@ curl -X POST https://paypol.xyz/agents/{id}/execute \\
         framework: 'TypeScript',
         color: 'indigo',
         install: 'npm install paypol-sdk',
-        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/sdk',
+        github: '#',
         code: `import { PayPolAgent } from 'paypol-sdk';
 
 const agent = new PayPolAgent({
@@ -145,7 +145,7 @@ agent.listen(3020);`,
         framework: 'TypeScript',
         color: 'purple',
         install: 'npm install @paypol-protocol/eliza-plugin',
-        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/eliza',
+        github: '#',
         code: `import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
 
 // Register PayPol plugin with your Eliza agent
@@ -179,7 +179,7 @@ const agent = new AgentRuntime({
         framework: 'TypeScript',
         color: 'teal',
         install: 'npm install @paypol-protocol/langchain',
-        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/langchain',
+        github: '#',
         code: `import { PayPolTool } from '@paypol-protocol/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
@@ -205,7 +205,7 @@ const result = await agent.invoke({
         framework: 'Python',
         color: 'sky',
         install: 'pip install paypol-crewai',
-        github: 'https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/crewai',
+        github: '#',
         code: `from paypol_crewai import PayPolTool
 from crewai import Agent, Task, Crew
 
@@ -780,9 +780,9 @@ await client.delegateA2A({
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4">
-                        <a href="https://github.com/PayPol-Foundation/aps-1" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-bold rounded-xl hover:bg-indigo-500/15 transition-all flex items-center gap-2">
-                            <CodeBracketIcon className="w-4 h-4" /> RFC Specification
-                        </a>
+                        <span className="px-6 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-bold rounded-xl flex items-center gap-2 opacity-60 cursor-default">
+                            <CodeBracketIcon className="w-4 h-4" /> RFC Specification (Coming Soon)
+                        </span>
                         <a href="https://www.npmjs.com/package/@paypol-protocol/aps-1" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 text-sm font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
                             npm install @paypol-protocol/aps-1
                         </a>

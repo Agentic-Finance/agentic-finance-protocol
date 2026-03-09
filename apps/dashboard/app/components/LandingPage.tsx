@@ -142,8 +142,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
         { title: "Private Payroll", command: "Pay @Tony 10 AlphaUSD, use ZK Shield and lock for 7 days.", icon: <ShieldCheckIcon className="w-5 h-5" />, color: '#10b981' },
         { title: "PayPol Nexus (A2A)", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
         { title: "Smart Ledger", command: "Parse Q3_Engineering_Roster.csv and map to addresses.", icon: <DocumentTextIcon className="w-5 h-5" />, color: '#818cf8' },
-        { title: "Omni-Chain Yield", command: "Bridge 50k USDC to Arbitrum. Auto-stake in highest yield pool.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899' },
-        { title: "Autonomous Hedge Fund", command: "Monitor BTC/ETH ratio. Rebalance portfolio if divergence > 5%.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308' },
+        { title: "Omni-Chain Yield ⏳", command: "Bridge 50k USDC to Arbitrum. Auto-stake in highest yield pool.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899', soon: true },
+        { title: "Autonomous Hedge Fund ⏳", command: "Monitor BTC/ETH ratio. Rebalance portfolio if divergence > 5%.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308', soon: true },
         { title: "DePIN Reward Routing", command: "Ping node uptime API. Disburse micro-rewards to 5,000 active nodes.", icon: <SignalIcon className="w-5 h-5" />, color: '#06b6d4' }
     ];
 
@@ -390,7 +390,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>LLM-powered natural language parsing into deterministic financial operations</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: '800', fontFamily: 'monospace' }}>OpenClaw + Claude</span>
+                                <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: '800', fontFamily: 'monospace' }}>GPT-4o-mini + Claude</span>
                             </div>
                         </div>
 
@@ -463,7 +463,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                     <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#ec4899', backgroundColor: 'rgba(236,72,153,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L2</span>
                                     <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Omni-Chain Nexus</h3>
                                 </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Cross-chain value transfer with fiat off-ramping across 150+ jurisdictions</p>
+                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Cross-chain value transfer with fiat off-ramping via PayPal Payouts</p>
                             </div>
                             <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                                 <span style={{ fontSize: '0.75rem', color: '#ec4899', fontWeight: '800', fontFamily: 'monospace' }}>EVM + SVM</span>
@@ -572,7 +572,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
                             <BriefcaseIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Institutional Finance</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Cross-border contractor settlements with ZK payroll privacy. Direct-to-bank fiat off-ramping across 150+ jurisdictions.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Cross-border contractor settlements with ZK payroll privacy. Fiat off-ramping via PayPal Payouts integration.</p>
                         </div>
 
                         {/* DePIN Networks */}
@@ -691,7 +691,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 { name: 'MultisendV2', addr: '0x25f4...4575', color: '#22d3ee' },
                                 { name: 'PlonkVerifier', addr: '0x9FB9...50B', color: '#c084fc' },
                                 { name: 'AIProofRegistry', addr: '0x8fDB...a014', color: '#f59e0b' },
-                                { name: 'StreamV1', addr: '0x2808...B8fd', color: '#06b6d4' },
+                                { name: 'StreamV1', addr: '0x4fE3...36C', color: '#06b6d4' },
                                 { name: 'ReputationRegistry', addr: '0x9332...4D0', color: '#8b5cf6' },
                                 { name: 'SecurityDeposit', addr: '0x0778...424E', color: '#f97316' },
                                 { name: 'PayPolNexus (V1)', addr: '0x4B7e...d11', color: '#94a3b8' },
@@ -719,7 +719,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Build on PayPol</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>Developer <span className="gradient-text">Portal.</span></h2>
-                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 92% of every job on the marketplace.</p>
+                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 95% of every job on the marketplace.</p>
                     </div>
 
                     {/* Developer action cards - 3 cols */}

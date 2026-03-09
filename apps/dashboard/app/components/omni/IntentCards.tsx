@@ -12,6 +12,7 @@ interface IntentCardsProps {
     handleAliasKeyDown: (wallet: string, e: React.KeyboardEvent<HTMLInputElement>) => void;
     handleNoteChange: (indexId: number, newNote: string) => void;
     handleWalletAssign?: (indexId: number, wallet: string) => void;
+    handleDeleteIntent?: (indexId: number) => void;
 }
 
 const isValidWallet = (w: string) => /^0x[a-fA-F0-9]{40}$/i.test(w);
@@ -20,7 +21,7 @@ const isUnresolvedWallet = (w: string) => !w || w === '0x00...00' || !isValidWal
 function IntentCards({
     liveIntents, chatAnswer, walletAliases, lockedAliases, cardNotes,
     handleAliasChange, handleAliasLock, handleAliasKeyDown, handleNoteChange,
-    handleWalletAssign,
+    handleWalletAssign, handleDeleteIntent,
 }: IntentCardsProps) {
     const [walletInputs, setWalletInputs] = useState<Record<number, string>>({});
     const [walletLocked, setWalletLocked] = useState<Set<number>>(new Set());
@@ -74,7 +75,18 @@ function IntentCards({
                 const dotColor = needsWallet && !isWalletLocked ? 'bg-amber-400' : 'bg-emerald-500';
 
                 return (
-                    <div key={i} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 shadow-lg ${cardBorderClass}`}>
+                    <div key={i} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 shadow-lg ${cardBorderClass} group/card`}>
+                        {/* Delete button */}
+                        {handleDeleteIntent && (
+                            <button
+                                onClick={() => handleDeleteIntent(intent.indexId)}
+                                className="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-lg bg-rose-500/0 hover:bg-rose-500/20 text-slate-600 hover:text-rose-400 transition-all opacity-0 group-hover/card:opacity-100 z-10"
+                                title="Remove recipient"
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        )}
+
                         <div className={`text-[10px] font-bold mb-4 tracking-widest flex items-center gap-2 uppercase ${statusColor}`}>
                             <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${dotColor}`}></span>
                             {statusLabel}
@@ -116,7 +128,6 @@ function IntentCards({
                                                     onChange={(e) => handleAliasChange(intent.wallet, e.target.value)}
                                                     onKeyDown={(e) => handleAliasKeyDown(intent.wallet, e)}
                                                     className="w-full bg-black/50 border border-emerald-500/20 hover:border-emerald-500/35 focus:border-emerald-400/55 rounded-lg pl-3 pr-[3.75rem] py-[7px] text-sm text-white focus:outline-none placeholder:text-slate-600 font-mono tracking-wide transition-all duration-200"
-                                                    autoFocus
                                                 />
                                                 <button
                                                     onClick={() => handleAliasLock(intent.wallet)}
@@ -173,9 +184,8 @@ function IntentCards({
                                                         ? 'border-red-500/40 focus:border-red-400/60'
                                                         : walletInputValid
                                                             ? 'border-emerald-500/40 focus:border-emerald-400/60'
-                                                            : 'border-amber-500/20 hover:border-amber-500/35 focus:border-amber-400/55'
+                                                            : 'border-amber-500/20 hover:border-amber-500/35 focus:border-amber-400/55 animate-pulse-border'
                                                     }`}
-                                                autoFocus
                                             />
                                             <button
                                                 onClick={() => onWalletLock(intent.indexId)}

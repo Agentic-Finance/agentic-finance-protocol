@@ -11,19 +11,21 @@ From:         Acme Web3 Studios
               San Francisco, CA 94105
 
 Bill To:      PayPol Protocol DAO Treasury
-              Wallet: 0xTreasury...
+              Wallet: 0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793
 
 ------------------------------------------------------------
 LINE ITEMS
 ------------------------------------------------------------
 
- #   Description                  Recipient               Amount      Token
----  ---------------------------  ----------------------  ----------  -------
- 1.  Smart Contract Development   0xA1b2C3d4E5f67890...    $8,500     USDC
- 2.  Frontend Integration         0xB2c3D4e5F6789012...    $4,200     USDC
- 3.  Security Audit (Phase 1)     0xC3d4E5f6A7890123...    $6,000     USDC
- 4.  UI/UX Design Sprint          0xD4e5F6a7B8901234...    $3,500     USDC
- 5.  DevOps & Infrastructure      0xE5f6A7b8C9012345...    $2,800     USDC
+ #   Description                  Recipient Wallet                              Amount
+---  ---------------------------  --------------------------------------------  ----------
+ 1.  Smart Contract Development   0xA1b2C3d4E5f6A1b2C3d4E5f6A1b2C3d4E5f6A1b2    $8,500
+ 2.  Frontend Integration         0xB2c3D4e5F6a1B2c3D4e5F6a1B2c3D4e5F6a1B2c3    $4,200
+ 3.  Security Audit (Phase 1)     0xC3d4E5f6a7b8C3d4E5f6a7b8C3d4E5f6a7b8C3d4    $6,000
+ 4.  UI/UX Design Sprint          0xD4e5F6a7b8c9D4e5F6a7b8c9D4e5F6a7b8c9D4e5    $3,500
+ 5.  DevOps & Infrastructure      0xE5f6A7b8c9d0E5f6A7b8c9d0E5f6A7b8c9d0E5f6    $2,800
+
+Token: AlphaUSD
 
 ------------------------------------------------------------
                                           Subtotal:  $25,000.00

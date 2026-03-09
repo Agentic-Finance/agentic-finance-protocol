@@ -16,6 +16,8 @@ interface ConditionBuilderProps {
     setConditions: React.Dispatch<React.SetStateAction<Condition[]>>;
     conditionLogic: 'AND' | 'OR';
     setConditionLogic: React.Dispatch<React.SetStateAction<'AND' | 'OR'>>;
+    recurringMode: 'once' | 'weekly' | 'monthly';
+    setRecurringMode: React.Dispatch<React.SetStateAction<'once' | 'weekly' | 'monthly'>>;
     onClose: () => void;
 }
 
@@ -70,7 +72,7 @@ const EXAMPLE_PRESETS = [
     },
 ];
 
-function ConditionBuilder({ conditions, setConditions, conditionLogic, setConditionLogic, onClose }: ConditionBuilderProps) {
+function ConditionBuilder({ conditions, setConditions, conditionLogic, setConditionLogic, recurringMode, setRecurringMode, onClose }: ConditionBuilderProps) {
     const [showGuide, setShowGuide] = useState(true);
 
     const addCondition = useCallback(() => {
@@ -282,13 +284,40 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                     <PlusIcon className="w-3.5 h-3.5" /> Add Condition
                 </button>
 
+                {/* Recurring Mode Selector */}
+                {conditions.length > 0 && conditions.some(c => c.param || c.value) && (
+                    <div className="mt-3 flex items-center gap-3">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Frequency:</span>
+                        <div className="flex gap-1.5">
+                            {([
+                                { value: 'once', label: 'One-time', icon: '1️⃣' },
+                                { value: 'weekly', label: 'Weekly', icon: '📅' },
+                                { value: 'monthly', label: 'Monthly', icon: '🗓️' },
+                            ] as const).map(opt => (
+                                <button
+                                    key={opt.value}
+                                    onClick={() => setRecurringMode(opt.value)}
+                                    className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                                        recurringMode === opt.value
+                                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                                            : 'bg-white/[0.03] text-slate-500 border border-white/5 hover:border-amber-500/15 hover:text-slate-300'
+                                    }`}
+                                >
+                                    <span className="text-[9px]">{opt.icon}</span> {opt.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 {/* Status indicator */}
                 {conditions.length > 0 && conditions.some(c => c.param || c.value) && (
                     <div className="mt-4 pt-3 border-t border-white/5">
                         <div className="flex items-center gap-2 text-[10px] font-mono">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
                             <span className="text-slate-500">
-                                When <span className="text-amber-400 font-bold">{conditionLogic === 'AND' ? 'ALL' : 'ANY'}</span> condition{conditions.length > 1 ? 's are' : ' is'} met → Agent will auto-execute the payroll intents
+                                When <span className="text-amber-400 font-bold">{conditionLogic === 'AND' ? 'ALL' : 'ANY'}</span> condition{conditions.length > 1 ? 's are' : ' is'} met → Agent will auto-execute
+                                {recurringMode !== 'once' && <span className="text-amber-400 font-bold"> ({recurringMode})</span>}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-600 font-mono">

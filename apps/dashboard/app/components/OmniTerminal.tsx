@@ -623,7 +623,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 {!aiPrompt && (
                                     <div className="absolute top-1.5 left-0 pointer-events-none opacity-35">
                                         <span className="text-slate-300 font-sans text-xl font-medium tracking-wide">
-                                            {isPayroll ? 'Command me, or ask: "Who got paid the most?"' : 'e.g. "Audit my Solidity contract for reentrancy bugs"'}
+                                            {isPayroll ? 'Try: "Pay Alice 500 AlphaUSD" or "Pay Alice 100 and Bob 200 AlphaUSD"' : 'e.g. "Audit my Solidity contract for reentrancy bugs"'}
                                         </span>
                                     </div>
                                 )}

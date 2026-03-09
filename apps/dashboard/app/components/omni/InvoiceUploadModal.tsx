@@ -69,9 +69,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
             if (data.intents && data.intents.length > 0) {
                 onParsed(data.intents);
                 showToast('success', `Extracted ${data.intents.length} payment${data.intents.length > 1 ? 's' : ''} from invoice.`);
-                onClose();
-                setInvoiceText('');
-                setAttachedFile(null);
+                handleClose();
             } else {
                 showToast('error', 'Could not extract payment data from invoice.');
             }
@@ -83,13 +81,21 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
         }
     }, [invoiceText, attachedFile, onParsed, onClose, showToast]);
 
+    // Clear state when modal is closed
+    const handleClose = useCallback(() => {
+        setInvoiceText('');
+        setAttachedFile(null);
+        setIsParsing(false);
+        onClose();
+    }, [onClose]);
+
     if (!isOpen) return null;
 
     return createPortal(
         <div style={{ zIndex: 2147483647, background: 'rgba(15,19,25,0.88)' }} className="fixed inset-0 flex items-center justify-center animate-in fade-in duration-200">
             <div className="bg-[#151B27] border border-cyan-500/20 shadow-[0_0_100px_rgba(6,182,212,0.08)] rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 relative">
                 {/* Close */}
-                <button onClick={onClose} className="absolute top-6 right-6 text-slate-500 hover:text-rose-400 transition-colors">
+                <button onClick={handleClose} className="absolute top-6 right-6 text-slate-500 hover:text-rose-400 transition-colors">
                     <XMarkIcon className="w-6 h-6" />
                 </button>
 
@@ -203,7 +209,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
                 {/* Actions */}
                 <div className="flex gap-3 mt-6">
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
                         className="flex-1 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-sm font-bold transition-all"
                     >
                         Cancel

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Pagination, { usePagination } from './Pagination';
 
 interface LedgerHistoryProps { 
     pendingTxs: any[]; 
@@ -11,6 +12,7 @@ interface LedgerHistoryProps {
 
 function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, setExpandedTx, historyRef }: LedgerHistoryProps) {
     const toggleExpand = (hash: string) => setExpandedTx(expandedTx === hash ? null : hash);
+    const { paginatedItems: paginatedHistory, currentPage, totalPages, setCurrentPage, totalItems, itemsPerPage } = usePagination(history, 10);
 
     return (
         <div ref={historyRef} className="relative z-20 mb-10">
@@ -39,7 +41,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
 
                 {/* Ledger List */}
                 <div className="space-y-4 relative">
-                    {history.map((tx, i) => {
+                    {paginatedHistory.map((tx, i) => {
                         const isExpanded = expandedTx === tx.hash;
                         const recipientCount = tx.breakdown ? tx.breakdown.length : 1;
                         const isShieldedBatch = tx.isShielded || (tx.breakdown && tx.breakdown.some((b: any) => b.isShielded || (b.note && b.note.includes('Shielded'))));
@@ -150,6 +152,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                             <p className="text-sm text-slate-500 max-w-[250px]">Once the Daemon processes payloads, they will be securely logged here.</p>
                         </div>
                     )}
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} totalItems={totalItems} itemsPerPage={itemsPerPage} />
                 </div>
             </div>
         </div>

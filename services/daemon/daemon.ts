@@ -209,6 +209,7 @@ class PayPolDaemon {
         console.log(`[DAEMON] 📡 ShieldVaultV2: ${PAYPOL_SHIELD_V2_ADDRESS}`);
         console.log(`[DAEMON] 📡 NexusV2: ${PAYPOL_NEXUS_V2_ADDRESS}`);
         console.log(`[DAEMON] ⚡ Parallel proofs: ${MAX_PARALLEL_PROOFS} | Index delay: ${INDEX_DELAY_MS}ms`);
+        console.log(`[DAEMON] ⚡ Conditional Rule Engine: ENABLED (60s evaluation cycle)`);
 
         if (!this.hasV2Circuit && !this.hasV1Circuit) {
             console.error(`[DAEMON] 🚨 No ZK circuit files found! Daemon will still process A2A jobs but cannot generate ZK proofs.`);
@@ -228,6 +229,7 @@ class PayPolDaemon {
 
         let a2aCycleCounter = 0;
         let judgeCycleCounter = 0;
+        let conditionalCycleCounter = 0;
 
         while (this.isRunning) {
             try {
@@ -255,6 +257,13 @@ class PayPolDaemon {
                 if (judgeCycleCounter >= 12) {
                     judgeCycleCounter = 0;
                     await this.processAutoJudge();
+                }
+
+                // ═══ Conditional Rule Evaluation (every ~60s) ═══
+                conditionalCycleCounter++;
+                if (conditionalCycleCounter >= 12) {
+                    conditionalCycleCounter = 0;
+                    await this.processConditionalRules();
                 }
 
                 // ═══ Off-Ramp Status Sync (every ~30s) ═══
@@ -675,29 +684,18 @@ class PayPolDaemon {
     // ═══════════════════════════════════════════════════════════
     private async processOffRampStatusSync() {
         try {
-            const processingWithdrawals = await this.prisma.withdrawalRequest.findMany({
-                where: { status: 'PROCESSING', paypalPayoutId: { not: null } },
-                take: 10,
+            const dashboardUrl = process.env.DASHBOARD_URL || 'http://dashboard:3000';
+            const res = await fetch(`${dashboardUrl}/api/offramp/sync`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                signal: AbortSignal.timeout(15000),
             });
 
-            if (processingWithdrawals.length === 0) return;
+            if (!res.ok) return;
 
-            const dashboardUrl = process.env.DASHBOARD_URL || 'http://dashboard:3000';
-
-            for (const w of processingWithdrawals) {
-                try {
-                    const res = await fetch(`${dashboardUrl}/api/offramp/status?id=${w.id}`, {
-                        signal: AbortSignal.timeout(10000),
-                    });
-                    if (!res.ok) continue;
-
-                    const data = await res.json();
-                    if (data.status === 'COMPLETED') {
-                        console.log(`[DAEMON] [OffRamp] Withdrawal ${w.id.slice(0, 8)} completed! $${w.amountUSD} → ${w.paypalEmail}`);
-                    } else if (data.status === 'FAILED') {
-                        console.log(`[DAEMON] [OffRamp] Withdrawal ${w.id.slice(0, 8)} failed: ${data.reason}`);
-                    }
-                } catch { /* skip */ }
+            const data = await res.json();
+            if (data.synced > 0) {
+                console.log(`[DAEMON] [OffRamp] Synced ${data.synced} withdrawals: ${data.results?.map((r: any) => `${r.id.slice(0,8)}→${r.status}`).join(', ')}`);
             }
         } catch (error: any) {
             if (error.name !== 'TimeoutError' && error.code !== 'ECONNREFUSED') {
@@ -810,6 +808,280 @@ class PayPolDaemon {
 
         } catch (error: any) {
             console.error(`[DAEMON] [AutoJudge] Execution failed for job ${jobId}:`, error.reason || error.message);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // CONDITIONAL RULE ENGINE — Evaluate & Auto-Trigger
+    // Checks all 'Watching' rules every ~60s, evaluates conditions
+    // against live data (time, on-chain balances, prices), and
+    // auto-triggers via dashboard API when conditions are met.
+    // ═══════════════════════════════════════════════════════════
+
+    private async processConditionalRules() {
+        try {
+            const rules = await this.prisma.conditionalRule.findMany({
+                where: { status: 'Watching' }
+            });
+
+            if (rules.length === 0) return;
+
+            console.log(`[DAEMON] [Conditional] Evaluating ${rules.length} active rule(s)...`);
+
+            for (const rule of rules) {
+                try {
+                    // Skip if maxTriggers reached (unless -1 = infinite)
+                    if (rule.maxTriggers !== -1 && rule.triggerCount >= rule.maxTriggers) {
+                        await this.prisma.conditionalRule.update({
+                            where: { id: rule.id },
+                            data: { status: 'Triggered' }
+                        });
+                        continue;
+                    }
+
+                    // Skip if cooldown is still active (for recurring rules)
+                    if (rule.cooldownMinutes > 0 && rule.triggeredAt) {
+                        const cooldownEnd = new Date(rule.triggeredAt.getTime() + rule.cooldownMinutes * 60 * 1000);
+                        if (new Date() < cooldownEnd) {
+                            continue; // Still in cooldown period
+                        }
+                    }
+
+                    // Parse conditions
+                    let conditions: Array<{ type: string; param: string; operator: string; value: string }>;
+                    try {
+                        conditions = JSON.parse(rule.conditions);
+                    } catch {
+                        console.error(`[DAEMON] [Conditional] Rule "${rule.name}" has invalid conditions JSON. Skipping.`);
+                        continue;
+                    }
+
+                    if (!conditions || conditions.length === 0) continue;
+
+                    // Evaluate each condition
+                    const results: boolean[] = [];
+                    for (const cond of conditions) {
+                        const result = await this.evaluateCondition(cond);
+                        results.push(result);
+                    }
+
+                    // Apply AND/OR logic
+                    const allMet = rule.conditionLogic === 'AND'
+                        ? results.every(r => r)
+                        : results.some(r => r);
+
+                    if (allMet) {
+                        console.log(`[DAEMON] [Conditional] ⚡ Rule "${rule.name}" — ALL conditions MET! Triggering...`);
+                        await this.triggerConditionalRule(rule.id, rule.name);
+                    }
+                } catch (error: any) {
+                    console.error(`[DAEMON] [Conditional] Error evaluating rule "${rule.name}":`, error.message);
+                }
+            }
+        } catch (error: any) {
+            console.error(`[DAEMON] [Conditional] Engine error:`, error.message);
+        }
+    }
+
+    /**
+     * Route a single condition to the appropriate evaluator.
+     */
+    private async evaluateCondition(cond: { type: string; param: string; operator: string; value: string }): Promise<boolean> {
+        switch (cond.type) {
+            case 'date_time':
+                return this.evaluateDateTimeCondition(cond);
+            case 'wallet_balance':
+                return this.evaluateWalletBalanceCondition(cond);
+            case 'price_feed':
+                return this.evaluatePriceFeedCondition(cond);
+            case 'tvl_threshold':
+                return this.evaluateTvlThresholdCondition(cond);
+            case 'webhook':
+                return this.evaluateWebhookCondition(cond);
+            default:
+                console.warn(`[DAEMON] [Conditional] Unknown condition type: "${cond.type}". Treating as false.`);
+                return false;
+        }
+    }
+
+    /**
+     * date_time evaluator — Compare current UTC time against target date.
+     * Supports ISO dates ("2026-04-01"), natural patterns ("1st of month", "15th of month").
+     */
+    private evaluateDateTimeCondition(cond: { param: string; operator: string; value: string }): boolean {
+        const now = new Date();
+
+        // Handle "Nth of month" recurring pattern (e.g. "1st of month", "15th of month")
+        const monthDayMatch = cond.value.match(/^(\d{1,2})(st|nd|rd|th)?\s*(of\s*)?month$/i)
+            || cond.param.match(/^(\d{1,2})(st|nd|rd|th)?\s*(of\s*)?month$/i);
+
+        if (monthDayMatch) {
+            const targetDay = parseInt(monthDayMatch[1]);
+            const currentDay = now.getUTCDate();
+            return this.compareValues(currentDay, cond.operator, targetDay);
+        }
+
+        // Parse ISO date string (strip leading $ if present from UI)
+        const dateStr = (cond.value || cond.param).replace(/^\$/, '').trim();
+        const targetDate = new Date(dateStr);
+
+        if (isNaN(targetDate.getTime())) {
+            console.warn(`[DAEMON] [Conditional] Cannot parse date: "${cond.value}" / "${cond.param}"`);
+            return false;
+        }
+
+        // For == operator: compare date-only (ignore time)
+        if (cond.operator === '==') {
+            return now.toISOString().slice(0, 10) === targetDate.toISOString().slice(0, 10);
+        }
+
+        return this.compareValues(now.getTime(), cond.operator, targetDate.getTime());
+    }
+
+    /**
+     * wallet_balance evaluator — Query on-chain ERC20 balance.
+     * param: wallet address (0x...), value: target amount (e.g. "$50,000" or "50000")
+     */
+    private async evaluateWalletBalanceCondition(cond: { param: string; operator: string; value: string }): Promise<boolean> {
+        try {
+            const walletAddress = cond.param.trim();
+            if (!/^0x[a-fA-F0-9]{40}$/i.test(walletAddress)) {
+                console.warn(`[DAEMON] [Conditional] Invalid wallet address: "${walletAddress}"`);
+                return false;
+            }
+
+            const targetAmount = parseFloat(cond.value.replace(/[$,]/g, ''));
+            if (isNaN(targetAmount)) {
+                console.warn(`[DAEMON] [Conditional] Invalid balance value: "${cond.value}"`);
+                return false;
+            }
+
+            // Query AlphaUSD balance on-chain
+            const erc20 = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, this.provider);
+            const rawBalance: bigint = await erc20.balanceOf(walletAddress);
+            const balance = parseFloat(ethers.formatUnits(rawBalance, TOKEN_DECIMALS));
+
+            return this.compareValues(balance, cond.operator, targetAmount);
+        } catch (error: any) {
+            console.error(`[DAEMON] [Conditional] Balance query failed:`, error.message);
+            return false;
+        }
+    }
+
+    /**
+     * price_feed evaluator — Stablecoins on Tempo L1 are pegged at $1.00.
+     * Can be extended later with oracle/CoinGecko integration.
+     */
+    private evaluatePriceFeedCondition(cond: { param: string; operator: string; value: string }): boolean {
+        const token = cond.param.trim();
+        const knownStablecoins = ['alphausd', 'pathusd', 'betausd', 'thetausd'];
+
+        let currentPrice: number;
+        if (knownStablecoins.includes(token.toLowerCase())) {
+            currentPrice = 1.00; // Pegged stablecoins
+        } else {
+            console.warn(`[DAEMON] [Conditional] Unknown token "${token}". Defaulting to $1.00.`);
+            currentPrice = 1.00;
+        }
+
+        const targetPrice = parseFloat(cond.value.replace(/[$,]/g, ''));
+        if (isNaN(targetPrice)) {
+            console.warn(`[DAEMON] [Conditional] Invalid price value: "${cond.value}"`);
+            return false;
+        }
+
+        return this.compareValues(currentPrice, cond.operator, targetPrice);
+    }
+
+    /**
+     * tvl_threshold evaluator — Query ShieldVaultV2 token balance as TVL proxy.
+     */
+    private async evaluateTvlThresholdCondition(cond: { param: string; operator: string; value: string }): Promise<boolean> {
+        try {
+            const targetTvl = parseFloat(cond.value.replace(/[$,]/g, ''));
+            if (isNaN(targetTvl)) return false;
+
+            const erc20 = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, this.provider);
+            const rawBalance: bigint = await erc20.balanceOf(PAYPOL_SHIELD_V2_ADDRESS);
+            const tvl = parseFloat(ethers.formatUnits(rawBalance, TOKEN_DECIMALS));
+
+            return this.compareValues(tvl, cond.operator, targetTvl);
+        } catch (error: any) {
+            console.error(`[DAEMON] [Conditional] TVL query failed:`, error.message);
+            return false;
+        }
+    }
+
+    /**
+     * webhook evaluator — POST to webhook URL, check if response is truthy.
+     */
+    private async evaluateWebhookCondition(cond: { param: string; operator: string; value: string }): Promise<boolean> {
+        try {
+            const webhookUrl = cond.param.trim();
+            if (!webhookUrl.startsWith('http')) {
+                console.warn(`[DAEMON] [Conditional] Invalid webhook URL: "${webhookUrl}"`);
+                return false;
+            }
+
+            const res = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ source: 'paypol-daemon', check: true }),
+                signal: AbortSignal.timeout(10000),
+            });
+
+            if (!res.ok) return false;
+            const data = await res.json().catch(() => null);
+            // Truthy response body means condition is met
+            return !!(data && (data.result || data.ok || data.triggered || data === true));
+        } catch (error: any) {
+            console.warn(`[DAEMON] [Conditional] Webhook check failed for "${cond.param}":`, error.message);
+            return false;
+        }
+    }
+
+    /**
+     * Generic numeric comparison helper.
+     */
+    private compareValues(actual: number, operator: string, target: number): boolean {
+        switch (operator) {
+            case '>=': return actual >= target;
+            case '<=': return actual <= target;
+            case '==': return actual === target;
+            case '>':  return actual > target;
+            case '<':  return actual < target;
+            default:   return false;
+        }
+    }
+
+    /**
+     * Trigger a conditional rule by calling the dashboard API.
+     * Reuses existing PUT /api/conditional-payroll with action: 'trigger'.
+     */
+    private async triggerConditionalRule(ruleId: string, ruleName: string) {
+        try {
+            const dashboardUrl = process.env.DASHBOARD_URL || 'http://dashboard:3000';
+            const res = await fetch(`${dashboardUrl}/api/conditional-payroll`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: ruleId, action: 'trigger' }),
+                signal: AbortSignal.timeout(15000),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                console.error(`[DAEMON] [Conditional] Trigger API failed for "${ruleName}":`, (err as any).error || res.status);
+                return;
+            }
+
+            const data = await res.json() as any;
+            console.log(`[DAEMON] [Conditional] ✅ Rule "${ruleName}" triggered successfully! ${data.message || ''}`);
+        } catch (error: any) {
+            if (error.name === 'TimeoutError' || error.code === 'ECONNREFUSED') {
+                console.warn(`[DAEMON] [Conditional] Dashboard unreachable — will retry next cycle for "${ruleName}"`);
+            } else {
+                console.error(`[DAEMON] [Conditional] Trigger error for "${ruleName}":`, error.message);
+            }
         }
     }
 

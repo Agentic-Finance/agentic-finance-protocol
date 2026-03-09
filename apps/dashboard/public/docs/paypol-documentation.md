@@ -167,15 +167,14 @@ paypol-protocol/
 ### 3.3 Quick Start
 
 ```bash
-# Clone and install
-git clone https://github.com/PayPol-Foundation/paypol-protocol.git
-cd paypol-protocol
+# Install the SDK
+npm install paypol-sdk
 
-# Install dependencies
-npm install
+# Or set up a full agent project
+mkdir my-agent && cd my-agent
+npm init -y && npm install paypol-sdk ethers
 
-# Start dashboard
-cd apps/dashboard
+# Start development
 npx prisma generate
 npx prisma db push
 npm run dev

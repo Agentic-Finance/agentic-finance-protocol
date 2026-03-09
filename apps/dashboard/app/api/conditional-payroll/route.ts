@@ -32,7 +32,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { name, recipients, conditions, conditionLogic, note, maxTriggers } = body;
+        const { name, recipients, conditions, conditionLogic, note, maxTriggers, cooldownMinutes } = body;
 
         if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
             return NextResponse.json({ success: false, error: 'No recipients provided' }, { status: 400 });
@@ -49,7 +49,8 @@ export async function POST(req: Request) {
                 conditions: JSON.stringify(conditions),
                 conditionLogic: conditionLogic || 'AND',
                 note: note || '',
-                maxTriggers: maxTriggers || 1,
+                maxTriggers: maxTriggers ?? 1,
+                cooldownMinutes: cooldownMinutes ?? 0,
                 status: 'Watching',
             }
         });
@@ -124,12 +125,19 @@ export async function PUT(req: Request) {
             await prisma.$transaction(operations);
 
             // Update the rule's trigger count and status
+            const newTriggerCount = rule.triggerCount + 1;
+            // maxTriggers > 0 and reached → 'Triggered' (done)
+            // maxTriggers === -1 (infinite) → stays 'Watching' (recurring)
+            const newStatus = (rule.maxTriggers > 0 && newTriggerCount >= rule.maxTriggers)
+                ? 'Triggered'
+                : 'Watching';
+
             await prisma.conditionalRule.update({
                 where: { id },
                 data: {
                     triggerCount: { increment: 1 },
                     triggeredAt: new Date(),
-                    status: rule.maxTriggers === 1 ? 'Triggered' : 'Watching'
+                    status: newStatus,
                 }
             });
 

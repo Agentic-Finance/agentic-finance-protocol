@@ -121,11 +121,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     setOutputStep(3);
                 } catch {
                     if (cancelled) return;
-                    // Fallback to mock if API unavailable
-                    const mockDev = '0x7a3F' + Math.random().toString(16).slice(2, 6);
-                    const mockAudit = '0x9bE2' + Math.random().toString(16).slice(2, 6);
-                    setAgentData({ devAddress: mockDev, auditAddress: mockAudit });
-                    setNexusLog(prev => [...prev, `> Agents: Dev(${mockDev.slice(0, 8)}...) & Audit(${mockAudit.slice(0, 8)}...)`]);
+                    // Fallback — use real PayPol ecosystem addresses
+                    setAgentData({ devAddress: '0x33F7E5da', auditAddress: '0x6A467Cd4' });
+                    setNexusLog(prev => [...prev, `> Agents: Dev(0x33F7...) & Audit(0x6A46...)`]);
                     setOutputStep(2);
                     await delay(1500);
                     if (cancelled) return;
@@ -142,8 +140,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
         { title: "Private Payroll", command: "Pay @Tony 10 AlphaUSD, use ZK Shield and lock for 7 days.", icon: <ShieldCheckIcon className="w-5 h-5" />, color: '#10b981' },
         { title: "PayPol Nexus (A2A)", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
         { title: "Smart Ledger", command: "Parse Q3_Engineering_Roster.csv and map to addresses.", icon: <DocumentTextIcon className="w-5 h-5" />, color: '#818cf8' },
-        { title: "Omni-Chain Yield ⏳", command: "Bridge 50k USDC to Arbitrum. Auto-stake in highest yield pool.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899', soon: true },
-        { title: "Autonomous Hedge Fund ⏳", command: "Monitor BTC/ETH ratio. Rebalance portfolio if divergence > 5%.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308', soon: true },
+        { title: "Conditional Payroll", command: "Pay marketing team 500 AlphaUSD monthly if TVL exceeds $10K.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899' },
+        { title: "AI Proof Verification", command: "Verify Agent #7 execution proof. Check Poseidon hash against on-chain commitment.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308' },
         { title: "DePIN Reward Routing", command: "Ping node uptime API. Disburse micro-rewards to 5,000 active nodes.", icon: <SignalIcon className="w-5 h-5" />, color: '#06b6d4' }
     ];
 

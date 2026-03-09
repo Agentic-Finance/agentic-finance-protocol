@@ -46,8 +46,9 @@ interface MarketplaceStats {
 }
 
 const CATEGORIES = [
-    'security', 'defi', 'payroll', 'analytics', 'automation',
-    'compliance', 'governance', 'tax', 'nft', 'deployment',
+    'escrow', 'payments', 'payroll', 'streams', 'privacy',
+    'deployment', 'analytics', 'verification', 'orchestration',
+    'security', 'admin', 'defi', 'automation', 'compliance',
 ];
 
 const SOURCE_OPTIONS = [
@@ -228,9 +229,11 @@ result = crew.kickoff()`,
 const QUICK_START_STEPS = [
     {
         step: 1,
-        title: 'Clone the agent template',
-        code: `npx degit PayPol-Foundation/paypol-protocol/templates/agent-template my-agent
-cd my-agent && npm install`,
+        title: 'Install the SDK',
+        code: `npm install paypol-sdk
+# or start from scratch:
+mkdir my-agent && cd my-agent && npm init -y
+npm install paypol-sdk ethers`,
         icon: CommandLineIcon,
     },
     {
@@ -552,9 +555,6 @@ export default function DevelopersPage() {
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="text-[10px] text-slate-600 hidden md:inline">{TEMPLATES[activeTemplate].desc}</span>
-                                <a href={TEMPLATES[activeTemplate].github} target="_blank" rel="noopener noreferrer" className="text-[10px] text-slate-500 hover:text-indigo-400 transition-colors flex items-center gap-1">
-                                    <CodeBracketIcon className="w-3 h-3" /> Source
-                                </a>
                             </div>
                         </div>
                         {/* Install command bar */}
@@ -594,7 +594,6 @@ export default function DevelopersPage() {
                             { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol-protocol/eliza-plugin', npm: 'https://www.npmjs.com/package/@paypol-protocol/eliza-plugin' },
                             { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol-protocol/mcp-server', npm: 'https://www.npmjs.com/package/@paypol-protocol/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol', npm: 'https://clawhub.ai/skills/paypol' },
-                            { name: 'Olas', icon: '🔴', desc: 'Autonolas (coming soon)', color: 'red', pkg: 'paypol-olas', npm: '' },
                         ].map((int) => (
                             <a key={int.name} href={int.npm || undefined} target={int.npm ? '_blank' : undefined} rel={int.npm ? 'noopener noreferrer' : undefined} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-${int.color}-500/20 hover:bg-white/[0.03] transition-all text-center ${int.npm ? 'cursor-pointer' : ''}`}>
                                 <span className="text-2xl">{int.icon}</span>
@@ -652,7 +651,7 @@ export default function DevelopersPage() {
                 {/* ═══ PROTOCOL FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
                     <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">14 production features - 9 verified contracts - all live on Tempo L1</p>
+                    <p className="text-slate-500 text-sm mb-8 text-center">12 production features — 9 verified contracts — all live on Tempo L1</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
@@ -780,9 +779,9 @@ await client.delegateA2A({
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4">
-                        <span className="px-6 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-bold rounded-xl flex items-center gap-2 opacity-60 cursor-default">
-                            <CodeBracketIcon className="w-4 h-4" /> RFC Specification (Coming Soon)
-                        </span>
+                        <a href="/docs" className="px-6 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-bold rounded-xl flex items-center gap-2 hover:bg-indigo-500/20 transition-all">
+                            <CodeBracketIcon className="w-4 h-4" /> APS-1 Documentation
+                        </a>
                         <a href="https://www.npmjs.com/package/@paypol-protocol/aps-1" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 text-sm font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
                             npm install @paypol-protocol/aps-1
                         </a>
@@ -1018,12 +1017,62 @@ await client.delegateA2A({
                     </form>
                 </section>
 
-                <footer className="text-center py-8 border-t border-white/5">
-                    <p className="text-xs text-slate-600">
-                        PayPol Protocol &copy; 2026 &mdash; Agent Marketplace powered by NexusV2 Escrow on Tempo L1
-                    </p>
-                </footer>
             </div>
+
+            {/* Footer */}
+            <footer className="border-t border-white/5 bg-[#070C16]">
+                <div className="max-w-7xl mx-auto px-6 py-14">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+                        {/* Brand */}
+                        <div className="md:col-span-2">
+                            <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
+                                <Image src="/logo.png" alt="PayPol Protocol" width={140} height={36} className="h-9 w-auto object-contain" />
+                            </a>
+                            <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
+                                The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
+                            </p>
+                            <div className="mt-4 flex items-center gap-4">
+                                <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </a>
+                                <a href="mailto:team@paypol.xyz" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
+                                    team@paypol.xyz
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Resources */}
+                        <div>
+                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Resources</h4>
+                            <div className="flex flex-col gap-2.5">
+                                <a href="/community" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Blog</a>
+                                <a href="/docs/documentation" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Documentation</a>
+                                <a href="/docs/research-paper" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Research Paper</a>
+                                <a href="/protocol" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Protocol</a>
+                            </div>
+                        </div>
+
+                        {/* Product */}
+                        <div>
+                            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Product</h4>
+                            <div className="flex flex-col gap-2.5">
+                                <a href="/" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Launch App</a>
+                                <a href="/developers" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Developers</a>
+                                <a href="/verify" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">AI Proof Verifier</a>
+                                <a href="/showcase" className="text-sm text-slate-500 hover:text-emerald-400 transition-colors">Live Network</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+                        <p>&copy; 2026 PayPol Protocol. All rights reserved.</p>
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Live on Tempo Moderato (Chain 42431)</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }

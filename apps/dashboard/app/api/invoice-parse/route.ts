@@ -25,7 +25,7 @@ CRITICAL: Respond in valid JSON format only. No markdown formatting, no code blo
 
 For each line item found in the invoice, extract:
 - "name": The recipient name, company, or service description (human-readable)
-- "wallet": The blockchain wallet address if found in the invoice (0x...), otherwise "0x00...00"
+- "wallet": The FULL 42-character blockchain wallet address if found in the invoice (e.g. "0xA1b2C3d4E5f6A1b2C3d4E5f6A1b2C3d4E5f6A1b2"). Extract it exactly as written. If no wallet address is present, use "0x00...00"
 - "amount": The payment amount as a string number (e.g., "5000")
 - "token": Default to "AlphaUSD" unless a specific token/currency is mentioned
 - "note": Description, invoice reference, or service details
@@ -55,10 +55,11 @@ If you cannot extract any payment data, return:
 
 IMPORTANT:
 - Extract ALL line items from the invoice
-- Keep amounts as numbers without currency symbols
+- Keep amounts as numbers without currency symbols (e.g. "8500" not "$8,500")
 - If multiple currencies, note the currency in the token field
-- If wallet addresses are present, extract them accurately
-- Always include a descriptive note for each line item`;
+- If wallet addresses (0x followed by 40 hex characters) are present, extract them EXACTLY and IN FULL - never truncate
+- Always include a descriptive note for each line item
+- If the invoice mentions a single token/currency for all items, use that token for all`;
 
         const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
             { role: 'system', content: systemPrompt },

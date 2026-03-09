@@ -23,16 +23,16 @@ export async function GET(req: Request) {
             token: item.token || "AlphaUSD",
             isShielded: item.isShielded,
             isDiscovery: item.isDiscovery || false,
-            // 🌟 REAL-TIME SYNC: Expose actual status and deposit hash to the frontend
             status: item.status,
-            zkProof: item.zkProof 
+            zkProof: item.zkProof,
+            createdAt: item.createdAt,
         });
 
         return apiSuccess({
             pending: pending.map(mapToFrontend),
             awaiting: pending.map(mapToFrontend),
-            // Send everything that is currently processing or completed
-            vaulted: payloads.filter((p: any) => p.status === "PENDING" || p.status === "PROCESSING" || p.status === "COMPLETED").map(mapToFrontend)
+            // Send everything that is currently processing, completed, or failed
+            vaulted: payloads.filter((p: any) => ["PENDING", "PROCESSING", "COMPLETED", "FAILED"].includes(p.status)).map(mapToFrontend)
         });
     } catch (error) {
         return logAndReturn("EMPLOYEES_GET", error, "Database error");

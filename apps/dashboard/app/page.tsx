@@ -17,7 +17,6 @@ const NetworkChart = lazy(() => import('./components/NetworkChart'));
 const ProtocolDashboard = lazy(() => import('./components/ProtocolDashboard'));
 const Boardroom = lazy(() => import('./components/Boardroom'));
 const ActiveAgents = lazy(() => import('./components/ActiveAgents'));
-const LedgerHistory = lazy(() => import('./components/LedgerHistory'));
 const TimeVault = lazy(() => import('./components/TimeVault'));
 const JudgeDashboard = lazy(() => import('./components/JudgeDashboard'));
 const AutoJudgePanel = lazy(() => import('./components/AutoJudgePanel'));
@@ -139,16 +138,6 @@ export default function Dashboard() {
         (awaitingTotalAmountNum + protocolFeeNum + shieldFeeNum).toFixed(2),
         [awaitingTotalAmountNum, protocolFeeNum, shieldFeeNum]
     );
-
-    // Recent settlements (last 24h) for SettlementReceipt panel
-    const recentSettlements = useMemo(() => {
-        const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-        return history.filter(h => {
-            if (!h.date) return false;
-            const txTime = new Date(h.date).getTime();
-            return txTime > cutoff;
-        });
-    }, [history]);
 
     // ==========================================
     // MEMOIZED CONTACTS (Phase 2.7) - was useEffect+setState, now useMemo
@@ -703,33 +692,27 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
                     <div className="lg:col-span-8 space-y-6 sm:space-y-10">
-                        <Suspense fallback={<BoardroomSkeleton />}>
-                            <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
-                        </Suspense>
-
-                        {recentSettlements.length > 0 && (
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <SettlementReceipt settlements={recentSettlements} settlementRef={settlementRef} />
+                        {isAdmin && (
+                            <Suspense fallback={<BoardroomSkeleton />}>
+                                <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
                             </Suspense>
                         )}
 
-                        <Suspense fallback={<SectionSkeleton />}>
-                            <AutoJudgePanel />
-                        </Suspense>
+                        {history.length > 0 && (
+                            <Suspense fallback={<SectionSkeleton />}>
+                                <SettlementReceipt settlements={history} settlementRef={settlementRef} />
+                            </Suspense>
+                        )}
+
+                        {/* AutoJudgePanel, JudgeDashboard → admin only */}
 
                         <Suspense fallback={<SectionSkeleton />}>
-                            <JudgeDashboard />
+                            <FiatOffRamp walletAddress={walletAddress || ''} />
                         </Suspense>
 
                         <Suspense fallback={<SectionSkeleton />}>
                             <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
                         </Suspense>
-
-                        <div ref={historyRef}>
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <LedgerHistory pendingTxs={pendingTxs} history={history} exportLedgerToCSV={exportLedgerToCSV} expandedTx={expandedTx} setExpandedTx={setExpandedTx} historyRef={historyRef} />
-                            </Suspense>
-                        </div>
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
@@ -740,9 +723,6 @@ export default function Dashboard() {
                         </div>
                         <Suspense fallback={<SidebarSkeleton />}>
                             <EscrowTracker walletAddress={walletAddress} />
-                        </Suspense>
-                        <Suspense fallback={<SidebarSkeleton />}>
-                            <FiatOffRamp walletAddress={walletAddress || ''} />
                         </Suspense>
                     </div>
                 </div>

@@ -12,19 +12,23 @@ interface TerminalFooterProps {
     omniFileRef: React.RefObject<HTMLInputElement | null>;
     processCSV: (file: File) => void;
     aiPrompt: string;
-    // New: Invoice-to-Pay
+    // Invoice-to-Pay
     onInvoiceClick: () => void;
-    // New: Conditional Payroll
+    // Conditional Payroll
     showConditionBuilder: boolean;
     onToggleConditions: () => void;
     hasConditions: boolean;
+    // Total amount preview
+    totalAmount?: number;
+    intentCount?: number;
 }
 
 function TerminalFooter({
     isPayroll, isA2aActive, hasReadyIntents,
     handleUploadClick, executePayroll, handleDiscoverAgents, resetTerminal,
     omniFileRef, processCSV, aiPrompt,
-    onInvoiceClick, showConditionBuilder, onToggleConditions, hasConditions
+    onInvoiceClick, showConditionBuilder, onToggleConditions, hasConditions,
+    totalAmount, intentCount,
 }: TerminalFooterProps) {
     return (
         <div className="mt-6 pt-5 border-t border-white/[0.05] flex flex-wrap justify-between items-center gap-4">
@@ -41,7 +45,7 @@ function TerminalFooter({
                         </button>
                         <input
                             type="file"
-                            accept=".csv, .xls, .xlsx"
+                            accept=".csv,.txt,.xls,.xlsx"
                             className="hidden"
                             ref={omniFileRef}
                             onChange={(e) => {
@@ -106,7 +110,10 @@ function TerminalFooter({
                                 : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] cursor-not-allowed'
                         }`}
                     >
-                        {hasConditions ? '⚡ Deploy Conditional' : 'Deploy Protocol'}
+                        {hasConditions
+                            ? `Deploy Conditional${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
+                            : `Deploy Protocol${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
+                        }
                     </button>
                 )}
 

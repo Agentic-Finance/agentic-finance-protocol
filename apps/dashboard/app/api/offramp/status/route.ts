@@ -30,22 +30,62 @@ export async function GET(req: Request) {
 
         if (paypalStatus.status === 'SUCCESS') {
           const item = paypalStatus.items[0];
-          await prisma.withdrawalRequest.update({
-            where: { id },
-            data: {
-              status: 'COMPLETED',
-              paypalPayoutItemId: item?.payoutItemId,
-              paypalTransactionId: item?.transactionId,
-              paypalFee: item?.fee ? parseFloat(item.fee) : 0,
-              completedAt: new Date(),
-            },
-          });
+          const itemStatus = item?.status || 'UNKNOWN';
 
+          // Check ITEM-level status (batch SUCCESS doesn't mean item completed)
+          if (itemStatus === 'SUCCESS') {
+            await prisma.withdrawalRequest.update({
+              where: { id },
+              data: {
+                status: 'COMPLETED',
+                paypalPayoutItemId: item?.payoutItemId,
+                paypalTransactionId: item?.transactionId,
+                paypalFee: item?.fee ? parseFloat(item.fee) : 0,
+                completedAt: new Date(),
+              },
+            });
+            return NextResponse.json({
+              success: true, status: 'COMPLETED',
+              paypalTransactionId: item?.transactionId, paypalFee: item?.fee,
+            });
+          }
+
+          if (itemStatus === 'UNCLAIMED') {
+            // Recipient doesn't have a PayPal account — money is held for 30 days
+            await prisma.withdrawalRequest.update({
+              where: { id },
+              data: {
+                status: 'FAILED',
+                paypalPayoutItemId: item?.payoutItemId,
+                paypalTransactionId: item?.transactionId,
+                failureReason: item?.error || 'Recipient email is not registered on PayPal. Funds will be returned in 30 days.',
+              },
+            });
+            return NextResponse.json({
+              success: true, status: 'FAILED',
+              reason: 'RECEIVER_UNREGISTERED — email is not a PayPal account',
+            });
+          }
+
+          if (itemStatus === 'RETURNED' || itemStatus === 'BLOCKED' || itemStatus === 'REFUNDED' || itemStatus === 'FAILED') {
+            await prisma.withdrawalRequest.update({
+              where: { id },
+              data: {
+                status: 'FAILED',
+                paypalPayoutItemId: item?.payoutItemId,
+                failureReason: item?.error || `PayPal item status: ${itemStatus}`,
+              },
+            });
+            return NextResponse.json({
+              success: true, status: 'FAILED',
+              reason: item?.error || itemStatus,
+            });
+          }
+
+          // Item still PENDING or ONHOLD — keep as PROCESSING
           return NextResponse.json({
-            success: true,
-            status: 'COMPLETED',
-            paypalTransactionId: item?.transactionId,
-            paypalFee: item?.fee,
+            success: true, status: 'PROCESSING',
+            paypalBatchStatus: paypalStatus.status, paypalItemStatus: itemStatus,
           });
         } else if (paypalStatus.status === 'DENIED' || paypalStatus.status === 'CANCELED') {
           const item = paypalStatus.items[0];
@@ -56,18 +96,15 @@ export async function GET(req: Request) {
               failureReason: item?.error || `PayPal batch status: ${paypalStatus.status}`,
             },
           });
-
           return NextResponse.json({
-            success: true,
-            status: 'FAILED',
+            success: true, status: 'FAILED',
             reason: item?.error || paypalStatus.status,
           });
         }
 
-        // Still processing
+        // Still processing at batch level
         return NextResponse.json({
-          success: true,
-          status: 'PROCESSING',
+          success: true, status: 'PROCESSING',
           paypalBatchStatus: paypalStatus.status,
         });
       } catch {

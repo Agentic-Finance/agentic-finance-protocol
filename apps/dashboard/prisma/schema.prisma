@@ -321,6 +321,7 @@ model ConditionalRule {
   status          String    @default("Watching")  // Watching, Paused, Triggered, Expired
   triggerCount    Int       @default(0)
   maxTriggers     Int       @default(1)           // How many times to trigger (-1 = infinite)
+  cooldownMinutes Int       @default(0)           // Min minutes between triggers (0=one-time, 10080=weekly, 43200=monthly)
   note            String?
   createdAt       DateTime  @default(now())
   triggeredAt     DateTime?

@@ -80,3 +80,19 @@ model AgentJob {
   @@index([deadline])
   @@index([clientWallet])
 }
+
+// ⚡ Conditional Payroll Rules — daemon evaluates these every 60s
+model ConditionalRule {
+  id              String    @id @default(uuid())
+  name            String
+  recipients      String                          // JSON: [{ name, wallet, amount, token, note }]
+  conditions      String                          // JSON: [{ type, param, operator, value }]
+  conditionLogic  String    @default("AND")       // AND / OR
+  status          String    @default("Watching")  // Watching, Paused, Triggered, Expired
+  triggerCount    Int       @default(0)
+  maxTriggers     Int       @default(1)           // -1 = infinite
+  cooldownMinutes Int       @default(0)           // 0=one-time, 10080=weekly, 43200=monthly
+  note            String?
+  createdAt       DateTime  @default(now())
+  triggeredAt     DateTime?
+}

@@ -101,6 +101,22 @@ export default function PayPolAdminPage() {
     const [escrowCount, setEscrowCount] = useState(0);
     const [isLoadingRules, setIsLoadingRules] = useState(false);
     const [isLoadingTx, setIsLoadingTx] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [txFilter, setTxFilter] = useState<string>('all');
+    const [txSearch, setTxSearch] = useState('');
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [agentStats, setAgentStats] = useState<{ total: number; totalJobs: number }>({ total: 0, totalJobs: 0 });
+    const [healthChecks, setHealthChecks] = useState<{
+        tempo: { status: 'online' | 'error'; latency: number; blockNumber: string };
+        aiEngine: { status: 'online' | 'error'; latency: number };
+        daemon: { status: 'online' | 'error' | 'idle'; detail: string };
+        lastChecked: Date | null;
+    }>({
+        tempo: { status: 'online', latency: 0, blockNumber: '—' },
+        aiEngine: { status: 'online', latency: 0 },
+        daemon: { status: 'idle', detail: 'Checking...' },
+        lastChecked: null,
+    });
 
     // ── Fetchers ──
     const fetchRules = useCallback(async () => {
@@ -118,7 +134,26 @@ export default function PayPolAdminPage() {
         try {
             const res = await fetch('/api/employees');
             const data = await res.json();
-            if (data.success) setTransactions(data.employees || []);
+            if (data.success) {
+                const all = [...(data.pending || []), ...(data.vaulted || [])];
+                const seen = new Set<string>();
+                const unique = all.filter((item: any) => {
+                    if (seen.has(item.id)) return false;
+                    seen.add(item.id);
+                    return true;
+                });
+                const mapped: Transaction[] = unique.map((item: any) => ({
+                    id: item.id,
+                    recipientName: item.name || 'Unknown',
+                    recipientAddress: item.wallet_address || '',
+                    amount: String(item.amount || 0),
+                    token: item.token || 'AlphaUSD',
+                    status: item.status || 'Draft',
+                    note: item.note || '',
+                    createdAt: item.createdAt || new Date().toISOString(),
+                }));
+                setTransactions(mapped);
+            }
         } catch { /* silent */ }
         setIsLoadingTx(false);
     }, []);
@@ -139,12 +174,104 @@ export default function PayPolAdminPage() {
         } catch { /* silent */ }
     }, []);
 
+    const fetchAgentStats = useCallback(async () => {
+        try {
+            const res = await fetch('/api/marketplace/agents');
+            const data = await res.json();
+            if (data.agents) {
+                setAgentStats({
+                    total: data.agents.length,
+                    totalJobs: data.agents.reduce((s: number, a: any) => s + (a.totalJobs || 0), 0),
+                });
+            }
+        } catch { /* silent */ }
+    }, []);
+
+    const runHealthChecks = useCallback(async () => {
+        // 1. Tempo RPC health — fetch latest block number + latency
+        const tempoStart = performance.now();
+        try {
+            const res = await fetch('https://rpc.moderato.tempo.xyz', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_blockNumber', params: [], id: 1 }),
+            });
+            const data = await res.json();
+            const latency = Math.round(performance.now() - tempoStart);
+            const blockNum = parseInt(data.result, 16);
+            setHealthChecks(prev => ({
+                ...prev,
+                tempo: { status: 'online', latency, blockNumber: blockNum.toLocaleString() },
+                lastChecked: new Date(),
+            }));
+        } catch {
+            setHealthChecks(prev => ({
+                ...prev,
+                tempo: { status: 'error', latency: 0, blockNumber: '—' },
+                lastChecked: new Date(),
+            }));
+        }
+
+        // 2. AI Engine health — ping the parse endpoint
+        const aiStart = performance.now();
+        try {
+            const res = await fetch('/api/ai-parse', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: 'health check', dryRun: true }),
+            });
+            const latency = Math.round(performance.now() - aiStart);
+            setHealthChecks(prev => ({
+                ...prev,
+                aiEngine: { status: res.ok ? 'online' : 'error', latency },
+            }));
+        } catch {
+            setHealthChecks(prev => ({
+                ...prev,
+                aiEngine: { status: 'error', latency: 0 },
+            }));
+        }
+
+        // 3. Daemon health — check conditional rules last triggered time
+        try {
+            const res = await fetch('/api/conditional-payroll');
+            const data = await res.json();
+            const activeRules = (data.rules || []).filter((r: any) => r.status === 'Watching');
+            const lastTriggered = (data.rules || [])
+                .filter((r: any) => r.triggeredAt)
+                .sort((a: any, b: any) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime())[0];
+            const detail = activeRules.length > 0
+                ? `${activeRules.length} rules monitored · 60s cycle`
+                : 'No active rules';
+            setHealthChecks(prev => ({
+                ...prev,
+                daemon: {
+                    status: activeRules.length > 0 ? 'online' : 'idle',
+                    detail: lastTriggered ? `${detail} · Last trigger: ${timeAgo(lastTriggered.triggeredAt)}` : detail,
+                },
+            }));
+        } catch {
+            setHealthChecks(prev => ({
+                ...prev,
+                daemon: { status: 'error', detail: 'Cannot reach daemon' },
+            }));
+        }
+    }, []);
+
+    const refreshAll = useCallback(async () => {
+        await Promise.all([fetchRules(), fetchTransactions(), fetchEscrows(), fetchWorkspaces(), fetchAgentStats()]);
+        setLastUpdated(new Date());
+    }, [fetchRules, fetchTransactions, fetchEscrows, fetchWorkspaces, fetchAgentStats]);
+
     useEffect(() => {
-        fetchRules();
-        fetchTransactions();
-        fetchEscrows();
-        fetchWorkspaces();
-    }, [fetchRules, fetchTransactions, fetchEscrows, fetchWorkspaces]);
+        refreshAll();
+        runHealthChecks();
+        // Auto-refresh every 30s
+        const interval = setInterval(() => { if (!document.hidden) refreshAll(); }, 30000);
+        // Health checks every 60s
+        const healthInterval = setInterval(() => { if (!document.hidden) runHealthChecks(); }, 60000);
+        return () => { clearInterval(interval); clearInterval(healthInterval); };
+    }, [refreshAll, runHealthChecks]);
 
     // ── Rule Actions ──
     const handleRuleAction = async (id: string, action: 'pause' | 'resume' | 'trigger' | 'delete') => {
@@ -171,12 +298,29 @@ export default function PayPolAdminPage() {
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
+    // Filtered transactions
+    const filteredTransactions = transactions.filter(tx => {
+        const matchesFilter = txFilter === 'all' || tx.status === txFilter;
+        const matchesSearch = !txSearch || tx.recipientName?.toLowerCase().includes(txSearch.toLowerCase())
+            || tx.recipientAddress?.toLowerCase().includes(txSearch.toLowerCase())
+            || tx.note?.toLowerCase().includes(txSearch.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
+
     return (
         <div className="min-h-screen bg-[#111B2E] text-slate-200 font-sans flex">
+            {/* Mobile sidebar overlay */}
+            {mobileSidebarOpen && (
+                <div className="fixed inset-0 bg-black/60 z-[55] md:hidden" onClick={() => setMobileSidebarOpen(false)} />
+            )}
+
             {/* ════════════════════════════════════════════ */}
             {/* SIDEBAR                                      */}
             {/* ════════════════════════════════════════════ */}
-            <aside className={`fixed top-0 left-0 h-screen bg-[#141924] border-r border-white/[0.06] z-50 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'}`}>
+            <aside className={`fixed top-0 left-0 h-screen bg-[#141924] border-r border-white/[0.06] z-[60] flex flex-col transition-all duration-300
+                ${sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'}
+                ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            `}>
                 {/* Logo */}
                 <div className={`h-20 flex items-center border-b border-white/[0.06] px-5 ${sidebarCollapsed ? 'justify-center' : ''}`}>
                     {sidebarCollapsed ? (
@@ -210,7 +354,7 @@ export default function PayPolAdminPage() {
                         return (
                             <button
                                 key={item.id}
-                                onClick={() => setActiveSection(item.id)}
+                                onClick={() => { setActiveSection(item.id); setMobileSidebarOpen(false); }}
                                 className={`w-full flex items-center gap-3 rounded-xl transition-all duration-200 group ${
                                     sidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'
                                 } ${
@@ -256,27 +400,40 @@ export default function PayPolAdminPage() {
             {/* ════════════════════════════════════════════ */}
             {/* MAIN CONTENT                                 */}
             {/* ════════════════════════════════════════════ */}
-            <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-[72px]' : 'ml-[260px]'}`}>
+            <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'md:ml-[72px]' : 'md:ml-[260px]'}`}>
                 {/* Top Bar */}
-                <header className="h-20 border-b border-white/[0.06] bg-[#111B2E]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8">
-                    <div>
-                        <h1 className="text-lg font-bold text-white">
-                            {activeSection === 'overview' && 'Command Center'}
-                            {activeSection === 'conditional' && 'Conditional Rules'}
-                            {activeSection === 'arbitration' && 'Arbitration Node'}
-                            {activeSection === 'transactions' && 'Transaction Ledger'}
-                            {activeSection === 'system' && 'System Health'}
-                        </h1>
-                        <p className="text-[11px] text-slate-500 mt-0.5">{dateStr}</p>
-                    </div>
+                <header className="h-20 border-b border-white/[0.06] bg-[#111B2E]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-4 md:px-8">
                     <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                            All Systems Nominal
+                        {/* Mobile menu button */}
+                        <button onClick={() => setMobileSidebarOpen(true)} className="md:hidden p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                        </button>
+                        <div>
+                            <h1 className="text-lg font-bold text-white">
+                                {activeSection === 'overview' && 'Command Center'}
+                                {activeSection === 'conditional' && 'Conditional Rules'}
+                                {activeSection === 'arbitration' && 'Arbitration Node'}
+                                {activeSection === 'transactions' && 'Transaction Ledger'}
+                                {activeSection === 'system' && 'System Health'}
+                            </h1>
+                            <p className="text-[11px] text-slate-500 mt-0.5">
+                                {dateStr}
+                                {lastUpdated && <span className="ml-2 text-slate-600">· Updated {timeAgo(lastUpdated.toISOString())}</span>}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 md:gap-3">
+                        <span className={`hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
+                            healthChecks.tempo.status === 'online'
+                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                        }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${healthChecks.tempo.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}></span>
+                            {healthChecks.tempo.status === 'online' ? `Tempo · ${healthChecks.tempo.latency}ms` : 'Tempo Offline'}
                         </span>
-                        <span className="px-3 py-1.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest">
-                            Tempo Network
-                        </span>
+                        <button onClick={refreshAll} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white" title="Refresh all data">
+                            <ArrowPathIcon className="w-4 h-4" />
+                        </button>
                     </div>
                 </header>
 
@@ -286,16 +443,16 @@ export default function PayPolAdminPage() {
                     {activeSection === 'overview' && (
                         <div className="animate-in fade-in duration-300 space-y-8">
                             {/* KPI Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+                            <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5">
                                 <KpiCard
-                                    title="Total Transactions"
+                                    title="Transactions"
                                     value={String(transactions.length)}
                                     subtitle={`${pendingTx} pending · ${completedTx} completed`}
                                     icon={<ClockIcon className="w-5 h-5" />}
                                     accent="indigo"
                                 />
                                 <KpiCard
-                                    title="Transaction Volume"
+                                    title="Volume"
                                     value={`$${totalTxValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                                     subtitle="Across all payloads"
                                     icon={<ArrowTrendingUpIcon className="w-5 h-5" />}
@@ -314,6 +471,20 @@ export default function PayPolAdminPage() {
                                     subtitle="Pending arbitration"
                                     icon={<ScaleIcon className="w-5 h-5" />}
                                     accent="rose"
+                                />
+                                <KpiCard
+                                    title="Marketplace Agents"
+                                    value={String(agentStats.total)}
+                                    subtitle={`${agentStats.totalJobs} total jobs processed`}
+                                    icon={<CpuChipIcon className="w-5 h-5" />}
+                                    accent="indigo"
+                                />
+                                <KpiCard
+                                    title="Tempo Network"
+                                    value={healthChecks.tempo.status === 'online' ? `${healthChecks.tempo.latency}ms` : 'Offline'}
+                                    subtitle={`Block #${healthChecks.tempo.blockNumber}`}
+                                    icon={<CubeTransparentIcon className="w-5 h-5" />}
+                                    accent="emerald"
                                 />
                             </div>
 
@@ -470,10 +641,13 @@ export default function PayPolAdminPage() {
                                 <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
                                     <BoltIcon className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
                                     <h3 className="text-lg font-bold text-white mb-2">No Conditional Rules Yet</h3>
-                                    <p className="text-sm text-slate-500 max-w-md mx-auto">
-                                        Create rules from the OmniTerminal by clicking the Conditional button.
-                                        Rules will appear here once deployed.
+                                    <p className="text-sm text-slate-500 max-w-md mx-auto mb-6">
+                                        Create If-This-Then-Pay automation rules from the Cortex terminal.
+                                        The daemon checks conditions every 60 seconds.
                                     </p>
+                                    <a href="/cortex" className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 rounded-xl text-sm font-bold transition-all">
+                                        <BoltIcon className="w-4 h-4" /> Create Rule in Cortex
+                                    </a>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -602,49 +776,97 @@ export default function PayPolAdminPage() {
                                 </button>
                             </div>
 
-                            {transactions.length === 0 ? (
+                            {/* Search & Filter Bar */}
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                <div className="relative flex-1">
+                                    <EyeIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name, address, or note..."
+                                        value={txSearch}
+                                        onChange={e => setTxSearch(e.target.value)}
+                                        className="w-full bg-[#141924] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500/40 transition-colors"
+                                    />
+                                </div>
+                                <div className="flex items-center gap-1.5 bg-[#141924] border border-white/[0.08] rounded-xl p-1">
+                                    {['all', 'Draft', 'PENDING', 'PROCESSING', 'COMPLETED'].map(f => (
+                                        <button
+                                            key={f}
+                                            onClick={() => setTxFilter(f)}
+                                            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                                                txFilter === f ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-slate-500 hover:text-white'
+                                            }`}
+                                        >
+                                            {f === 'all' ? 'All' : f}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {filteredTransactions.length === 0 ? (
                                 <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
                                     <ClockIcon className="w-12 h-12 text-indigo-500/30 mx-auto mb-4" />
-                                    <h3 className="text-lg font-bold text-white mb-2">No Transactions</h3>
-                                    <p className="text-sm text-slate-500">Transactions will appear here once payrolls are deployed.</p>
+                                    <h3 className="text-lg font-bold text-white mb-2">{transactions.length === 0 ? 'No Transactions' : 'No Matching Transactions'}</h3>
+                                    <p className="text-sm text-slate-500 mb-6">
+                                        {transactions.length === 0
+                                            ? 'Submit payrolls from the Cortex terminal to see them here.'
+                                            : 'Try adjusting your search or filter.'}
+                                    </p>
+                                    {transactions.length === 0 && (
+                                        <a href="/cortex" className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 rounded-xl text-sm font-bold transition-all">
+                                            <DocumentTextIcon className="w-4 h-4" /> Go to Cortex
+                                        </a>
+                                    )}
                                 </div>
                             ) : (
                                 <div className="bg-[#141924] border border-white/[0.06] rounded-2xl overflow-hidden">
+                                    <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b border-white/[0.06] bg-white/[0.01]">
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Status</th>
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Recipient</th>
-                                                <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Address</th>
+                                                <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5 hidden md:table-cell">Address</th>
                                                 <th className="text-right text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Amount</th>
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Token</th>
-                                                <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Note</th>
+                                                <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5 hidden lg:table-cell">Note</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {transactions.map(tx => (
+                                            {filteredTransactions.map(tx => (
                                                 <tr key={tx.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
                                                     <td className="py-3.5 px-5">
                                                         <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider ${
                                                             tx.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400'
+                                                            : tx.status === 'FAILED' ? 'bg-red-500/10 text-red-400'
                                                             : tx.status === 'PENDING' || tx.status === 'PROCESSING' ? 'bg-amber-500/10 text-amber-400'
                                                             : 'bg-slate-500/10 text-slate-400'
                                                         }`}>
                                                             <span className={`w-1.5 h-1.5 rounded-full ${
-                                                                tx.status === 'COMPLETED' ? 'bg-emerald-400' : tx.status === 'PENDING' || tx.status === 'PROCESSING' ? 'bg-amber-400 animate-pulse' : 'bg-slate-400'
+                                                                tx.status === 'COMPLETED' ? 'bg-emerald-400' : tx.status === 'FAILED' ? 'bg-red-400' : tx.status === 'PENDING' || tx.status === 'PROCESSING' ? 'bg-amber-400 animate-pulse' : 'bg-slate-400'
                                                             }`}></span>
                                                             {tx.status}
                                                         </span>
                                                     </td>
                                                     <td className="py-3.5 px-5 font-medium text-white">{tx.recipientName || '-'}</td>
-                                                    <td className="py-3.5 px-5 font-mono text-xs text-slate-400">{tx.recipientAddress ? `${tx.recipientAddress.slice(0, 8)}...${tx.recipientAddress.slice(-6)}` : '-'}</td>
+                                                    <td className="py-3.5 px-5 font-mono text-xs text-slate-400 hidden md:table-cell">{tx.recipientAddress ? `${tx.recipientAddress.slice(0, 8)}...${tx.recipientAddress.slice(-6)}` : '-'}</td>
                                                     <td className="py-3.5 px-5 text-right font-mono font-bold text-white tabular-nums">{parseFloat(tx.amount).toFixed(2)}</td>
                                                     <td className="py-3.5 px-5 text-xs text-slate-400">{tx.token}</td>
-                                                    <td className="py-3.5 px-5 text-xs text-slate-500 truncate max-w-[200px]">{tx.note || '-'}</td>
+                                                    <td className="py-3.5 px-5 text-xs text-slate-500 truncate max-w-[200px] hidden lg:table-cell">{tx.note || '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
+                                    </div>
+                                    {/* Table footer with count */}
+                                    <div className="px-5 py-3 border-t border-white/[0.04] flex items-center justify-between">
+                                        <span className="text-[10px] text-slate-600 font-mono">
+                                            Showing {filteredTransactions.length} of {transactions.length} transactions
+                                        </span>
+                                        <span className="text-[10px] text-slate-600 font-mono">
+                                            Total: ${filteredTransactions.reduce((s, t) => s + parseFloat(t.amount || '0'), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        </span>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -653,13 +875,44 @@ export default function PayPolAdminPage() {
                     {/* ─── SYSTEM HEALTH ─── */}
                     {activeSection === 'system' && (
                         <div className="animate-in fade-in duration-300 space-y-6">
+                            {/* Health Check Header */}
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm text-slate-500">
+                                    Live system health checks.
+                                    {healthChecks.lastChecked && <span className="ml-1">Last checked {timeAgo(healthChecks.lastChecked.toISOString())}.</span>}
+                                </p>
+                                <button onClick={runHealthChecks} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold text-slate-300 transition-all">
+                                    <ArrowPathIcon className="w-4 h-4" />
+                                    Re-check
+                                </button>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                                <SystemCard title="Tempo Network" status="online" detail="Block latency: ~2.1s" icon={<CubeTransparentIcon className="w-5 h-5" />} />
-                                <SystemCard title="AI Parsing Engine" status="online" detail="GPT-4o-mini · Avg 1.2s response" icon={<CpuChipIcon className="w-5 h-5" />} />
-                                <SystemCard title="Condition Monitor" status={watchingRules > 0 ? 'online' : 'idle'} detail={`${watchingRules} rules actively watched`} icon={<BoltIcon className="w-5 h-5" />} />
-                                <SystemCard title="Boardroom Queue" status={pendingTx > 0 ? 'online' : 'idle'} detail={`${pendingTx} payloads pending`} icon={<DocumentTextIcon className="w-5 h-5" />} />
-                                <SystemCard title="Escrow Vault" status={escrowCount > 0 ? 'active' : 'idle'} detail={`${escrowCount} active escrows`} icon={<ScaleIcon className="w-5 h-5" />} />
-                                <SystemCard title="ZK Privacy Shield" status="standby" detail="Ready for shielded execution" icon={<ShieldCheckIcon className="w-5 h-5" />} />
+                                <SystemCard
+                                    title="Tempo Network"
+                                    status={healthChecks.tempo.status}
+                                    detail={healthChecks.tempo.status === 'online'
+                                        ? `Block #${healthChecks.tempo.blockNumber} · ${healthChecks.tempo.latency}ms latency`
+                                        : 'Cannot reach Tempo RPC'}
+                                    icon={<CubeTransparentIcon className="w-5 h-5" />}
+                                />
+                                <SystemCard
+                                    title="AI Parsing Engine"
+                                    status={healthChecks.aiEngine.status}
+                                    detail={healthChecks.aiEngine.status === 'online'
+                                        ? `GPT-4o-mini · ${healthChecks.aiEngine.latency}ms response`
+                                        : 'AI endpoint unreachable'}
+                                    icon={<CpuChipIcon className="w-5 h-5" />}
+                                />
+                                <SystemCard
+                                    title="Condition Monitor"
+                                    status={healthChecks.daemon.status}
+                                    detail={healthChecks.daemon.detail}
+                                    icon={<BoltIcon className="w-5 h-5" />}
+                                />
+                                <SystemCard title="Boardroom Queue" status={pendingTx > 0 ? 'online' : 'idle'} detail={`${pendingTx} payloads pending · ${completedTx} completed`} icon={<DocumentTextIcon className="w-5 h-5" />} />
+                                <SystemCard title="Escrow Vault" status={escrowCount > 0 ? 'active' : 'idle'} detail={`${escrowCount} active escrows on NexusV2`} icon={<ScaleIcon className="w-5 h-5" />} />
+                                <SystemCard title="ZK Privacy Shield" status="standby" detail="PlonkVerifierV2 · Circom V2 + Poseidon" icon={<ShieldCheckIcon className="w-5 h-5" />} />
                             </div>
 
                             {/* API Endpoints */}
@@ -678,18 +931,47 @@ export default function PayPolAdminPage() {
                                         { method: 'CRUD', path: '/api/escrow', desc: 'Escrow & arbitration' },
                                         { method: 'CRUD', path: '/api/autopilot', desc: 'Recurring payroll automation' },
                                         { method: 'GET', path: '/api/marketplace/agents', desc: 'A2A Agent discovery' },
+                                        { method: 'POST', path: '/api/marketplace/settle', desc: 'Settle agent jobs on-chain' },
+                                        { method: 'GET', path: '/api/live/tvl', desc: 'Live TVL from ShieldVaultV2' },
+                                        { method: 'GET', path: '/api/proof/stats', desc: 'AI proof statistics' },
                                         { method: 'POST', path: '/api/workspace', desc: 'Workspace management' },
+                                        { method: 'GET', path: '/api/notifications', desc: 'User notification feed' },
                                     ].map((ep, idx) => (
-                                        <div key={idx} className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.02] transition-colors">
-                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                                        <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 p-3 rounded-xl hover:bg-white/[0.02] transition-colors">
+                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded w-fit ${
                                                 ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400'
                                                 : ep.method === 'POST' ? 'bg-blue-500/10 text-blue-400'
                                                 : 'bg-fuchsia-500/10 text-fuchsia-400'
                                             }`}>
                                                 {ep.method}
                                             </span>
-                                            <span className="text-slate-300 min-w-[250px]">{ep.path}</span>
+                                            <span className="text-slate-300 sm:min-w-[250px]">{ep.path}</span>
                                             <span className="text-slate-600 text-[11px]">{ep.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Smart Contract Addresses */}
+                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
+                                <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
+                                    <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />
+                                    Deployed Contracts (Tempo L1 · Chain 42431)
+                                </h3>
+                                <div className="space-y-2 font-mono text-xs">
+                                    {[
+                                        { name: 'NexusV2', addr: '0x6A467Cd4156093bB528e448C04366586a1052Fab' },
+                                        { name: 'ShieldVaultV2', addr: '0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055' },
+                                        { name: 'PlonkVerifierV2', addr: '0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B' },
+                                        { name: 'AIProofRegistry', addr: '0x8fDB8E871c9eaF2955009566F41490Bbb128a014' },
+                                        { name: 'StreamV1', addr: '0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C' },
+                                        { name: 'MultisendV2', addr: '0x25f4d3f12C579002681a52821F3a6251c46D4575' },
+                                    ].map((c, idx) => (
+                                        <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 p-3 rounded-xl hover:bg-white/[0.02] transition-colors">
+                                            <span className="text-emerald-400 font-bold sm:min-w-[160px]">{c.name}</span>
+                                            <a href={`https://explore.tempo.xyz/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors truncate">
+                                                {c.addr}
+                                            </a>
                                         </div>
                                     ))}
                                 </div>

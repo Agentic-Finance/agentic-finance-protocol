@@ -161,6 +161,12 @@ input[type=number] { -moz-appearance: textfield; }
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(245, 158, 11, 0.15); }
+  50% { border-color: rgba(245, 158, 11, 0.7); }
+}
+.animate-pulse-border { animation: pulse-border 1.5s ease-in-out infinite; }
+
 /* ── Firefox scrollbar support ── */
 .cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
 .cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }

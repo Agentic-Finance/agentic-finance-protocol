@@ -30,7 +30,8 @@
     "recharts": "^3.7.0",
     "remark-gfm": "^4.0.1",
     "snarkjs": "^0.7.6",
-    "three": "^0.183.2"
+    "three": "^0.183.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

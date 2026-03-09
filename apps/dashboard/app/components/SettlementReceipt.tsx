@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Pagination, { usePagination } from './Pagination';
 
 // ── Types ─────────────────────────────────────────────────
 
@@ -277,6 +278,7 @@ function SettlementReceipt({ settlements, settlementRef }: SettlementReceiptProp
     const [expandedHash, setExpandedHash] = useState<string | null>(
         settlements.length > 0 ? settlements[0]?.hash : null
     );
+    const { paginatedItems: paginatedSettlements, currentPage, totalPages, setCurrentPage, totalItems, itemsPerPage } = usePagination(settlements, 10);
 
     // Auto-expand newly settled batch
     React.useEffect(() => {
@@ -311,7 +313,7 @@ function SettlementReceipt({ settlements, settlementRef }: SettlementReceiptProp
 
                 {/* Batch Cards */}
                 <div className="space-y-4">
-                    {settlements.map((batch) => (
+                    {paginatedSettlements.map((batch) => (
                         <BatchCard
                             key={batch.hash}
                             batch={batch}
@@ -319,6 +321,7 @@ function SettlementReceipt({ settlements, settlementRef }: SettlementReceiptProp
                             onToggle={() => setExpandedHash(prev => prev === batch.hash ? null : batch.hash)}
                         />
                     ))}
+                    <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} totalItems={totalItems} itemsPerPage={itemsPerPage} />
                 </div>
             </div>
         </div>

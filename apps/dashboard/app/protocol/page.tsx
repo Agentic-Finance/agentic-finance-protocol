@@ -100,9 +100,9 @@ export default function ProtocolPage() {
             <a href="/verify" className="px-6 py-3 bg-white/5 border border-white/10 hover:border-indigo-500/50 rounded-xl font-bold text-sm transition-all">
               View AI Proofs
             </a>
-            <span className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-bold text-sm opacity-50 cursor-default">
-              GitHub (Coming Soon)
-            </span>
+            <a href="/docs" className="px-6 py-3 bg-white/5 border border-white/10 hover:border-indigo-500/50 rounded-xl font-bold text-sm transition-all">
+              Read Documentation
+            </a>
           </div>
 
           {/* Live Metrics */}

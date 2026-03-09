@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Pagination, { usePagination } from './Pagination';
 
 // ═══════════════════════════════════════════════════════════
 // TYPES
@@ -219,6 +220,8 @@ export default function AutoJudgePanel() {
     return v.verdict === filter.toUpperCase();
   }) || [];
 
+  const { paginatedItems: paginatedVerdicts, currentPage: verdictPage, totalPages: verdictTotalPages, setCurrentPage: setVerdictPage, totalItems: verdictTotal, itemsPerPage: verdictPerPage } = usePagination(filteredVerdicts, 10);
+
   if (isLoading) {
     return (
       <div className="relative z-20 mb-10">
@@ -330,7 +333,7 @@ export default function AutoJudgePanel() {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            {filteredVerdicts.map((v) => {
+            {paginatedVerdicts.map((v) => {
               const vc = VERDICT_CONFIG[v.verdict] || VERDICT_CONFIG.ESCALATE;
               const isExpanded = expandedId === v.id;
 
@@ -434,6 +437,7 @@ export default function AutoJudgePanel() {
             })}
           </div>
         )}
+        <Pagination currentPage={verdictPage} totalPages={verdictTotalPages} onPageChange={setVerdictPage} totalItems={verdictTotal} itemsPerPage={verdictPerPage} />
       </div>
     </div>
   );

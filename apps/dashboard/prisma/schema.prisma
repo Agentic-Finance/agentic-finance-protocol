@@ -547,6 +547,71 @@ model JudgeVerdict {
   @@index([executedOnChain])
 }
 
+// ==========================================
+// 💬 CHAT & MESSAGING
+// ==========================================
+
+// Chat channels (DM, group, agent-support)
+model ChatChannel {
+  id            String           @id @default(uuid())
+  type          String           @default("dm")        // dm | group | agent | support
+  name          String?                                // null for DMs, set for groups
+  avatarUrl     String?                                // Group/channel avatar
+  agentId       String?                                // Linked MarketplaceAgent (for agent channels)
+  jobId         String?                                // Linked AgentJob (for job-specific chat)
+  createdBy     String                                 // Wallet that created channel
+  lastMessageAt DateTime?                              // For sorting channels by recency
+  isArchived    Boolean          @default(false)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now()) @updatedAt
+  messages      ChatMessage[]
+  participants  ChatParticipant[]
+
+  @@index([createdBy])
+  @@index([agentId])
+  @@index([jobId])
+  @@index([lastMessageAt])
+  @@index([type])
+}
+
+// Channel participants (who is in each channel)
+model ChatParticipant {
+  id          String      @id @default(uuid())
+  channelId   String
+  channel     ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  wallet      String                                   // User wallet address
+  displayName String?                                  // Cached display name
+  role        String      @default("member")           // owner | admin | member
+  lastReadAt  DateTime?                                // For unread count
+  isMuted     Boolean     @default(false)
+  joinedAt    DateTime    @default(now())
+
+  @@unique([channelId, wallet])
+  @@index([wallet])
+  @@index([channelId])
+}
+
+// Individual chat messages
+model ChatMessage {
+  id          String      @id @default(uuid())
+  channelId   String
+  channel     ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  senderWallet String                                  // "0x..." for users, "agent:<agentId>" for agents
+  senderName  String?                                  // Display name at time of sending
+  content     String                                   // Message text (markdown supported)
+  messageType String      @default("text")             // text | system | file | tx_link | agent_result
+  metadata    Json?                                    // Attachments, tx refs, agent outputs
+  replyToId   String?                                  // Thread reply reference
+  isEdited    Boolean     @default(false)
+  isDeleted   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  editedAt    DateTime?
+
+  @@index([channelId, createdAt])
+  @@index([senderWallet])
+  @@index([replyToId])
+}
+
 // 4D audit trail — temporal event logging (Feature 4)
 model AuditEvent {
   id              String        @id @default(uuid())

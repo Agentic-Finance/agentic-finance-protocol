@@ -28,6 +28,10 @@ const SettlementReceipt = lazy(() => import('./components/SettlementReceipt'));
 const JobHistory = lazy(() => import('./components/JobHistory'));
 const AgentEarnings = lazy(() => import('./components/AgentEarnings'));
 
+// Chat components (lazy loaded — not needed at initial render)
+const ChatPanel = lazy(() => import('./components/chat/ChatPanel'));
+import ChatButton from './components/chat/ChatButton';
+
 // Minimal loading fallback for lazy components
 const LazyFallback = () => (
     <div className="animate-pulse bg-white/[0.02] rounded-3xl border border-white/5 min-h-[200px] flex items-center justify-center">
@@ -83,6 +87,7 @@ export default function Dashboard() {
     const [isEncrypting, setIsEncrypting] = useState<boolean>(false);
     const [expandedTx, setExpandedTx] = useState<string | null>(null);
     const [isBatchProcessing, setIsBatchProcessing] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     const boardroomRef = useRef<HTMLDivElement>(null);
     const autopilotRef = useRef<HTMLDivElement>(null);
@@ -664,6 +669,27 @@ export default function Dashboard() {
                     </div>
                 </div>
             </main>
+
+            {/* Chat — floating button + slide-in panel */}
+            {walletAddress && (
+                <>
+                    <ChatButton
+                        walletAddress={walletAddress}
+                        onClick={() => setIsChatOpen(true)}
+                        isOpen={isChatOpen}
+                    />
+                    {isChatOpen && (
+                        <Suspense fallback={null}>
+                            <ChatPanel
+                                walletAddress={walletAddress}
+                                isOpen={isChatOpen}
+                                onClose={() => setIsChatOpen(false)}
+                                contacts={contacts}
+                            />
+                        </Suspense>
+                    )}
+                </>
+            )}
         </div>
     );
 }

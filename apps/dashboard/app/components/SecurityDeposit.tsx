@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShieldCheckIcon, ArrowPathIcon, BanknotesIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ShieldCheckIcon, ArrowPathIcon, BanknotesIcon, ExclamationTriangleIcon } from '@/app/components/icons';
 import TierBadge from './TierBadge';
 
 interface DepositData {

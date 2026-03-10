@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { CommandLineIcon, CpuChipIcon } from '@heroicons/react/24/outline';
+import { CommandLineIcon, CpuChipIcon } from '@/app/components/icons';
 import NegotiationLog from './NegotiationLog';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useAgentMarketplace } from '../hooks/useAgentMarketplace';

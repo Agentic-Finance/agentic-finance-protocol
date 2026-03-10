@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconOutline } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { XMarkIcon, StarIcon as StarIconOutline, StarIcon as StarIconSolid } from '@/app/components/icons';
 
 interface ReviewModalProps {
     isOpen: boolean;

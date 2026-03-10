@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShieldAlert, Terminal, CheckCircle2, Search, ExternalLink } from "lucide-react";
+import { ShieldAlert, Terminal, CheckCircle2, Search, ExternalLink } from "@/app/components/icons";
 import Link from "next/link";
 
 export default function AuditLogPage() {

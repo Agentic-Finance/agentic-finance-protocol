@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon, DocumentCheckIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon, CreditCardIcon, ShieldCheckIcon, DocumentCheckIcon, InformationCircleIcon } from '@/app/components/icons';
 import type { NegotiationResult } from '../../lib/negotiation-engine';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 import FiatCheckout from '../FiatCheckout';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentArrowDownIcon, ArrowPathIcon, DocumentTextIcon, BoltIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowDownIcon, ArrowPathIcon, DocumentTextIcon, BoltIcon } from '@/app/components/icons';
 
 interface TerminalFooterProps {
     isPayroll: boolean;

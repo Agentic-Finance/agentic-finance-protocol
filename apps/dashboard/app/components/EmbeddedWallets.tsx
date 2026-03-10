@@ -9,7 +9,7 @@ import {
     CheckCircleIcon,
     XMarkIcon,
     ClipboardDocumentIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 
 interface WalletItem {
     id: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { DocumentArrowDownIcon, DocumentTextIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowDownIcon, DocumentTextIcon, XMarkIcon } from '@/app/components/icons';
 
 interface CsvUploadModalProps {
     showCsvModal: boolean;

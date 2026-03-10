@@ -30,7 +30,7 @@ import {
     ChartBarIcon,
     FireIcon,
     InformationCircleIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 // ──────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import {
     ClipboardDocumentIcon, ArrowTopRightOnSquareIcon, ShieldCheckIcon,
     ClockIcon, XMarkIcon, MagnifyingGlassIcon, StarIcon,
     ChatBubbleLeftRightIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 import type { AgentJobData, MarketplacePhase, AIProofData } from '../../hooks/useAgentMarketplace';
 
 const EXPLORER = 'https://explore.tempo.xyz';

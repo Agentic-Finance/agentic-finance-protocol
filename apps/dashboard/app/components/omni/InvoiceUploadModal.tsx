@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { DocumentTextIcon, XMarkIcon, ArrowUpTrayIcon, SparklesIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, XMarkIcon, ArrowUpTrayIcon, SparklesIcon, ArrowDownTrayIcon } from '@/app/components/icons';
 
 interface InvoiceUploadModalProps {
     isOpen: boolean;

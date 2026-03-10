@@ -19,7 +19,7 @@ import {
     BookOpenIcon,
     WrenchScrewdriverIcon,
     ChevronRightIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 
 // ══════════════════════════════════════════════════════
 // TYPES

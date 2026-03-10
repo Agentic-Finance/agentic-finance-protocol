@@ -4,8 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
     ArrowRightIcon, ArrowLeftIcon, CheckBadgeIcon, ClockIcon,
     CpuChipIcon, BoltIcon, ChartBarIcon, ChevronDownIcon, ChevronUpIcon,
-} from '@heroicons/react/24/outline';
-import { StarIcon } from '@heroicons/react/24/solid';
+    StarIcon,
+} from '@/app/components/icons';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 
 interface TaskPromptPanelProps {

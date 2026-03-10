@@ -5,7 +5,7 @@ import {
   TrendingUp, Activity, ShieldCheck, Cpu,
   BrainCircuit, Globe, Zap, Users, Factory,
   ShoppingCart, HeartPulse, Coins, Briefcase, Lock, ArrowRight, ExternalLink
-} from "lucide-react";
+} from "@/app/components/icons";
 
 // ── Use Cases ───────────────────────────────────────────────
 

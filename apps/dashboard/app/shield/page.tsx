@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity } from "lucide-react";
+import { Activity } from "@/app/components/icons";
 import Link from "next/link";
 import SubPageNav from "../components/SubPageNav";
 import ShieldPanel from "../components/ShieldPanel";

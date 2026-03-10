@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink } from '@/app/components/icons';
 
 interface AuditEventData {
     id: string;

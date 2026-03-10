@@ -10,7 +10,7 @@ import {
   ExclamationTriangleIcon,
   ClockIcon,
   ArrowPathIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 
 interface ProofStats {
   totalCommitments: number;

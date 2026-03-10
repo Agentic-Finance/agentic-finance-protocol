@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@/app/components/icons';
 import AgentCard from './AgentCard';
 import type { DiscoveredAgent, MarketplacePhase } from '../../hooks/useAgentMarketplace';
 

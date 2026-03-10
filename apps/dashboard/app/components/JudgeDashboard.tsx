@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ShieldCheckIcon, CheckBadgeIcon, XCircleIcon, LinkIcon, PaperClipIcon, ScaleIcon, ExclamationTriangleIcon, ArrowUturnLeftIcon, DocumentCheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ShieldCheckIcon, CheckBadgeIcon, XCircleIcon, LinkIcon, PaperClipIcon, ScaleIcon, ExclamationTriangleIcon, ArrowUturnLeftIcon, DocumentCheckIcon, ClockIcon } from '@/app/components/icons';
 import { PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI } from '@/app/lib/constants';
 
 interface EscrowPayload {

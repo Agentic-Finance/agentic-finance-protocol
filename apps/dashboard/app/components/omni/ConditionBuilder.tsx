@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { XMarkIcon, PlusIcon, BoltIcon, LightBulbIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon, BoltIcon, LightBulbIcon, ChevronRightIcon } from '@/app/components/icons';
 
 export interface Condition {
     id: string;

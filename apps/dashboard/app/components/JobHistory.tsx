@@ -4,9 +4,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     ClockIcon, CheckCircleIcon, XCircleIcon, ArrowPathIcon,
     BriefcaseIcon, ChevronDownIcon, ChevronUpIcon,
-    ArrowTopRightOnSquareIcon, CpuChipIcon,
-} from '@heroicons/react/24/outline';
-import { StarIcon } from '@heroicons/react/24/solid';
+    ArrowTopRightOnSquareIcon, CpuChipIcon, StarIcon,
+} from '@/app/components/icons';
 
 const EXPLORER = 'https://explore.tempo.xyz';
 

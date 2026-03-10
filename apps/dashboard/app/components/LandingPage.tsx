@@ -17,7 +17,7 @@ import {
     PuzzlePieceIcon, TruckIcon, ArrowsRightLeftIcon,
     BookOpenIcon, ChatBubbleLeftRightIcon, ArrowTopRightOnSquareIcon,
     SignalIcon, CheckBadgeIcon, ScaleIcon, KeyIcon
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 import Image from 'next/image';
 
 export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }) {

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     CurrencyDollarIcon, ArrowPathIcon, CpuChipIcon,
     ChartBarIcon, TrophyIcon, BanknotesIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 
 interface AgentEarning {
     agentId: string;

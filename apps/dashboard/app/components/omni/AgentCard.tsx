@@ -1,6 +1,5 @@
 import React from 'react';
-import { CheckBadgeIcon, ArrowRightIcon, BoltIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
-import { StarIcon } from '@heroicons/react/24/solid';
+import { CheckBadgeIcon, ArrowRightIcon, BoltIcon, InformationCircleIcon, StarIcon } from '@/app/components/icons';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 
 interface AgentCardProps {

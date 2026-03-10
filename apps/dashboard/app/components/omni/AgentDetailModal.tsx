@@ -2,10 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-    XMarkIcon, CheckBadgeIcon, StarIcon, ClockIcon,
+    XMarkIcon, CheckBadgeIcon, StarIcon, StarIcon as StarSolid, ClockIcon,
     CpuChipIcon, BoltIcon, ArrowRightIcon, ChartBarIcon,
-} from '@heroicons/react/24/outline';
-import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
+} from '@/app/components/icons';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 
 interface AgentDetailModalProps {

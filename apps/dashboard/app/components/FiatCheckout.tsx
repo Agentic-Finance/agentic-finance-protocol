@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { CreditCardIcon, CheckCircleIcon, ArrowPathIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { CreditCardIcon, CheckCircleIcon, ArrowPathIcon, ExclamationTriangleIcon } from '@/app/components/icons';
 
 /** Markup config — must match FIAT_CONFIG in fiat-onramp.ts */
 const MARKUP_PERCENT = 5;

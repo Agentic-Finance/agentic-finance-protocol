@@ -9,7 +9,7 @@ import {
   ArrowPathIcon,
   ClockIcon,
   SparklesIcon,
-} from '@heroicons/react/24/outline';
+} from '@/app/components/icons';
 
 interface RevenueData {
   tvl: { total: number; byContract: any[]; byToken: any[] };

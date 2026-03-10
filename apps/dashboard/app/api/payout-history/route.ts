@@ -13,14 +13,23 @@ export async function GET() {
 
         // Map data to the format expected by LedgerHistory UI
         const formattedHistory = completedTx.map(tx => {
-            // Parse zkProof JSON to extract real on-chain tx hashes
+            // Safely parse zkProof — can be JSON object, plain string (txHash), or null
             let depositTxHash = '';
             let payoutTxHash = '';
             try {
-                const proof = JSON.parse(tx.zkProof || '{}');
-                depositTxHash = proof.depositTxHash || '';
-                payoutTxHash = proof.payoutTxHash || '';
-            } catch {}
+                const raw = tx.zkProof;
+                if (raw && typeof raw === 'string') {
+                    // Try JSON parse first
+                    if (raw.startsWith('{')) {
+                        const proof = JSON.parse(raw);
+                        depositTxHash = proof.depositTxHash || '';
+                        payoutTxHash = proof.payoutTxHash || '';
+                    } else if (raw.startsWith('0x')) {
+                        // Plain tx hash string — treat as batch payout hash
+                        payoutTxHash = raw;
+                    }
+                }
+            } catch { /* ignore malformed zkProof */ }
 
             // Real tx hash for explorer links (prefer payoutTxHash, then depositTxHash)
             const realTxHash = payoutTxHash || depositTxHash;

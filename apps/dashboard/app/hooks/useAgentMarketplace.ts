@@ -20,6 +20,7 @@ export interface DiscoveredAgent {
         basePrice: number;
         ownerWallet: string;
         avatarEmoji: string;
+        avatarUrl?: string | null;
         isVerified: boolean;
         totalJobs: number;
         successRate: number;
@@ -28,6 +29,8 @@ export interface DiscoveredAgent {
         responseTime: number;
         source?: string;       // native | community | eliza | crewai | langchain | olas
         sourceUrl?: string;    // GitHub repo or framework docs URL
+        nativeAgentId?: string | null;
+        webhookUrl?: string | null;
     };
 }
 
@@ -87,6 +90,9 @@ export interface UseAgentMarketplaceReturn {
     activeJob: AgentJobData | null;
     suggestedBudget: number;
     error: string | null;
+
+    /** true when discovery fell back to keyword matching (OpenAI unavailable) */
+    isKeywordFallback: boolean;
 
     // Browse state
     allAgents: DiscoveredAgent[];
@@ -200,6 +206,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const [isBrowseLoading, setIsBrowseLoading] = useState(false);
 
     const [taskPrompt, setTaskPrompt] = useState('');
+    const [isKeywordFallback, setIsKeywordFallback] = useState(false);
 
     const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -232,6 +239,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                     basePrice: a.basePrice,
                     ownerWallet: a.ownerWallet,
                     avatarEmoji: a.avatarEmoji,
+                    avatarUrl: a.avatarUrl || null,
                     isVerified: a.isVerified,
                     totalJobs: a.totalJobs,
                     successRate: a.successRate,
@@ -240,6 +248,8 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                     responseTime: a.responseTime,
                     source: a.source || 'native',
                     sourceUrl: a.sourceUrl || null,
+                    nativeAgentId: a.nativeAgentId || null,
+                    webhookUrl: a.webhookUrl || null,
                 },
             }));
             setAllAgents(mapped);
@@ -298,6 +308,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
 
             setMatchedAgents(data.matches);
             setSuggestedBudget(data.suggestedBudget || 100);
+            setIsKeywordFallback(!!data.fallback);
             setPhase('results');
 
         } catch (err: any) {
@@ -425,14 +436,26 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                     if (!escrowRes.ok) {
                         console.error('Failed to queue escrow in boardroom');
                         escrowQueued = false;
+                        // Update job status to reflect escrow failure
+                        setActiveJob(prev => prev ? {
+                            ...prev,
+                            status: 'MATCHED_NO_ESCROW',
+                        } : null);
                     }
                 } catch (escrowErr) {
                     console.error('Escrow queue error:', escrowErr);
                     escrowQueued = false;
+                    setActiveJob(prev => prev ? {
+                        ...prev,
+                        status: 'MATCHED_NO_ESCROW',
+                    } : null);
                 }
             }
+        } catch (jobErr: any) {
+            confirmLockRef.current = false; // Release lock on job creation failure so user can retry
+            throw jobErr;
         } finally {
-            // Lock remains held — only released on reset() to prevent re-confirmation
+            // Lock remains held on success — only released on reset() to prevent re-confirmation
         }
 
         return { escrowQueued };
@@ -528,6 +551,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         setActiveJob(null);
         setSuggestedBudget(0);
         setError(null);
+        setIsKeywordFallback(false);
         setActiveCategory(null);
         setTaskPrompt('');
         // Note: do NOT clear allAgents - they are cached
@@ -542,6 +566,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         activeJob,
         suggestedBudget,
         error,
+        isKeywordFallback,
         allAgents,
         filteredBrowseAgents,
         activeCategory,

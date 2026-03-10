@@ -23,6 +23,8 @@ const AutoJudgePanel = lazy(() => import('./components/AutoJudgePanel'));
 const EscrowTracker = lazy(() => import('./components/EscrowTracker'));
 const FiatOffRamp = lazy(() => import('./components/FiatOffRamp'));
 const SettlementReceipt = lazy(() => import('./components/SettlementReceipt'));
+const JobHistory = lazy(() => import('./components/JobHistory'));
+const AgentEarnings = lazy(() => import('./components/AgentEarnings'));
 
 // Minimal loading fallback for lazy components
 const LazyFallback = () => (
@@ -707,6 +709,10 @@ export default function Dashboard() {
                         {/* AutoJudgePanel, JudgeDashboard → admin only */}
 
                         <Suspense fallback={<SectionSkeleton />}>
+                            <JobHistory walletAddress={walletAddress} />
+                        </Suspense>
+
+                        <Suspense fallback={<SectionSkeleton />}>
                             <FiatOffRamp walletAddress={walletAddress || ''} />
                         </Suspense>
 
@@ -723,6 +729,9 @@ export default function Dashboard() {
                         </div>
                         <Suspense fallback={<SidebarSkeleton />}>
                             <EscrowTracker walletAddress={walletAddress} />
+                        </Suspense>
+                        <Suspense fallback={<SidebarSkeleton />}>
+                            <AgentEarnings walletAddress={walletAddress} />
                         </Suspense>
                     </div>
                 </div>

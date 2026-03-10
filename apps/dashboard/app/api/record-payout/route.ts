@@ -22,20 +22,22 @@ export async function POST(request: Request) {
             },
         });
 
-        // Notify about payout — use first employee's wallet or a generic approach
+        // Notify ALL recipients about payout (broadcast to every employee wallet)
         const employees = await prisma.employee.findMany({
             where: { id: { in: employeeIds } },
-            select: { walletAddress: true },
+            select: { walletAddress: true, name: true },
         });
-        const firstWallet = employees[0]?.walletAddress;
-        if (firstWallet) {
-            notify({
-                wallet: firstWallet,
-                type: 'payroll:recorded',
-                title: 'Payout Recorded',
-                message: `${amount} ${token || 'AlphaUSD'} sent to ${employeeIds.length} employee(s) \u2014 TX: ${(hash || '').slice(0, 10)}...`,
-            }).catch(() => {});
-        }
+        const uniqueWallets = [...new Set(employees.map(e => e.walletAddress).filter(Boolean))];
+        await Promise.allSettled(
+            uniqueWallets.map(wallet =>
+                notify({
+                    wallet,
+                    type: 'payroll:recorded',
+                    title: 'Payout Received',
+                    message: `You received ${amount} ${token || 'AlphaUSD'} — TX: ${(hash || '').slice(0, 10)}...`,
+                }).catch(() => {})
+            )
+        );
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

@@ -134,7 +134,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                         </div>
                         <div>
                             <h3 className="text-sm font-bold text-amber-400 tracking-wide">CONDITIONAL ENGINE</h3>
-                            <p className="text-[10px] text-slate-500 mt-0.5">Set rules below - Agent auto-executes payment when conditions are met</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5">Set rules below — press <span className="text-amber-400/70 font-semibold">"Deploy Conditional"</span> to save. Trigger manually from Boardroom.</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -314,15 +314,15 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                 {conditions.length > 0 && conditions.some(c => c.param || c.value) && (
                     <div className="mt-4 pt-3 border-t border-white/5">
                         <div className="flex items-center gap-2 text-[10px] font-mono">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shrink-0"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
                             <span className="text-slate-500">
-                                When <span className="text-amber-400 font-bold">{conditionLogic === 'AND' ? 'ALL' : 'ANY'}</span> condition{conditions.length > 1 ? 's are' : ' is'} met → Agent will auto-execute
+                                When <span className="text-amber-400 font-bold">{conditionLogic === 'AND' ? 'ALL' : 'ANY'}</span> condition{conditions.length > 1 ? 's are' : ' is'} met → payment will be queued
                                 {recurringMode !== 'once' && <span className="text-amber-400 font-bold"> ({recurringMode})</span>}
                             </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-600 font-mono">
-                            <span className="text-slate-700">💡</span>
-                            Monitoring agent checks every 60 seconds. You can pause or cancel anytime.
+                        <div className="flex items-center gap-2 mt-2 text-[10px] font-mono">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400/80 border border-amber-500/15 font-bold uppercase tracking-wider text-[8px]">Manual Trigger</span>
+                            <span className="text-slate-600">Rules are saved and triggered manually from the Boardroom. Automated monitoring coming soon.</span>
                         </div>
                     </div>
                 )}

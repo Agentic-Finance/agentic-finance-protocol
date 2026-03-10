@@ -14,6 +14,10 @@ interface MarketplacePanelProps {
     onHireAgent: (agent: DiscoveredAgent) => void;
     onFilterCategory: (cat: string | null) => void;
     error: string | null;
+    /** When true, results came from keyword fallback instead of AI matching */
+    isKeywordFallback?: boolean;
+    /** Callback to show agent detail modal */
+    onShowAgentDetail?: (agent: DiscoveredAgent) => void;
 }
 
 const CATEGORIES = [
@@ -53,7 +57,7 @@ function SkeletonCard() {
 
 function MarketplacePanel({
     phase, matchedAgents, allAgents, activeCategory, isBrowseLoading,
-    onHireAgent, onFilterCategory, error
+    onHireAgent, onFilterCategory, error, isKeywordFallback, onShowAgentDetail
 }: MarketplacePanelProps) {
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -205,6 +209,7 @@ function MarketplacePanel({
                                         agent={agent}
                                         rank={(safePage - 1) * AGENTS_PER_PAGE + i}
                                         onHire={onHireAgent}
+                                        onShowDetail={onShowAgentDetail}
                                         isBrowseMode={true}
                                     />
                                 ))}
@@ -315,6 +320,14 @@ function MarketplacePanel({
                         <h3 className="text-sm font-semibold text-white">
                             {matchedAgents.length} agents matched
                         </h3>
+                        {/* Discovery method badge */}
+                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
+                            isKeywordFallback
+                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        }`}>
+                            {isKeywordFallback ? '🔤 Keyword Match' : '🧠 AI Matched'}
+                        </span>
                     </div>
                     <span className="text-[10px] text-indigo-400/60 font-mono">A2A Escrow Ready</span>
                 </div>
@@ -327,6 +340,7 @@ function MarketplacePanel({
                             agent={agent}
                             rank={i}
                             onHire={onHireAgent}
+                            onShowDetail={onShowAgentDetail}
                         />
                     ))}
                 </div>

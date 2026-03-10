@@ -59,6 +59,7 @@ function localKeywordMatch(prompt: string, agents: any[]) {
                 basePrice: agent.basePrice,
                 ownerWallet: agent.ownerWallet,
                 avatarEmoji: agent.avatarEmoji,
+                avatarUrl: agent.avatarUrl || null,
                 isVerified: agent.isVerified,
                 totalJobs: agent.totalJobs,
                 successRate: agent.successRate,
@@ -114,6 +115,7 @@ export async function POST(req: Request) {
             }));
 
             const systemPrompt = `You are PayPol's Agent Router - an AI that matches user tasks to the best available agents.
+The user may write in ANY language (Vietnamese, English, Spanish, Chinese, Korean, Japanese, Arabic, French, etc.). Understand the intent regardless of language. Write the "reasoning" field in the SAME language the user used.
 
 Given a user's task description and a catalog of available agents, analyze the task requirements and rank the TOP 3 most suitable agents.
 
@@ -126,7 +128,7 @@ RESPOND IN JSON FORMAT:
     {
       "agentId": "uuid of the agent",
       "relevanceScore": 95,
-      "reasoning": "One sentence explaining why this agent is the best fit"
+      "reasoning": "One sentence explaining why this agent is the best fit (in user's language)"
     }
   ],
   "suggestedBudget": 150,
@@ -174,6 +176,7 @@ Rules:
                         basePrice: agent.basePrice,
                         ownerWallet: agent.ownerWallet,
                         avatarEmoji: agent.avatarEmoji,
+                        avatarUrl: agent.avatarUrl || null,
                         isVerified: agent.isVerified,
                         totalJobs: agent.totalJobs,
                         successRate: agent.successRate,

@@ -22,18 +22,21 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Can only review completed jobs." }, { status: 400 });
         }
 
+        // Cap rating for failed jobs at 3 stars — prevents inflating agent reputation
+        const effectiveRating = job.status === 'FAILED' ? Math.min(rating, 3) : rating;
+
         // Check for existing review
         const existing = await prisma.agentReview.findFirst({ where: { jobId } });
         if (existing) {
             return NextResponse.json({ error: "Already reviewed this job." }, { status: 400 });
         }
 
-        // Create review
+        // Create review (use effectiveRating — capped for failed jobs)
         const review = await prisma.agentReview.create({
             data: {
                 jobId,
                 agentId,
-                rating: parseInt(String(rating)),
+                rating: parseInt(String(effectiveRating)),
                 comment: comment || null,
             },
         });
@@ -42,7 +45,7 @@ export async function POST(req: Request) {
         const agent = await prisma.marketplaceAgent.findUnique({ where: { id: agentId } });
         if (agent) {
             const newCount = agent.ratingCount + 1;
-            const newAvg = ((agent.avgRating * agent.ratingCount) + rating) / newCount;
+            const newAvg = ((agent.avgRating * agent.ratingCount) + effectiveRating) / newCount;
             await prisma.marketplaceAgent.update({
                 where: { id: agentId },
                 data: {
@@ -57,8 +60,8 @@ export async function POST(req: Request) {
             notify({
                 wallet: agent.ownerWallet,
                 type: 'review:received',
-                title: `${rating}\u2B50 Review Received`,
-                message: comment ? `"${comment.slice(0, 80)}${comment.length > 80 ? '...' : ''}"` : `You received a ${rating}-star review`,
+                title: `${effectiveRating}\u2B50 Review Received`,
+                message: comment ? `"${comment.slice(0, 80)}${comment.length > 80 ? '...' : ''}"` : `You received a ${effectiveRating}-star review`,
             }).catch(() => {});
         }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckBadgeIcon, ArrowRightIcon, BoltIcon } from '@heroicons/react/24/outline';
+import { CheckBadgeIcon, ArrowRightIcon, BoltIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
 import type { DiscoveredAgent } from '../../hooks/useAgentMarketplace';
 
@@ -7,6 +7,7 @@ interface AgentCardProps {
     agent: DiscoveredAgent;
     rank: number;
     onHire: (agent: DiscoveredAgent) => void;
+    onShowDetail?: (agent: DiscoveredAgent) => void;
     isBrowseMode?: boolean;
 }
 
@@ -23,6 +24,21 @@ const CATEGORY_COLORS: Record<string, string> = {
     deployment: 'text-lime-400 bg-lime-500/8 border-lime-500/15',
 };
 
+type AgentStatus = 'online' | 'offline' | 'unknown';
+
+function getAgentStatus(agent: DiscoveredAgent['agent']): { status: AgentStatus; label: string; color: string; dotColor: string } {
+    // Native agents (built-in Claude-powered) are always online
+    if (agent.nativeAgentId || agent.source === 'native') {
+        return { status: 'online', label: 'Online', color: 'text-emerald-400', dotColor: 'bg-emerald-400' };
+    }
+    // Community agents with webhook — show as available
+    if (agent.webhookUrl) {
+        return { status: 'online', label: 'Available', color: 'text-emerald-400', dotColor: 'bg-emerald-400' };
+    }
+    // Demo agents (no endpoint) — show as demo
+    return { status: 'unknown', label: 'Demo', color: 'text-slate-500', dotColor: 'bg-slate-500' };
+}
+
 function getTrustScore(avgRating: number, successRate: number, totalJobs: number): { score: number; label: string; color: string; barColor: string } {
     // Weighted: 40% rating (normalized to 100), 40% success rate, 20% job volume (capped at 100 jobs)
     const ratingNorm = (avgRating / 5) * 100;
@@ -35,10 +51,11 @@ function getTrustScore(avgRating: number, successRate: number, totalJobs: number
     return { score, label: 'Building Trust', color: 'text-orange-400', barColor: 'bg-orange-500' };
 }
 
-function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps) {
+function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: AgentCardProps) {
     const a = agent.agent;
     const catColor = CATEGORY_COLORS[a.category] || CATEGORY_COLORS.analytics;
     const trust = getTrustScore(a.avgRating, a.successRate, a.totalJobs);
+    const agentStatus = getAgentStatus(a);
 
     return (
         <div
@@ -62,8 +79,12 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
 
             {/* Row 1: Avatar + Name + Category */}
             <div className="flex items-center gap-3 mb-2.5">
-                <span className="text-2xl shrink-0 w-9 h-9 flex items-center justify-center bg-white/[0.04] rounded-xl">
-                    {a.avatarEmoji}
+                <span className="shrink-0 w-9 h-9 flex items-center justify-center bg-white/[0.04] rounded-xl overflow-hidden">
+                    {a.avatarUrl ? (
+                        <img src={a.avatarUrl} alt={a.name} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                        <span className="text-2xl">{a.avatarEmoji}</span>
+                    )}
                 </span>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
@@ -71,6 +92,11 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
                         {a.isVerified && (
                             <CheckBadgeIcon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                         )}
+                        {/* Online/Offline status */}
+                        <span className="flex items-center gap-1 shrink-0" title={agentStatus.label}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${agentStatus.dotColor} ${agentStatus.status === 'online' ? 'animate-pulse' : ''}`} />
+                            <span className={`text-[8px] font-bold uppercase tracking-wider ${agentStatus.color}`}>{agentStatus.label}</span>
+                        </span>
                     </div>
                     <span className={`inline-flex text-[9px] font-semibold px-1.5 py-0.5 rounded border mt-0.5 capitalize ${catColor}`}>
                         {a.category}
@@ -123,18 +149,29 @@ function AgentCard({ agent, rank, onHire, isBrowseMode = false }: AgentCardProps
                 {isBrowseMode ? a.description : (agent.relevanceScore > 0 ? agent.reasoning : a.description)}
             </p>
 
-            {/* Footer: Price + Hire */}
+            {/* Footer: Price + Actions */}
             <div className="pt-2.5 border-t border-white/[0.04] flex items-center justify-between mt-auto">
                 <div className="flex items-baseline gap-1">
                     <span className="text-white font-bold text-base">{a.basePrice}</span>
                     <span className="text-[10px] text-slate-500">ALPHA</span>
                 </div>
-                <button
-                    onClick={(e) => { e.stopPropagation(); onHire(agent); }}
-                    className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-semibold rounded-lg transition-all flex items-center gap-1 opacity-80 group-hover:opacity-100"
-                >
-                    Hire <ArrowRightIcon className="w-3 h-3" />
-                </button>
+                <div className="flex items-center gap-1.5">
+                    {onShowDetail && (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onShowDetail(agent); }}
+                            className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-slate-500 hover:text-indigo-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                            title="View details"
+                        >
+                            <InformationCircleIcon className="w-4 h-4" />
+                        </button>
+                    )}
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onHire(agent); }}
+                        className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-semibold rounded-lg transition-all flex items-center gap-1 opacity-80 group-hover:opacity-100"
+                    >
+                        Hire <ArrowRightIcon className="w-3 h-3" />
+                    </button>
+                </div>
             </div>
         </div>
     );

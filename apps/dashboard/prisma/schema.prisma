@@ -117,6 +117,7 @@ model MarketplaceAgent {
   nativeAgentId String?  // maps to /services/agents/:id (e.g. "contract-auditor")
   ownerWallet   String
   avatarEmoji   String   @default("🤖")
+  avatarUrl     String?  // DiceBear or custom avatar image URL
   isVerified    Boolean  @default(false)
   isActive      Boolean  @default(true)
   totalJobs     Int      @default(0)

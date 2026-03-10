@@ -18,8 +18,10 @@ import TerminalFooter from './omni/TerminalFooter';
 import ConditionBuilder from './omni/ConditionBuilder';
 import InvoiceUploadModal from './omni/InvoiceUploadModal';
 import SuggestedPrompts from './omni/SuggestedPrompts';
+import AgentDetailModal from './omni/AgentDetailModal';
 import type { ParsedIntent } from './omni/types';
 import type { Condition } from './omni/ConditionBuilder';
+import type { DiscoveredAgent } from '../hooks/useAgentMarketplace';
 
 // ==========================================
 // MAIN COMPONENT
@@ -47,6 +49,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const [globalMode, setGlobalMode] = useState<'standard' | 'autopilot' | 'shield'>('standard');
     const [liveIntents, setLiveIntents] = useState<ParsedIntent[]>([]);
     const [chatAnswer, setChatAnswer] = useState<string | null>(null);
+    const [guideData, setGuideData] = useState<{ title: string; steps: { icon: string; text: string; action: { type: string; target: string } | null }[]; tip: string | null } | null>(null);
     const [isDeployingAnimation, setIsDeployingAnimation] = useState(false);
     const [isDraggingTerminal, setIsDraggingTerminal] = useState(false);
 
@@ -73,6 +76,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const marketplace = useAgentMarketplace();
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [isConfirmingDeal, setIsConfirmingDeal] = useState(false);
+    const [detailAgent, setDetailAgent] = useState<DiscoveredAgent | null>(null);
 
     // Refs
     const omniFileRef = useRef<HTMLInputElement>(null);
@@ -121,7 +125,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         marketplace.reset();
         setShowReviewModal(false);
         setIsDeployingAnimation(false);
-        setAiPrompt(''); setLiveIntents([]); setChatAnswer(null);
+        setAiPrompt(''); setLiveIntents([]); setChatAnswer(null); setGuideData(null);
         setWalletAliases({}); setLockedAliases(new Set()); setCardNotes({});
         setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND'); setRecurringMode('once');
         if (!preventFocus) setTimeout(() => inputRef.current?.focus(), 50);
@@ -134,16 +138,18 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
     useEffect(() => {
         if (!debouncedPrompt.trim()) {
-            setLiveIntents([]); setChatAnswer(null); setGlobalMode('standard'); setIsAiParsing(false); return;
+            setLiveIntents([]); setChatAnswer(null); setGuideData(null); setGlobalMode('standard'); setIsAiParsing(false); return;
         }
         if (debouncedPrompt.trim().startsWith('[')) return;
 
-        // A2A tab: marketplace hook handles everything - skip AI parsing
-        if (activeTab === 'a2a') return;
+        // A2A tab: only use Copilot for GUIDE/CHAT, skip ACTION parsing (marketplace handles tasks on Enter)
+        const isA2aTab = activeTab === 'a2a';
 
         let currentMode: 'standard' | 'autopilot' | 'shield' = 'standard';
-        if (/\/(autopilot|recurring)/i.test(debouncedPrompt)) currentMode = 'autopilot';
-        if (/\/(shield|zk|private)/i.test(debouncedPrompt)) currentMode = 'shield';
+        if (!isA2aTab) {
+            if (/\/(autopilot|recurring)/i.test(debouncedPrompt)) currentMode = 'autopilot';
+            if (/\/(shield|zk|private)/i.test(debouncedPrompt)) currentMode = 'shield';
+        }
         setGlobalMode(currentMode);
 
         let cancelled = false;
@@ -168,10 +174,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                 const data = await response.json();
 
-                if (data.actionType === 'CHAT') {
-                    setChatAnswer(data.answer); setLiveIntents([]);
+                if (data.actionType === 'GUIDE') {
+                    setChatAnswer(null); setLiveIntents([]); setGuideData(data);
+                } else if (data.actionType === 'CHAT') {
+                    setChatAnswer(data.answer); setLiveIntents([]); setGuideData(null);
+                } else if (isA2aTab) {
+                    // A2A tab: ACTION means it's a task for agents — clear copilot UI, let marketplace handle on Enter
+                    setChatAnswer(null); setGuideData(null); setLiveIntents([]);
                 } else {
-                    setChatAnswer(null);
+                    setChatAnswer(null); setGuideData(null);
                     if (data.intents && data.intents.length > 0) {
                         let finalParsed: ParsedIntent[] = []; let indexCounter = 0;
                         const rawWalletsInPrompt = debouncedPrompt.match(/0x[a-fA-F0-9]{40}/gi) || [];
@@ -504,6 +515,36 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     }, [marketplace]);
 
     // ==========================================
+    // GUIDE ACTIONS (Copilot step buttons)
+    // ==========================================
+    const handleGuideAction = useCallback((action: { type: string; target: string }) => {
+        switch (action.type) {
+            case 'click':
+                if (action.target === 'upload-ledger') handleUploadClick();
+                if (action.target === 'upload-invoice') setShowInvoiceModal(true);
+                break;
+            case 'tab':
+                setActiveTab(action.target as 'payroll' | 'a2a');
+                resetTerminal(true);
+                break;
+            case 'type':
+                setGuideData(null);
+                setAiPrompt(action.target);
+                setTimeout(() => inputRef.current?.focus(), 50);
+                break;
+            case 'scroll': {
+                const sectionId = action.target === 'offramp' ? 'offramp-section'
+                    : action.target === 'escrow' ? 'escrow-vault-section'
+                    : action.target === 'settlement' ? 'settlement-section'
+                    : action.target;
+                const el = document.getElementById(sectionId);
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                break;
+            }
+        }
+    }, [handleUploadClick, resetTerminal]);
+
+    // ==========================================
     // KEYBOARD & DRAG/DROP
     // ==========================================
     const handleKeyDownToDeploy = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -645,6 +686,40 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             </div>
                         )}
 
+                        {/* Copilot Guide (structured step-by-step) */}
+                        {guideData && (
+                            <div className="mt-4 p-5 rounded-2xl border border-cyan-500/30 animate-in fade-in slide-in-from-top-4 duration-500" style={{ background: 'radial-gradient(ellipse at top, rgba(6,182,212,0.08) 0%, rgba(21,27,39,0.95) 100%)' }}>
+                                <h3 className="text-cyan-400 font-bold text-sm mb-4 flex items-center gap-2 tracking-wide">
+                                    <span className="w-5 h-5 rounded-md bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-[10px]">✦</span>
+                                    {guideData.title}
+                                </h3>
+                                <div className="space-y-3">
+                                    {guideData.steps.map((step, i) => (
+                                        <div key={i} className="flex items-start gap-3 group/step">
+                                            <span className="text-base shrink-0 mt-0.5 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">{step.icon}</span>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-slate-300 text-sm leading-relaxed">{step.text}</p>
+                                                {step.action && (
+                                                    <button
+                                                        onClick={() => handleGuideAction(step.action!)}
+                                                        className="mt-1.5 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/25 hover:border-cyan-400/50 px-3 py-1.5 rounded-lg transition-all duration-200 inline-flex items-center gap-1.5 tracking-wide"
+                                                    >
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                                                        {step.action.type === 'type' ? 'Try it' : step.action.type === 'click' ? 'Open' : step.action.type === 'tab' ? 'Switch' : 'Go'}
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                {guideData.tip && (
+                                    <div className="mt-4 pt-3 border-t border-cyan-500/10">
+                                        <p className="text-[11px] text-slate-500 leading-relaxed"><span className="text-cyan-500/60 font-bold">TIP</span> — {guideData.tip}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Condition Builder (Payroll only) */}
                         {isPayroll && showConditionBuilder && (
                             <ConditionBuilder
@@ -696,9 +771,14 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             </>
                         )}
 
+                        {/* Payroll: Suggested Prompts (show when empty input, no intents, no answer) */}
+                        {isPayroll && !aiPrompt.trim() && liveIntents.length === 0 && !chatAnswer && !guideData && (
+                            <SuggestedPrompts variant="payroll" onSelect={(text) => setAiPrompt(text)} />
+                        )}
+
                         {/* A2A: Suggested Prompts (show when browsing + empty input) */}
                         {!isPayroll && marketplace.phase === 'browsing' && !aiPrompt.trim() && (
-                            <SuggestedPrompts onSelect={(text) => setAiPrompt(text)} />
+                            <SuggestedPrompts variant="agent" onSelect={(text) => setAiPrompt(text)} />
                         )}
 
                         {/* A2A: Marketplace Panel (Browse / Discovery / Results) */}
@@ -712,6 +792,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onHireAgent={marketplace.selectAgent}
                                 onFilterCategory={marketplace.filterByCategory}
                                 error={marketplace.error}
+                                isKeywordFallback={marketplace.isKeywordFallback}
+                                onShowAgentDetail={setDetailAgent}
                             />
                         )}
 
@@ -801,6 +883,19 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     </div>
                 </div>
             </div>
+
+            {/* Agent Detail Modal */}
+            {detailAgent && (
+                <AgentDetailModal
+                    agent={detailAgent}
+                    isOpen={!!detailAgent}
+                    onClose={() => setDetailAgent(null)}
+                    onHire={(agent) => {
+                        setDetailAgent(null);
+                        marketplace.selectAgent(agent);
+                    }}
+                />
+            )}
 
             {/* Review Modal */}
 

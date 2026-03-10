@@ -162,10 +162,10 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @keyframes pulse-border {
-  0%, 100% { border-color: rgba(245, 158, 11, 0.15); }
-  50% { border-color: rgba(245, 158, 11, 0.7); }
+  0%, 100% { border-color: rgba(239, 68, 68, 0.15); }
+  50% { border-color: rgba(239, 68, 68, 0.8); }
 }
-.animate-pulse-border { animation: pulse-border 1.5s ease-in-out infinite; }
+.animate-pulse-border { animation: pulse-border 1.2s ease-in-out infinite; }
 
 /* ── Firefox scrollbar support ── */
 .cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }

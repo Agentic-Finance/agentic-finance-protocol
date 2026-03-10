@@ -25,9 +25,17 @@ const STEPS = [
     { label: 'Done', key: 'completed' },
 ];
 
+// Dynamic timeout based on agent category complexity
+function getTimeoutForAgent(agent: AgentJobData['agent']): number {
+    const COMPLEX_CATEGORIES = ['security', 'analytics', 'compliance', 'tax'];
+    if (COMPLEX_CATEGORIES.includes(agent.category)) return 180; // 3 min for complex tasks
+    if (agent.responseTime > 60) return Math.max(agent.responseTime * 2, 180);
+    return 120; // default 2 min
+}
+
 function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, onRetry }: JobTrackerProps) {
     const [elapsed, setElapsed] = useState(0);
-    const TIMEOUT_SECONDS = 120;
+    const TIMEOUT_SECONDS = job ? getTimeoutForAgent(job.agent) : 120;
 
     // Auto-execute when phase enters 'executing'
     useEffect(() => {
@@ -150,6 +158,9 @@ function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, on
                                     ? 'Almost at timeout — agent may need more time for complex tasks'
                                     : `Estimated ${remaining > 60 ? `${mins}m ${secs}s` : `${secs}s`} remaining`
                                 }
+                                {TIMEOUT_SECONDS > 120 && elapsed < 10 && (
+                                    <span className="text-amber-400/60 ml-1">(extended timeout for {job.agent.category} tasks)</span>
+                                )}
                             </p>
                         </div>
                     );

@@ -35,9 +35,10 @@ interface OmniTerminalProps {
     autopilotRef: any;
     history?: any[];
     walletAddress?: string | null;
+    onOpenChat?: (jobId: string) => void;
 }
 
-function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history, walletAddress }: OmniTerminalProps) {
+function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history, walletAddress, onOpenChat }: OmniTerminalProps) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
@@ -840,6 +841,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onReset={() => resetTerminal(false)}
                                 onCancel={marketplace.cancelExecution}
                                 onRetry={marketplace.executeDeal}
+                                onOpenChat={onOpenChat}
                             />
                         )}
 

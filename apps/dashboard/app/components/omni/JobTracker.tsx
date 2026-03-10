@@ -3,6 +3,7 @@ import {
     CheckCircleIcon, XCircleIcon, ArrowPathIcon, SparklesIcon,
     ClipboardDocumentIcon, ArrowTopRightOnSquareIcon, ShieldCheckIcon,
     ClockIcon, XMarkIcon, MagnifyingGlassIcon, StarIcon,
+    ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 import type { AgentJobData, MarketplacePhase, AIProofData } from '../../hooks/useAgentMarketplace';
 
@@ -16,6 +17,7 @@ interface JobTrackerProps {
     onReset: () => void;
     onCancel: () => void;
     onRetry: () => void;
+    onOpenChat?: (jobId: string) => void;
 }
 
 const STEPS = [
@@ -33,7 +35,7 @@ function getTimeoutForAgent(agent: AgentJobData['agent']): number {
     return 120; // default 2 min
 }
 
-function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, onRetry }: JobTrackerProps) {
+function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, onRetry, onOpenChat }: JobTrackerProps) {
     const [elapsed, setElapsed] = useState(0);
     const TIMEOUT_SECONDS = job ? getTimeoutForAgent(job.agent) : 120;
 
@@ -63,10 +65,20 @@ function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, on
             {/* Agent Header */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.04]">
                 <span className="text-2xl">{job.agent.avatarEmoji}</span>
-                <div>
+                <div className="flex-1">
                     <h4 className="text-white font-semibold text-sm">{job.agent.name}</h4>
                     <span className="text-[10px] text-slate-600 font-mono">#{job.id.slice(0, 8)}</span>
                 </div>
+                {onOpenChat && (
+                    <button
+                        onClick={() => onOpenChat(job.id)}
+                        className="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 text-[10px] font-semibold rounded-lg transition-all flex items-center gap-1.5"
+                        title="Chat with agent"
+                    >
+                        <ChatBubbleLeftRightIcon className="w-3.5 h-3.5" />
+                        Chat
+                    </button>
+                )}
             </div>
 
             <div className="p-5">

@@ -7,6 +7,7 @@ import { apiError, logAndReturn } from '@/app/lib/api-response';
 import { notify } from '@/app/lib/notify';
 import { validateApiKey, getClientId } from '@/app/lib/api-auth';
 import { writeLimiter } from '@/app/lib/rate-limit';
+import { postJobUpdate } from '@/app/lib/chat-utils';
 
 const AGENT_SERVICE_URL = process.env.AGENT_SERVICE_URL || 'http://localhost:3001';
 
@@ -56,6 +57,15 @@ export async function POST(req: Request) {
             where: { id: jobId },
             data: { status: 'EXECUTING' },
         });
+
+        // Post "executing" status to agent chat channel
+        postJobUpdate({
+            jobId,
+            agentId: job.agent.id,
+            agentName: job.agent.name,
+            content: `Starting execution of your task...`,
+            messageType: 'system',
+        }).catch(() => {});
 
         // ═══════════════════════════════════════════════════════════
         // 2.5: AIProofRegistry — Commit planHash BEFORE execution
@@ -259,6 +269,34 @@ export async function POST(req: Request) {
                 ? `${job.agent.name} completed your task in ${executionTime}s`
                 : `Execution failed: ${(result as any)?.error || 'Unknown error'}`,
         }).catch(() => {});
+
+        // Post result to agent chat channel
+        if (finalStatus === 'COMPLETED') {
+            const resultSummary = result?.output || result?.summary || JSON.stringify(result).slice(0, 500);
+            postJobUpdate({
+                jobId,
+                agentId: job.agent.id,
+                agentName: job.agent.name,
+                content: `Task completed in ${executionTime}s.\n\n${resultSummary}`,
+                messageType: 'agent_result',
+                metadata: {
+                    status: 'completed',
+                    executionTime,
+                    commitTxHash: commitTxHash || null,
+                    verifyTxHash: verifyTxHash || null,
+                    proofMatched,
+                },
+            }).catch(() => {});
+        } else {
+            postJobUpdate({
+                jobId,
+                agentId: job.agent.id,
+                agentName: job.agent.name,
+                content: `Task failed: ${(result as any)?.error || 'Unknown error'}`,
+                messageType: 'system',
+                metadata: { status: 'failed' },
+            }).catch(() => {});
+        }
 
         return NextResponse.json({
             success: finalStatus === 'COMPLETED',

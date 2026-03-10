@@ -46,9 +46,10 @@ interface ChatPanelProps {
     isOpen: boolean;
     onClose: () => void;
     contacts: { name: string; wallet: string }[];
+    targetJobId?: string | null;
 }
 
-export default function ChatPanel({ walletAddress, isOpen, onClose, contacts }: ChatPanelProps) {
+export default function ChatPanel({ walletAddress, isOpen, onClose, contacts, targetJobId }: ChatPanelProps) {
     const [channels, setChannels] = useState<ChatChannel[]>([]);
     const [activeChannel, setActiveChannel] = useState<ChatChannel | null>(null);
     const [showNewChannel, setShowNewChannel] = useState(false);
@@ -132,11 +133,6 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts }: 
         };
     }, [walletAddress, isOpen, fetchChannels]);
 
-    // Initial fetch
-    useEffect(() => {
-        if (isOpen && walletAddress) fetchChannels();
-    }, [isOpen, walletAddress, fetchChannels]);
-
     // Mark channel as read when opened
     const handleSelectChannel = useCallback((channel: ChatChannel) => {
         setActiveChannel(channel);
@@ -145,6 +141,20 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts }: 
             ch.id === channel.id ? { ...ch, unreadCount: 0 } : ch
         ));
     }, []);
+
+    // Initial fetch
+    useEffect(() => {
+        if (isOpen && walletAddress) fetchChannels();
+    }, [isOpen, walletAddress, fetchChannels]);
+
+    // Auto-select channel when targetJobId is provided (from "Chat with Agent" button)
+    useEffect(() => {
+        if (!targetJobId || channels.length === 0) return;
+        const targetChannel = channels.find(ch => ch.jobId === targetJobId);
+        if (targetChannel && activeChannel?.id !== targetChannel.id) {
+            handleSelectChannel(targetChannel);
+        }
+    }, [targetJobId, channels, activeChannel, handleSelectChannel]);
 
     const handleBack = useCallback(() => {
         setActiveChannel(null);

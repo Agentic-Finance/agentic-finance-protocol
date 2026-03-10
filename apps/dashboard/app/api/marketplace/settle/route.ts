@@ -3,6 +3,7 @@ import prisma from "@/app/lib/prisma";
 import { notify } from '@/app/lib/notify';
 import { requireFields, apiError, apiSuccess, logAndReturn } from '@/app/lib/api-response';
 import { marketplaceLimiter, getClientId } from '@/app/lib/rate-limit';
+import { postJobUpdate } from '@/app/lib/chat-utils';
 
 const VALID_ACTIONS = ['escrow_locked', 'settle', 'refund', 'dispute', 'executing', 'completed'] as const;
 
@@ -79,6 +80,27 @@ export async function POST(req: Request) {
                     message: `$${agentJob.budget} locked in NexusV2 escrow for job #${jobId.slice(0, 8)}...`,
                 }).catch(() => {});
 
+                // Post escrow status to agent chat channel
+                if (agentJob.agentId) {
+                    const agent = await prisma.marketplaceAgent.findUnique({ where: { id: agentJob.agentId } });
+                    if (agent) {
+                        postJobUpdate({
+                            jobId,
+                            agentId: agent.id,
+                            agentName: agent.name,
+                            content: `$${agentJob.budget} AlphaUSD locked in escrow. Job is ready for execution.`,
+                            messageType: 'tx_link',
+                            metadata: {
+                                type: 'escrow_locked',
+                                amount: agentJob.budget,
+                                token: 'AlphaUSD',
+                                txHash: txHash || null,
+                                status: 'confirmed',
+                            },
+                        }).catch(() => {});
+                    }
+                }
+
                 return NextResponse.json({
                     success: true,
                     message: 'Escrow locked on-chain',
@@ -126,6 +148,27 @@ export async function POST(req: Request) {
                     title: 'Payment Settled',
                     message: `$${agentJob.budget} released to agent. TX: ${(txHash || '').slice(0, 10)}...`,
                 }).catch(() => {});
+
+                // Post settlement to agent chat channel
+                if (agentJob.agentId) {
+                    const settleAgent = await prisma.marketplaceAgent.findUnique({ where: { id: agentJob.agentId } });
+                    if (settleAgent) {
+                        postJobUpdate({
+                            jobId,
+                            agentId: settleAgent.id,
+                            agentName: settleAgent.name,
+                            content: `Payment of $${agentJob.budget} AlphaUSD has been settled and released.`,
+                            messageType: 'tx_link',
+                            metadata: {
+                                type: 'payment_settled',
+                                amount: agentJob.budget,
+                                token: 'AlphaUSD',
+                                txHash: txHash || null,
+                                status: 'confirmed',
+                            },
+                        }).catch(() => {});
+                    }
+                }
 
                 return NextResponse.json({ success: true, message: 'Job settled on-chain' });
             }

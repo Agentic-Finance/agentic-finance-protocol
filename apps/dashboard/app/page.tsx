@@ -88,6 +88,7 @@ export default function Dashboard() {
     const [expandedTx, setExpandedTx] = useState<string | null>(null);
     const [isBatchProcessing, setIsBatchProcessing] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
+    const [chatTargetJobId, setChatTargetJobId] = useState<string | null>(null);
 
     const boardroomRef = useRef<HTMLDivElement>(null);
     const autopilotRef = useRef<HTMLDivElement>(null);
@@ -593,7 +594,7 @@ export default function Dashboard() {
 
                 <FeatureErrorBoundary feature="OmniTerminal">
                     <Suspense fallback={<TerminalSkeleton />}>
-                        <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} />
+                        <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} onOpenChat={(jobId) => { setChatTargetJobId(jobId); setIsChatOpen(true); }} />
                     </Suspense>
                 </FeatureErrorBoundary>
 
@@ -683,8 +684,9 @@ export default function Dashboard() {
                             <ChatPanel
                                 walletAddress={walletAddress}
                                 isOpen={isChatOpen}
-                                onClose={() => setIsChatOpen(false)}
+                                onClose={() => { setIsChatOpen(false); setChatTargetJobId(null); }}
                                 contacts={contacts}
+                                targetJobId={chatTargetJobId}
                             />
                         </Suspense>
                     )}

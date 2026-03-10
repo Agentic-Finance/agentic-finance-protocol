@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { notify } from '@/app/lib/notify';
+import { createAgentChatChannel } from '@/app/lib/chat-utils';
 
 // POST /api/marketplace/jobs - Create a new job
 export async function POST(req: Request) {
@@ -40,6 +41,15 @@ export async function POST(req: Request) {
             type: 'job:created',
             title: 'New Job Received',
             message: `New task from ${clientWallet.slice(0, 6)}... \u2014 Budget: ${budget} AlphaUSD`,
+        }).catch(() => {});
+
+        // Auto-create agent chat channel (non-blocking)
+        createAgentChatChannel({
+            jobId: job.id,
+            agentId: agent.id,
+            agentName: agent.name,
+            clientWallet,
+            agentWallet: agent.ownerWallet,
         }).catch(() => {});
 
         return NextResponse.json({ success: true, job });

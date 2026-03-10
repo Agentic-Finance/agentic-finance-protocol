@@ -19,6 +19,8 @@ model Workspace {
   name            String   @unique
   adminWallet     String   @unique
   type            String?
+  daemonStatus    String   @default("OFFLINE")
+  daemonLastSeen  DateTime?
   createdAt       DateTime @default(now())
   payloads        TimeVaultPayload[]
   employees       Employee[]

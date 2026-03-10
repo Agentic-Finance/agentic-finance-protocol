@@ -21,6 +21,7 @@ export async function GET(req: Request) {
             name: workspace.name,
             type: workspace.type,
             created_at: workspace.createdAt,
+            daemonStatus: workspace.daemonStatus || 'OFFLINE',
         } : null;
 
         return apiSuccess({ workspace: mapped });

@@ -23,6 +23,24 @@ interface Employee {
   token?: string;
 }
 
+const EXTRACT_PROMPT = `You are a PayPol Payroll agent. Extract employee payment data from the user's request.
+
+Return JSON:
+{
+  "employees": [
+    { "name": "Alice", "wallet": "0x...", "amount": 100 },
+    { "name": "Bob", "wallet": "0x...", "amount": 200 }
+  ],
+  "notes": "Brief description of this payroll"
+}
+
+RULES:
+- Each employee must have a valid 0x... Ethereum wallet address (42 chars)
+- Each employee must have an amount > 0
+- Name is optional (use "Recipient 1" if unknown)
+- If no specific amounts given, distribute the budget evenly
+- Return ONLY valid JSON.`;
+
 const PLANNING_PROMPT = `You are a blockchain payroll optimization expert.
 Given an employee list, group payments into gas-efficient batches.
 
@@ -49,21 +67,44 @@ Return ONLY valid JSON.`;
 export const handler: AgentHandler = async (job) => {
   const start = Date.now();
 
-  const employees = (job.payload?.employees as Employee[]) ?? [];
-  const budget    = (job.payload?.budget    as number)      ?? 0;
+  let employees = (job.payload?.employees as Employee[]) ?? [];
+  const budget    = Number(job.payload?.budget) || 0;
   const execute   = (job.payload?.execute   as boolean)     ?? true; // Default: execute on-chain
+
+  // If no employees in payload, try AI extraction from prompt
+  if (employees.length === 0 && job.prompt?.trim()) {
+    try {
+      console.log(`[payroll-planner] Phase 0: Extracting employee data from prompt...`);
+      const extractClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const budgetHint = budget > 0 ? `\nTotal budget: ${budget} AlphaUSD` : '';
+      const extractMsg = await extractClient.messages.create({
+        model: 'claude-sonnet-4-6', max_tokens: 2048,
+        system: EXTRACT_PROMPT,
+        messages: [{ role: 'user', content: `${job.prompt}${budgetHint}` }],
+      });
+      const extractText = extractMsg.content[0].type === 'text' ? extractMsg.content[0].text : '';
+      const jsonMatch = extractText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, extractText];
+      const parsed = JSON.parse(jsonMatch[1]!.trim());
+      if (parsed.employees?.length > 0) {
+        employees = parsed.employees;
+        console.log(`[payroll-planner] Extracted ${employees.length} employees from prompt`);
+      }
+    } catch (extractErr: any) {
+      console.warn(`[payroll-planner] Failed to extract employees from prompt:`, extractErr.message);
+    }
+  }
 
   if (employees.length === 0) {
     return {
       jobId: job.jobId, agentId: job.agentId, status: 'error',
-      error: 'No employee list provided. Pass payload.employees as an array of {name, wallet, amount}.',
+      error: 'No employee list found. Include wallet addresses and amounts in your request, or pass payload.employees.',
       executionTimeMs: Date.now() - start, timestamp: Date.now(),
     };
   }
 
   try {
     // ── Phase 1: AI Optimization ────────────────────────────
-    console.log(`[payroll-planner] 🧠 Phase 1: Claude optimizing ${employees.length} recipients...`);
+    console.log(`[payroll-planner] Phase 1: Claude optimizing ${employees.length} recipients...`);
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await client.messages.create({

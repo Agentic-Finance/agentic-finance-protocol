@@ -34,9 +34,22 @@ export const handler: AgentHandler = async (job) => {
   const start = Date.now();
 
   try {
-    const safeWallet = job.payload?.safeWallet as string;
+    // Resolve safe wallet: payload > prompt extraction > callerWallet
+    let safeWallet = job.payload?.safeWallet as string | undefined;
+
     if (!safeWallet || !ethers.isAddress(safeWallet)) {
-      return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'payload.safeWallet (valid address) is required for sweep.', executionTimeMs: Date.now() - start, timestamp: Date.now() };
+      // Try to extract a wallet address from the prompt
+      const addrMatch = (job.prompt || '').match(/0x[a-fA-F0-9]{40}/);
+      if (addrMatch && ethers.isAddress(addrMatch[0])) {
+        safeWallet = addrMatch[0];
+        console.log(`[wallet-sweeper] Extracted safeWallet from prompt: ${safeWallet}`);
+      } else if (job.callerWallet && ethers.isAddress(job.callerWallet)) {
+        // Fallback: sweep to the caller's wallet
+        safeWallet = job.callerWallet;
+        console.log(`[wallet-sweeper] Using callerWallet as safeWallet: ${safeWallet}`);
+      } else {
+        return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'No valid safe wallet found. Provide a wallet address in your prompt or payload.safeWallet.', executionTimeMs: Date.now() - start, timestamp: Date.now() };
+      }
     }
 
     const wallet = getWallet();

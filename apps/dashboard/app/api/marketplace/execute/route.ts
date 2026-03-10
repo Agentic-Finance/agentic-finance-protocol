@@ -12,6 +12,124 @@ import { postJobUpdate } from '@/app/lib/chat-utils';
 const AGENT_SERVICE_URL = process.env.AGENT_SERVICE_URL || 'http://localhost:3001';
 
 /**
+ * Format agent result into a human-readable summary for chat display.
+ * Handles the nested result.result structure from agent service.
+ */
+function formatAgentResultForChat(raw: any): string {
+    if (!raw) return 'Task completed.';
+    if (typeof raw === 'string') return raw;
+    if (raw.output && typeof raw.output === 'string') return raw.output;
+
+    // The agent service wraps: { jobId, agentId, status, result: { phase, ... } }
+    const inner = raw.result || raw;
+    const phase = inner.phase || '';
+    const lines: string[] = [];
+
+    switch (phase) {
+        case 'sweep-complete': {
+            const sweeps = inner.sweeps || [];
+            const ok = sweeps.filter((s: any) => !s.skipped);
+            const skip = sweeps.filter((s: any) => s.skipped);
+            lines.push('✅ Wallet sweep complete');
+            if (inner.from) lines.push(`From: ${inner.from.slice(0, 6)}…${inner.from.slice(-4)}`);
+            if (inner.to) lines.push(`To: ${inner.to.slice(0, 6)}…${inner.to.slice(-4)}`);
+            for (const s of ok) lines.push(`• ${s.amount || '?'} ${s.token || ''} → ${s.txHash ? s.txHash.slice(0, 10) + '…' : 'sent'}`);
+            if (skip.length) lines.push(`⚠️ ${skip.length} token(s) skipped`);
+            break;
+        }
+        case 'stream-created':
+        case 'recurring-setup-complete': {
+            lines.push(`✅ ${phase === 'stream-created' ? 'Stream created' : 'Recurring payment set up'}`);
+            if (inner.streamId) lines.push(`Stream ID: #${inner.streamId}`);
+            if (inner.schedule) {
+                const s = inner.schedule;
+                if (s.recipient) lines.push(`Recipient: ${s.recipient.slice(0, 6)}…${s.recipient.slice(-4)}`);
+                if (s.totalBudget) lines.push(`Total: ${s.totalBudget}`);
+                if (s.periods) lines.push(`Periods: ${s.periods} × ${s.amountPerPeriod || '?'}`);
+            }
+            if (inner.totalStreamsCreated) lines.push(`Streams: ${inner.totalStreamsCreated}`);
+            const txH = inner.transaction?.hash || inner.transactions?.creation?.hash;
+            if (txH) lines.push(`TX: ${txH.slice(0, 10)}…${txH.slice(-6)}`);
+            break;
+        }
+        case 'transfer-complete': {
+            lines.push('✅ Transfer complete');
+            if (inner.amount) lines.push(`Amount: ${inner.amount} ${inner.token || 'AlphaUSD'}`);
+            if (inner.to) lines.push(`To: ${inner.to.slice(0, 6)}…${inner.to.slice(-4)}`);
+            if (inner.transaction?.hash) lines.push(`TX: ${inner.transaction.hash.slice(0, 10)}…`);
+            break;
+        }
+        case 'escrow-created':
+        case 'escrow-complete': {
+            lines.push(`✅ Escrow ${phase === 'escrow-created' ? 'created' : 'completed'}`);
+            if (inner.onChainJobId) lines.push(`Job ID: #${inner.onChainJobId}`);
+            if (inner.budget) lines.push(`Budget: ${inner.budget}`);
+            if (inner.transaction?.hash) lines.push(`TX: ${inner.transaction.hash.slice(0, 10)}…`);
+            break;
+        }
+        case 'bulk-escrow-complete': {
+            lines.push(`✅ Bulk escrow: ${inner.totalJobs || '?'} jobs created`);
+            if (inner.totalBudget) lines.push(`Total: ${inner.totalBudget}`);
+            break;
+        }
+        case 'batch-complete':
+        case 'multi-token-batch-complete': {
+            lines.push('✅ Batch payment complete');
+            if (inner.recipientCount) lines.push(`Recipients: ${inner.recipientCount}`);
+            if (inner.totalAmount) lines.push(`Total: ${inner.totalAmount}`);
+            break;
+        }
+        case 'benchmark-complete': {
+            const bm = inner.benchmark?.summary;
+            lines.push('✅ Benchmark complete');
+            if (bm) {
+                lines.push(`Operations: ${bm.operationsExecuted || 5}`);
+                lines.push(`ETH cost: $${bm.totalEthUSD?.toFixed?.(2) || '?'} → Tempo: $0.00`);
+            }
+            break;
+        }
+        case 'fees-collected': {
+            lines.push('✅ Fees collected');
+            if (inner.summary) lines.push(`Total: ${inner.summary.totalCollected}`);
+            break;
+        }
+        case 'treasury-report': {
+            lines.push('✅ Treasury report');
+            if (inner.wallet?.totalTokenUSD) lines.push(`Wallet: $${inner.wallet.totalTokenUSD}`);
+            if (inner.contractHoldings?.totalAlphaUSD) lines.push(`Contracts: $${inner.contractHoldings.totalAlphaUSD}`);
+            break;
+        }
+        case 'contracts-read':
+        case 'chain-monitored':
+        case 'proof-audit-complete': {
+            lines.push(`✅ ${phase.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}`);
+            if (inner.contractActivity) lines.push(`On-chain ops: ${inner.contractActivity.totalOnChainOperations}`);
+            break;
+        }
+        default: {
+            const label = phase ? phase.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) : 'Task completed';
+            lines.push(`✅ ${label}`);
+            if (inner.summary && typeof inner.summary === 'string') {
+                lines.push(inner.summary);
+            } else if (inner.summary && typeof inner.summary === 'object') {
+                for (const [k, v] of Object.entries(inner.summary)) {
+                    if (typeof v === 'string' || typeof v === 'number') {
+                        lines.push(`${k.replace(/([A-Z])/g, ' $1').trim()}: ${v}`);
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    if (inner.onChain && inner.network) {
+        lines.push(`\n🔗 ${inner.network}`);
+    }
+
+    return lines.join('\n') || 'Task completed.';
+}
+
+/**
  * Get daemon wallet for on-chain AI proof transactions.
  * Returns null if DAEMON_PRIVATE_KEY not configured.
  */
@@ -272,7 +390,7 @@ export async function POST(req: Request) {
 
         // Post result to agent chat channel
         if (finalStatus === 'COMPLETED') {
-            const resultSummary = result?.output || result?.summary || JSON.stringify(result).slice(0, 500);
+            const resultSummary = formatAgentResultForChat(result);
             postJobUpdate({
                 jobId,
                 agentId: job.agent.id,

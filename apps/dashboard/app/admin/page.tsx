@@ -163,6 +163,8 @@ export default function PayPolAdminPage() {
     const [chartPeriod, setChartPeriod] = useState<'7d' | '30d' | '90d'>('30d');
     const [copiedAddr, setCopiedAddr] = useState<string | null>(null);
     const [confirmDialog, setConfirmDialog] = useState<{ open: boolean; ruleId: string; ruleName: string } | null>(null);
+    const [actionToast, setActionToast] = useState<string | null>(null);
+    const [actionLoading, setActionLoading] = useState<string | null>(null);
 
     const [healthChecks, setHealthChecks] = useState<{
         tempo: { status: 'online' | 'error'; latency: number; blockNumber: string };
@@ -430,17 +432,36 @@ export default function PayPolAdminPage() {
     };
 
     // ── Rule Actions ──
+    const showToast = (msg: string) => {
+        setActionToast(msg);
+        setTimeout(() => setActionToast(null), 3000);
+    };
+
     const handleRuleAction = async (id: string, action: 'pause' | 'resume' | 'trigger' | 'delete') => {
-        if (action === 'delete') {
-            await fetch(`/api/conditional-payroll?id=${id}`, { method: 'DELETE' });
-        } else {
-            await fetch('/api/conditional-payroll', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, action }),
-            });
+        setActionLoading(`${id}-${action}`);
+        try {
+            let res: Response;
+            if (action === 'delete') {
+                res = await fetch(`/api/conditional-payroll?id=${id}`, { method: 'DELETE' });
+            } else {
+                res = await fetch('/api/conditional-payroll', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, action }),
+                });
+            }
+            const data = await res.json();
+            if (data.success) {
+                const labels: Record<string, string> = { trigger: 'Triggered to Boardroom', pause: 'Rule paused', resume: 'Rule resumed', delete: 'Rule deleted' };
+                showToast(`✓ ${labels[action] || 'Done'}`);
+            } else {
+                showToast(`✗ ${data.error || 'Action failed'}`);
+            }
+        } catch {
+            showToast('✗ Network error');
         }
         setConfirmDialog(null);
+        setActionLoading(null);
         fetchRules();
     };
 
@@ -501,6 +522,19 @@ export default function PayPolAdminPage() {
                                 Delete
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ════════ TOAST NOTIFICATION ════════ */}
+            {actionToast && (
+                <div className="fixed top-6 right-6 z-[110] animate-in slide-in-from-top-2 fade-in duration-300">
+                    <div className={`px-5 py-3 rounded-xl text-sm font-bold shadow-2xl border ${
+                        actionToast.startsWith('✓')
+                            ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25'
+                            : 'bg-rose-500/15 text-rose-400 border-rose-500/25'
+                    }`}>
+                        {actionToast}
                     </div>
                 </div>
             )}
@@ -1060,17 +1094,29 @@ export default function PayPolAdminPage() {
                                             <div className="flex items-center gap-2 pt-4 border-t border-white/[0.04]">
                                                 {rule.status === 'Watching' && (
                                                     <>
-                                                        <button onClick={() => handleRuleAction(rule.id, 'trigger')} className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold transition-all">
-                                                            <PlayIcon className="w-3.5 h-3.5" /> Trigger Now
+                                                        <button
+                                                            onClick={() => handleRuleAction(rule.id, 'trigger')}
+                                                            disabled={!!actionLoading}
+                                                            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                                                        >
+                                                            {actionLoading === `${rule.id}-trigger` ? <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" /> : <PlayIcon className="w-3.5 h-3.5" />} Trigger Now
                                                         </button>
-                                                        <button onClick={() => handleRuleAction(rule.id, 'pause')} className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-all">
-                                                            <PauseIcon className="w-3.5 h-3.5" /> Pause
+                                                        <button
+                                                            onClick={() => handleRuleAction(rule.id, 'pause')}
+                                                            disabled={!!actionLoading}
+                                                            className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                                                        >
+                                                            {actionLoading === `${rule.id}-pause` ? <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" /> : <PauseIcon className="w-3.5 h-3.5" />} Pause
                                                         </button>
                                                     </>
                                                 )}
                                                 {rule.status === 'Paused' && (
-                                                    <button onClick={() => handleRuleAction(rule.id, 'resume')} className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-all">
-                                                        <PlayIcon className="w-3.5 h-3.5" /> Resume
+                                                    <button
+                                                        onClick={() => handleRuleAction(rule.id, 'resume')}
+                                                        disabled={!!actionLoading}
+                                                        className="flex items-center gap-1.5 px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                                                    >
+                                                        {actionLoading === `${rule.id}-resume` ? <ArrowPathIcon className="w-3.5 h-3.5 animate-spin" /> : <PlayIcon className="w-3.5 h-3.5" />} Resume
                                                     </button>
                                                 )}
                                                 <button

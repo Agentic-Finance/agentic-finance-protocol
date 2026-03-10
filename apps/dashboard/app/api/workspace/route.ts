@@ -7,6 +7,26 @@ export async function GET(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         const wallet = searchParams.get('wallet')?.trim();
+        const all = searchParams.get('all');
+
+        // Admin mode: return all workspaces
+        if (all === 'true') {
+            const workspaces = await prisma.workspace.findMany({
+                orderBy: { createdAt: 'desc' },
+                take: 50,
+            });
+            return apiSuccess({
+                workspaces: workspaces.map(ws => ({
+                    id: ws.id,
+                    admin_wallet: ws.adminWallet,
+                    name: ws.name,
+                    type: ws.type,
+                    created_at: ws.createdAt,
+                    daemonStatus: ws.daemonStatus || 'OFFLINE',
+                })),
+            });
+        }
+
         if (!wallet) return apiError("Missing wallet parameter", 400);
 
         const workspace = await prisma.workspace.findFirst({

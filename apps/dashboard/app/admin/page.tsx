@@ -226,9 +226,9 @@ export default function PayPolAdminPage() {
 
     const fetchWorkspaces = useCallback(async () => {
         try {
-            const res = await fetch('/api/workspace');
+            const res = await fetch('/api/workspace?all=true');
             const data = await res.json();
-            if (data.workspace) setWorkspaces([data.workspace]);
+            if (data.workspaces) setWorkspaces(data.workspaces);
         } catch { /* silent */ }
     }, []);
 

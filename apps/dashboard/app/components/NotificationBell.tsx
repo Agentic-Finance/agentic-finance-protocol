@@ -217,40 +217,53 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
         // 1. Mark as read
         if (!n.isRead) markSingleRead(n.id);
 
-        // 2. Determine route
-        const route = getNotificationRoute(n);
-        const cat = getCategory(n.type);
-
-        // 3. Close dropdown
+        // 2. Close dropdown
         setIsOpen(false);
 
-        // 4. Job/Escrow notifications → open chat panel
-        if (cat === 'job' || cat === 'escrow') {
+        const cat = getCategory(n.type);
+
+        // Use setTimeout to ensure dropdown close animation doesn't block navigation
+        setTimeout(() => {
+            // 3. Job/Escrow/Agent notifications → open chat panel
+            if (cat === 'job' || cat === 'escrow' || cat === 'agent') {
+                if (pathname === '/') {
+                    window.dispatchEvent(new CustomEvent('paypol:openChat', {
+                        detail: { jobId: n.streamJobId || null },
+                    }));
+                } else {
+                    router.push(n.streamJobId ? `/?app=1&chat=${n.streamJobId}` : '/?app=1&openChat=1');
+                }
+                return;
+            }
+
+            // 4. Stream/Fiat/Payroll notifications → stream page
+            if (cat === 'stream' || cat === 'fiat' || cat === 'payroll') {
+                const target = n.streamJobId ? `/stream?id=${n.streamJobId}` : '/stream';
+                if (pathname === '/stream') {
+                    // Already on stream page — reload with the ID
+                    if (n.streamJobId) window.location.href = `/stream?id=${n.streamJobId}`;
+                } else {
+                    router.push(target);
+                }
+                return;
+            }
+
+            // 5. Swarm/A2A/Intel → swarm page
+            if (cat === 'swarm' || cat === 'a2a' || cat === 'intel') {
+                if (pathname !== '/swarm') router.push('/swarm');
+                return;
+            }
+
+            // 6. Wallet/Review/Other → open chat panel as fallback (most useful action)
             if (pathname === '/') {
-                // Already on home page: dispatch event to open chat
                 window.dispatchEvent(new CustomEvent('paypol:openChat', {
                     detail: { jobId: n.streamJobId || null },
                 }));
-                return;
-            }
-            // On a different page: navigate to home with chat param
-            if (n.streamJobId) {
-                router.push(`/?app=1&chat=${n.streamJobId}`);
             } else {
                 router.push('/?app=1&openChat=1');
             }
-            return;
-        }
-
-        // 5. Stream notifications → stream page
-        if (cat === 'stream') {
-            router.push(n.streamJobId ? `/stream?id=${n.streamJobId}` : '/stream');
-            return;
-        }
-
-        // 6. Other categories → their routes
-        router.push(route);
-    }, [markSingleRead, getNotificationRoute, pathname, router]);
+        }, 50);
+    }, [markSingleRead, pathname, router]);
 
     const filteredNotifications = activeFilter === 'all'
         ? notifications

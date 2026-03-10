@@ -68,5 +68,9 @@ USER nextjs
 
 EXPOSE 3000
 
+# Health check — verifies app + DB connectivity
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
 # Startup: wait for PostgreSQL, migrate schema, seed agents, start server
 CMD ["./prisma/start.sh"]

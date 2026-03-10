@@ -8,6 +8,8 @@ import { PAYPOL_NEXUS_ADDRESS, PAYPOL_MULTISEND_ADDRESS, PAYPOL_SHIELD_ADDRESS, 
 import Navbar from './components/Navbar';
 import TopStatsCards from './components/TopStatsCards';
 import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
+import { FeatureErrorBoundary } from './components/FeatureErrorBoundary';
+import { usePollingEngine } from './hooks/usePollingEngine';
 
 // Lazy load heavy / conditionally-rendered components (Phase 3)
 const LandingPage = lazy(() => import('./components/LandingPage'));
@@ -63,13 +65,6 @@ export default function Dashboard() {
     const [ack1, setAck1] = useState(false); const [ack2, setAck2] = useState(false); const [ack3, setAck3] = useState(false);
     const [isDeployingWorkspace, setIsDeployingWorkspace] = useState(false);
 
-    const [history, setHistory] = useState<any[]>([]);
-    const [awaitingTxs, setAwaitingTxs] = useState<any[]>([]);
-    const [pendingTxs, setPendingTxs] = useState<any[]>([]);
-    const [autopilotRules, setAutopilotRules] = useState<any[]>([]);
-    const [localEscrow, setLocalEscrow] = useState<any[]>([]);
-    const [sysStats, setSysStats] = useState<any>(null);
-
     const [isSystemLocked, setIsSystemLocked] = useState(false);
     const [toast, setToast] = useState({ show: false, type: 'success', msg: '', id: 0 });
     // REMOVED: `now` state and 1-second timer - moved into TimeVault component
@@ -81,7 +76,6 @@ export default function Dashboard() {
     const [fundAmount, setFundAmount] = useState("");
     const [isFunding, setIsFunding] = useState(false);
 
-    const [agentStatus, setAgentStatus] = useState('OFFLINE');
     const [isTogglingAgent, setIsTogglingAgent] = useState(false);
     const [showAbortModal, setShowAbortModal] = useState(false);
 
@@ -96,6 +90,40 @@ export default function Dashboard() {
     const settlementRef = useRef<HTMLDivElement>(null);
     const isExecutionLocked = useRef<boolean>(false);
     const prevLocalEscrowRef = useRef<string[]>([]);
+
+    // ==========================================
+    // STABLE CALLBACKS (Phase 2.6)
+    // ==========================================
+    const showToast = useCallback((type: 'success' | 'error', msg: string) => {
+        setToast({ show: false, type, msg, id: Date.now() });
+        setTimeout(() => setToast({ show: true, type, msg, id: Date.now() }), 50);
+        setTimeout(() => setToast(prev => ({ ...prev, show: false })), 6000);
+    }, []);
+
+    // ==========================================
+    // WALLET & SESSION FUNCTIONS
+    // ==========================================
+    const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = PAYPOL_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
+
+    // ==========================================
+    // POLLING ENGINE (extracted to hook — Promise.allSettled, visibility-aware)
+    // ==========================================
+    const {
+        history, setHistory,
+        awaitingTxs, setAwaitingTxs,
+        pendingTxs,
+        autopilotRules,
+        localEscrow,
+        sysStats,
+        agentStatus, setAgentStatus,
+        fetchData,
+    } = usePollingEngine({
+        walletAddress,
+        isBatchProcessing,
+        fetchOnChainBalances,
+        activeVaultToken,
+        showToast,
+    });
 
     // ==========================================
     // MEMOIZED COMPUTED VALUES (Phase 2.5)
@@ -153,15 +181,6 @@ export default function Dashboard() {
     }, [autopilotRules, pendingTxs, history]);
 
     // ==========================================
-    // STABLE CALLBACKS (Phase 2.6)
-    // ==========================================
-    const showToast = useCallback((type: 'success' | 'error', msg: string) => {
-        setToast({ show: false, type, msg, id: Date.now() });
-        setTimeout(() => setToast({ show: true, type, msg, id: Date.now() }), 50);
-        setTimeout(() => setToast(prev => ({ ...prev, show: false })), 6000);
-    }, []);
-
-    // ==========================================
     // EFFECTS
     // ==========================================
 
@@ -211,11 +230,6 @@ export default function Dashboard() {
         prevLocalEscrowRef.current = currentIds;
     }, [localEscrow, history]);
 
-    // ==========================================
-    // WALLET & SESSION FUNCTIONS
-    // ==========================================
-    const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = PAYPOL_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
-
     const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); if (data.workspace.daemonStatus) setAgentStatus(data.workspace.daemonStatus); localStorage.removeItem('paypol_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('paypol_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); if (joinData.workspace.daemonStatus) setAgentStatus(joinData.workspace.daemonStatus); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('paypol_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
     const ensureTempoNetwork = useCallback(async () => {
         const TEMPO_CHAIN_ID = '0xa5bf'; // 42431
@@ -264,111 +278,7 @@ export default function Dashboard() {
     const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `PAYPOL GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { setCurrentWorkspace(data.workspace); showToast('success', 'Smart Vault deployed successfully.'); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
     const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('paypol_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
     const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? PAYPOL_SHIELD_ADDRESS : PAYPOL_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
-    const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { setAgentStatus(newState); showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { showToast('error', 'Failed to update daemon status.'); } } catch { showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast]);
-
-    // ==========================================
-    // REAL-TIME POLLING ENGINE (Phase 4 - Smart Polling)
-    // Removed cache-busting timestamps & no-store
-    // ==========================================
-    const fetchData = useCallback(async () => {
-        try {
-            const [histRes, empRes, autopilotRes, statsRes, daemonRes] = await Promise.all([
-                fetch('/api/payout-history'),
-                fetch('/api/employees'),
-                fetch('/api/autopilot'),
-                fetch('/api/stats'),
-                walletAddress ? fetch(`/api/daemon-status?wallet=${walletAddress}`) : Promise.resolve(null),
-            ]);
-
-            if (histRes.ok) {
-                const histData = await histRes.json();
-                const rawHistory = histData.data || histData;
-                const groupedMap: Record<string, any> = {};
-
-                rawHistory.forEach((row: any) => {
-                    if (row.breakdown) { groupedMap[row.hash] = row; return; }
-                    const hashKey = row.hash || row.txHash;
-                    if (!groupedMap[hashKey]) {
-                        groupedMap[hashKey] = { hash: hashKey, date: row.date || new Date().toLocaleString(), amount: 0, token: row.token || "AlphaUSD", isJustSettled: false, breakdown: [], isLocalBatch: row.isLocalBatch || false, isShielded: row.isShielded, txHash: row.txHash };
-                    }
-                    groupedMap[hashKey].amount += parseFloat(row.amount || 0);
-                    groupedMap[hashKey].breakdown.push({ name: row.name || 'Unknown Entity', address: row.address || row.wallet_address || row.recipient, amount: row.amount, note: row.note || 'Public Transfer', zkCommitment: row.zkCommitment, txHash: row.txHash, depositTxHash: row.depositTxHash, payoutTxHash: row.payoutTxHash });
-                });
-
-                let mergedHistory = Object.values(groupedMap).map(h => ({ ...h, amount: typeof h.amount === 'number' ? h.amount.toFixed(3) : h.amount }));
-
-                setHistory(prev => {
-                    const glowingHashes = prev.filter(p => p.isJustSettled).map(g => g.hash);
-                    const localBatches = prev.filter(p => p.isLocalBatch && !mergedHistory.some(m => m.hash === p.hash));
-                    return [...localBatches, ...mergedHistory].map(m => ({ ...m, isJustSettled: glowingHashes.includes(m.hash) }));
-                });
-            }
-
-            if (empRes.ok) {
-                const data = await empRes.json();
-                setAwaitingTxs(data.awaiting || []);
-                setPendingTxs(data.pending || []);
-
-                const realPendingJobs = (data.vaulted || []).filter((tx: any) => tx.status === 'PENDING' || tx.status === 'PROCESSING');
-                const queueMap: Record<string, any> = {};
-                realPendingJobs.forEach((tx: any) => {
-                    const batchId = tx.zkProof || tx.id;
-                    if (!queueMap[batchId]) {
-                        queueMap[batchId] = {
-                            id: batchId.substring(0, 10) + '...',
-                            amount: 0,
-                            isShielded: tx.isShielded,
-                            status: tx.status === 'PROCESSING' ? 'Daemon Generating ZK...' : 'Awaiting Daemon...',
-                            zkCommitment: tx.zkProof || 'Awaiting Sync...'
-                        };
-                    }
-                    queueMap[batchId].amount += parseFloat(tx.amount || 0);
-                });
-                setLocalEscrow(Object.values(queueMap).map(q => ({...q, amount: typeof q.amount === 'number' ? q.amount.toFixed(2) : q.amount})));
-            }
-            if (autopilotRes.ok) {
-                const autopilotData = await autopilotRes.json();
-                setAutopilotRules(autopilotData.data || autopilotData);
-            }
-            if (statsRes.ok) setSysStats((await statsRes.json()).stats);
-            if (daemonRes && daemonRes.ok) { const daemonData = await daemonRes.json(); setAgentStatus(daemonData.daemonStatus || 'OFFLINE'); }
-            await fetchOnChainBalances(walletAddress, activeVaultToken);
-        } catch (error) {
-            console.error("Hydration Error", error);
-            if (error instanceof TypeError) {
-                showToast('error', 'Network error — retrying...');
-            }
-        }
-    }, [walletAddress, activeVaultToken, fetchOnChainBalances, showToast]);
-
-    // Smart polling: 5s interval, pause when tab hidden (Phase 4.3)
-    useEffect(() => {
-        if (!walletAddress || isBatchProcessing) return;
-
-        fetchData();
-
-        let interval: ReturnType<typeof setInterval>;
-        let isVisible = true;
-
-        const startPolling = () => {
-            interval = setInterval(() => {
-                if (isVisible && walletAddress && !isBatchProcessing) fetchData();
-            }, 15000); // Poll every 15s to reduce server load (was 5s)
-        };
-
-        const handleVisibility = () => {
-            isVisible = !document.hidden;
-            if (isVisible) fetchData();
-        };
-
-        document.addEventListener('visibilitychange', handleVisibility);
-        startPolling();
-
-        return () => {
-            clearInterval(interval);
-            document.removeEventListener('visibilitychange', handleVisibility);
-        };
-    }, [walletAddress, currentWorkspace, activeVaultToken, isBatchProcessing, fetchData]);
+    const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; const prevState = agentStatus; setAgentStatus(newState); /* optimistic */ try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { setAgentStatus(prevState); /* rollback */ showToast('error', 'Failed to update daemon status.'); } } catch { setAgentStatus(prevState); /* rollback */ showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast, setAgentStatus]);
 
     // ==========================================
     // ACTION HANDLERS (wrapped in useCallback)
@@ -676,9 +586,11 @@ export default function Dashboard() {
 
                 <TopStatsCards totalDisbursed={totalDisbursed} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} />
 
-                <Suspense fallback={<TerminalSkeleton />}>
-                    <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} />
-                </Suspense>
+                <FeatureErrorBoundary feature="OmniTerminal">
+                    <Suspense fallback={<TerminalSkeleton />}>
+                        <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} />
+                    </Suspense>
+                </FeatureErrorBoundary>
 
                 <div className="relative z-20 mb-10">
                     <div className="absolute -inset-[1px] bg-gradient-to-r from-fuchsia-500/40 via-amber-500/20 to-indigo-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
@@ -697,44 +609,58 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
                     <div className="lg:col-span-8 space-y-6 sm:space-y-10">
                         {isAdmin && (
-                            <Suspense fallback={<BoardroomSkeleton />}>
-                                <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
-                            </Suspense>
+                            <FeatureErrorBoundary feature="Boardroom">
+                                <Suspense fallback={<BoardroomSkeleton />}>
+                                    <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
                         )}
 
                         {history.length > 0 && (
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <SettlementReceipt settlements={history} settlementRef={settlementRef} />
-                            </Suspense>
+                            <FeatureErrorBoundary feature="Settlement Receipt">
+                                <Suspense fallback={<SectionSkeleton />}>
+                                    <SettlementReceipt settlements={history} settlementRef={settlementRef} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
                         )}
 
-                        {/* AutoJudgePanel, JudgeDashboard → admin only */}
+                        <FeatureErrorBoundary feature="Job History">
+                            <Suspense fallback={<SectionSkeleton />}>
+                                <JobHistory walletAddress={walletAddress} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
 
-                        <Suspense fallback={<SectionSkeleton />}>
-                            <JobHistory walletAddress={walletAddress} />
-                        </Suspense>
+                        <FeatureErrorBoundary feature="Fiat Off-Ramp">
+                            <Suspense fallback={<SectionSkeleton />}>
+                                <FiatOffRamp walletAddress={walletAddress || ''} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
 
-                        <Suspense fallback={<SectionSkeleton />}>
-                            <FiatOffRamp walletAddress={walletAddress || ''} />
-                        </Suspense>
-
-                        <Suspense fallback={<SectionSkeleton />}>
-                            <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
-                        </Suspense>
+                        <FeatureErrorBoundary feature="Active Agents">
+                            <Suspense fallback={<SectionSkeleton />}>
+                                <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
                         <div id="daemon-queue-section" className="scroll-mt-20">
-                            <Suspense fallback={<SidebarSkeleton />}>
-                                <TimeVault localEscrow={localEscrow} />
-                            </Suspense>
+                            <FeatureErrorBoundary feature="Daemon Queue" compact>
+                                <Suspense fallback={<SidebarSkeleton />}>
+                                    <TimeVault localEscrow={localEscrow} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
                         </div>
-                        <Suspense fallback={<SidebarSkeleton />}>
-                            <EscrowTracker walletAddress={walletAddress} />
-                        </Suspense>
-                        <Suspense fallback={<SidebarSkeleton />}>
-                            <AgentEarnings walletAddress={walletAddress} />
-                        </Suspense>
+                        <FeatureErrorBoundary feature="Escrow Tracker" compact>
+                            <Suspense fallback={<SidebarSkeleton />}>
+                                <EscrowTracker walletAddress={walletAddress} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
+                        <FeatureErrorBoundary feature="Agent Earnings" compact>
+                            <Suspense fallback={<SidebarSkeleton />}>
+                                <AgentEarnings walletAddress={walletAddress} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
                     </div>
                 </div>
             </main>

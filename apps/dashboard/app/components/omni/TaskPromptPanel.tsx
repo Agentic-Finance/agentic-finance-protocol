@@ -73,11 +73,11 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
     };
 
     return (
-        <div className="mt-4 bg-[#0A0E17] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mt-4 bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500" />
 
             {/* ── Agent Header ── */}
-            <div className="p-5 pb-3 border-b border-white/[0.06]">
+            <div className="p-5 pb-3 border-b border-white/[0.10]">
                 <div className="flex items-start gap-3.5">
                     <span className="shrink-0 w-12 h-12 flex items-center justify-center bg-white/[0.04] rounded-2xl overflow-hidden">
                         {a.avatarUrl ? (
@@ -121,7 +121,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
 
             {/* ── Collapsible Agent Detail ── */}
             {showFullDetail && (
-                <div className="border-b border-white/[0.06] animate-in fade-in duration-300">
+                <div className="border-b border-white/[0.10] animate-in fade-in duration-300">
                     {/* Tabs */}
                     <div className="flex border-b border-white/[0.04] px-5">
                         {(['overview', 'reviews'] as const).map(tab => (
@@ -155,7 +155,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
                                         <h4 className="text-[9px] font-bold uppercase tracking-widest text-slate-600 mb-1.5">Skills</h4>
                                         <div className="flex flex-wrap gap-1.5">
                                             {a.skills.map((skill, i) => (
-                                                <span key={i} className="text-[10px] text-slate-400 bg-white/[0.04] px-2 py-0.5 rounded-lg border border-white/[0.06]">
+                                                <span key={i} className="text-[10px] text-slate-400 bg-white/[0.04] px-2 py-0.5 rounded-lg border border-white/[0.10]">
                                                     {skill}
                                                 </span>
                                             ))}
@@ -203,7 +203,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
                                     </div>
                                 ) : (
                                     reviews.map(review => (
-                                        <div key={review.id} className="p-2.5 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+                                        <div key={review.id} className="p-2.5 bg-white/[0.04] border border-white/[0.05] rounded-xl">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="flex">
                                                     {Array.from({ length: 5 }, (_, i) => (
@@ -242,7 +242,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
                     onChange={(e) => setTask(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={`e.g. "${a.skills?.[0] ? `Help me with ${a.skills[0].toLowerCase()}` : 'Describe your task here...'}"`}
-                    className="w-full bg-black/30 border border-white/[0.06] rounded-xl p-3 text-white text-sm placeholder:text-slate-600 outline-none focus:border-indigo-500/30 resize-none transition-colors min-h-[80px]"
+                    className="w-full bg-black/30 border border-white/[0.10] rounded-xl p-3 text-white text-sm placeholder:text-slate-600 outline-none focus:border-indigo-500/30 resize-none transition-colors min-h-[80px]"
                     rows={3}
                 />
 
@@ -273,7 +273,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
 
 function MiniStat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
-        <div className="p-2 bg-white/[0.02] border border-white/[0.05] rounded-lg text-center">
+        <div className="p-2 bg-white/[0.04] border border-white/[0.05] rounded-lg text-center">
             <div className="flex items-center justify-center gap-1 mb-0.5">
                 {icon}
                 <span className="text-[8px] font-bold uppercase tracking-wider text-slate-600">{label}</span>

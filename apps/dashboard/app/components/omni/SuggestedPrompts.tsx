@@ -52,7 +52,7 @@ function SuggestedPrompts({ onSelect, variant = 'agent' }: SuggestedPromptsProps
                     <button
                         key={idx}
                         onClick={() => onSelect(prompt.text)}
-                        className={`group px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-${accentColor}-500/20 hover:bg-${accentColor}-500/[0.03] transition-all duration-150 text-left flex items-center gap-2`}
+                        className={`group px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.05] hover:border-${accentColor}-500/20 hover:bg-${accentColor}-500/[0.03] transition-all duration-150 text-left flex items-center gap-2`}
                     >
                         <span className="text-base shrink-0">{prompt.emoji}</span>
                         <span className={`text-xs text-slate-500 group-hover:text-${accentColor}-300 transition-colors`}>{prompt.text}</span>

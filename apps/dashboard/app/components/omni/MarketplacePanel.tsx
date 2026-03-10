@@ -37,7 +37,7 @@ const AGENTS_PER_PAGE = 12;
 
 function SkeletonCard() {
     return (
-        <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4 animate-pulse">
+        <div className="bg-white/[0.04] border border-white/[0.04] rounded-2xl p-4 animate-pulse">
             <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 bg-white/[0.04] rounded-xl shrink-0" />
                 <div className="flex-1">
@@ -94,7 +94,7 @@ function MarketplacePanel({
         );
 
         return (
-            <div className="mt-4 bg-[#0A0E17] border border-white/[0.06] rounded-2xl overflow-hidden animate-in fade-in duration-500">
+            <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
 
                 {/* Header Bar */}
                 <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">
@@ -193,7 +193,7 @@ function MarketplacePanel({
                                 {activeCategory && (
                                     <button
                                         onClick={() => onFilterCategory(null)}
-                                        className="px-4 py-1.5 bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.06] text-slate-400 text-[11px] font-semibold rounded-lg transition-all"
+                                        className="px-4 py-1.5 bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.10] text-slate-400 text-[11px] font-semibold rounded-lg transition-all"
                                     >
                                         View All Categories
                                     </button>
@@ -284,7 +284,7 @@ function MarketplacePanel({
     // ── ANALYZING ──
     if (phase === 'analyzing') {
         return (
-            <div className="mt-4 bg-[#0A0E17] border border-white/[0.06] rounded-2xl overflow-hidden animate-in fade-in duration-500">
+            <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.04]">
                     <MagnifyingGlassIcon className="w-5 h-5 text-indigo-400 animate-pulse" />
                     <div>
@@ -311,7 +311,7 @@ function MarketplacePanel({
     // ── RESULTS: AI-matched agents ──
     if (phase === 'results' && matchedAgents.length > 0) {
         return (
-            <div className="mt-4 bg-[#0A0E17] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="mt-4 bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">

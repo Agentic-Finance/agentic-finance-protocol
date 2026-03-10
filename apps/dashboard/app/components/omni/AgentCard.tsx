@@ -65,7 +65,7 @@ function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: 
             className={`relative bg-white/[0.03] border rounded-2xl p-4 flex flex-col transition-all duration-200 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
                 rank === 0 && !isBrowseMode
                     ? 'border-indigo-500/30 bg-indigo-500/[0.04]'
-                    : 'border-white/[0.06] hover:border-indigo-500/25 hover:bg-white/[0.05]'
+                    : 'border-white/[0.10] hover:border-indigo-500/25 hover:bg-white/[0.05]'
             }`}
             onClick={() => onHire(agent)}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onHire(agent); } }}
@@ -159,7 +159,7 @@ function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: 
                     {onShowDetail && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onShowDetail(agent); }}
-                            className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] text-slate-500 hover:text-indigo-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                            className="p-1.5 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.10] text-slate-500 hover:text-indigo-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                             title="View details"
                         >
                             <InformationCircleIcon className="w-4 h-4" />

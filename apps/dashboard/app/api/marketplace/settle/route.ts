@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from "@/app/lib/prisma";
 import { notify } from '@/app/lib/notify';
+import { requireFields, apiError, apiSuccess, logAndReturn } from '@/app/lib/api-response';
+import { marketplaceLimiter, getClientId } from '@/app/lib/rate-limit';
+
+const VALID_ACTIONS = ['escrow_locked', 'settle', 'refund', 'dispute', 'executing', 'completed'] as const;
 
 /**
  * POST /api/marketplace/settle
@@ -9,22 +13,23 @@ import { notify } from '@/app/lib/notify';
  * Called by frontend after contract interactions (createJob, settleJob, refundJob, disputeJob).
  *
  * Body: { jobId, action, txHash?, onChainJobId?, reason?, deadline? }
- *
- * Actions:
- * - escrow_locked: After createJob() tx - stores onChainJobId + escrowTxHash + deadline
- * - settle:        After settleJob() tx - marks SETTLED + stores settleTxHash
- * - refund:        After refundJob()/claimTimeout() tx - marks REFUNDED + stores settleTxHash
- * - dispute:       After disputeJob() tx - marks DISPUTED + stores reason
- * - executing:     Agent started working
- * - completed:     Agent finished, awaiting review
  */
 export async function POST(req: Request) {
     try {
+        // Rate limit
+        const clientId = getClientId(req);
+        const limit = marketplaceLimiter.check(clientId);
+        if (!limit.success) return apiError('Rate limit exceeded', 429);
+
         const body = await req.json();
         const { jobId, action, txHash, onChainJobId, reason, deadline } = body;
 
-        if (!jobId) {
-            return NextResponse.json({ success: false, error: "Missing jobId" }, { status: 400 });
+        // Input validation
+        const err = requireFields(body, ['jobId', 'action']);
+        if (err) return apiError(err, 400);
+
+        if (!VALID_ACTIONS.includes(action)) {
+            return apiError(`Invalid action: ${action}. Must be one of: ${VALID_ACTIONS.join(', ')}`, 400);
         }
 
         // Find the AgentJob record
@@ -177,11 +182,7 @@ export async function POST(req: Request) {
                 return NextResponse.json({ success: false, error: `Invalid action: ${action}` }, { status: 400 });
         }
     } catch (error: any) {
-        console.error("[SETTLE_API_ERROR]:", error);
-        return NextResponse.json(
-            { success: false, error: "Settlement sync failed: " + error.message },
-            { status: 500 }
-        );
+        return logAndReturn('SETTLE_API', error, 'Settlement sync failed');
     }
 }
 

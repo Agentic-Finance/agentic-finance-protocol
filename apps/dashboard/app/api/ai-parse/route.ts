@@ -8,10 +8,21 @@ function getOpenAI() {
     return _openai;
 }
 
+/** Max prompt length: 10KB to prevent abuse */
+const MAX_PROMPT_LENGTH = 10_000;
+
 export async function POST(req: Request) {
     try {
         const body = await req.json();
         const { prompt, supportedTokens, addressBook, systemData } = body;
+
+        // Input validation
+        if (!prompt || typeof prompt !== 'string') {
+            return NextResponse.json({ error: 'Missing or invalid prompt' }, { status: 400 });
+        }
+        if (prompt.length > MAX_PROMPT_LENGTH) {
+            return NextResponse.json({ error: `Prompt too long (${prompt.length} chars, max ${MAX_PROMPT_LENGTH})` }, { status: 413 });
+        }
 
         // System prompt: PayPol Copilot — ACTION + CHAT + GUIDE
         const systemPrompt = `

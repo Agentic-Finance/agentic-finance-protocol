@@ -631,7 +631,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 </span>
                             </div>
 
-                            <div className="flex bg-white/[0.03] border border-white/[0.06] rounded-xl p-1 gap-1">
+                            <div className="flex bg-white/[0.03] border border-white/[0.10] rounded-xl p-1 gap-1">
                                 <button
                                     onClick={() => { setActiveTab('payroll'); resetTerminal(true); }}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${

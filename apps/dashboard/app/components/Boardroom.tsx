@@ -36,7 +36,7 @@ function Boardroom(props: BoardroomProps) {
             <div className={`absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 rounded-tr-xl z-10 pointer-events-none ${isAgentMode ? 'border-fuchsia-400/80' : 'border-amber-400/80'}`}></div>
             <div className={`absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 rounded-bl-xl z-10 pointer-events-none ${isAgentMode ? 'border-fuchsia-400/80' : 'border-amber-400/80'}`}></div>
 
-            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl relative z-10 shadow-inner overflow-hidden" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.95) 0%, rgba(21,27,39,0.90) 100%)' }}>
                 <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 pointer-events-none`} style={{ background: isAgentMode ? 'radial-gradient(ellipse at center, rgba(217,70,239,0.05) 0%, transparent 70%)' : 'radial-gradient(ellipse at center, rgba(245,158,11,0.05) 0%, transparent 70%)' }}></div>
                 
                 {/* HEADER */}
@@ -89,7 +89,7 @@ function Boardroom(props: BoardroomProps) {
                 <div className="overflow-x-auto relative z-10 mb-8">
                     <table className="w-full text-left border-collapse" aria-label="Pending payroll transactions">
                         <thead>
-                            <tr className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-white/5">
+                            <tr className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-white/[0.08]">
                                 <th className="pb-4 pl-3">Recipient</th>
                                 <th className="pb-4">Tempo Wallet Address</th>
                                 <th className="pb-4 text-right pr-3">Amount</th>

@@ -30,7 +30,7 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
             {/* Background ambient glows */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-cyan-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[300px] sm:min-h-[400px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[300px] sm:min-h-[400px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
 
                 {/* Header */}
                 <div className="flex justify-between items-center border-b border-white/10 pb-5 mb-6">
@@ -94,7 +94,7 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
                                             </div>
                                         </div>
 
-                                        <div className="bg-black/40 rounded-xl p-3 border border-white/5 flex flex-col gap-2">
+                                        <div className="bg-black/40 rounded-xl p-3 border border-white/[0.08] flex flex-col gap-2">
                                             <div className="flex justify-between items-center text-xs">
                                                 <span className="text-slate-500 font-medium uppercase">System Status</span>
                                                 <span className={`${isZK ? 'text-fuchsia-400' : 'text-cyan-400'} font-bold font-mono`}>

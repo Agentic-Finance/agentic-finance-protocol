@@ -104,7 +104,10 @@ export default function ShieldPanel() {
     };
     fetchStats();
     const interval = setInterval(() => { if (!document.hidden) fetchStats(); }, 15000);
-    return () => clearInterval(interval);
+    // Re-fetch immediately when tab becomes visible again
+    const handleVisibility = () => { if (!document.hidden) fetchStats(); };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => { clearInterval(interval); document.removeEventListener('visibilitychange', handleVisibility); };
   }, []);
 
   const handlePayout = async (e: React.FormEvent) => {

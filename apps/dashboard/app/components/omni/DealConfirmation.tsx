@@ -71,7 +71,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
     return (
         <div
             ref={confirmationRef}
-            className="mt-6 max-w-xl mx-auto w-full bg-[#0A0E17] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
+            className="mt-6 max-w-xl mx-auto w-full bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
         >
             {/* Accent line */}
             <div className="h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>
@@ -114,7 +114,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                 </div>
 
                 {/* Agent mini card */}
-                <div className="bg-white/[0.02] border border-white/[0.04] rounded-lg p-3 mb-5 flex items-center gap-3">
+                <div className="bg-white/[0.04] border border-white/[0.04] rounded-lg p-3 mb-5 flex items-center gap-3">
                     <span className="text-xl">{agent.avatarEmoji}</span>
                     <div className="flex-1">
                         <div className="flex items-center gap-1.5">
@@ -163,7 +163,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                     className={`w-full rounded-xl mb-4 cursor-pointer transition-all overflow-hidden ${
                         shieldEnabled
                             ? 'bg-gradient-to-r from-violet-500/15 to-purple-500/10 border border-violet-500/30 shadow-[0_0_15px_rgba(139,92,246,0.1)]'
-                            : 'bg-black/20 border border-white/[0.06] hover:border-violet-500/20'
+                            : 'bg-black/20 border border-white/[0.10] hover:border-violet-500/20'
                     }`}
                 >
                     <div className="flex items-center gap-3 px-4 py-3">
@@ -240,7 +240,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                                 <span className="text-violet-300 font-mono">+${shieldFee.toFixed(2)}</span>
                             </div>
                         )}
-                        <div className="border-t border-white/[0.06] pt-1.5 flex justify-between items-center">
+                        <div className="border-t border-white/[0.10] pt-1.5 flex justify-between items-center">
                             <span className="text-white font-semibold">Card total</span>
                             <span className="text-white font-mono font-bold">${totalCardCharge.toFixed(2)}</span>
                         </div>
@@ -282,7 +282,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
                     <div className="flex gap-3">
                         <button
                             onClick={onReject}
-                            className="flex-1 py-3 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-slate-400 font-semibold text-xs rounded-xl transition-all"
+                            className="flex-1 py-3 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.10] text-slate-400 font-semibold text-xs rounded-xl transition-all"
                         >
                             Reject
                         </button>

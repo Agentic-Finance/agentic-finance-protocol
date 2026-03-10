@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 // ── Types ────────────────────────────────────────────────────
 
@@ -96,6 +97,8 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
     const [toasts, setToasts] = useState<Toast[]>([]);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const prevUnreadRef = useRef(0);
+    const router = useRouter();
+    const pathname = usePathname();
 
     const fetchNotifications = useCallback(async () => {
         if (!walletAddress) return;
@@ -173,6 +176,69 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
             console.error('Mark read error:', err);
         }
     };
+
+    // Mark a single notification as read
+    const markSingleRead = useCallback(async (notifId: string) => {
+        if (!walletAddress) return;
+        try {
+            await fetch('/api/notifications', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ wallet: walletAddress, ids: [notifId] }),
+            });
+            setNotifications(prev => prev.map(n => n.id === notifId ? { ...n, isRead: true } : n));
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch { /* ignore */ }
+    }, [walletAddress]);
+
+    // Determine where to navigate for a notification
+    const getNotificationRoute = useCallback((n: Notification): string => {
+        const cat = getCategory(n.type);
+        const catConfig = CATEGORY_CONFIG[cat];
+
+        // Job notifications → open chat panel for that job
+        if (cat === 'job' && n.streamJobId) {
+            return `/?app=1&chat=${n.streamJobId}`;
+        }
+        // Escrow notifications → open chat if has jobId
+        if (cat === 'escrow' && n.streamJobId) {
+            return `/?app=1&chat=${n.streamJobId}`;
+        }
+        // Stream notifications → stream page
+        if (cat === 'stream' && n.streamJobId) {
+            return `/stream?id=${n.streamJobId}`;
+        }
+        // Default to category route
+        return catConfig?.route || '/';
+    }, []);
+
+    // Handle clicking on a notification
+    const handleNotificationClick = useCallback((n: Notification) => {
+        // 1. Mark as read
+        if (!n.isRead) markSingleRead(n.id);
+
+        // 2. Determine route
+        const route = getNotificationRoute(n);
+        const cat = getCategory(n.type);
+
+        // 3. Close dropdown
+        setIsOpen(false);
+
+        // 4. If job/escrow notification with jobId, dispatch event to open chat
+        // (for same-page navigation — page.tsx listens for this)
+        if ((cat === 'job' || cat === 'escrow') && n.streamJobId) {
+            // If already on home page, just dispatch the event
+            if (pathname === '/') {
+                window.dispatchEvent(new CustomEvent('paypol:openChat', {
+                    detail: { jobId: n.streamJobId },
+                }));
+                return;
+            }
+        }
+
+        // 5. Navigate
+        router.push(route);
+    }, [markSingleRead, getNotificationRoute, pathname, router]);
 
     const filteredNotifications = activeFilter === 'all'
         ? notifications
@@ -307,6 +373,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
                                         return (
                                             <div
                                                 key={n.id}
+                                                onClick={() => handleNotificationClick(n)}
                                                 className={`px-4 py-3 hover:bg-white/[0.02] transition-colors cursor-pointer ${!n.isRead ? 'bg-white/[0.02]' : ''}`}
                                             >
                                                 <div className="flex items-start gap-3">

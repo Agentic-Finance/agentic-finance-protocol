@@ -56,8 +56,31 @@ export default function Dashboard() {
                     }
                 }).catch((e: Error) => console.warn('[Auto-reconnect]', e.message));
             }
+            // Check for ?chat=jobId to auto-open chat panel
+            const chatJobId = params.get('chat');
+            if (chatJobId) {
+                setChatTargetJobId(chatJobId);
+                setIsChatOpen(true);
+                // Clean up URL (remove chat param)
+                const url = new URL(window.location.href);
+                url.searchParams.delete('chat');
+                window.history.replaceState({}, '', url.toString());
+            }
         }
         setIsReady(true);
+    }, []);
+
+    // Listen for notification clicks to open chat panel (same-page navigation)
+    useEffect(() => {
+        const handleOpenChat = (e: Event) => {
+            const detail = (e as CustomEvent).detail;
+            if (detail?.jobId) {
+                setChatTargetJobId(detail.jobId);
+                setIsChatOpen(true);
+            }
+        };
+        window.addEventListener('paypol:openChat', handleOpenChat);
+        return () => window.removeEventListener('paypol:openChat', handleOpenChat);
     }, []);
 
     const [currentWorkspace, setCurrentWorkspace] = useState<{ name: string, type: string, admin_wallet: string, id: string } | null | undefined>(undefined);

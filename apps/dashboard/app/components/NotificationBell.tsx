@@ -249,9 +249,14 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
                 return;
             }
 
-            // 5. Fiat/Payroll/Wallet/Offramp → wallets page
-            if (cat === 'fiat' || cat === 'payroll' || cat === 'wallet' || cat === 'offramp') {
+            // 5. Fiat/Payroll/Wallet → wallets page
+            if (cat === 'fiat' || cat === 'payroll' || cat === 'wallet') {
                 if (pathname !== '/wallets') router.push('/wallets');
+                return;
+            }
+
+            // 5b. Offramp → informational only, just mark as read (no navigation)
+            if (cat === 'offramp') {
                 return;
             }
 

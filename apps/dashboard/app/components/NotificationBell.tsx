@@ -224,19 +224,31 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
         // 3. Close dropdown
         setIsOpen(false);
 
-        // 4. If job/escrow notification with jobId, dispatch event to open chat
-        // (for same-page navigation — page.tsx listens for this)
-        if ((cat === 'job' || cat === 'escrow') && n.streamJobId) {
-            // If already on home page, just dispatch the event
+        // 4. Job/Escrow notifications → open chat panel
+        if (cat === 'job' || cat === 'escrow') {
             if (pathname === '/') {
+                // Already on home page: dispatch event to open chat
                 window.dispatchEvent(new CustomEvent('paypol:openChat', {
-                    detail: { jobId: n.streamJobId },
+                    detail: { jobId: n.streamJobId || null },
                 }));
                 return;
             }
+            // On a different page: navigate to home with chat param
+            if (n.streamJobId) {
+                router.push(`/?app=1&chat=${n.streamJobId}`);
+            } else {
+                router.push('/?app=1&openChat=1');
+            }
+            return;
         }
 
-        // 5. Navigate
+        // 5. Stream notifications → stream page
+        if (cat === 'stream') {
+            router.push(n.streamJobId ? `/stream?id=${n.streamJobId}` : '/stream');
+            return;
+        }
+
+        // 6. Other categories → their routes
         router.push(route);
     }, [markSingleRead, getNotificationRoute, pathname, router]);
 

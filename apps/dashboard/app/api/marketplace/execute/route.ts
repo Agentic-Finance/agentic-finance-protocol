@@ -386,6 +386,7 @@ export async function POST(req: Request) {
             message: finalStatus === 'COMPLETED'
                 ? `${job.agent.name} completed your task in ${executionTime}s`
                 : `Execution failed: ${(result as any)?.error || 'Unknown error'}`,
+            streamJobId: jobId,
         }).catch(() => {});
 
         // Post result to agent chat channel

@@ -56,14 +56,16 @@ export default function Dashboard() {
                     }
                 }).catch((e: Error) => console.warn('[Auto-reconnect]', e.message));
             }
-            // Check for ?chat=jobId to auto-open chat panel
+            // Check for ?chat=jobId or ?openChat=1 to auto-open chat panel
             const chatJobId = params.get('chat');
-            if (chatJobId) {
-                setChatTargetJobId(chatJobId);
+            const openChat = params.get('openChat');
+            if (chatJobId || openChat) {
+                if (chatJobId) setChatTargetJobId(chatJobId);
                 setIsChatOpen(true);
-                // Clean up URL (remove chat param)
+                // Clean up URL (remove chat/openChat params)
                 const url = new URL(window.location.href);
                 url.searchParams.delete('chat');
+                url.searchParams.delete('openChat');
                 window.history.replaceState({}, '', url.toString());
             }
         }
@@ -74,10 +76,8 @@ export default function Dashboard() {
     useEffect(() => {
         const handleOpenChat = (e: Event) => {
             const detail = (e as CustomEvent).detail;
-            if (detail?.jobId) {
-                setChatTargetJobId(detail.jobId);
-                setIsChatOpen(true);
-            }
+            if (detail?.jobId) setChatTargetJobId(detail.jobId);
+            setIsChatOpen(true);
         };
         window.addEventListener('paypol:openChat', handleOpenChat);
         return () => window.removeEventListener('paypol:openChat', handleOpenChat);

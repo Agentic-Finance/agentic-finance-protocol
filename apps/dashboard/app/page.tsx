@@ -62,10 +62,22 @@ export default function Dashboard() {
             if (chatJobId || openChat) {
                 if (chatJobId) setChatTargetJobId(chatJobId);
                 setIsChatOpen(true);
-                // Clean up URL (remove chat/openChat params)
+            }
+            // Check for ?scrollTo=section to scroll to a specific section
+            const scrollTo = params.get('scrollTo');
+            if (scrollTo) {
+                // Delay to let lazy components render
+                setTimeout(() => {
+                    const el = document.getElementById(`section-${scrollTo}`);
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+            }
+            // Clean up URL params
+            if (chatJobId || openChat || scrollTo) {
                 const url = new URL(window.location.href);
                 url.searchParams.delete('chat');
                 url.searchParams.delete('openChat');
+                url.searchParams.delete('scrollTo');
                 window.history.replaceState({}, '', url.toString());
             }
         }
@@ -81,6 +93,19 @@ export default function Dashboard() {
         };
         window.addEventListener('paypol:openChat', handleOpenChat);
         return () => window.removeEventListener('paypol:openChat', handleOpenChat);
+    }, []);
+
+    // Listen for notification clicks to scroll to a specific section
+    useEffect(() => {
+        const handleScrollTo = (e: Event) => {
+            const section = (e as CustomEvent).detail?.section;
+            if (section) {
+                const el = document.getElementById(`section-${section}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+        window.addEventListener('paypol:scrollToSection', handleScrollTo);
+        return () => window.removeEventListener('paypol:scrollToSection', handleScrollTo);
     }, []);
 
     const [currentWorkspace, setCurrentWorkspace] = useState<{ name: string, type: string, admin_wallet: string, id: string } | null | undefined>(undefined);
@@ -653,23 +678,29 @@ export default function Dashboard() {
                             </FeatureErrorBoundary>
                         )}
 
-                        <FeatureErrorBoundary feature="Job History">
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <JobHistory walletAddress={walletAddress} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
+                        <div id="section-jobs" className="scroll-mt-20">
+                            <FeatureErrorBoundary feature="Job History">
+                                <Suspense fallback={<SectionSkeleton />}>
+                                    <JobHistory walletAddress={walletAddress} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
+                        </div>
 
-                        <FeatureErrorBoundary feature="Fiat Off-Ramp">
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <FiatOffRamp walletAddress={walletAddress || ''} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
+                        <div id="section-offramp" className="scroll-mt-20">
+                            <FeatureErrorBoundary feature="Fiat Off-Ramp">
+                                <Suspense fallback={<SectionSkeleton />}>
+                                    <FiatOffRamp walletAddress={walletAddress || ''} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
+                        </div>
 
-                        <FeatureErrorBoundary feature="Active Agents">
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
+                        <div id="section-agents" className="scroll-mt-20">
+                            <FeatureErrorBoundary feature="Active Agents">
+                                <Suspense fallback={<SectionSkeleton />}>
+                                    <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
+                        </div>
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">

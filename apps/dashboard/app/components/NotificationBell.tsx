@@ -33,16 +33,16 @@ const CATEGORY_CONFIG: Record<string, { icon: string; color: string; label: stri
     stream:  { icon: '\uD83D\uDD04', color: '#818cf8', label: 'Stream',  route: '/stream' },
     job:     { icon: '\uD83D\uDCBC', color: '#f59e0b', label: 'Job',     route: '/' },
     escrow:  { icon: '\uD83D\uDD12', color: '#06b6d4', label: 'Escrow',  route: '/' },
-    fiat:    { icon: '\uD83D\uDCB3', color: '#10b981', label: 'Fiat',    route: '/wallets' },
+    fiat:    { icon: '\uD83D\uDCB3', color: '#10b981', label: 'Fiat',    route: '/' },
     swarm:   { icon: '\uD83D\uDC1D', color: '#f97316', label: 'Swarm',   route: '/swarm' },
     a2a:     { icon: '\u26A1',       color: '#a855f7', label: 'A2A',     route: '/swarm' },
     intel:   { icon: '\uD83E\uDDE0', color: '#ef4444', label: 'Intel',   route: '/swarm' },
-    payroll: { icon: '\uD83D\uDCB0', color: '#22c55e', label: 'Payroll', route: '/wallets' },
+    payroll: { icon: '\uD83D\uDCB0', color: '#22c55e', label: 'Payroll', route: '/' },
     wallet:  { icon: '\uD83D\uDC5B', color: '#ec4899', label: 'Wallet',  route: '/wallets' },
     review:  { icon: '\u2B50',       color: '#eab308', label: 'Review',  route: '/' },
     agent:   { icon: '\uD83E\uDD16', color: '#6366f1', label: 'Agent',   route: '/' },
-    offramp: { icon: '\uD83C\uDFE6', color: '#14b8a6', label: 'Offramp', route: '/wallets' },
-    judge:   { icon: '\u2696\uFE0F', color: '#f43f5e', label: 'Judge',   route: '/' },
+    offramp: { icon: '\uD83C\uDFE6', color: '#14b8a6', label: 'Offramp', route: '/' },
+    judge:   { icon: '\u2696\uFE0F', color: '#f43f5e', label: 'Judge',   route: '/admin' },
 };
 
 const FILTER_TABS = ['all', 'stream', 'job', 'escrow', 'swarm', 'fiat', 'payroll'];
@@ -196,22 +196,17 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
     // Determine where to navigate for a notification (used for potential external links)
     const getNotificationRoute = useCallback((n: Notification): string => {
         const cat = getCategory(n.type);
-        const catConfig = CATEGORY_CONFIG[cat];
 
-        // Job/Escrow/Agent/Judge → chat panel for that job
-        if ((cat === 'job' || cat === 'escrow' || cat === 'agent' || cat === 'judge') && n.streamJobId) {
-            return `/?app=1&chat=${n.streamJobId}`;
-        }
-        // Stream → stream page with ID
-        if (cat === 'stream' && n.streamJobId) {
-            return `/stream?id=${n.streamJobId}`;
-        }
-        // Fiat/Payroll/Wallet/Offramp → wallets page
-        if (cat === 'fiat' || cat === 'payroll' || cat === 'wallet' || cat === 'offramp') {
-            return '/wallets';
-        }
-        // Default to category route
-        return catConfig?.route || '/';
+        if (cat === 'stream' && n.streamJobId) return `/stream?id=${n.streamJobId}`;
+        if (cat === 'stream') return '/stream';
+        if ((cat === 'job' || cat === 'escrow' || cat === 'review') && n.streamJobId) return `/?app=1&chat=${n.streamJobId}`;
+        if (cat === 'judge') return '/admin';
+        if (cat === 'swarm' || cat === 'a2a' || cat === 'intel') return '/swarm';
+        if (cat === 'offramp' || cat === 'fiat') return '/?app=1&scrollTo=offramp';
+        if (cat === 'payroll') return '/?app=1&scrollTo=jobs';
+        if (cat === 'wallet') return '/wallets';
+        if (cat === 'agent') return '/?app=1&scrollTo=agents';
+        return '/';
     }, []);
 
     // Handle clicking on a notification
@@ -224,21 +219,31 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
 
         const cat = getCategory(n.type);
 
+        // Helper: scroll to a section on the main page
+        const scrollToSection = (section: string) => {
+            if (pathname === '/') {
+                window.dispatchEvent(new CustomEvent('paypol:scrollToSection', {
+                    detail: { section },
+                }));
+            } else {
+                router.push(`/?app=1&scrollTo=${section}`);
+            }
+        };
+
+        // Helper: open chat panel with optional jobId
+        const openChat = (jobId?: string | null) => {
+            if (pathname === '/') {
+                window.dispatchEvent(new CustomEvent('paypol:openChat', {
+                    detail: { jobId: jobId || null },
+                }));
+            } else {
+                router.push(jobId ? `/?app=1&chat=${jobId}` : '/?app=1&openChat=1');
+            }
+        };
+
         // Use setTimeout to ensure dropdown close animation doesn't block navigation
         setTimeout(() => {
-            // 3. Job/Escrow/Agent/Judge → open chat panel (dispute context)
-            if (cat === 'job' || cat === 'escrow' || cat === 'agent' || cat === 'judge') {
-                if (pathname === '/') {
-                    window.dispatchEvent(new CustomEvent('paypol:openChat', {
-                        detail: { jobId: n.streamJobId || null },
-                    }));
-                } else {
-                    router.push(n.streamJobId ? `/?app=1&chat=${n.streamJobId}` : '/?app=1&openChat=1');
-                }
-                return;
-            }
-
-            // 4. Stream notifications → stream page
+            // Stream → /stream page (with stream ID if available)
             if (cat === 'stream') {
                 const target = n.streamJobId ? `/stream?id=${n.streamJobId}` : '/stream';
                 if (pathname === '/stream') {
@@ -249,31 +254,56 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
                 return;
             }
 
-            // 5. Fiat/Payroll/Wallet → wallets page
-            if (cat === 'fiat' || cat === 'payroll' || cat === 'wallet') {
-                if (pathname !== '/wallets') router.push('/wallets');
+            // Job/Escrow/Review → chat panel (job context, review context)
+            if (cat === 'job' || cat === 'escrow' || cat === 'review') {
+                openChat(n.streamJobId);
                 return;
             }
 
-            // 5b. Offramp → informational only, just mark as read (no navigation)
-            if (cat === 'offramp') {
+            // Judge → /admin (JudgeDashboard is on admin page)
+            if (cat === 'judge') {
+                if (pathname !== '/admin') router.push('/admin');
                 return;
             }
 
-            // 6. Swarm/A2A/Intel → swarm page
+            // Swarm/A2A/Intel → /swarm page
             if (cat === 'swarm' || cat === 'a2a' || cat === 'intel') {
                 if (pathname !== '/swarm') router.push('/swarm');
                 return;
             }
 
-            // 7. Review/Other → open chat panel as fallback
-            if (pathname === '/') {
-                window.dispatchEvent(new CustomEvent('paypol:openChat', {
-                    detail: { jobId: n.streamJobId || null },
-                }));
-            } else {
-                router.push('/?app=1&openChat=1');
+            // Offramp → scroll to FiatOffRamp section on main page
+            if (cat === 'offramp') {
+                scrollToSection('offramp');
+                return;
             }
+
+            // Fiat → scroll to offramp section (fiat checkout/completion related)
+            if (cat === 'fiat') {
+                scrollToSection('offramp');
+                return;
+            }
+
+            // Payroll → scroll to jobs section on main page (payout history)
+            if (cat === 'payroll') {
+                scrollToSection('jobs');
+                return;
+            }
+
+            // Wallet → /wallets page (embedded wallets)
+            if (cat === 'wallet') {
+                if (pathname !== '/wallets') router.push('/wallets');
+                return;
+            }
+
+            // Agent → scroll to agents section on main page
+            if (cat === 'agent') {
+                scrollToSection('agents');
+                return;
+            }
+
+            // Fallback → chat panel
+            openChat(n.streamJobId);
         }, 50);
     }, [markSingleRead, pathname, router]);
 

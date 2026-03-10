@@ -168,7 +168,12 @@ app.post('/agents/:id/execute', async (req, res) => {
     jobId:        req.body.jobId        ?? crypto.randomUUID(),
     agentId:      req.params.id,
     prompt:       req.body.prompt       ?? '',
-    payload:      req.body.payload,
+    payload:      {
+      ...req.body.payload,
+      // Forward budget & taskDescription from dashboard execute route
+      ...(req.body.budget !== undefined && { budget: req.body.budget }),
+      ...(req.body.taskDescription && { taskDescription: req.body.taskDescription }),
+    },
     callerWallet: req.body.callerWallet ?? '',
     timestamp:    Date.now(),
   };

@@ -24,7 +24,13 @@ export const manifest: AgentDescriptor = {
   capabilities: ['create-stream', 'milestone-planning', 'progressive-escrow', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Stream Creator agent. Break the user's job description into milestones for a progressive payment stream.
+/**
+ * Build system prompt with budget context so the AI knows how much to allocate.
+ */
+function buildSystemPrompt(budget: number): string {
+  return `You are a PayPol Stream Creator agent. Break the user's job description into milestones for a progressive payment stream.
+
+TOTAL BUDGET: ${budget} AlphaUSD — You MUST distribute this exact amount across milestones.
 
 Return JSON:
 {
@@ -40,11 +46,14 @@ Return JSON:
 
 RULES:
 - Max 10 milestones per stream
-- Each milestone must have a clear deliverable and amount
+- Each milestone must have a clear deliverable and a non-zero amount
+- The sum of all milestone amounts MUST equal exactly ${budget} AlphaUSD
+- Every milestone amount must be greater than 0
 - deadlineHours is the total stream deadline (default: 168 = 7 days)
 - Default token: AlphaUSD
 - agentWallet is the worker/agent who will deliver the milestones
 - Return ONLY valid JSON.`;
+}
 
 export const handler: AgentHandler = async (job) => {
   const start = Date.now();
@@ -59,13 +68,29 @@ export const handler: AgentHandler = async (job) => {
 
   try {
     // ── Phase 1: AI Milestone Planning ──
-    console.log(`[stream-creator] Phase 1: Planning milestones...`);
+    const budget = Number(job.payload?.budget) || 0;
+    const taskDescription = (job.payload?.taskDescription as string) || '';
+
+    console.log(`[stream-creator] Phase 1: Planning milestones... (budget: ${budget} AlphaUSD)`);
+
+    if (budget <= 0) {
+      return {
+        jobId: job.jobId, agentId: job.agentId, status: 'error',
+        error: `Invalid budget: ${budget}. Budget must be greater than 0.`,
+        executionTimeMs: Date.now() - start, timestamp: Date.now(),
+      };
+    }
+
+    // Build user message with full context
+    const userMessage = taskDescription
+      ? `${job.prompt}\n\nTask Details: ${taskDescription}\nBudget: ${budget} AlphaUSD`
+      : `${job.prompt}\nBudget: ${budget} AlphaUSD`;
 
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6', max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: job.prompt }],
+      system: buildSystemPrompt(budget),
+      messages: [{ role: 'user', content: userMessage }],
     });
 
     const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
@@ -100,8 +125,49 @@ export const handler: AgentHandler = async (job) => {
       };
     }
 
+    // ── Phase 1.5: Validate & Fix Milestone Amounts ──
+    let milestoneAmounts: number[] = milestones.map((m: any) => Number(m.amount) || 0);
+    let totalFromAI = milestoneAmounts.reduce((s: number, a: number) => s + a, 0);
+
+    // If AI returned all zeros or total is 0, redistribute budget evenly
+    if (totalFromAI <= 0) {
+      console.warn(`[stream-creator] AI returned 0 total budget — redistributing ${budget} evenly across ${milestones.length} milestones`);
+      const perMilestone = Math.round((budget / milestones.length) * 100) / 100;
+      milestoneAmounts = milestones.map((_: any, i: number) =>
+        i === milestones.length - 1
+          ? Math.round((budget - perMilestone * (milestones.length - 1)) * 100) / 100
+          : perMilestone
+      );
+      totalFromAI = milestoneAmounts.reduce((s: number, a: number) => s + a, 0);
+      // Update milestone objects for the result
+      milestones.forEach((m: any, i: number) => { m.amount = milestoneAmounts[i]; });
+    }
+
+    // If amounts don't match budget, scale proportionally
+    if (Math.abs(totalFromAI - budget) > 0.01) {
+      console.warn(`[stream-creator] AI total (${totalFromAI}) != budget (${budget}) — scaling amounts`);
+      const scale = budget / totalFromAI;
+      milestoneAmounts = milestoneAmounts.map((a, i) => {
+        if (i === milestoneAmounts.length - 1) {
+          // Last milestone absorbs rounding difference
+          const sumPrev = milestoneAmounts.slice(0, -1).reduce((s, v) => s + Math.round(v * scale * 100) / 100, 0);
+          return Math.round((budget - sumPrev) * 100) / 100;
+        }
+        return Math.round(a * scale * 100) / 100;
+      });
+      milestones.forEach((m: any, i: number) => { m.amount = milestoneAmounts[i]; });
+    }
+
+    // Final safety check: every amount must be > 0
+    if (milestoneAmounts.some(a => a <= 0)) {
+      return {
+        jobId: job.jobId, agentId: job.agentId, status: 'error',
+        error: `Invalid milestone amounts after adjustment: [${milestoneAmounts.join(', ')}]. Cannot create stream with zero-amount milestones.`,
+        executionTimeMs: Date.now() - start, timestamp: Date.now(),
+      };
+    }
+
     // ── Phase 2: On-Chain Stream Creation ──
-    const milestoneAmounts = milestones.map((m: any) => m.amount);
     const totalBudget = milestoneAmounts.reduce((s: number, a: number) => s + a, 0);
     const deadlineSeconds = (deadlineHours || 168) * 3600;
 

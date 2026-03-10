@@ -24,8 +24,15 @@ export const manifest: AgentDescriptor = {
   capabilities: ['recurring-payment', 'scheduled-streams', 'payroll-schedule', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Recurring Payment agent. Set up a series of payment streams for recurring payments.
-
+/**
+ * Build system prompt with budget context so the AI knows how much to allocate.
+ */
+function buildSystemPrompt(budget: number): string {
+  const budgetLine = budget > 0
+    ? `\nTOTAL BUDGET: ${budget} AlphaUSD — You MUST distribute this across the periods so amountPerPeriod * periods = ${budget}.`
+    : '';
+  return `You are a PayPol Recurring Payment agent. Set up a series of payment streams for recurring payments.
+${budgetLine}
 Return JSON:
 {
   "recipient": "0x...",
@@ -39,29 +46,60 @@ Return JSON:
 RULES:
 - Max 6 periods (streams)
 - Each period becomes one stream with a single milestone
+- amountPerPeriod MUST be greater than 0${budget > 0 ? `\n- amountPerPeriod * periods MUST equal exactly ${budget}` : ''}
 - periodDurationHours is the deadline for each payment (default: 168 = 1 week)
 - Default token: AlphaUSD
 Return ONLY valid JSON.`;
+}
 
 export const handler: AgentHandler = async (job) => {
   const start = Date.now();
   if (!job.prompt?.trim()) return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'No recurring payment request.', executionTimeMs: Date.now() - start, timestamp: Date.now() };
 
   try {
-    console.log(`[recurring-payment] Phase 1: Parsing recurring payment intent...`);
+    // Extract budget from payload (forwarded by index.ts from dashboard)
+    const budget = Number(job.payload?.budget) || 0;
+
+    console.log(`[recurring-payment] Phase 1: Parsing recurring payment intent... (budget: ${budget} AlphaUSD)`);
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 512, system: SYSTEM_PROMPT, messages: [{ role: 'user', content: job.prompt }] });
+
+    // Build user message with budget context
+    const userMessage = budget > 0
+      ? `${job.prompt}\nBudget: ${budget} AlphaUSD`
+      : job.prompt;
+
+    const message = await client.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 512, system: buildSystemPrompt(budget), messages: [{ role: 'user', content: userMessage }] });
     const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
     let intent: any;
     try { const m = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText]; intent = JSON.parse(m[1]!.trim()); } catch { return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'Failed to parse intent.', executionTimeMs: Date.now() - start, timestamp: Date.now() }; }
 
-    const { recipient, amountPerPeriod, periods, periodDurationHours, description } = intent;
+    let { recipient, amountPerPeriod, periods, periodDurationHours, description } = intent;
     if (!ethers.isAddress(recipient)) return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: `Invalid recipient: ${recipient}`, executionTimeMs: Date.now() - start, timestamp: Date.now() };
     if (!periods || periods < 1 || periods > 6) return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: `Invalid periods: ${periods}. Max 6.`, executionTimeMs: Date.now() - start, timestamp: Date.now() };
 
+    // ── Validate & Fix amountPerPeriod ──
+    amountPerPeriod = Number(amountPerPeriod) || 0;
+
+    // If AI returned 0 but we have a budget, auto-calculate
+    if (amountPerPeriod <= 0 && budget > 0) {
+      amountPerPeriod = Math.round((budget / periods) * 100) / 100;
+      console.warn(`[recurring-payment] AI returned amountPerPeriod=0 — auto-calculated ${amountPerPeriod} from budget ${budget}/${periods}`);
+    }
+
+    // If total doesn't match budget, adjust amountPerPeriod
+    if (budget > 0 && Math.abs(amountPerPeriod * periods - budget) > 0.01) {
+      amountPerPeriod = Math.round((budget / periods) * 100) / 100;
+      console.warn(`[recurring-payment] Adjusted amountPerPeriod to ${amountPerPeriod} to match budget ${budget}`);
+    }
+
+    // Final safety: amountPerPeriod must be > 0
+    if (amountPerPeriod <= 0) {
+      return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: `Invalid amountPerPeriod: ${amountPerPeriod}. Must be > 0. Provide a budget in your request.`, executionTimeMs: Date.now() - start, timestamp: Date.now() };
+    }
+
     const durationHours = periodDurationHours || 168;
     const durationSeconds = durationHours * 3600;
-    const totalBudget = amountPerPeriod * periods;
+    const totalBudget = Math.round(amountPerPeriod * periods * 100) / 100;
 
     console.log(`[recurring-payment] Phase 2: Creating ${periods} recurring streams...`);
     const streams: any[] = [];

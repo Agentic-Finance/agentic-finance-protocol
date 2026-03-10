@@ -246,30 +246,64 @@ export default function PayPolAdminPage() {
     }, []);
 
     // NEW: Revenue fetcher
+    // NEW: Revenue fetcher — map API field names to our interface
     const fetchRevenue = useCallback(async () => {
         try {
             const res = await fetch('/api/revenue');
             const data = await res.json();
-            if (data.tvl) setRevenue(data);
+            if (data.tvl) {
+                setRevenue({
+                    ...data,
+                    topAgents: (data.topAgents || []).map((a: any) => ({
+                        name: a.name, emoji: a.emoji, revenue: a.revenue || 0, jobs: a.jobs || 0,
+                    })),
+                    recentSettlements: (data.recentSettlements || []).map((s: any) => ({
+                        agent: s.agentName || s.agent || '',
+                        emoji: s.agentEmoji || s.emoji || '🤖',
+                        amount: s.amount || 0,
+                        fee: s.fee || 0,
+                        txHash: s.txHash || '',
+                        timestamp: s.completedAt || s.timestamp || '',
+                        status: s.txHash ? 'completed' : 'pending',
+                    })),
+                });
+            }
         } catch { /* silent */ }
     }, []);
 
-    // NEW: Stats fetcher
+    // NEW: Stats fetcher — API wraps in data.stats with string values
     const fetchStats = useCallback(async () => {
         try {
             const res = await fetch('/api/stats');
             const data = await res.json();
-            if (data.totalExecutions !== undefined) setStats(data);
+            const raw = data.stats || data;
+            if (raw.totalExecutions !== undefined) {
+                setStats({
+                    totalShieldedVolume: parseFloat(String(raw.totalShieldedVolume).replace(/,/g, '')) || 0,
+                    totalExecutions: Number(raw.totalExecutions) || 0,
+                    averageAgentPayout: parseFloat(String(raw.averageAgentPayout).replace(/,/g, '')) || 0,
+                    active24h: Number(raw.active24h) || 0,
+                    networkIntegrity: parseFloat(String(raw.networkIntegrity).replace('%', '')) || 0,
+                });
+            }
         } catch { /* silent */ }
     }, []);
 
-    // NEW: Audit timeline fetcher
+    // NEW: Audit timeline fetcher — map API fields to our AuditEvent interface
     const fetchAudit = useCallback(async () => {
         try {
             const res = await fetch('/api/audit/timeline?limit=10');
             const data = await res.json();
             if (data.events) {
-                setAuditEvents(data.events);
+                setAuditEvents(data.events.map((e: any) => ({
+                    id: e.id,
+                    timestamp: e.createdAt || e.timestamp,
+                    severity: e.severity || 'INFO',
+                    category: e.eventType || e.category || '',
+                    message: e.description || e.title || e.message || '',
+                    actor: e.agentName || e.actor || '',
+                    metadata: e.metadata,
+                })));
                 setAuditSeverityCounts(data.severityCounts || {});
             }
         } catch { /* silent */ }

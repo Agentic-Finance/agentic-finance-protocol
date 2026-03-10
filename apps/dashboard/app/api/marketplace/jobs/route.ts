@@ -41,6 +41,7 @@ export async function POST(req: Request) {
             type: 'job:created',
             title: 'New Job Received',
             message: `New task from ${clientWallet.slice(0, 6)}... \u2014 Budget: ${budget} AlphaUSD`,
+            streamJobId: job.id,
         }).catch(() => {});
 
         // Auto-create agent chat channel (non-blocking)
@@ -128,6 +129,7 @@ export async function PUT(req: Request) {
                 message: status === 'COMPLETED'
                     ? `Agent completed your task. Review and settle to release payment.`
                     : `Task execution failed. You may request a refund.`,
+                streamJobId: jobId,
             }).catch(() => {});
         }
 

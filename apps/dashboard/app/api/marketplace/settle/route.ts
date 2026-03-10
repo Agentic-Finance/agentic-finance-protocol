@@ -78,6 +78,7 @@ export async function POST(req: Request) {
                     type: 'escrow:locked',
                     title: 'Escrow Locked',
                     message: `$${agentJob.budget} locked in NexusV2 escrow for job #${jobId.slice(0, 8)}...`,
+                    streamJobId: jobId,
                 }).catch(() => {});
 
                 // Post escrow status to agent chat channel
@@ -147,6 +148,7 @@ export async function POST(req: Request) {
                     type: 'escrow:settled',
                     title: 'Payment Settled',
                     message: `$${agentJob.budget} released to agent. TX: ${(txHash || '').slice(0, 10)}...`,
+                    streamJobId: jobId,
                 }).catch(() => {});
 
                 // Post settlement to agent chat channel
@@ -192,6 +194,7 @@ export async function POST(req: Request) {
                     type: 'escrow:refunded',
                     title: 'Refund Processed',
                     message: `$${agentJob.budget} refunded to your wallet. TX: ${(txHash || '').slice(0, 10)}...`,
+                    streamJobId: jobId,
                 }).catch(() => {});
 
                 return NextResponse.json({ success: true, message: 'Job refunded on-chain' });
@@ -216,6 +219,7 @@ export async function POST(req: Request) {
                     type: 'escrow:disputed',
                     title: 'Dispute Raised',
                     message: `Job #${jobId.slice(0, 8)}... disputed: ${reason || 'No reason provided'}`,
+                    streamJobId: jobId,
                 }).catch(() => {});
 
                 return NextResponse.json({ success: true, message: 'Job disputed' });

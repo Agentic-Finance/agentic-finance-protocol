@@ -147,6 +147,7 @@ export async function PUT(req: Request) {
         type: 'judge:override' as any,
         title: 'Verdict Updated',
         message: `Arbitrator changed verdict from ${existing.verdict} to ${newVerdict}`,
+        streamJobId: existing.jobId,
       }).catch(() => {});
     }
 

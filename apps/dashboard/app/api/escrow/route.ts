@@ -94,6 +94,7 @@ export async function POST(req: Request) {
                     type: 'escrow:disputed',
                     title: 'Escrow Disputed',
                     message: `Dispute raised: ${reason || 'No reason provided'} — $${disputedItem.amount}`,
+                    streamJobId: agentJobId || undefined,
                 }).catch(() => {});
             }
             return apiSuccess({ message: 'Transaction disputed successfully.' });
@@ -120,6 +121,7 @@ export async function POST(req: Request) {
                     type: 'escrow:settled',
                     title: 'Escrow Settled',
                     message: `$${settledItem.amount} ${settledItem.token || 'AlphaUSD'} released to your wallet`,
+                    streamJobId: agentJobId || undefined,
                 }).catch(() => {});
             }
             return apiSuccess({ message: 'Funds released to Agent.' });
@@ -146,6 +148,7 @@ export async function POST(req: Request) {
                     type: 'escrow:refunded',
                     title: 'Escrow Refunded',
                     message: `$${refundedItem.amount} ${refundedItem.token || 'AlphaUSD'} refunded to company`,
+                    streamJobId: agentJobId || undefined,
                 }).catch(() => {});
             }
             return apiSuccess({ message: 'Funds refunded to Company.' });

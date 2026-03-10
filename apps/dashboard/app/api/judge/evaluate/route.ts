@@ -72,6 +72,7 @@ export async function POST(req: Request) {
       type: 'judge:verdict' as any,
       title: `Auto-Judge Verdict: ${verdict.verdict}`,
       message: `${verdict.reasoning[0]} (${Math.round(verdict.confidence * 100)}% confidence)`,
+      streamJobId: jobId,
     }).catch(() => {});
 
     return NextResponse.json({

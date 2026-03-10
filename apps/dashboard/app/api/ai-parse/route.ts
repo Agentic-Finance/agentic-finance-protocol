@@ -14,7 +14,13 @@ const MAX_PROMPT_LENGTH = 10_000;
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { prompt, supportedTokens, addressBook, systemData } = body;
+        const { prompt, supportedTokens, addressBook, systemData, dryRun } = body;
+
+        // Health-check probe: return 200 without calling OpenAI
+        if (dryRun) {
+            const hasKey = !!process.env.OPENAI_API_KEY;
+            return NextResponse.json({ ok: hasKey, model: 'gpt-4o-mini' }, { status: hasKey ? 200 : 503 });
+        }
 
         // Input validation
         if (!prompt || typeof prompt !== 'string') {

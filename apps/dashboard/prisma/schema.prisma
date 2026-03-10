@@ -22,7 +22,7 @@ model Workspace {
   daemonStatus    String   @default("OFFLINE")
   daemonLastSeen  DateTime?
   createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime @default(now()) @updatedAt
   payloads        TimeVaultPayload[]
   employees       Employee[]
 }
@@ -43,7 +43,7 @@ model TimeVaultPayload {
   status          String   @default("Draft")
   deletedAt       DateTime?
   createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt       DateTime @default(now()) @updatedAt
   workspace       Workspace @relation(fields: [workspaceId], references: [id])
 
   @@index([status])
@@ -65,7 +65,7 @@ model Employee {
   status        String   @default("Awaiting_Approval") // Awaiting_Approval, Pending, Vaulted, Cancel_Requested, Paid
   deletedAt     DateTime?
   createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  updatedAt     DateTime @default(now()) @updatedAt
   workspace     Workspace? @relation(fields: [workspaceId], references: [id])
 
   @@index([status])
@@ -98,7 +98,7 @@ model AutopilotRule {
   status         String   @default("Active") // Status: "Active" or "Paused"
   deletedAt      DateTime?
   createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  updatedAt      DateTime @default(now()) @updatedAt
 }
 
 // 📝 Boardroom Queue (OmniTerminal Intents)
@@ -143,7 +143,7 @@ model MarketplaceAgent {
   sourceUrl     String?                       // GitHub repo or framework docs URL
   githubHandle  String?                       // Contributor's GitHub username (for community agents)
   createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  updatedAt     DateTime @default(now()) @updatedAt
   jobs          AgentJob[]
   reviews       AgentReview[]
 

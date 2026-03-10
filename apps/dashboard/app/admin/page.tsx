@@ -738,7 +738,7 @@ export default function PayPolAdminPage() {
                                                     <Tooltip
                                                         contentStyle={{ backgroundColor: '#141924', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', fontSize: '12px' }}
                                                         labelStyle={{ color: '#94a3b8' }}
-                                                        formatter={(value: number, name: string) => [`$${value.toLocaleString()}`, name === 'volume' ? 'Volume' : 'Fees']}
+                                                        formatter={(value: any, name: any) => [`$${Number(value || 0).toLocaleString()}`, name === 'volume' ? 'Volume' : 'Fees']}
                                                     />
                                                     <Area type="monotone" dataKey="volume" stroke="#d946ef" fill="url(#gVolume)" strokeWidth={2} />
                                                     <Area type="monotone" dataKey="fees" stroke="#818cf8" fill="url(#gFees)" strokeWidth={2} />

@@ -104,8 +104,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         setAgentData({ devAddress: a1.ownerWallet, auditAddress: a2.ownerWallet });
                         await delay(400);
                         if (cancelled) return;
-                        setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} ALPHA)`]);
-                        setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} ALPHA)`]);
+                        setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} alphaUSD)`]);
+                        setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} alphaUSD)`]);
                     }
                     setOutputStep(2);
 
@@ -117,7 +117,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     if (cancelled) return;
                     const agent = agents[0];
                     setNexusLog(prev => [...prev, `> [CHAIN] \u2705 Job completed. Escrow settled.`]);
-                    setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} ALPHA released to ${agent?.name || 'Agent'}`]);
+                    setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} alphaUSD released to ${agent?.name || 'Agent'}`]);
                     setOutputStep(3);
                 } catch {
                     if (cancelled) return;

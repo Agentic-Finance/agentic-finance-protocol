@@ -60,7 +60,7 @@ function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: 
         <div
             role="button"
             tabIndex={0}
-            aria-label={`Hire ${a.name} - ${a.category} agent, ${a.basePrice} ALPHA`}
+            aria-label={`Hire ${a.name} - ${a.category} agent, ${a.basePrice} alphaUSD`}
             className={`relative bg-white/[0.03] border rounded-2xl p-4 flex flex-col transition-all duration-200 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
                 rank === 0 && !isBrowseMode
                     ? 'border-indigo-500/30 bg-indigo-500/[0.04]'
@@ -152,7 +152,7 @@ function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: 
             <div className="pt-2.5 border-t border-white/[0.04] flex items-center justify-between mt-auto">
                 <div className="flex items-baseline gap-1">
                     <span className="text-white font-bold text-base">{a.basePrice}</span>
-                    <span className="text-[10px] text-slate-500">ALPHA</span>
+                    <span className="text-[10px] text-slate-500">alphaUSD</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                     {onShowDetail && (

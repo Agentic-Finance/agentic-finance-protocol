@@ -27,7 +27,7 @@ function ActiveAgents(props: ActiveAgentsProps) {
                         <div key={idx} className={`p-5 rounded-2xl border transition-all ${rule.status === 'Active' ? 'bg-[#111620] border-fuchsia-500/40 shadow-[0_0_20px_rgba(217,70,239,0.1)]' : 'bg-black/20 border-white/[0.05] opacity-60'}`}>
                             <div className="flex justify-between items-start mb-4">
                                 <div><p className="text-lg font-bold text-white mb-0.5">{rule.name}</p><p className="text-xs font-mono text-slate-500">{rule.wallet_address.slice(0, 8)}...{rule.wallet_address.slice(-6)}</p></div>
-                                <div className="text-right"><p className="text-lg font-bold text-fuchsia-400 tabular-nums">{rule.amount} <span className="text-[10px] text-fuchsia-400/70">{rule.token || 'ALPHA'}</span></p></div>
+                                <div className="text-right"><p className="text-lg font-bold text-fuchsia-400 tabular-nums">{rule.amount} <span className="text-[10px] text-fuchsia-400/70">{rule.token || 'alphaUSD'}</span></p></div>
                             </div>
                             <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
                                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">

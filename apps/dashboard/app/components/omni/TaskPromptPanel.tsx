@@ -105,7 +105,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
                             <span className="flex items-center gap-1 text-[11px] text-slate-500">
                                 <ClockIcon className="w-3 h-3" /> ~{a.responseTime}s
                             </span>
-                            <span className="text-indigo-400 font-bold text-[11px]">{a.basePrice} ALPHA</span>
+                            <span className="text-indigo-400 font-bold text-[11px]">{a.basePrice} alphaUSD</span>
                         </div>
                     </div>
                     {/* Toggle detail section */}

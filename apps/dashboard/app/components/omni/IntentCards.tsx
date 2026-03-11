@@ -153,7 +153,7 @@ function IntentCards({
 
                                 <div className="flex items-end gap-2 mt-1">
                                     <span className="text-3xl font-mono font-black text-amber-400">{intent.amount}</span>
-                                    <span className="text-[10px] font-bold text-indigo-300 bg-indigo-900/40 px-2 py-0.5 rounded border border-indigo-500/30 uppercase">{intent.token || 'ALPHAUSD'}</span>
+                                    <span className="text-[10px] font-bold text-indigo-300 bg-indigo-900/40 px-2 py-0.5 rounded border border-indigo-500/30 uppercase">{intent.token || 'alphaUSD'}</span>
                                 </div>
                             </div>
                         </div>

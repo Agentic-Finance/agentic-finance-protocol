@@ -217,9 +217,9 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
             {/* Global Stats */}
             {globalEarnings && (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/[0.04]">
-                    <StatCell label="Total Revenue" value={`${globalEarnings.totalEarnings.toFixed(1)}`} unit="ALPHA" color="text-emerald-400" />
+                    <StatCell label="Total Revenue" value={`${globalEarnings.totalEarnings.toFixed(1)}`} unit="alphaUSD" color="text-emerald-400" />
                     <StatCell label="Completed Jobs" value={String(globalEarnings.completedJobs)} color="text-white" />
-                    <StatCell label="Platform Fee (8%)" value={`${platformRevenue.toFixed(1)}`} unit="ALPHA" color="text-amber-400" />
+                    <StatCell label="Platform Fee (8%)" value={`${platformRevenue.toFixed(1)}`} unit="alphaUSD" color="text-amber-400" />
                     <StatCell label="Active Agents" value={String(agentEarnings.length)} color="text-indigo-400" />
                 </div>
             )}
@@ -248,7 +248,7 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
                         </div>
                         <div className="text-right">
                             <p className="text-base font-bold text-emerald-400 tabular-nums">{topEarner.totalEarnings.toFixed(1)}</p>
-                            <p className="text-[9px] text-slate-500">ALPHA earned</p>
+                            <p className="text-[9px] text-slate-500">alphaUSD earned</p>
                         </div>
                         <ChevronRightIcon className="w-4 h-4 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                     </div>
@@ -321,12 +321,12 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
                                         <div className="flex items-center gap-3 mt-1 text-[10px] text-slate-500 tabular-nums">
                                             <span>{agent.completedJobs}/{agent.totalJobs} jobs</span>
                                             <span>{agent.successRate}% success</span>
-                                            <span>avg {agent.avgJobValue} ALPHA/job</span>
+                                            <span>avg {agent.avgJobValue} alphaUSD/job</span>
                                         </div>
                                     </div>
                                     <div className="text-right shrink-0">
                                         <p className="text-sm font-bold text-emerald-400 tabular-nums">{agent.totalEarnings.toFixed(1)}</p>
-                                        <p className="text-[9px] text-slate-500">ALPHA</p>
+                                        <p className="text-[9px] text-slate-500">alphaUSD</p>
                                     </div>
                                     <ChevronRightIcon className="w-4 h-4 text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                                 </div>

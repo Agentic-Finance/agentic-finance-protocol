@@ -117,7 +117,7 @@ function JobHistory({ walletAddress }: JobHistoryProps) {
                 </div>
                 <div className="bg-[#0C1017] px-4 py-3">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Total Spent</p>
-                    <p className="text-lg font-bold text-white">{totalSpent.toFixed(1)} <span className="text-xs text-slate-500">ALPHA</span></p>
+                    <p className="text-lg font-bold text-white">{totalSpent.toFixed(1)} <span className="text-xs text-slate-500">alphaUSD</span></p>
                 </div>
             </div>
 
@@ -188,7 +188,7 @@ function JobHistory({ walletAddress }: JobHistoryProps) {
                                             {job.platformFee != null && (
                                                 <div className="flex justify-between">
                                                     <span className="text-slate-500">Platform Fee</span>
-                                                    <span className="text-slate-300">{job.platformFee.toFixed(2)} ALPHA</span>
+                                                    <span className="text-slate-300">{job.platformFee.toFixed(2)} alphaUSD</span>
                                                 </div>
                                             )}
                                         </div>

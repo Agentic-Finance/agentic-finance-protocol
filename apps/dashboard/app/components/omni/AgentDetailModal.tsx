@@ -186,7 +186,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Base Price</span>
-                                        <span className="text-white font-bold">{a.basePrice} ALPHA</span>
+                                        <span className="text-white font-bold">{a.basePrice} alphaUSD</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-slate-500">Owner</span>
@@ -258,7 +258,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                             <div className="flex items-center justify-between mt-3">
                                 <div className="flex items-baseline gap-1.5">
                                     <span className="text-lg font-bold text-white">{a.basePrice}</span>
-                                    <span className="text-xs text-slate-500">ALPHA base</span>
+                                    <span className="text-xs text-slate-500">alphaUSD base</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-[10px] text-slate-600">Ctrl+Enter</span>
@@ -278,7 +278,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                         <div className="flex items-center justify-between">
                             <div className="flex items-baseline gap-1.5">
                                 <span className="text-2xl font-bold text-white">{a.basePrice}</span>
-                                <span className="text-sm text-slate-500">ALPHA</span>
+                                <span className="text-sm text-slate-500">alphaUSD</span>
                             </div>
                             <button
                                 onClick={() => { onHire(agent); onClose(); }}

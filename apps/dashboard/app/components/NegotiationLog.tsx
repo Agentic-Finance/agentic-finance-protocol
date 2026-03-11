@@ -83,7 +83,7 @@ export default function NegotiationLog({ logs, budget, finalPrice, fee, token }:
                     <div className="hidden md:block text-slate-700">→</div>
                     <div className="flex flex-col items-end">
                         <span className="text-[9px] text-emerald-400/60 uppercase tracking-wider font-semibold">Secured</span>
-                        <span className="text-white font-bold text-lg font-mono">{finalPrice} <span className="text-[10px] text-emerald-500">ALPHA</span></span>
+                        <span className="text-white font-bold text-lg font-mono">{finalPrice} <span className="text-[10px] text-emerald-500">alphaUSD</span></span>
                         <span className="text-[9px] text-slate-600">incl. {fee} fee</span>
                     </div>
                 </div>

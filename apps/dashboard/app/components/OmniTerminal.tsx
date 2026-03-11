@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { CommandLineIcon, CpuChipIcon } from '@/app/components/icons';
 import NegotiationLog from './NegotiationLog';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
@@ -84,6 +84,31 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // A2A Orchestration hook
     const orchestration = useA2AOrchestration();
     const isOrchestrationActive = orchestration.phase !== 'idle';
+
+    // Complex task detection: auto-detect multi-agent tasks
+    const isComplexTask = useMemo(() => {
+        if (marketplace.phase !== 'results' || marketplace.matchedAgents.length < 2) return false;
+        const prompt = aiPrompt.toLowerCase().trim();
+        if (!prompt) return false;
+
+        // Check 1: Multiple distinct agent categories matched
+        const categories = new Set(marketplace.matchedAgents.map(a => a.agent.category));
+        if (categories.size >= 2) return true;
+
+        // Check 2: Compound task connectives in prompt
+        const compoundPatterns = [
+            /\b(?:and|with|then|plus|also)\b.*\b(?:audit|build|deploy|analyze|scan|check|create|generate|review|test|monitor|optimize)\b/i,
+            /\b(?:audit|build|deploy|analyze|scan|check|create|generate|review|test|monitor|optimize)\b.*\b(?:and|with|then|plus|also)\b/i,
+        ];
+        if (compoundPatterns.some(p => p.test(prompt))) return true;
+
+        // Check 3: Multiple explicit action verbs
+        const actions = ['audit', 'build', 'deploy', 'analyze', 'scan', 'check', 'create', 'generate', 'review', 'test', 'monitor', 'optimize', 'detect', 'verify', 'assess', 'migrate', 'setup', 'configure'];
+        const actionCount = actions.filter(a => prompt.includes(a)).length;
+        if (actionCount >= 2) return true;
+
+        return false;
+    }, [marketplace.phase, marketplace.matchedAgents, aiPrompt]);
 
     // Refs
     const omniFileRef = useRef<HTMLInputElement>(null);
@@ -840,6 +865,9 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 error={marketplace.error}
                                 isKeywordFallback={marketplace.isKeywordFallback}
                                 onShowAgentDetail={setDetailAgent}
+                                isComplexTask={isComplexTask}
+                                onOrchestrate={handleOrchestrate}
+                                isOrchestrating={orchestration.isLoading}
                             />
                         )}
 
@@ -901,8 +929,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             />
                         )}
 
-                        {/* A2A: Orchestrate Button (shown in browsing/results when prompt exists) */}
-                        {!isPayroll && !isOrchestrationActive && (marketplace.phase === 'browsing' || marketplace.phase === 'results') && aiPrompt.trim().length >= 3 && (
+                        {/* A2A: Orchestrate Button (shown in browsing when prompt exists, no complex task banner) */}
+                        {!isPayroll && !isOrchestrationActive && marketplace.phase === 'browsing' && aiPrompt.trim().length >= 3 && (
                             <div className="mt-3 flex items-center justify-end">
                                 <button
                                     onClick={handleOrchestrate}

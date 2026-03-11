@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@/app/components/icons';
+import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon, SparklesIcon } from '@/app/components/icons';
 import AgentCard from './AgentCard';
 import type { DiscoveredAgent, MarketplacePhase } from '../../hooks/useAgentMarketplace';
 
@@ -18,6 +18,12 @@ interface MarketplacePanelProps {
     isKeywordFallback?: boolean;
     /** Callback to show agent detail modal */
     onShowAgentDetail?: (agent: DiscoveredAgent) => void;
+    /** Whether AI detected this as a complex multi-agent task */
+    isComplexTask?: boolean;
+    /** Orchestrate callback for multi-agent execution */
+    onOrchestrate?: () => void;
+    /** Whether orchestration is currently loading */
+    isOrchestrating?: boolean;
 }
 
 const CATEGORIES = [
@@ -57,7 +63,8 @@ function SkeletonCard() {
 
 function MarketplacePanel({
     phase, matchedAgents, allAgents, activeCategory, isBrowseLoading,
-    onHireAgent, onFilterCategory, error, isKeywordFallback, onShowAgentDetail
+    onHireAgent, onFilterCategory, error, isKeywordFallback, onShowAgentDetail,
+    isComplexTask, onOrchestrate, isOrchestrating,
 }: MarketplacePanelProps) {
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -308,39 +315,132 @@ function MarketplacePanel({
 
     // ── RESULTS: AI-matched agents ──
     if (phase === 'results' && matchedAgents.length > 0) {
+        // Determine unique categories from matched agents
+        const matchedCategories = [...new Set(matchedAgents.map(a => a.agent.category))];
+
         return (
-            <div className="mt-4 bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="mt-4 space-y-3 animate-in fade-in slide-in-from-top-4 duration-500">
 
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">
-                    <div className="flex items-center gap-2.5">
-                        <CpuChipIcon className="w-5 h-5 text-indigo-400" />
-                        <h3 className="text-sm font-semibold text-white">
-                            {matchedAgents.length} agents matched
-                        </h3>
-                        {/* Discovery method badge */}
-                        <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
-                            isKeywordFallback
-                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                        }`}>
-                            {isKeywordFallback ? '🔤 Keyword Match' : '🧠 AI Matched'}
-                        </span>
+                {/* ── ORCHESTRATION BANNER: shown when complex task detected ── */}
+                {isComplexTask && onOrchestrate && (
+                    <div className="relative overflow-hidden rounded-2xl border border-violet-500/30"
+                        style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(79,70,229,0.12) 50%, rgba(49,46,129,0.08) 100%)' }}>
+                        {/* Animated shimmer effect */}
+                        <div className="absolute inset-0 opacity-20">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-violet-400/10 to-transparent animate-shimmer" />
+                        </div>
+
+                        <div className="relative px-5 py-4">
+                            {/* Top badge */}
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.15em] px-2.5 py-1 rounded-md bg-violet-500/15 text-violet-300 border border-violet-500/25">
+                                    <SparklesIcon className="w-3 h-3" />
+                                    Recommended
+                                </span>
+                                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
+                                    Multi-Agent Task Detected
+                                </span>
+                            </div>
+
+                            {/* Main content */}
+                            <h3 className="text-[15px] font-bold text-white mb-1.5">
+                                Orchestrate with Multiple Agents
+                            </h3>
+                            <p className="text-[12px] text-slate-400 leading-relaxed mb-4 max-w-2xl">
+                                Your task involves multiple skills across{' '}
+                                <span className="text-violet-300 font-semibold">
+                                    {matchedCategories.length} categories
+                                </span>
+                                {matchedCategories.length > 1 && (
+                                    <> ({matchedCategories.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')})</>
+                                )}.
+                                AI will auto-split into sub-tasks, assign the best agent for each, and execute in parallel.
+                            </p>
+
+                            {/* Visual step flow */}
+                            <div className="flex items-center gap-2 mb-4">
+                                {[
+                                    { emoji: '🧠', label: 'AI Splits Task' },
+                                    { emoji: '🔍', label: 'Assigns Agents' },
+                                    { emoji: '⚡', label: 'Parallel Exec' },
+                                    { emoji: '📊', label: 'Aggregates' },
+                                ].map((step, i) => (
+                                    <React.Fragment key={i}>
+                                        <div className="flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.06] rounded-lg px-2.5 py-1.5">
+                                            <span className="text-sm">{step.emoji}</span>
+                                            <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap">{step.label}</span>
+                                        </div>
+                                        {i < 3 && (
+                                            <svg className="w-3 h-3 text-violet-500/40 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+
+                            {/* CTA Button */}
+                            <button
+                                onClick={onOrchestrate}
+                                disabled={isOrchestrating}
+                                className="group relative px-6 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-bold rounded-xl shadow-[0_0_25px_rgba(124,58,237,0.35)] hover:shadow-[0_0_35px_rgba(124,58,237,0.5)] hover:scale-[1.02] transition-all duration-200 flex items-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            >
+                                {isOrchestrating ? (
+                                    <>
+                                        <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Decomposing Task...
+                                    </>
+                                ) : (
+                                    <>
+                                        <CpuChipIcon className="w-4 h-4" />
+                                        Orchestrate — Auto-Split & Execute
+                                        <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                        </svg>
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
-                    <span className="text-[10px] text-indigo-400/60 font-mono">A2A Escrow Ready</span>
-                </div>
+                )}
 
-                {/* Results Grid */}
-                <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
-                    {matchedAgents.map((agent, i) => (
-                        <AgentCard
-                            key={agent.agentId}
-                            agent={agent}
-                            rank={i}
-                            onHire={onHireAgent}
-                            onShowDetail={onShowAgentDetail}
-                        />
-                    ))}
+                {/* ── SINGLE AGENT RESULTS ── */}
+                <div className="bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden">
+
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">
+                        <div className="flex items-center gap-2.5">
+                            <CpuChipIcon className="w-5 h-5 text-indigo-400" />
+                            <h3 className="text-sm font-semibold text-white">
+                                {isComplexTask ? 'Or hire a single agent' : `${matchedAgents.length} agents matched`}
+                            </h3>
+                            {/* Discovery method badge */}
+                            <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
+                                isKeywordFallback
+                                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                    : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            }`}>
+                                {isKeywordFallback ? '🔤 Keyword Match' : '🧠 AI Matched'}
+                            </span>
+                        </div>
+                        <span className="text-[10px] text-indigo-400/60 font-mono">A2A Escrow Ready</span>
+                    </div>
+
+                    {/* Results Grid */}
+                    <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
+                        {matchedAgents.map((agent, i) => (
+                            <AgentCard
+                                key={agent.agentId}
+                                agent={agent}
+                                rank={i}
+                                onHire={onHireAgent}
+                                onShowDetail={onShowAgentDetail}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         );

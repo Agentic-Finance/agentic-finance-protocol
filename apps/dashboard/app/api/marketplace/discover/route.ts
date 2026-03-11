@@ -10,6 +10,31 @@ function getOpenAI() {
 }
 
 // ──────────────────────────────────────────────
+// Detect input language for reasoning output
+// ──────────────────────────────────────────────
+function detectLanguage(text: string): string {
+    const t = text.trim();
+    // Vietnamese: diacritics ắằẵặấầẩẫậéèẻẽẹ...
+    if (/[àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(t)) return 'Vietnamese';
+    // Chinese
+    if (/[\u4e00-\u9fff]/.test(t)) return 'Chinese';
+    // Japanese
+    if (/[\u3040-\u309f\u30a0-\u30ff]/.test(t)) return 'Japanese';
+    // Korean
+    if (/[\uac00-\ud7af\u1100-\u11ff]/.test(t)) return 'Korean';
+    // Arabic
+    if (/[\u0600-\u06ff]/.test(t)) return 'Arabic';
+    // Cyrillic (Russian, etc.)
+    if (/[\u0400-\u04ff]/.test(t)) return 'Russian';
+    // Thai
+    if (/[\u0e00-\u0e7f]/.test(t)) return 'Thai';
+    // Spanish/Portuguese/French accents without Vietnamese diacritics
+    if (/[ñçüö]/i.test(t)) return 'Spanish';
+    // Default: English
+    return 'English';
+}
+
+// ──────────────────────────────────────────────
 // Local keyword fallback when OpenAI is unavailable
 // ──────────────────────────────────────────────
 function localKeywordMatch(prompt: string, agents: any[]) {
@@ -114,10 +139,13 @@ export async function POST(req: Request) {
                 isVerified: a.isVerified,
             }));
 
+            // Detect user's input language server-side for reliable reasoning output
+            const detectedLang = detectLanguage(prompt);
+
             const systemPrompt = `You are PayPol's Agent Router - an AI that matches user tasks to the best available agents.
 The user may write in ANY language. Understand the intent regardless of language.
 
-CRITICAL LANGUAGE RULE: You MUST detect the language of the user's input and write the "reasoning" field in EXACTLY that same language. If the user writes in English, reasoning MUST be in English. If Vietnamese, reasoning in Vietnamese. If Spanish, reasoning in Spanish. NEVER mix languages. NEVER default to Vietnamese when the user writes in English.
+CRITICAL: The "reasoning" field MUST be written in ${detectedLang}. Do NOT use any other language for reasoning.
 
 Given a user's task description and a catalog of available agents, analyze the task requirements and rank the TOP 3 most suitable agents.
 
@@ -130,7 +158,7 @@ RESPOND IN JSON FORMAT:
     {
       "agentId": "uuid of the agent",
       "relevanceScore": 95,
-      "reasoning": "One sentence explaining why this agent fits — in the SAME language as the user's input"
+      "reasoning": "One sentence in ${detectedLang} explaining why this agent is the best fit"
     }
   ],
   "suggestedBudget": 150,
@@ -143,14 +171,14 @@ Rules:
 - taskCategory should be one of: security, defi, payroll, analytics, automation, compliance, governance, tax, nft, deployment
 - Return maximum 3 matches, sorted by relevanceScore descending
 - If no agent is suitable, return empty matches array
-- The "reasoning" field language MUST match the user's input language exactly`;
+- ALL reasoning text MUST be in ${detectedLang}`;
 
             const completion = await getOpenAI().chat.completions.create({
                 model: "gpt-4o-mini",
                 response_format: { type: "json_object" },
                 messages: [
                     { role: "system", content: systemPrompt },
-                    { role: "user", content: `Task: ${prompt}${budget ? `\nBudget: ${budget} AlphaUSD` : ''}` }
+                    { role: "user", content: `Task: ${prompt}${budget ? `\nBudget: ${budget} AlphaUSD` : ''}\n\nRespond with reasoning in ${detectedLang}.` }
                 ],
                 temperature: 0.2,
             });

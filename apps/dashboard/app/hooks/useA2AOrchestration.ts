@@ -93,6 +93,7 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
     const abortRef = useRef<AbortController | null>(null);
     const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const phaseRef = useRef<A2APhase>('idle');
+    const walletRef = useRef<string | null>(null);
 
     // Keep phaseRef in sync so polling callbacks can read current phase
     useEffect(() => { phaseRef.current = phase; }, [phase]);
@@ -122,7 +123,11 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
         if (!a2aChainId) return;
 
         try {
+            const headers: Record<string, string> = {};
+            if (walletRef.current) headers['X-Wallet-Address'] = walletRef.current;
+
             const res = await fetch(`/api/a2a/chain/${a2aChainId}`, {
+                headers,
                 signal: abortRef.current?.signal,
             });
             if (!res.ok) throw new Error('Failed to fetch chain status');
@@ -185,11 +190,16 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
         setOrchestratorJobId(null);
         setChainStatus(null);
         setIsLoading(true);
+        // Store wallet for subsequent API calls (execute, chain status)
+        walletRef.current = clientWallet;
 
         try {
             const res = await fetch('/api/a2a/orchestrate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Wallet-Address': clientWallet,
+                },
                 body: JSON.stringify({ prompt, budget, clientWallet }),
                 signal: abortRef.current.signal,
             });
@@ -206,6 +216,7 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
             }
 
             setPlan(data.plan);
+            setA2aChainId(data.a2aChainId || null);
             setOrchestratorJobId(data.orchestratorJobId || null);
             setPhase('reviewing');
         } catch (err: any) {
@@ -221,7 +232,7 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
     // 2. CONFIRM EXECUTION: Start the chain
     // ════════════════════════════════════
     const confirmExecution = useCallback(async () => {
-        if (!plan || !orchestratorJobId) {
+        if (!plan || !orchestratorJobId || !a2aChainId) {
             setError('No plan to execute. Orchestrate a task first.');
             return;
         }
@@ -233,10 +244,13 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
         setError(null);
 
         try {
+            const walletHeader: Record<string, string> = { 'Content-Type': 'application/json' };
+            if (walletRef.current) walletHeader['X-Wallet-Address'] = walletRef.current;
+
             const res = await fetch('/api/a2a/orchestrate/execute', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orchestratorJobId }),
+                headers: walletHeader,
+                body: JSON.stringify({ a2aChainId, orchestratorJobId }),
                 signal: abortRef.current.signal,
             });
 
@@ -245,14 +259,9 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
                 throw new Error(errData.error || `Execution failed (${res.status})`);
             }
 
-            const data = await res.json();
-            setA2aChainId(data.a2aChainId);
             setPhase('executing');
 
             // Start polling for progress
-            // Note: startPolling uses a2aChainId from state, but we just set it.
-            // We need to poll using the value from the response directly.
-            // Use a small delay to ensure state has propagated.
             setTimeout(() => startPolling(), 100);
         } catch (err: any) {
             if (err.name === 'AbortError') return;
@@ -261,7 +270,7 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
         } finally {
             setIsLoading(false);
         }
-    }, [plan, orchestratorJobId, startPolling]);
+    }, [plan, orchestratorJobId, a2aChainId, startPolling]);
 
     // ════════════════════════════════════
     // 3. CANCEL PLAN

@@ -115,6 +115,7 @@ export interface UseAgentMarketplaceReturn {
     reset: () => void;
     startBrowsing: () => void;
     filterByCategory: (cat: string | null) => void;
+    clearError: () => void;
 }
 
 // ══════════════════════════════════════
@@ -564,6 +565,11 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         // Note: do NOT clear allAgents - they are cached
     }, []);
 
+    /** Clear error only — used when user starts typing a new prompt */
+    const clearError = useCallback(() => {
+        setError(null);
+    }, []);
+
     return {
         phase,
         matchedAgents,
@@ -590,5 +596,6 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
         reset,
         startBrowsing,
         filterByCategory,
+        clearError,
     };
 }

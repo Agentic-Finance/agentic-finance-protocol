@@ -134,6 +134,17 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         }
     }, [activeTab, marketplace.phase, marketplace.startBrowsing]);
 
+    // Clear stale errors when user types a new prompt in A2A mode
+    useEffect(() => {
+        if (activeTab !== 'a2a') return;
+        // Clear marketplace errors so they don't persist while typing
+        marketplace.clearError();
+        // Reset failed orchestration state when user modifies their prompt
+        if (orchestration.phase === 'failed') {
+            orchestration.cancelPlan();
+        }
+    }, [aiPrompt]); // eslint-disable-line react-hooks/exhaustive-deps
+
     // Listen for external "hire agent" events (e.g. from AgentEarnings)
     useEffect(() => {
         const handler = (e: Event) => {
@@ -525,8 +536,10 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // ==========================================
     const handleDiscoverAgents = useCallback(() => {
         if (!aiPrompt.trim() || aiPrompt.trim().length < 3) return;
+        // Reset any previous orchestration state before new discover
+        if (orchestration.phase !== 'idle') orchestration.cancelPlan();
         marketplace.discover(aiPrompt.trim());
-    }, [aiPrompt, marketplace]);
+    }, [aiPrompt, marketplace, orchestration]);
 
     // A2A Orchestration: multi-agent complex task
     const handleOrchestrate = useCallback(() => {

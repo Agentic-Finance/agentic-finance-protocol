@@ -803,7 +803,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 allAgents={marketplace.allAgents}
                                 activeCategory={marketplace.activeCategory}
                                 isBrowseLoading={marketplace.isBrowseLoading}
-                                onHireAgent={marketplace.selectAgent}
+                                onHireAgent={setDetailAgent}
                                 onFilterCategory={marketplace.filterByCategory}
                                 error={marketplace.error}
                                 isKeywordFallback={marketplace.isKeywordFallback}

@@ -7,13 +7,12 @@
 import crypto from 'crypto';
 import prisma from '@/app/lib/prisma';
 import { apiSuccess, apiError, logAndReturn, isValidAddress } from '@/app/lib/api-response';
-import { requireWalletAuth } from '@/app/lib/api-auth';
 import { writeLimiter, getClientId } from '@/app/lib/rate-limit';
 import { decomposeTask } from '@/app/lib/task-decomposer';
 
 export async function POST(req: Request) {
-  const auth = requireWalletAuth(req);
-  if (!auth.valid) return auth.response!;
+  // Plan generation is a read/compute operation — wallet auth optional
+  // (Wallet only strictly required at execution phase)
   const rateCheck = writeLimiter.check(getClientId(req));
   if (!rateCheck.success) return apiError('Rate limit exceeded', 429);
 
@@ -28,9 +27,10 @@ export async function POST(req: Request) {
     if (typeof budget !== 'number' || budget <= 0) {
       return apiError('Budget must be a positive number', 400);
     }
-    if (!isValidAddress(clientWallet)) {
-      return apiError('Invalid clientWallet address (must be 0x + 40 hex chars)', 400);
-    }
+    // clientWallet is optional for planning — validated if provided
+    const wallet = (clientWallet && isValidAddress(clientWallet))
+      ? clientWallet.toLowerCase()
+      : '0x0000000000000000000000000000000000000000';
 
     // ── Generate unique chain ID ──
     const a2aChainId = crypto.randomUUID();
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     const rootJob = await prisma.agentJob.create({
       data: {
         agentId: rootAgentId,
-        clientWallet: clientWallet.toLowerCase(),
+        clientWallet: wallet,
         prompt: prompt.trim(),
         budget: totalBudget,
         platformFee,

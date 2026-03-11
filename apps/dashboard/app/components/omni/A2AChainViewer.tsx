@@ -185,6 +185,41 @@ function StepCard({
 // ══════════════════════════════════════
 
 function A2AChainViewer({ plan, chainStatus, phase, onConfirm, onCancel }: A2AChainViewerProps) {
+    // Show loading skeleton during task decomposition
+    if (phase === 'decomposing') {
+        return (
+            <div className="mt-4 bg-[#141926] border border-violet-500/20 rounded-2xl overflow-hidden animate-in fade-in duration-500">
+                <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.04]">
+                    <CpuChipIcon className="w-5 h-5 text-violet-400 animate-pulse" />
+                    <div>
+                        <h3 className="text-sm font-semibold text-white">Decomposing Task...</h3>
+                        <p className="text-[11px] text-slate-500 mt-0.5">AI is splitting your task into sub-tasks and matching agents</p>
+                    </div>
+                </div>
+                <div className="p-5 space-y-3">
+                    {[1, 2, 3].map(i => (
+                        <div key={i} className="bg-white/[0.03] border border-white/[0.04] rounded-xl p-4 animate-pulse">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-8 h-8 bg-white/[0.06] rounded-lg" />
+                                <div className="flex-1">
+                                    <div className="h-3 bg-white/[0.06] rounded w-1/3 mb-1.5" />
+                                    <div className="h-2 bg-white/[0.04] rounded w-1/5" />
+                                </div>
+                                <div className="h-5 bg-white/[0.04] rounded-md w-14" />
+                            </div>
+                            <div className="h-2 bg-white/[0.04] rounded w-4/5" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    // Show error state
+    if (phase === 'failed' && !plan && !chainStatus) {
+        return null; // Error shown via toast
+    }
+
     if (!plan && !chainStatus) return null;
 
     const steps = plan?.steps || [];

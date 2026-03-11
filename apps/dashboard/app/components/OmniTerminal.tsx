@@ -531,14 +531,11 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // A2A Orchestration: multi-agent complex task
     const handleOrchestrate = useCallback(() => {
         if (!aiPrompt.trim() || aiPrompt.trim().length < 3) return;
-        if (!walletAddress) {
-            showToast('error', 'Connect your wallet first to orchestrate.');
-            return;
-        }
-        // Default budget for orchestration — user can adjust in plan review
+        // Use connected wallet or fallback placeholder (wallet only needed at execution)
+        const wallet = walletAddress || '0x0000000000000000000000000000000000000000';
         const defaultBudget = 500;
-        orchestration.orchestrate(aiPrompt.trim(), defaultBudget, walletAddress);
-    }, [aiPrompt, walletAddress, orchestration, showToast]);
+        orchestration.orchestrate(aiPrompt.trim(), defaultBudget, wallet);
+    }, [aiPrompt, walletAddress, orchestration]);
 
     const handleConfirmOrchestration = useCallback(async () => {
         try {

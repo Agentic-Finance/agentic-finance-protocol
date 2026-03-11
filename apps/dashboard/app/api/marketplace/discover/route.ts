@@ -72,9 +72,7 @@ function localKeywordMatch(prompt: string, agents: any[]) {
         return {
             agentId: agent.id,
             relevanceScore: Math.min(Math.round(score), 100),
-            reasoning: matchedKeywords.length > 0
-                ? `Matched keywords: ${[...new Set(matchedKeywords)].join(', ')}`
-                : `Recommended based on quality metrics (${agent.avgRating}★, ${agent.successRate}% success)`,
+            reasoning: agent.description,
             agent: {
                 id: agent.id,
                 name: agent.name,

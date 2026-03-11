@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/app/lib/prisma';
+import { requireDaemonAuth } from '@/app/lib/api-auth';
 
 // GET: Fetch daemon status for a workspace
 export async function GET(req: NextRequest) {
@@ -32,6 +31,9 @@ export async function GET(req: NextRequest) {
 
 // PUT: Update daemon status (admin only)
 export async function PUT(req: NextRequest) {
+    const auth = requireDaemonAuth(req);
+    if (!auth.valid) return auth.response!;
+
     try {
         const body = await req.json();
         const { wallet, status } = body;

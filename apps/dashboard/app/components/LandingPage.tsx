@@ -79,6 +79,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
         } else {
             // Nexus A2A - Live demo with real marketplace agents
             let cancelled = false;
+            const controller = new AbortController();
             const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
             const runLiveDemo = async () => {
                 setOutputStep(1);
@@ -89,7 +90,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 setNexusLog(prev => [...prev, "> Querying Agent Marketplace on Tempo L1..."]);
 
                 try {
-                    const res = await fetch('/api/marketplace/agents');
+                    const res = await fetch('/api/marketplace/agents', { signal: controller.signal });
                     const data = await res.json();
                     if (cancelled) return;
                     const agents = (data.agents || []).filter((a: any) => a.isVerified);
@@ -132,7 +133,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 }
             };
             runLiveDemo();
-            return () => { cancelled = true; };
+            return () => { cancelled = true; controller.abort(); };
         }
     }, [activeTab]);
 

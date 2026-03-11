@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/app/lib/prisma';
 
 // SSE endpoint: GET /api/chat/messages/stream?wallet=0x...
 // Streams new messages across all user's channels

@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { notify } from '@/app/lib/notify';
+import { requireWalletAuth } from '@/app/lib/api-auth';
+import { marketplaceLimiter, getClientId } from '@/app/lib/rate-limit';
 
 // POST /api/marketplace/reviews - Submit a review
 export async function POST(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = marketplaceLimiter.check(getClientId(req));
+    if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
     try {
         const { jobId, agentId, rating, comment } = await req.json();
 
@@ -31,29 +38,32 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Already reviewed this job." }, { status: 400 });
         }
 
-        // Create review (use effectiveRating — capped for failed jobs)
-        const review = await prisma.agentReview.create({
-            data: {
-                jobId,
-                agentId,
-                rating: parseInt(String(effectiveRating)),
-                comment: comment || null,
-            },
-        });
-
-        // Update agent rating
+        // Fetch agent before transaction to compute new average rating
         const agent = await prisma.marketplaceAgent.findUnique({ where: { id: agentId } });
-        if (agent) {
-            const newCount = agent.ratingCount + 1;
-            const newAvg = ((agent.avgRating * agent.ratingCount) + effectiveRating) / newCount;
-            await prisma.marketplaceAgent.update({
+
+        // Wrap review creation + agent rating update in a transaction
+        const newCount = agent ? agent.ratingCount + 1 : 1;
+        const newAvg = agent
+            ? ((agent.avgRating * agent.ratingCount) + effectiveRating) / newCount
+            : effectiveRating;
+
+        const [review] = await prisma.$transaction([
+            prisma.agentReview.create({
+                data: {
+                    jobId,
+                    agentId,
+                    rating: parseInt(String(effectiveRating)),
+                    comment: comment || null,
+                },
+            }),
+            prisma.marketplaceAgent.update({
                 where: { id: agentId },
                 data: {
                     avgRating: Math.round(newAvg * 10) / 10,
-                    ratingCount: newCount,
+                    ratingCount: { increment: 1 },
                 },
-            });
-        }
+            }),
+        ]);
 
         // Notify agent about the review
         if (agent) {

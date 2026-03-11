@@ -20,11 +20,13 @@ export default function ChatButton({ walletAddress, onClick, isOpen }: ChatButto
             const data = await res.json();
             if (data.channels) {
                 const total = data.channels.reduce((sum: number, ch: any) => sum + (ch.unreadCount || 0), 0);
-                if (total > unreadCount && total > 0) setIsPulsing(true);
-                setUnreadCount(total);
+                setUnreadCount(prev => {
+                    if (total > prev && total > 0) setIsPulsing(true);
+                    return total;
+                });
             }
         } catch { /* ignore */ }
-    }, [walletAddress, isOpen, unreadCount]);
+    }, [walletAddress, isOpen]);
 
     useEffect(() => {
         checkUnread();

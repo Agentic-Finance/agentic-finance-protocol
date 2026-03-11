@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { CpuChipIcon, MagnifyingGlassIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon } from '@/app/components/icons';
 import AgentCard from './AgentCard';
 import type { DiscoveredAgent, MarketplacePhase } from '../../hooks/useAgentMarketplace';
@@ -68,23 +68,21 @@ function MarketplacePanel({
         setCurrentPage(1);
     }, [activeCategory, searchQuery]);
 
-    // ── BROWSE MODE ──
-    if (phase === 'browsing') {
+    const displayAgents = useMemo(() => {
         const categoryFiltered = activeCategory
             ? allAgents.filter(a => a.agent.category === activeCategory)
             : allAgents;
+        if (!searchQuery.trim()) return categoryFiltered;
+        const q = searchQuery.toLowerCase();
+        return categoryFiltered.filter(a =>
+            a.agent.name.toLowerCase().includes(q) ||
+            a.agent.description.toLowerCase().includes(q) ||
+            a.agent.skills?.some(s => s.toLowerCase().includes(q))
+        );
+    }, [allAgents, activeCategory, searchQuery]);
 
-        const displayAgents = searchQuery.trim()
-            ? categoryFiltered.filter(a => {
-                const q = searchQuery.toLowerCase();
-                return (
-                    a.agent.name.toLowerCase().includes(q) ||
-                    a.agent.description.toLowerCase().includes(q) ||
-                    a.agent.category.toLowerCase().includes(q) ||
-                    (a.agent.skills && a.agent.skills.some(s => s.toLowerCase().includes(q)))
-                );
-            })
-            : categoryFiltered;
+    // ── BROWSE MODE ──
+    if (phase === 'browsing') {
 
         const totalPages = Math.ceil(displayAgents.length / AGENTS_PER_PAGE);
         const safePage = Math.min(currentPage, totalPages || 1);

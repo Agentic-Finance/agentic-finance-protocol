@@ -121,10 +121,28 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts, ta
         };
 
         es.onerror = () => {
-            // Reconnect after 5 seconds
-            setTimeout(() => {
-                if (eventSourceRef.current) eventSourceRef.current.close();
+            es.close();
+            eventSourceRef.current = null;
+            // Reconnect after 5s
+            const reconnectTimer = setTimeout(() => {
+                if (!isOpen || !walletAddress) return;
+                const newEs = new EventSource(`/api/chat/messages/stream?wallet=${walletAddress}`);
+                eventSourceRef.current = newEs;
+                newEs.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.type === 'new_message' || data.type === 'new_channel') {
+                            fetchChannels();
+                        }
+                    } catch {}
+                };
+                newEs.onerror = () => {
+                    newEs.close();
+                    eventSourceRef.current = null;
+                };
             }, 5000);
+            // Store for cleanup
+            return () => clearTimeout(reconnectTimer);
         };
 
         return () => {

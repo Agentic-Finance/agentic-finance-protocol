@@ -12,8 +12,12 @@
 import { NextResponse } from 'next/server';
 import { evaluateEligibleJobs, getJudgeStats } from '@/app/lib/auto-judge';
 import { logAndReturn } from '@/app/lib/api-response';
+import { requireDaemonAuth } from '@/app/lib/api-auth';
 
-export async function POST() {
+export async function POST(req: Request) {
+  const auth = requireDaemonAuth(req);
+  if (!auth.valid) return auth.response!;
+
   try {
     console.log('[AutoJudge] Batch evaluation triggered');
     const startTime = Date.now();

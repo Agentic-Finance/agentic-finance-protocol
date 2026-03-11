@@ -15,11 +15,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/app/lib/prisma';
 import { validateCheckoutParams, buildCheckoutMetadata, calculateMarkup, paddleApiRequest, FIAT_CONFIG } from '../../../lib/fiat-onramp';
 import { notify } from '../../../lib/notify';
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {

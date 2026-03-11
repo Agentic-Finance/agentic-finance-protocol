@@ -1,5 +1,7 @@
 import { apiSuccess, apiError, safeParseFloat, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
+import { requireWalletAuth } from "@/app/lib/api-auth";
+import { payrollLimiter, getClientId } from "@/app/lib/rate-limit";
 export const dynamic = 'force-dynamic';
 
 // ==========================================
@@ -8,7 +10,9 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: Request) {
     try {
         const payloads = await prisma.timeVaultPayload.findMany({
-            orderBy: { createdAt: 'desc' }
+            where: { status: { in: ['Draft', 'PENDING', 'PROCESSING', 'Vaulted', 'Completed', 'Failed'] } },
+            orderBy: { createdAt: 'desc' },
+            take: 200,
         });
 
         // "Draft" means the payload is in The Boardroom awaiting admin signature
@@ -97,6 +101,11 @@ export async function POST(req: Request) {
 // PUT: Process state transitions
 // ==========================================
 export async function PUT(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = payrollLimiter.check(getClientId(req));
+    if (!rateCheck.success) return apiError('Rate limit exceeded', 429);
+
     try {
         const body = await req.json();
         const { action, isShielded, batchTxHash, zkData } = body;
@@ -175,8 +184,16 @@ export async function PUT(req: Request) {
                 console.log("✅ [API] Boardroom approved (Public) → COMPLETED directly. TX already on-chain.");
             }
         } else if (action === 'cancel_vault') {
+            // Look up workspace from authenticated wallet to scope the delete
+            const workspace = await prisma.workspace.findFirst({
+                where: { adminWallet: { equals: auth.wallet, mode: 'insensitive' } },
+            });
+            const workspaceId = workspace?.id;
             await prisma.timeVaultPayload.deleteMany({
-                where: { status: { in: ["Draft", "PENDING", "PROCESSING", "Vaulted"] } }
+                where: {
+                    status: { in: ["Draft", "PENDING", "PROCESSING", "Vaulted"] },
+                    ...(workspaceId ? { workspaceId } : {}),
+                }
             });
         }
         return apiSuccess({});

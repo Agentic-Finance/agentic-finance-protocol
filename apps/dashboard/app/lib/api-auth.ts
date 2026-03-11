@@ -157,8 +157,7 @@ export async function validateApiKey(
     };
   } catch (error) {
     console.error('[api-auth] Error validating key:', error);
-    // On DB error, allow request but log warning
-    return { valid: true, permissions: ['read'] };
+    return { valid: false, response: NextResponse.json({ error: 'Service temporarily unavailable' }, { status: 503 }) };
   }
 }
 
@@ -172,4 +171,38 @@ export function getClientId(req: Request): string {
   const forwarded = req.headers.get('x-forwarded-for');
   const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
   return `ip:${ip}`;
+}
+
+/**
+ * Lightweight wallet auth — requires X-Wallet-Address header.
+ * Used for client-facing mutation routes that need wallet identity.
+ */
+export function requireWalletAuth(req: Request): AuthResult {
+  const wallet = req.headers.get('x-wallet-address') || req.headers.get('X-Wallet-Address');
+  if (!wallet || !/^0x[a-fA-F0-9]{40}$/.test(wallet)) {
+    return {
+      valid: false,
+      response: NextResponse.json(
+        { error: 'Wallet address required', message: 'Include X-Wallet-Address header' },
+        { status: 401 },
+      ),
+    };
+  }
+  return { valid: true, wallet: wallet.toLowerCase(), permissions: ['read', 'write'] };
+}
+
+/**
+ * Daemon-only auth — requires X-Daemon-Secret header matching DAEMON_API_SECRET env.
+ * Used for internal daemon→dashboard API calls.
+ */
+export function requireDaemonAuth(req: Request): AuthResult {
+  const secret = req.headers.get('x-daemon-secret') || req.headers.get('X-Daemon-Secret');
+  const expected = process.env.DAEMON_API_SECRET;
+  if (!expected || !secret || secret !== expected) {
+    return {
+      valid: false,
+      response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    };
+  }
+  return { valid: true, permissions: ['admin'] };
 }

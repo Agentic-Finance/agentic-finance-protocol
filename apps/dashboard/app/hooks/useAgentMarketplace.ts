@@ -208,7 +208,6 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     const [taskPrompt, setTaskPrompt] = useState('');
     const [isKeywordFallback, setIsKeywordFallback] = useState(false);
 
-    const jobPollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const negotiationTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
     const executionAbortRef = useRef<AbortController | null>(null);
     const confirmLockRef = useRef(false);
@@ -216,6 +215,15 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
 
     // Keep phaseRef in sync so callbacks can read current phase
     useEffect(() => { phaseRef.current = phase; }, [phase]);
+
+    // Cleanup timers on unmount
+    useEffect(() => {
+        return () => {
+            negotiationTimersRef.current.forEach(t => clearTimeout(t));
+            negotiationTimersRef.current = [];
+            if (executionAbortRef.current) executionAbortRef.current.abort();
+        };
+    }, []);
 
     // ════════════════════════════════════
     // BROWSE: Fetch all agents from catalog
@@ -539,7 +547,6 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
     }, []);
 
     const reset = useCallback(() => {
-        if (jobPollingRef.current) clearInterval(jobPollingRef.current);
         negotiationTimersRef.current.forEach(t => clearTimeout(t));
         negotiationTimersRef.current = [];
         confirmLockRef.current = false; // Release confirm lock for new tasks

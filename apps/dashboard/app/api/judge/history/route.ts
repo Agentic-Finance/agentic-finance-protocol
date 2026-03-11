@@ -19,6 +19,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { notify } from '@/app/lib/notify';
 import { apiError, logAndReturn } from '@/app/lib/api-response';
+import { requireWalletAuth } from '@/app/lib/api-auth';
+import { writeLimiter, getClientId } from '@/app/lib/rate-limit';
 
 export async function GET(req: Request) {
   try {
@@ -84,6 +86,11 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const auth = requireWalletAuth(req);
+  if (!auth.valid) return auth.response!;
+  const rateCheck = writeLimiter.check(getClientId(req));
+  if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
   try {
     const { verdictId, newVerdict, overrideWallet } = await req.json();
 
@@ -93,6 +100,11 @@ export async function PUT(req: Request) {
 
     if (!['SETTLE', 'REFUND'].includes(newVerdict)) {
       return apiError('newVerdict must be SETTLE or REFUND', 400);
+    }
+
+    // Enforce that the overrideWallet matches the authenticated wallet
+    if (overrideWallet.toLowerCase() !== auth.wallet) {
+      return apiError('overrideWallet does not match authenticated wallet', 403);
     }
 
     const existing = await prisma.judgeVerdict.findUnique({

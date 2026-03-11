@@ -51,7 +51,7 @@ function getAvatarColor(wallet: string): string {
 
 /** Parse /send command: "/send 50 AlphaUSD to 0x1234..." */
 function parseSendCommand(text: string): { amount: number; token: string; to: string } | null {
-    const match = text.match(/^\/send\s+([\d.]+)\s+(\w+)\s+to\s+(0x[a-fA-F0-9]{10,})/i);
+    const match = text.match(/^\/send\s+([\d.]+)\s+(\w+)\s+to\s+(0x[a-fA-F0-9]{40})/i);
     if (!match) return null;
     const amount = parseFloat(match[1]);
     if (isNaN(amount) || amount <= 0) return null;

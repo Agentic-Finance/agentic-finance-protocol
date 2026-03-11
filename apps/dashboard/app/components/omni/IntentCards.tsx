@@ -48,7 +48,7 @@ function IntentCards({
 
     return (
         <div className="mt-2 flex gap-4 overflow-x-auto pb-6 cyber-scroll-x animate-in slide-in-from-top-4 fade-in duration-500 relative z-10">
-            {liveIntents.map((intent, i) => {
+            {liveIntents.map((intent) => {
                 const isRaw = intent.isRawWallet;
                 const showAliasInput = isRaw && (intent.name === 'Unknown Entity' || intent.name === 'Unknown');
                 const displayAlias = walletAliases[intent.wallet] !== undefined ? walletAliases[intent.wallet] : '';
@@ -75,7 +75,7 @@ function IntentCards({
                 const dotColor = needsWallet && !isWalletLocked ? 'bg-amber-400' : 'bg-emerald-500';
 
                 return (
-                    <div key={i} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 shadow-lg ${cardBorderClass} group/card`}>
+                    <div key={intent.indexId} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 shadow-lg ${cardBorderClass} group/card`}>
                         {/* Delete button */}
                         {handleDeleteIntent && (
                             <button

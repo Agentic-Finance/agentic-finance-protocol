@@ -13,8 +13,15 @@
 import { apiSuccess, apiError, logAndReturn } from "@/app/lib/api-response";
 import prisma from "@/app/lib/prisma";
 import { getPoseidon, generateRandomSecret, computeCommitment } from "@/app/lib/poseidon-cache";
+import { requireWalletAuth } from "@/app/lib/api-auth";
+import { shieldLimiter, getClientId } from "@/app/lib/rate-limit";
 
 export async function POST(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = shieldLimiter.check(getClientId(req));
+    if (!rateCheck.success) return apiError('Rate limit exceeded', 429);
+
     try {
         const body = await req.json();
         const { action } = body;

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '../../lib/prisma';
 import { isValidAddress, safeParseFloat, apiSuccess, apiError, logAndReturn } from '../../lib/api-response';
 import { payrollLimiter, getClientId } from '../../lib/rate-limit';
+import { requireWalletAuth } from '../../lib/api-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +24,8 @@ export async function POST(req: Request) {
             return apiError(`Batch too large: ${payloads.length} employees (max ${MAX_BATCH_SIZE})`, 400);
         }
 
-        let insertedCount = 0;
         const errors: string[] = [];
+        const validPayloads: Array<{ name: string; walletAddress: string; amount: number; token: string; note: string; status: string }> = [];
 
         for (let i = 0; i < payloads.length; i++) {
             const payload = payloads[i];
@@ -44,22 +45,21 @@ export async function POST(req: Request) {
                 continue;
             }
 
-            await prisma.employee.create({
-                data: {
-                    name: payload.name || 'Anonymous',
-                    walletAddress: payload.wallet,
-                    amount,
-                    token: payload.token || 'AlphaUSD',
-                    note: payload.note || '',
-                    status: 'Awaiting_Approval',
-                },
+            validPayloads.push({
+                name: payload.name || 'Anonymous',
+                walletAddress: payload.wallet,
+                amount,
+                token: payload.token || 'AlphaUSD',
+                note: payload.note || '',
+                status: 'Awaiting_Approval',
             });
-            insertedCount++;
         }
+
+        await prisma.$transaction(validPayloads.map(p => prisma.employee.create({ data: p })));
 
         return NextResponse.json({
             success: true,
-            count: insertedCount,
+            count: validPayloads.length,
             ...(errors.length > 0 ? { warnings: errors } : {}),
         });
     } catch (error: any) {
@@ -69,18 +69,15 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const awaiting = await prisma.employee.findMany({
-            where: { status: 'Awaiting_Approval' },
+        const allEmployees = await prisma.employee.findMany({
+            where: { status: { in: ['Awaiting_Approval', 'Pending', 'Vaulted'] } },
             orderBy: { createdAt: 'desc' },
         });
-        const pending = await prisma.employee.findMany({
-            where: { status: 'Pending' },
-            orderBy: { createdAt: 'desc' },
-        });
-        const vaulted = await prisma.employee.findMany({
-            where: { status: 'Vaulted' },
-            orderBy: { createdAt: 'desc' },
-        });
+
+        // Group by status in JS
+        const awaiting = allEmployees.filter((e: any) => e.status === 'Awaiting_Approval');
+        const pending = allEmployees.filter((e: any) => e.status === 'Pending');
+        const vaulted = allEmployees.filter((e: any) => e.status === 'Vaulted');
 
         // Map walletAddress → address for frontend compatibility
         const mapEmployee = (e: any) => ({
@@ -100,6 +97,11 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = payrollLimiter.check(getClientId(req));
+    if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
     try {
         const { action } = await req.json();
 

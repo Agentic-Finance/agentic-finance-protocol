@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { requireWalletAuth } from '@/app/lib/api-auth';
+import { aiParseLimiter, getClientId } from '@/app/lib/rate-limit';
 
 // Lazy-init: avoid throwing at module load when OPENAI_API_KEY is unset (CI builds)
 let _openai: OpenAI | null = null;
@@ -12,6 +14,11 @@ function getOpenAI() {
 const MAX_PROMPT_LENGTH = 10_000;
 
 export async function POST(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = aiParseLimiter.check(getClientId(req));
+    if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
     try {
         const body = await req.json();
         const { prompt, supportedTokens, addressBook, systemData, dryRun } = body;

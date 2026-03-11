@@ -115,10 +115,42 @@ export async function PUT(req: Request) {
         if (executionTime) updateData.executionTime = executionTime;
         if (status === 'COMPLETED' || status === 'FAILED') updateData.completedAt = new Date();
 
-        const job = await prisma.agentJob.update({
+        // Fetch job with agent included to avoid a separate query
+        const existingJob = await prisma.agentJob.findUnique({
             where: { id: jobId },
-            data: updateData,
+            include: { agent: true },
         });
+
+        let job: any;
+
+        if ((status === 'COMPLETED' || status === 'FAILED') && existingJob?.agent) {
+            const agent = existingJob.agent;
+            const newTotalJobs = agent.totalJobs + 1;
+            const successCount = status === 'COMPLETED'
+                ? Math.round(agent.successRate * agent.totalJobs / 100) + 1
+                : Math.round(agent.successRate * agent.totalJobs / 100);
+            const newSuccessRate = newTotalJobs > 0 ? (successCount / newTotalJobs) * 100 : 100;
+
+            // Wrap job update + agent stats update in a transaction
+            [job] = await prisma.$transaction([
+                prisma.agentJob.update({
+                    where: { id: jobId },
+                    data: updateData,
+                }),
+                prisma.marketplaceAgent.update({
+                    where: { id: agent.id },
+                    data: {
+                        totalJobs: { increment: 1 },
+                        successRate: Math.round(newSuccessRate * 10) / 10,
+                    },
+                }),
+            ]);
+        } else {
+            job = await prisma.agentJob.update({
+                where: { id: jobId },
+                data: updateData,
+            });
+        }
 
         // Notify client about job status change
         if (status === 'COMPLETED' || status === 'FAILED') {
@@ -131,26 +163,6 @@ export async function PUT(req: Request) {
                     : `Task execution failed. You may request a refund.`,
                 streamJobId: jobId,
             }).catch(() => {});
-        }
-
-        // Update agent stats on completion
-        if (status === 'COMPLETED' || status === 'FAILED') {
-            const agent = await prisma.marketplaceAgent.findUnique({ where: { id: job.agentId } });
-            if (agent) {
-                const newTotalJobs = agent.totalJobs + 1;
-                const successCount = status === 'COMPLETED'
-                    ? Math.round(agent.successRate * agent.totalJobs / 100) + 1
-                    : Math.round(agent.successRate * agent.totalJobs / 100);
-                const newSuccessRate = newTotalJobs > 0 ? (successCount / newTotalJobs) * 100 : 100;
-
-                await prisma.marketplaceAgent.update({
-                    where: { id: job.agentId },
-                    data: {
-                        totalJobs: newTotalJobs,
-                        successRate: Math.round(newSuccessRate * 10) / 10,
-                    },
-                });
-            }
         }
 
         return NextResponse.json({ success: true, job });

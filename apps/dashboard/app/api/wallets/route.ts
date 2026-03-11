@@ -1,7 +1,5 @@
 import { apiSuccess, logAndReturn } from "@/app/lib/api-response";
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/app/lib/prisma';
 
 /**
  * GET /api/wallets

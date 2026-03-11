@@ -7,10 +7,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/app/lib/prisma';
 import { paddleApiRequest, transferStablecoin, depositToShieldVault, FIAT_CONFIG } from '../../../lib/fiat-onramp';
-
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   try {

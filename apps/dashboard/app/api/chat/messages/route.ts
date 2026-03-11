@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/app/lib/prisma';
 
 // GET /api/chat/messages?channelId=X&wallet=0x...&cursor=Y&limit=Z
 export async function GET(req: NextRequest) {

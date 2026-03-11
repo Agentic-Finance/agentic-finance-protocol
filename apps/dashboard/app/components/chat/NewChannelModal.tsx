@@ -45,7 +45,7 @@ export default function NewChannelModal({ walletAddress, contacts, onClose, onCr
     };
 
     const addCustomWallet = () => {
-        if (!customWallet || !customWallet.startsWith('0x') || customWallet.length < 10) return;
+        if (!customWallet || !/^0x[a-fA-F0-9]{40}$/.test(customWallet)) return;
         const existing = contacts.find(c => c.wallet.toLowerCase() === customWallet.toLowerCase());
         const contact = existing || { name: `${customWallet.slice(0, 6)}...${customWallet.slice(-4)}`, wallet: customWallet };
 

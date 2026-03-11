@@ -169,6 +169,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         setGlobalMode(currentMode);
 
         let cancelled = false;
+        const abortController = new AbortController();
         (async () => {
             setIsAiParsing(true);
             try {
@@ -183,7 +184,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         supportedTokens: currentTokens.map((t: any) => t.symbol),
                         addressBook: safeContacts.map(c => c.name),
                         systemData: currentHistory ? currentHistory.slice(0, 15).map(h => ({ date: h.date, amount: h.amount, token: h.token, recipient: h.breakdown[0]?.name })) : []
-                    })
+                    }),
+                    signal: abortController.signal,
                 });
                 if (cancelled) return;
                 if (!response.ok) throw new Error('AI parsing failed');
@@ -249,7 +251,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             } catch (error) { console.error("AI Parsing Error:", error); if (!cancelled) showToast('error', 'Failed to parse intent. Try again.'); } finally { if (!cancelled) setIsAiParsing(false); }
         })();
 
-        return () => { cancelled = true; };
+        return () => { cancelled = true; abortController.abort(); };
     }, [debouncedPrompt, activeTab]);
 
     // ==========================================

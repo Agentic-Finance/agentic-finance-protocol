@@ -8,8 +8,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
 import { getPayoutStatus } from '@/app/lib/paypal-payouts';
+import { requireDaemonAuth } from '@/app/lib/api-auth';
 
-export async function POST() {
+export async function POST(req: Request) {
+  const auth = requireDaemonAuth(req);
+  if (!auth.valid) return auth.response!;
+
   try {
     const processing = await prisma.withdrawalRequest.findMany({
       where: { status: 'PROCESSING', paypalPayoutId: { not: null } },

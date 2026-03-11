@@ -99,6 +99,8 @@ model AutopilotRule {
   deletedAt      DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
+
+  @@index([wallet_address])
 }
 
 // 📝 Boardroom Queue (OmniTerminal Intents)
@@ -199,6 +201,7 @@ model AgentJob {
   @@index([clientWallet, status])
   @@index([agentId, status])
   @@index([a2aChainId])
+  @@index([createdAt])
 }
 
 // Post-job reviews and ratings
@@ -211,6 +214,10 @@ model AgentReview {
   rating    Int      // 1-5
   comment   String?
   createdAt DateTime @default(now())
+
+  @@index([agentId])
+  @@index([jobId])
+  @@unique([jobId])
 }
 
 // ==========================================
@@ -349,8 +356,11 @@ model ConditionalRule {
   maxTriggers     Int       @default(1)           // How many times to trigger (-1 = infinite)
   cooldownMinutes Int       @default(0)           // Min minutes between triggers (0=one-time, 10080=weekly, 43200=monthly)
   note            String?
+  isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
   triggeredAt     DateTime?
+
+  @@index([isActive])
 }
 
 // ==========================================

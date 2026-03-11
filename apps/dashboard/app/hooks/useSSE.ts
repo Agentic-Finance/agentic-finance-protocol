@@ -136,12 +136,14 @@ export function useSSE(orchestratorUrl?: string): LiveDashboardState {
         // Exponential backoff: 5s, 10s, 20s, 30s max
         retryCountRef.current++;
         const delay = Math.min(5000 * Math.pow(2, retryCountRef.current - 1), 30000);
+        if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
         reconnectTimeoutRef.current = setTimeout(connect, delay);
       };
     } catch {
       setState(prev => ({ ...prev, connected: false }));
       retryCountRef.current++;
       const delay = Math.min(5000 * Math.pow(2, retryCountRef.current - 1), 30000);
+      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
       reconnectTimeoutRef.current = setTimeout(connect, delay);
     }
   }, [baseUrl]);

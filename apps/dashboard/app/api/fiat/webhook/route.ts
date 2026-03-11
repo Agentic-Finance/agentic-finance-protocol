@@ -10,12 +10,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/app/lib/prisma';
 import { transferStablecoin, depositToShieldVault, FIAT_CONFIG } from '../../../lib/fiat-onramp';
 import { notify } from '../../../lib/notify';
 import crypto from 'crypto';
-
-const prisma = new PrismaClient();
+import { webhookLimiter, getClientId } from '../../../lib/rate-limit';
 
 /**
  * Verify Paddle webhook signature (HMAC-SHA256).
@@ -41,6 +40,9 @@ function verifyPaddleSignature(rawBody: string, signature: string | null, webhoo
 }
 
 export async function POST(req: NextRequest) {
+  const rateCheck = webhookLimiter.check(getClientId(req));
+  if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
   try {
     const paddleApiKey = process.env.PADDLE_API_KEY;
     const webhookSecret = process.env.PADDLE_WEBHOOK_SECRET;
@@ -58,7 +60,10 @@ export async function POST(req: NextRequest) {
 
       event = JSON.parse(body);
     } else {
-      // Demo mode: accept raw JSON
+      // Demo mode: accept raw JSON (blocked in production)
+      if (process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
+      }
       event = await req.json();
     }
 

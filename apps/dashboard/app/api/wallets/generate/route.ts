@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/app/lib/prisma';
 import { generateWallet } from '../../../lib/wallet-crypto';
 import { notify } from '../../../lib/notify';
-
-const prisma = new PrismaClient();
+import { requireWalletAuth } from '../../../lib/api-auth';
+import { keyLimiter, getClientId } from '../../../lib/rate-limit';
 
 /**
  * POST /api/wallets/generate
@@ -11,6 +11,11 @@ const prisma = new PrismaClient();
  * Body: { label: string, ownerType: "agent" | "employee", ownerId?: string }
  */
 export async function POST(request: Request) {
+    const auth = requireWalletAuth(request);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = keyLimiter.check(getClientId(request));
+    if (!rateCheck.success) return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
     try {
         const body = await request.json();
         const { label, ownerType, ownerId } = body;

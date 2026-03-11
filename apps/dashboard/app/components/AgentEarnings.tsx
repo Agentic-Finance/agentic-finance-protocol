@@ -92,20 +92,47 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
     const [globalEarnings, setGlobalEarnings] = useState<GlobalEarnings | null>(null);
     const [agentEarnings, setAgentEarnings] = useState<AgentEarning[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [detailAgent, setDetailAgent] = useState<DiscoveredAgent | null>(null);
 
     const fetchEarnings = useCallback(async () => {
         setLoading(true);
+        setError(null);
         try {
-            // Fetch global earnings
-            const globalRes = await fetch('/api/marketplace/earnings');
-            const globalData = await globalRes.json();
-            setGlobalEarnings(globalData);
+            const [earningsResult, jobsResult] = await Promise.allSettled([
+                fetch('/api/marketplace/earnings'),
+                fetch('/api/marketplace/jobs'),
+            ]);
 
-            // Fetch per-agent breakdown from jobs (includes full agent data)
-            const jobsRes = await fetch('/api/marketplace/jobs');
-            const jobsData = await jobsRes.json();
-            const jobs = jobsData.jobs || [];
+            let globalData: GlobalEarnings | null = null;
+            let jobs: any[] = [];
+
+            if (earningsResult.status === 'fulfilled') {
+                if (earningsResult.value.ok) {
+                    try { globalData = await earningsResult.value.json(); } catch (e) { console.error('Failed to parse earnings', e); }
+                } else {
+                    console.error('Earnings fetch failed:', earningsResult.value.status);
+                }
+            } else {
+                console.error('Earnings fetch error:', earningsResult.reason);
+            }
+
+            if (jobsResult.status === 'fulfilled') {
+                if (jobsResult.value.ok) {
+                    try {
+                        const jobsData = await jobsResult.value.json();
+                        jobs = jobsData.jobs || [];
+                    } catch (e) { console.error('Failed to parse jobs', e); }
+                } else {
+                    console.error('Jobs fetch failed:', jobsResult.value.status);
+                }
+            } else {
+                console.error('Jobs fetch error:', jobsResult.reason);
+            }
+
+            if (globalData === null && jobs.length === 0) {
+                setError('Unable to load earnings data. Please try again.');
+            }
 
             // Group by agent — preserve full agent data for modal
             const agentMap = new Map<string, {
@@ -213,6 +240,13 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
                     <ArrowPathIcon className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 </button>
             </div>
+
+            {/* Error state */}
+            {error && (
+                <div className="mx-5 mt-3 mb-2">
+                    <p className="text-rose-400 text-xs">{error}</p>
+                </div>
+            )}
 
             {/* Global Stats */}
             {globalEarnings && (

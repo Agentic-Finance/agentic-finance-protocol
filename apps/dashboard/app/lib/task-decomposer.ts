@@ -37,76 +37,192 @@ export interface DecompositionResult {
     platformFee: number;
 }
 
+// ── Task Phrase Extraction ───────────────────────────────────
+
+/**
+ * Mapping from action keywords → agent categories.
+ * Used by the fallback decomposer to break a prompt into sub-tasks.
+ */
+const ACTION_CATEGORY_MAP: Record<string, string[]> = {
+    // Security
+    audit:    ['security'], scan: ['security'], vulnerability: ['security'], pentest: ['security'],
+    secure:   ['security'], protect: ['security'], guard: ['security'],
+    // DeFi
+    swap:     ['defi'], stake: ['defi'], yield: ['defi'], liquidity: ['defi'], farm: ['defi'], bridge: ['defi'],
+    // Deployment
+    deploy:   ['deploy'], build: ['deploy'], launch: ['deploy'], create: ['deploy'], setup: ['deploy'], configure: ['deploy'],
+    // Analytics
+    analyze:  ['analytics'], monitor: ['analytics'], track: ['analytics'], report: ['analytics'], dashboard: ['analytics'],
+    // Payroll
+    pay:      ['payroll'], salary: ['payroll'], payroll: ['payroll'], distribute: ['payroll'], batch: ['payroll'],
+    // Compliance
+    compliance: ['compliance'], regulatory: ['compliance'], kyc: ['compliance'], aml: ['compliance'],
+    // Governance
+    governance: ['governance'], vote: ['governance'], proposal: ['governance'], dao: ['governance'],
+    // Tax
+    tax:      ['tax'], filing: ['tax'], accounting: ['tax'],
+    // NFT
+    nft:      ['nft'], mint: ['nft'], collection: ['nft'],
+    // Streams
+    stream:   ['streams'], recurring: ['streams'], subscription: ['streams'],
+    // Escrow
+    escrow:   ['escrow'], settle: ['escrow'], multisig: ['escrow'],
+    // Misc actions that can map to multiple
+    test:     ['security', 'analytics'], verify: ['security', 'compliance'], review: ['security', 'analytics'],
+    optimize: ['analytics', 'defi'], migrate: ['deploy', 'defi'],
+};
+
+/**
+ * Split a complex prompt into distinct sub-tasks using compound connectors
+ * and action keyword detection.
+ */
+function extractSubTasks(prompt: string): { subPrompt: string; categories: string[] }[] {
+    const lower = prompt.toLowerCase().trim();
+
+    // 1. Try splitting by compound connectors: "and", "with", "then", "also", "+"
+    const splitters = /\b(?:and then|and also|and|with|then|plus|also|&|\+)\b/gi;
+    const parts = prompt.split(splitters).map(p => p.trim()).filter(p => p.length > 3);
+
+    if (parts.length >= 2) {
+        // Each part is a distinct sub-task
+        return parts.map(part => {
+            const cats = detectCategories(part.toLowerCase());
+            return { subPrompt: part, categories: cats.length > 0 ? cats : ['deploy'] };
+        });
+    }
+
+    // 2. If no compound split, detect multiple action verbs
+    const actions = Object.keys(ACTION_CATEGORY_MAP);
+    const foundActions: { action: string; categories: string[]; index: number }[] = [];
+
+    for (const action of actions) {
+        const regex = new RegExp(`\\b${action}\\w*\\b`, 'i');
+        const match = lower.match(regex);
+        if (match && match.index !== undefined) {
+            foundActions.push({
+                action,
+                categories: ACTION_CATEGORY_MAP[action],
+                index: match.index,
+            });
+        }
+    }
+
+    // Deduplicate by category — pick the most relevant action for each category
+    const uniqueCategories = new Map<string, typeof foundActions[0]>();
+    for (const fa of foundActions.sort((a, b) => a.index - b.index)) {
+        for (const cat of fa.categories) {
+            if (!uniqueCategories.has(cat)) uniqueCategories.set(cat, fa);
+        }
+    }
+
+    if (uniqueCategories.size >= 2) {
+        // Build sub-tasks per unique category detected
+        return Array.from(uniqueCategories.entries()).map(([cat, fa]) => ({
+            subPrompt: `${fa.action.charAt(0).toUpperCase() + fa.action.slice(1)} — ${prompt}`,
+            categories: [cat],
+        }));
+    }
+
+    // 3. Fallback: single task but try to add supporting tasks
+    const primaryCats = detectCategories(lower);
+    const subTasks: { subPrompt: string; categories: string[] }[] = [
+        { subPrompt: prompt, categories: primaryCats.length > 0 ? primaryCats : ['deploy'] },
+    ];
+
+    // Auto-add complementary tasks for common combos
+    if (primaryCats.includes('deploy') && !primaryCats.includes('security')) {
+        subTasks.push({ subPrompt: `Security review and audit for: ${prompt}`, categories: ['security'] });
+    }
+    if (primaryCats.includes('security') && !primaryCats.includes('analytics')) {
+        subTasks.push({ subPrompt: `Generate analytics report for: ${prompt}`, categories: ['analytics'] });
+    }
+    if (primaryCats.includes('defi') && !primaryCats.includes('analytics')) {
+        subTasks.push({ subPrompt: `Monitor and track performance for: ${prompt}`, categories: ['analytics'] });
+    }
+
+    return subTasks;
+}
+
+/** Detect which categories a text maps to based on action keywords */
+function detectCategories(text: string): string[] {
+    const cats = new Set<string>();
+    for (const [keyword, categories] of Object.entries(ACTION_CATEGORY_MAP)) {
+        if (new RegExp(`\\b${keyword}\\w*\\b`, 'i').test(text)) {
+            categories.forEach(c => cats.add(c));
+        }
+    }
+    return Array.from(cats);
+}
+
 // ── Local Keyword Fallback ───────────────────────────────────
 
 /**
- * Local keyword-based agent matching.
- * Parses prompt for keywords, scores agents by category/skills overlap,
- * and returns top matches sorted by relevance.
+ * Smart local decomposition fallback.
+ * 1. Splits prompt into sub-tasks using connectors + action keywords
+ * 2. Matches best agent for each sub-task by category + skill overlap
+ * 3. Generates unique sub-task prompts
+ * 4. Infers dependencies (sequential by default, parallel if independent)
  */
-function localKeywordMatch(prompt: string, agents: any[]) {
-    const promptTokens = prompt.toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '')
-        .split(/\s+/)
-        .filter(t => t.length > 2);
+function localSmartDecompose(prompt: string, agents: any[], maxAgents: number) {
+    const subTasks = extractSubTasks(prompt);
 
-    const scored = agents.map(agent => {
-        const skills: string[] = JSON.parse(agent.skills);
-        const searchableText = [
-            agent.name.toLowerCase(),
-            agent.description.toLowerCase(),
-            agent.category.toLowerCase(),
-            ...skills.map((s: string) => s.toLowerCase()),
-        ].join(' ');
+    // Build agent-by-category index
+    const agentsByCategory = new Map<string, any[]>();
+    for (const agent of agents) {
+        const cat = agent.category.toLowerCase();
+        if (!agentsByCategory.has(cat)) agentsByCategory.set(cat, []);
+        agentsByCategory.get(cat)!.push(agent);
+    }
 
-        let score = 0;
-        const matchedKeywords: string[] = [];
+    // Match best agent for each sub-task
+    const usedAgentIds = new Set<string>();
+    const steps: { agent: any; subPrompt: string; categories: string[] }[] = [];
 
-        for (const token of promptTokens) {
-            if (searchableText.includes(token)) {
-                score += 10;
-                if (skills.some((s: string) => s.toLowerCase().includes(token))) score += 15;
-                if (agent.category.toLowerCase().includes(token)) score += 20;
-                if (agent.name.toLowerCase().includes(token)) score += 10;
-                matchedKeywords.push(token);
+    for (const task of subTasks) {
+        if (steps.length >= maxAgents) break;
+
+        let bestAgent: any = null;
+        let bestScore = -1;
+
+        // Try each category the sub-task maps to
+        for (const cat of task.categories) {
+            const candidates = agentsByCategory.get(cat) || [];
+            for (const agent of candidates) {
+                if (usedAgentIds.has(agent.id)) continue;
+                const score = agent.avgRating * 10 + agent.successRate + (agent.isVerified ? 20 : 0);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestAgent = agent;
+                }
             }
         }
 
-        // Quality bonus
-        score += agent.avgRating * 2;
-        score += Math.max(0, (agent.successRate - 90)) * 0.5;
+        // If no category match, try all agents by skill keyword overlap
+        if (!bestAgent) {
+            const promptTokens = task.subPrompt.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+            for (const agent of agents) {
+                if (usedAgentIds.has(agent.id)) continue;
+                const skills: string[] = JSON.parse(agent.skills);
+                const text = [agent.name, agent.description, ...skills].join(' ').toLowerCase();
+                let score = 0;
+                for (const token of promptTokens) {
+                    if (text.includes(token)) score += 5;
+                }
+                score += agent.avgRating * 2;
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestAgent = agent;
+                }
+            }
+        }
 
-        return {
-            agentId: agent.id,
-            relevanceScore: Math.min(Math.round(score), 100),
-            reasoning: matchedKeywords.length > 0
-                ? `Matched keywords: ${[...new Set(matchedKeywords)].join(', ')}`
-                : `Recommended based on quality metrics (${agent.avgRating}\u2605, ${agent.successRate}% success)`,
-            agent: {
-                id: agent.id,
-                name: agent.name,
-                description: agent.description,
-                category: agent.category,
-                skills: JSON.parse(agent.skills),
-                basePrice: agent.basePrice,
-                ownerWallet: agent.ownerWallet,
-                avatarEmoji: agent.avatarEmoji,
-                avatarUrl: agent.avatarUrl || null,
-                isVerified: agent.isVerified,
-                totalJobs: agent.totalJobs,
-                successRate: agent.successRate,
-                avgRating: agent.avgRating,
-                ratingCount: agent.ratingCount,
-                responseTime: agent.responseTime,
-                source: agent.source,
-                sourceUrl: agent.sourceUrl,
-            },
-        };
-    });
+        if (bestAgent) {
+            usedAgentIds.add(bestAgent.id);
+            steps.push({ agent: bestAgent, subPrompt: task.subPrompt, categories: task.categories });
+        }
+    }
 
-    return scored
-        .sort((a, b) => b.relevanceScore - a.relevanceScore)
-        .slice(0, 3);
+    return steps;
 }
 
 // ── Core Decomposition ───────────────────────────────────────
@@ -229,25 +345,33 @@ Respond ONLY with valid JSON in this exact format:
         console.warn('[TaskDecomposer] OpenAI unavailable, using local fallback:', aiError.message);
     }
 
-    // 4. Fallback: local keyword match
+    // 4. Fallback: smart local decomposition
     if (steps.length === 0) {
-        const matches = localKeywordMatch(prompt, agents);
-        reasoning = 'Local keyword-match fallback (OpenAI unavailable). All steps run in parallel.';
+        const decomposed = localSmartDecompose(prompt, agents, maxAgents);
 
-        const perAgent = matches.length > 0
-            ? Math.round((availableBudget / matches.length) * 100) / 100
-            : 0;
+        if (decomposed.length === 0) {
+            reasoning = 'No matching agents found for this task.';
+        } else {
+            const taskCount = decomposed.length;
+            const hasMultipleTasks = taskCount >= 2;
+            reasoning = hasMultipleTasks
+                ? `Decomposed into ${taskCount} specialized sub-tasks. ${taskCount <= 3 ? 'Steps execute sequentially.' : 'Independent steps run in parallel where possible.'}`
+                : 'Single-agent task with supporting analysis.';
 
-        steps = matches.map((m, idx) => ({
-            stepIndex: idx,
-            agentId: m.agent.id,
-            agentName: m.agent.name,
-            agentEmoji: m.agent.avatarEmoji || '\uD83E\uDD16',
-            prompt,
-            budgetAllocation: perAgent,
-            dependsOn: [],              // All parallel in fallback mode
-            category: m.agent.category,
-        }));
+            const perAgent = Math.round((availableBudget / taskCount) * 100) / 100;
+
+            steps = decomposed.map((d, idx) => ({
+                stepIndex: idx,
+                agentId: d.agent.id,
+                agentName: d.agent.name,
+                agentEmoji: d.agent.avatarEmoji || '\uD83E\uDD16',
+                prompt: d.subPrompt,
+                budgetAllocation: perAgent,
+                // First task has no deps; subsequent tasks depend on the previous one
+                dependsOn: idx === 0 ? [] : [idx - 1],
+                category: d.agent.category,
+            }));
+        }
     }
 
     // 5. Budget validation — scale proportionally if over limit

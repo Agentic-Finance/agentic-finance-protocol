@@ -244,13 +244,24 @@ function A2AChainViewer({ plan, chainStatus, phase, onConfirm, onCancel }: A2ACh
     }, [chainStatus?.subTasks]);
 
     return (
-        <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className={`mt-4 bg-[#141926] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all ${
+            isReviewing
+                ? 'border-2 border-violet-500/50 shadow-[0_0_30px_rgba(139,92,246,0.15)]'
+                : 'border border-white/[0.10]'
+        }`}>
 
             {/* ═══ Header ═══ */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">
+            <div className={`flex items-center justify-between px-5 py-3.5 border-b ${
+                isReviewing ? 'border-violet-500/20 bg-violet-500/5' : 'border-white/[0.04]'
+            }`}>
                 <div className="flex items-center gap-2.5">
-                    <CpuChipIcon className="w-5 h-5 text-indigo-400" />
+                    <CpuChipIcon className={`w-5 h-5 ${isReviewing ? 'text-violet-400 animate-pulse' : 'text-indigo-400'}`} />
                     <h3 className="text-sm font-semibold text-white">A2A Orchestration</h3>
+                    {isReviewing && (
+                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md bg-violet-500/15 text-violet-400 border border-violet-500/25 animate-pulse">
+                            Review Plan
+                        </span>
+                    )}
                     {chainStatus?.a2aChainId && (
                         <span className="text-[10px] text-slate-600 font-mono">
                             #{chainStatus.a2aChainId.slice(0, 8)}
@@ -340,20 +351,20 @@ function A2AChainViewer({ plan, chainStatus, phase, onConfirm, onCancel }: A2ACh
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex items-center gap-3 pt-3 border-t border-white/[0.04]">
+                        <div className="flex items-center gap-3 pt-4 border-t border-violet-500/15">
                             {onConfirm && (
                                 <button
                                     onClick={onConfirm}
-                                    className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white text-sm font-bold rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+                                    className="px-8 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-black rounded-xl transition-all duration-200 flex items-center gap-2.5 shadow-[0_0_25px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.5)] hover:scale-[1.02]"
                                 >
-                                    <BoltIcon className="w-4 h-4" />
-                                    Confirm &amp; Execute
+                                    <BoltIcon className="w-4.5 h-4.5" />
+                                    Confirm &amp; Execute All Steps
                                 </button>
                             )}
                             {onCancel && (
                                 <button
                                     onClick={onCancel}
-                                    className="px-5 py-2.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.10] text-slate-400 text-sm font-semibold rounded-xl transition-all"
+                                    className="px-5 py-3.5 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.10] text-slate-400 text-sm font-semibold rounded-xl transition-all"
                                 >
                                     Cancel
                                 </button>

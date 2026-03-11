@@ -114,6 +114,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const omniFileRef = useRef<HTMLInputElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const confirmationRef = useRef<HTMLDivElement>(null);
+    const orchestrationRef = useRef<HTMLDivElement>(null);
 
     const latestDataRef = useRef({ SUPPORTED_TOKENS, contacts, history });
     useEffect(() => {
@@ -126,6 +127,13 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             setTimeout(() => confirmationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
         }
     }, [marketplace.phase]);
+
+    // Auto-scroll to orchestration panel when plan is ready for review
+    useEffect(() => {
+        if ((orchestration.phase === 'reviewing' || orchestration.phase === 'decomposing') && orchestrationRef.current) {
+            setTimeout(() => orchestrationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+        }
+    }, [orchestration.phase]);
 
     // Auto-trigger browse mode when switching to A2A tab
     useEffect(() => {
@@ -291,7 +299,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         }
                     } else { setLiveIntents([]); }
                 }
-            } catch (error) { console.error("AI Parsing Error:", error); if (!cancelled) showToast('error', 'Failed to parse intent. Try again.'); } finally { if (!cancelled) setIsAiParsing(false); }
+            } catch (error) { console.error("AI Parsing Error:", error); if (!cancelled && !isA2aTab) showToast('error', 'Failed to parse intent. Try again.'); } finally { if (!cancelled) setIsAiParsing(false); }
         })();
 
         return () => { cancelled = true; abortController.abort(); };
@@ -930,6 +938,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                         {/* A2A: Orchestration Chain Viewer (multi-agent tasks) */}
                         {!isPayroll && isOrchestrationActive && (
+                            <div ref={orchestrationRef}>
                             <A2AChainViewer
                                 plan={orchestration.plan}
                                 chainStatus={orchestration.chainStatus}
@@ -937,6 +946,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onConfirm={orchestration.phase === 'reviewing' ? handleConfirmOrchestration : undefined}
                                 onCancel={orchestration.cancelPlan}
                             />
+                            </div>
                         )}
 
                         {/* A2A: Orchestrate Button (shown in browsing when prompt exists, no complex task banner) */}

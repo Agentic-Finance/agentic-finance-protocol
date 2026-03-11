@@ -80,7 +80,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className="relative bg-[#0C1017] border border-white/[0.08] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="relative bg-[#0C1017] border border-white/[0.08] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col">
                 {/* Close */}
                 <button
                     onClick={onClose}
@@ -90,7 +90,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                 </button>
 
                 {/* Header */}
-                <div className="p-6 pb-4 border-b border-white/[0.06]">
+                <div className="p-6 pb-4 border-b border-white/[0.06] shrink-0">
                     <div className="flex items-start gap-4">
                         <span className="w-14 h-14 flex items-center justify-center bg-white/[0.04] rounded-2xl text-3xl shrink-0">
                             {a.avatarUrl ? (
@@ -125,7 +125,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-white/[0.04] px-6">
+                <div className="flex border-b border-white/[0.04] px-6 shrink-0">
                     {(['overview', 'reviews'] as const).map(tab => (
                         <button
                             key={tab}
@@ -142,7 +142,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                 </div>
 
                 {/* Content */}
-                <div className="overflow-y-auto max-h-[50vh] p-6 scrollbar-hide">
+                <div className="overflow-y-auto flex-1 min-h-0 p-6 scrollbar-hide">
                     {activeTab === 'overview' && (
                         <div className="space-y-5">
                             {/* Description */}
@@ -239,7 +239,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                 </div>
 
                 {/* Footer: Task Input or Hire Button */}
-                <div className="p-6 pt-4 border-t border-white/[0.06]">
+                <div className="p-6 pt-4 border-t border-white/[0.06] shrink-0">
                     {hasTaskInput ? (
                         <div>
                             <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 block">

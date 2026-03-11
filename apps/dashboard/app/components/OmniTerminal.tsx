@@ -103,6 +103,19 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         }
     }, [activeTab, marketplace.phase, marketplace.startBrowsing]);
 
+    // Listen for external "hire agent" events (e.g. from AgentEarnings)
+    useEffect(() => {
+        const handler = (e: Event) => {
+            const detail = (e as CustomEvent<DiscoveredAgent>).detail;
+            if (detail) {
+                setActiveTab('a2a');
+                marketplace.selectAgent(detail);
+            }
+        };
+        window.addEventListener('paypol:hireAgent', handler);
+        return () => window.removeEventListener('paypol:hireAgent', handler);
+    }, [marketplace.selectAgent]);
+
     // ==========================================
     // STABLE CALLBACKS
     // ==========================================
@@ -616,7 +629,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 </>
             )}
 
-            <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700">
+            <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700" data-section="omni-terminal">
                 <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''} ${isDraggingTerminal ? 'ring-2 ring-emerald-500/40 ring-offset-2 ring-offset-[#0C1017]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
                     <div className="p-4 sm:p-8 md:p-10 flex flex-col border border-white/[0.08] rounded-2xl bg-[#0C1017]">

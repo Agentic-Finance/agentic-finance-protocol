@@ -175,6 +175,14 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
         setDetailAgent(discovered);
     }, []);
 
+    const handleHireAgent = useCallback((agent: DiscoveredAgent) => {
+        setDetailAgent(null);
+        // Dispatch event to OmniTerminal → switch to A2A tab + select agent
+        window.dispatchEvent(new CustomEvent('paypol:hireAgent', { detail: agent }));
+        // Scroll to OmniTerminal
+        document.querySelector('[data-section="omni-terminal"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, []);
+
     /* ── Derived values ────────────────────────────────────────── */
 
     const topEarner = agentEarnings[0];
@@ -334,7 +342,7 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
                     agent={detailAgent}
                     isOpen={!!detailAgent}
                     onClose={() => setDetailAgent(null)}
-                    onHire={() => setDetailAgent(null)}
+                    onHire={handleHireAgent}
                 />
             )}
         </div>

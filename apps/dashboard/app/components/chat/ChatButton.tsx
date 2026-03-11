@@ -47,12 +47,12 @@ export default function ChatButton({ walletAddress, onClick, isOpen }: ChatButto
     return (
         <button
             onClick={onClick}
-            className="fixed bottom-2 right-2 z-[350] group p-4 cursor-pointer"
+            className="fixed bottom-2 right-2 z-[600] group p-4 cursor-pointer"
             aria-label="Open chat"
         >
             {/* Pulse ring */}
             {isPulsing && (
-                <div className="absolute inset-4 rounded-full bg-indigo-500/30 animate-ping" />
+                <div className="absolute inset-4 rounded-full bg-indigo-500/30 animate-ping pointer-events-none" />
             )}
 
             {/* Button */}

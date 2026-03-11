@@ -185,6 +185,8 @@ model AgentJob {
   parentAgentId   String?   // Which agent spawned this sub-task (e.g. "coordinator")
   a2aChainId      String?   // Groups all jobs in the same A2A chain
   depth           Int       @default(0) // Recursion depth in A2A chain
+  stepIndex       Int?      // Position in orchestration plan (0-based)
+  dependsOn       String?   // JSON array of step indices this step waits on: "[0, 1]"
 
   // ── AI Proof Fields ──
   planHash        String?   // keccak256 of agent's planned approach

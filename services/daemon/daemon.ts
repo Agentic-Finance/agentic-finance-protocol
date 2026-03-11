@@ -230,6 +230,7 @@ class PayPolDaemon {
         let a2aCycleCounter = 0;
         let judgeCycleCounter = 0;
         let conditionalCycleCounter = 0;
+        let orchCycleCounter = 0;
 
         while (this.isRunning) {
             try {
@@ -264,6 +265,13 @@ class PayPolDaemon {
                 if (conditionalCycleCounter >= 12) {
                     conditionalCycleCounter = 0;
                     await this.processConditionalRules();
+                }
+
+                // ═══ Orchestration Timeout Monitoring (every ~60s) ═══
+                orchCycleCounter++;
+                if (orchCycleCounter >= 12) {
+                    orchCycleCounter = 0;
+                    await this.processOrchestrationTimeouts();
                 }
 
                 // ═══ Off-Ramp Status Sync (every ~30s) ═══
@@ -675,6 +683,67 @@ class PayPolDaemon {
             }
         } catch (error) {
             console.error("[DAEMON] 🚨 A2A Settlement Processing Error:", error);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ORCHESTRATION TIMEOUT — Finalize stale orchestration chains
+    // Finds root orchestration jobs stuck in EXECUTING for >24h
+    // and resolves them based on sub-task terminal states.
+    // ═══════════════════════════════════════════════════════════
+    private async processOrchestrationTimeouts() {
+        try {
+            const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+            const staleRoots = await this.prisma.agentJob.findMany({
+                where: {
+                    status: 'EXECUTING',
+                    depth: 0,
+                    a2aChainId: { not: null },
+                    createdAt: { lt: twentyFourHoursAgo },
+                },
+                take: 10,
+            });
+
+            if (staleRoots.length === 0) return;
+
+            console.log(`[DAEMON] [Orchestration] Found ${staleRoots.length} stale orchestration root(s) (>24h). Checking sub-tasks...`);
+
+            const TERMINAL_STATUSES = ['COMPLETED', 'FAILED', 'REFUNDED', 'SETTLED'];
+
+            for (const root of staleRoots) {
+                try {
+                    // Find all sub-tasks belonging to this orchestration chain
+                    const subTasks = await this.prisma.agentJob.findMany({
+                        where: {
+                            a2aChainId: root.a2aChainId!,
+                            id: { not: root.id },
+                        },
+                    });
+
+                    // If there are no sub-tasks, skip — something else may be wrong
+                    if (subTasks.length === 0) continue;
+
+                    // Check if ALL sub-tasks are in terminal states
+                    const allTerminal = subTasks.every(t => TERMINAL_STATUSES.includes(t.status));
+                    if (!allTerminal) continue;
+
+                    // Determine final status: COMPLETED if any sub-task succeeded, FAILED otherwise
+                    const anySucceeded = subTasks.some(t => t.status === 'COMPLETED' || t.status === 'SETTLED');
+                    const finalStatus = anySucceeded ? 'COMPLETED' : 'FAILED';
+
+                    await this.prisma.agentJob.update({
+                        where: { id: root.id },
+                        data: { status: finalStatus, completedAt: new Date() },
+                    });
+
+                    console.log(`[DAEMON] [Orchestration] Root job ${root.id.slice(0, 8)}... (chain ${root.a2aChainId!.slice(0, 8)}...) → ${finalStatus} (${subTasks.length} sub-tasks, ${subTasks.filter(t => t.status === 'COMPLETED' || t.status === 'SETTLED').length} succeeded)`);
+                } catch (error: any) {
+                    console.error(`[DAEMON] [Orchestration] Error processing root job ${root.id}:`, error.message);
+                }
+            }
+        } catch (error) {
+            console.error("[DAEMON] [Orchestration] Processing error:", error);
         }
     }
 

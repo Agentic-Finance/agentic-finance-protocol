@@ -5,6 +5,7 @@ import { CommandLineIcon, CpuChipIcon } from '@/app/components/icons';
 import NegotiationLog from './NegotiationLog';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { useAgentMarketplace } from '../hooks/useAgentMarketplace';
+import { useA2AOrchestration } from '../hooks/useA2AOrchestration';
 
 // Sub-components
 import CsvUploadModal from './omni/CsvUploadModal';
@@ -19,6 +20,7 @@ import ConditionBuilder from './omni/ConditionBuilder';
 import InvoiceUploadModal from './omni/InvoiceUploadModal';
 import SuggestedPrompts from './omni/SuggestedPrompts';
 import AgentDetailModal from './omni/AgentDetailModal';
+import A2AChainViewer from './omni/A2AChainViewer';
 import type { ParsedIntent } from './omni/types';
 import type { Condition } from './omni/ConditionBuilder';
 import type { DiscoveredAgent } from '../hooks/useAgentMarketplace';
@@ -78,6 +80,10 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [isConfirmingDeal, setIsConfirmingDeal] = useState(false);
     const [detailAgent, setDetailAgent] = useState<DiscoveredAgent | null>(null);
+
+    // A2A Orchestration hook
+    const orchestration = useA2AOrchestration();
+    const isOrchestrationActive = orchestration.phase !== 'idle';
 
     // Refs
     const omniFileRef = useRef<HTMLInputElement>(null);
@@ -139,13 +145,14 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
     const resetTerminal = useCallback((preventFocus = false) => {
         marketplace.reset();
+        orchestration.cancelPlan();
         setShowReviewModal(false);
         setIsDeployingAnimation(false);
         setAiPrompt(''); setLiveIntents([]); setChatAnswer(null); setGuideData(null);
         setWalletAliases({}); setLockedAliases(new Set()); setCardNotes({});
         setShowConditionBuilder(false); setConditions([]); setConditionLogic('AND'); setRecurringMode('once');
         if (!preventFocus) setTimeout(() => inputRef.current?.focus(), 50);
-    }, [marketplace]);
+    }, [marketplace, orchestration]);
 
     // ==========================================
     // AI PARSING (Payroll tab only)
@@ -496,6 +503,27 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
         marketplace.discover(aiPrompt.trim());
     }, [aiPrompt, marketplace]);
 
+    // A2A Orchestration: multi-agent complex task
+    const handleOrchestrate = useCallback(() => {
+        if (!aiPrompt.trim() || aiPrompt.trim().length < 3) return;
+        if (!walletAddress) {
+            showToast('error', 'Connect your wallet first to orchestrate.');
+            return;
+        }
+        // Default budget for orchestration — user can adjust in plan review
+        const defaultBudget = 500;
+        orchestration.orchestrate(aiPrompt.trim(), defaultBudget, walletAddress);
+    }, [aiPrompt, walletAddress, orchestration, showToast]);
+
+    const handleConfirmOrchestration = useCallback(async () => {
+        try {
+            await orchestration.confirmExecution();
+            showToast('success', 'Orchestration started — agents are executing your plan.');
+        } catch (err: any) {
+            showToast('error', err.message || 'Failed to start orchestration.');
+        }
+    }, [orchestration, showToast]);
+
     const handleConfirmDeal = useCallback(async (options?: { skipEscrow?: boolean }) => {
         if (isConfirmingDeal) return;
         if (!walletAddress) {
@@ -590,7 +618,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // COMPUTED (memoized)
     // ==========================================
     const isPayroll = activeTab === 'payroll';
-    const isA2aActive = marketplace.phase !== 'idle' && marketplace.phase !== 'browsing';
+    const isA2aActive = (marketplace.phase !== 'idle' && marketplace.phase !== 'browsing') || isOrchestrationActive;
 
     const hasReadyIntents = liveIntents.length > 0 && liveIntents.every(i => (i.name !== '...' || i.isRawWallet) && i.amount !== '...');
     const hasConditions = conditions.length > 0;
@@ -860,6 +888,31 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onRetry={marketplace.executeDeal}
                                 onOpenChat={onOpenChat}
                             />
+                        )}
+
+                        {/* A2A: Orchestration Chain Viewer (multi-agent tasks) */}
+                        {!isPayroll && isOrchestrationActive && (
+                            <A2AChainViewer
+                                plan={orchestration.plan}
+                                chainStatus={orchestration.chainStatus}
+                                phase={orchestration.phase}
+                                onConfirm={orchestration.phase === 'reviewing' ? handleConfirmOrchestration : undefined}
+                                onCancel={orchestration.cancelPlan}
+                            />
+                        )}
+
+                        {/* A2A: Orchestrate Button (shown in browsing/results when prompt exists) */}
+                        {!isPayroll && !isOrchestrationActive && (marketplace.phase === 'browsing' || marketplace.phase === 'results') && aiPrompt.trim().length >= 3 && (
+                            <div className="mt-3 flex items-center justify-end">
+                                <button
+                                    onClick={handleOrchestrate}
+                                    disabled={orchestration.isLoading}
+                                    className="px-4 py-2 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 hover:from-violet-500/20 hover:to-indigo-500/20 border border-violet-500/20 hover:border-violet-500/30 text-violet-400 text-[11px] font-bold rounded-xl transition-all duration-200 flex items-center gap-2"
+                                >
+                                    <CpuChipIcon className="w-3.5 h-3.5" />
+                                    Orchestrate (Multi-Agent)
+                                </button>
+                            </div>
                         )}
 
                         {/* Footer */}

@@ -45,16 +45,16 @@ export default function ChatButton({ walletAddress, onClick, isOpen }: ChatButto
     return (
         <button
             onClick={onClick}
-            className="fixed bottom-6 right-6 z-[350] group"
+            className="fixed bottom-4 right-4 z-[350] group p-2 cursor-pointer"
             aria-label="Open chat"
         >
             {/* Pulse ring */}
             {isPulsing && (
-                <div className="absolute inset-0 rounded-full bg-indigo-500/30 animate-ping" />
+                <div className="absolute inset-2 rounded-full bg-indigo-500/30 animate-ping" />
             )}
 
             {/* Button */}
-            <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/25 flex items-center justify-center hover:shadow-indigo-500/40 hover:scale-105 active:scale-95 transition-all duration-200">
+            <div className="relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-500/25 flex items-center justify-center group-hover:shadow-indigo-500/40 group-hover:scale-105 group-active:scale-95 transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                 </svg>

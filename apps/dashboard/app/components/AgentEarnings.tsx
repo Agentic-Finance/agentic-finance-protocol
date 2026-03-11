@@ -175,10 +175,10 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
         setDetailAgent(discovered);
     }, []);
 
-    const handleHireAgent = useCallback((agent: DiscoveredAgent) => {
+    const handleSubmitTask = useCallback((agent: DiscoveredAgent, task: string) => {
         setDetailAgent(null);
-        // Dispatch event to OmniTerminal → switch to A2A tab + select agent
-        window.dispatchEvent(new CustomEvent('paypol:hireAgent', { detail: agent }));
+        // Dispatch event to OmniTerminal → switch to A2A tab + select agent + start negotiation
+        window.dispatchEvent(new CustomEvent('paypol:hireAgent', { detail: { agent, task } }));
         // Scroll to OmniTerminal
         document.querySelector('[data-section="omni-terminal"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, []);
@@ -336,13 +336,13 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
                 )}
             </div>
 
-            {/* Agent Detail Modal */}
+            {/* Agent Detail Modal — unified with task input */}
             {detailAgent && (
                 <AgentDetailModal
                     agent={detailAgent}
                     isOpen={!!detailAgent}
                     onClose={() => setDetailAgent(null)}
-                    onHire={handleHireAgent}
+                    onSubmitTask={handleSubmitTask}
                 />
             )}
         </div>

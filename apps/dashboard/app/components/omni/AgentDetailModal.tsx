@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
     XMarkIcon, CheckBadgeIcon, StarIcon, StarIcon as StarSolid, ClockIcon,
     CpuChipIcon, BoltIcon, ArrowRightIcon, ChartBarIcon,
@@ -11,7 +11,8 @@ interface AgentDetailModalProps {
     agent: DiscoveredAgent;
     isOpen: boolean;
     onClose: () => void;
-    onHire: (agent: DiscoveredAgent) => void;
+    onHire?: (agent: DiscoveredAgent) => void;
+    onSubmitTask?: (agent: DiscoveredAgent, task: string) => void;
 }
 
 interface Review {
@@ -35,12 +36,29 @@ const CATEGORY_COLORS: Record<string, string> = {
     deployment: 'text-lime-400 bg-lime-500/8 border-lime-500/15',
 };
 
-function AgentDetailModal({ agent, isOpen, onClose, onHire }: AgentDetailModalProps) {
+function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: AgentDetailModalProps) {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loadingReviews, setLoadingReviews] = useState(false);
     const [activeTab, setActiveTab] = useState<'overview' | 'reviews'>('overview');
+    const [task, setTask] = useState('');
+    const taskRef = useRef<HTMLTextAreaElement>(null);
     const a = agent.agent;
     const catColor = CATEGORY_COLORS[a.category] || CATEGORY_COLORS.analytics;
+
+    const hasTaskInput = !!onSubmitTask;
+
+    const handleSubmit = useCallback(() => {
+        if (!onSubmitTask || task.trim().length < 3) return;
+        onSubmitTask(agent, task.trim());
+        onClose();
+    }, [agent, task, onSubmitTask, onClose]);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+        }
+    }, [handleSubmit]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -220,20 +238,58 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire }: AgentDetailModalPr
                     )}
                 </div>
 
-                {/* Footer: Hire Button */}
-                <div className="p-6 pt-4 border-t border-white/[0.06] flex items-center justify-between">
-                    <div className="flex items-baseline gap-1.5">
-                        <span className="text-2xl font-bold text-white">{a.basePrice}</span>
-                        <span className="text-sm text-slate-500">ALPHA</span>
-                    </div>
-                    <button
-                        onClick={() => { onHire(agent); onClose(); }}
-                        className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2"
-                    >
-                        <CpuChipIcon className="w-4 h-4" />
-                        Hire Agent
-                        <ArrowRightIcon className="w-4 h-4" />
-                    </button>
+                {/* Footer: Task Input or Hire Button */}
+                <div className="p-6 pt-4 border-t border-white/[0.06]">
+                    {hasTaskInput ? (
+                        <div>
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 block">
+                                What do you need this agent to do?
+                            </label>
+                            <textarea
+                                ref={taskRef}
+                                value={task}
+                                onChange={(e) => setTask(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder={a.skills?.length ? `e.g. ${a.skills[0]} ...` : 'Describe your task...'}
+                                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500/40 resize-none transition-colors"
+                                rows={2}
+                                autoFocus
+                            />
+                            <div className="flex items-center justify-between mt-3">
+                                <div className="flex items-baseline gap-1.5">
+                                    <span className="text-lg font-bold text-white">{a.basePrice}</span>
+                                    <span className="text-xs text-slate-500">ALPHA base</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] text-slate-600">Ctrl+Enter</span>
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={task.trim().length < 3}
+                                        className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2"
+                                    >
+                                        <BoltIcon className="w-4 h-4" />
+                                        Start Negotiation
+                                        <ArrowRightIcon className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : onHire ? (
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-baseline gap-1.5">
+                                <span className="text-2xl font-bold text-white">{a.basePrice}</span>
+                                <span className="text-sm text-slate-500">ALPHA</span>
+                            </div>
+                            <button
+                                onClick={() => { onHire(agent); onClose(); }}
+                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2"
+                            >
+                                <CpuChipIcon className="w-4 h-4" />
+                                Hire Agent
+                                <ArrowRightIcon className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </div>

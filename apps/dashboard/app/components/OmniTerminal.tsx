@@ -106,15 +106,17 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // Listen for external "hire agent" events (e.g. from AgentEarnings)
     useEffect(() => {
         const handler = (e: Event) => {
-            const detail = (e as CustomEvent<DiscoveredAgent>).detail;
-            if (detail) {
+            const detail = (e as CustomEvent<{ agent: DiscoveredAgent; task: string }>).detail;
+            if (detail?.agent && detail?.task) {
                 setActiveTab('a2a');
-                marketplace.selectAgent(detail);
+                marketplace.selectAgent(detail.agent);
+                // selectAgent sets phase='task_input', then submitTaskAndNegotiate starts negotiation
+                setTimeout(() => marketplace.submitTaskAndNegotiate(detail.task), 50);
             }
         };
         window.addEventListener('paypol:hireAgent', handler);
         return () => window.removeEventListener('paypol:hireAgent', handler);
-    }, [marketplace.selectAgent]);
+    }, [marketplace.selectAgent, marketplace.submitTaskAndNegotiate]);
 
     // ==========================================
     // STABLE CALLBACKS
@@ -899,15 +901,17 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 </div>
             </div>
 
-            {/* Agent Detail Modal */}
+            {/* Agent Detail Modal — unified with task input */}
             {detailAgent && (
                 <AgentDetailModal
                     agent={detailAgent}
                     isOpen={!!detailAgent}
                     onClose={() => setDetailAgent(null)}
-                    onHire={(agent) => {
+                    onSubmitTask={(agent, task) => {
                         setDetailAgent(null);
                         marketplace.selectAgent(agent);
+                        // selectAgent sets phase='task_input', then submit starts negotiation
+                        setTimeout(() => marketplace.submitTaskAndNegotiate(task), 50);
                     }}
                 />
             )}

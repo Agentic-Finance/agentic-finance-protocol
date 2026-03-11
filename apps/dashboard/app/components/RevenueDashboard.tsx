@@ -232,7 +232,7 @@ export default function RevenueDashboard() {
                     {chart.volume.map((v, i) => {
                       const heightPct = (v / maxVol) * 100;
                       return (
-                        <div key={i} className="flex-1 flex flex-col items-center justify-end group relative">
+                        <div key={i} className="flex-1 h-full flex flex-col items-center justify-end group relative">
                           {/* Value label on top */}
                           <span
                             className="text-[8px] font-mono text-slate-500 mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity"

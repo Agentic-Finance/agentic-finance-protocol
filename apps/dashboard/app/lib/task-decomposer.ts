@@ -117,57 +117,37 @@ function tokenize(text: string): string[] {
         .filter(t => t.length > 2 && !STOP_WORDS.has(t));
 }
 
-// ── Task Splitting ──────────────────────────────────────────
+// ── Synonym Expansion ───────────────────────────────────────
 
-/**
- * Split a complex prompt into sub-tasks.
- * Strategy:
- *  1. Try compound connector splitting ("and", "with", "then", "+")
- *  2. If single part, detect multiple action verbs → split by category
- *  3. Final fallback: single task + auto-add complementary tasks
- */
-function splitPromptIntoTasks(prompt: string): string[] {
-    // 1. Split by compound connectors
-    const connectors = /\b(?:and then|and also|then|plus|also)\b/gi;
-    const parts = prompt.split(connectors).map(p => p.trim()).filter(p => p.length > 3);
-    if (parts.length >= 2) return parts;
+/** Expand query tokens with domain-specific synonyms */
+const SYNONYMS: Record<string, string[]> = {
+    build:    ['deploy', 'create', 'launch', 'setup', 'compile'],
+    deploy:   ['build', 'create', 'launch', 'setup'],
+    create:   ['build', 'deploy', 'launch', 'mint'],
+    audit:    ['security', 'scan', 'review', 'verify', 'check', 'vulnerability'],
+    security: ['audit', 'scan', 'protect', 'guard', 'secure'],
+    send:     ['transfer', 'pay', 'disburse'],
+    pay:      ['send', 'transfer', 'salary', 'payroll'],
+    monitor:  ['track', 'analyze', 'inspect', 'watch'],
+    analyze:  ['monitor', 'report', 'inspect', 'profile'],
+    verify:   ['proof', 'commit', 'audit', 'check'],
+    escrow:   ['settle', 'lock', 'trustless'],
+    stream:   ['milestone', 'recurring', 'progressive'],
+    shield:   ['private', 'zk', 'confidential'],
+    sweep:    ['emergency', 'recovery', 'evacuate', 'migrate'],
+    landing:  ['page', 'website', 'frontend', 'interface'],
+    page:     ['landing', 'website', 'frontend', 'interface'],
+    token:    ['erc20', 'coin', 'mint'],
+    contract: ['smart-contract', 'solidity', 'deploy'],
+};
 
-    // "with" is special — only split if both sides have action verbs
-    const withParts = prompt.split(/\bwith\b/gi).map(p => p.trim()).filter(p => p.length > 3);
-    if (withParts.length >= 2) {
-        const actionWords = Object.keys(ACTION_CATEGORY_MAP);
-        const allHaveActions = withParts.every(part => {
-            const lower = part.toLowerCase();
-            return actionWords.some(a => new RegExp(`\\b${a}\\w*\\b`, 'i').test(lower));
-        });
-        if (allHaveActions) return withParts;
+function expandTokens(tokens: string[]): string[] {
+    const expanded = new Set(tokens);
+    for (const token of tokens) {
+        const syns = SYNONYMS[token];
+        if (syns) syns.forEach(s => expanded.add(s));
     }
-
-    // 2. Try "and" split — only if both parts are substantial
-    const andParts = prompt.split(/\band\b/gi).map(p => p.trim()).filter(p => p.length > 5);
-    if (andParts.length >= 2) {
-        const actionWords = Object.keys(ACTION_CATEGORY_MAP);
-        const allHaveActions = andParts.every(part => {
-            const lower = part.toLowerCase();
-            return actionWords.some(a => new RegExp(`\\b${a}\\w*\\b`, 'i').test(lower));
-        });
-        if (allHaveActions) return andParts;
-    }
-
-    // Single prompt — return as-is
-    return [prompt];
-}
-
-/** Detect which DB categories a text maps to */
-function detectCategories(text: string): string[] {
-    const cats = new Set<string>();
-    const lower = text.toLowerCase();
-    for (const [keyword, categories] of Object.entries(ACTION_CATEGORY_MAP)) {
-        if (new RegExp(`\\b${keyword}\\w*\\b`, 'i').test(lower)) {
-            categories.forEach(c => cats.add(c));
-        }
-    }
-    return Array.from(cats);
+    return Array.from(expanded);
 }
 
 // ── Semantic Agent Scoring ──────────────────────────────────
@@ -176,280 +156,276 @@ interface ScoredAgent {
     agent: any;
     score: number;
     matchedTerms: string[];
+    categoryMatch: boolean;
 }
 
 /**
- * Score an agent against a query using TF-IDF-like semantic matching.
- * Weights: skill match > category match > description match > name match
+ * Score an agent against a query using semantic matching with synonym expansion.
+ *
+ * Scoring weights:
+ *  - Skill exact match:  30 pts (skills are the most precise signal)
+ *  - Skill synonym match: 15 pts
+ *  - Description match:  8 pts  (descriptions contain rich context)
+ *  - Name match:         12 pts
+ *  - Category match:     10 pts (broad category alignment)
+ *  - Multi-aspect bonus: 40 pts (agent matches 2+ different query aspects)
  */
 function scoreAgent(query: string, agent: any, queryTokens?: string[]): ScoredAgent {
-    const tokens = queryTokens || tokenize(query);
+    const rawTokens = queryTokens || tokenize(query);
+    const expandedTokens = expandTokens(rawTokens);
     const skills: string[] = JSON.parse(agent.skills);
-    const skillsText = skills.join(' ').toLowerCase();
     const descText = agent.description.toLowerCase();
     const nameText = agent.name.toLowerCase();
     const catText = agent.category.toLowerCase();
 
     let score = 0;
     const matchedTerms: string[] = [];
+    const matchedAspects = new Set<string>(); // Track distinct match aspects
 
-    for (const token of tokens) {
-        // Skill match (highest weight — skills are most specific)
+    // Score raw tokens (direct matches are worth more)
+    for (const token of rawTokens) {
         if (skills.some(s => s.toLowerCase().includes(token))) {
-            score += 25;
+            score += 30;
             matchedTerms.push(token);
+            matchedAspects.add(token);
         }
-        // Category match
-        if (catText.includes(token)) {
-            score += 20;
-            if (!matchedTerms.includes(token)) matchedTerms.push(token);
-        }
-        // Name match
         if (nameText.includes(token)) {
-            score += 15;
-            if (!matchedTerms.includes(token)) matchedTerms.push(token);
+            score += 12;
+            matchedAspects.add(token);
         }
-        // Description match (lower weight — descriptions are verbose)
         if (descText.includes(token)) {
-            score += 5;
-            if (!matchedTerms.includes(token)) matchedTerms.push(token);
+            score += 8;
+            matchedAspects.add(token);
+        }
+        if (catText.includes(token)) {
+            score += 10;
+            matchedAspects.add(token);
         }
     }
 
-    // Bonus: exact phrase match in description (very relevant)
-    if (tokens.length >= 2) {
-        const phrase = tokens.slice(0, 3).join(' ');
-        if (descText.includes(phrase)) score += 30;
+    // Score expanded tokens (synonym matches, lower weight)
+    for (const token of expandedTokens) {
+        if (rawTokens.includes(token)) continue; // Already scored
+        if (skills.some(s => s.toLowerCase().includes(token))) {
+            score += 15;
+            matchedAspects.add(token);
+        }
+        if (descText.includes(token)) {
+            score += 4;
+        }
     }
 
-    // Quality bonus (smaller to not overwhelm relevance)
+    // MULTI-ASPECT BONUS: agent matches multiple distinct concepts from the query
+    // e.g., Contract Deploy Pro matches both "deploy" AND "audit" → huge bonus
+    if (matchedAspects.size >= 2) score += 40;
+    if (matchedAspects.size >= 3) score += 25;
+
+    // Quality bonus (small, doesn't overwhelm relevance)
     score += agent.avgRating * 1.5;
-    score += Math.max(0, (agent.successRate - 90)) * 0.3;
-    if (agent.isVerified) score += 5;
+    if (agent.isVerified) score += 3;
 
-    return { agent, score, matchedTerms };
-}
-
-/**
- * Find the best agent for a sub-task query.
- * 1. Score all agents
- * 2. Prefer agents in the detected category
- * 3. Return the highest-scoring non-used agent
- */
-function findBestAgent(
-    query: string,
-    agents: any[],
-    usedIds: Set<string>,
-    preferCategories?: string[],
-): ScoredAgent | null {
-    const queryTokens = tokenize(query);
-    let scored = agents
-        .filter(a => !usedIds.has(a.id))
-        .map(a => scoreAgent(query, a, queryTokens));
-
-    // Category preference boost
-    if (preferCategories && preferCategories.length > 0) {
-        scored = scored.map(sa => {
-            const catMatch = preferCategories.includes(sa.agent.category.toLowerCase());
-            return catMatch ? { ...sa, score: sa.score + 40 } : sa;
-        });
-    }
-
-    scored.sort((a, b) => b.score - a.score);
-    return scored.length > 0 && scored[0].score > 5 ? scored[0] : null;
+    return {
+        agent,
+        score,
+        matchedTerms: Array.from(matchedAspects),
+        categoryMatch: expandedTokens.some(t => catText.includes(t)),
+    };
 }
 
 // ── Contextual Prompt Generation ────────────────────────────
 
 /**
- * Generate a rich, contextual sub-task prompt based on the
- * original task + the agent's capabilities.
+ * Generate a rich, contextual sub-task prompt based on what the agent
+ * is best at + the original user task.
  */
-function generateSubTaskPrompt(originalTask: string, subTask: string, agent: any): string {
+function generateContextualPrompt(originalTask: string, agent: any, role: string): string {
     const skills: string[] = JSON.parse(agent.skills);
     const category = agent.category.toLowerCase();
-    const topSkills = skills.slice(0, 3).join(', ');
 
-    // If sub-task is same as original (no splitting happened), generate from agent capabilities
-    if (subTask === originalTask) {
+    // Role-based prompt generation
+    if (role === 'primary') {
         switch (category) {
             case 'deployment':
-                return `Deploy and build the infrastructure for: ${originalTask}. Use ${topSkills} capabilities.`;
+                return `Build and deploy the smart contract infrastructure for: ${originalTask}`;
             case 'security':
-                return `Perform security review and audit for: ${originalTask}. Check ${topSkills}.`;
+                return `Perform comprehensive security audit and vulnerability scan for: ${originalTask}`;
             case 'analytics':
-                return `Analyze and generate report for: ${originalTask}. Provide insights on ${topSkills}.`;
+                return `Analyze on-chain data and generate detailed report for: ${originalTask}`;
             case 'verification':
-                return `Verify and create audit trail for: ${originalTask}. Commit proofs for accountability.`;
+                return `Create immutable proof trail and verify execution integrity for: ${originalTask}`;
             case 'escrow':
-                return `Set up escrow and settlement for: ${originalTask}. Manage ${topSkills}.`;
+                return `Set up trustless escrow contracts and settlement for: ${originalTask}`;
             case 'payments':
-                return `Execute payments for: ${originalTask}. Handle ${topSkills}.`;
+                return `Execute payment transfers and validate balances for: ${originalTask}`;
             case 'streams':
-                return `Create milestone-based stream for: ${originalTask}. Structure ${topSkills}.`;
+                return `Design milestone-based payment stream with progressive releases for: ${originalTask}`;
             case 'privacy':
-                return `Set up shielded/private execution for: ${originalTask}. Use ${topSkills}.`;
+                return `Execute shielded transaction with ZK-proof privacy for: ${originalTask}`;
+            case 'payroll':
+                return `Process payroll batch with compliance logging for: ${originalTask}`;
+            case 'orchestration':
+                return `Coordinate multi-agent workflow and chain execution for: ${originalTask}`;
             default:
-                return `${agent.name}: Execute ${originalTask}`;
+                return `Execute specialized task: ${originalTask}`;
         }
     }
 
-    // Sub-task was split — use it directly but enrich with agent context
-    return `${subTask} — using ${agent.name}'s ${topSkills} capabilities`;
+    // Secondary/complementary roles
+    switch (category) {
+        case 'security':
+            return `Security review: audit permissions, scan for vulnerabilities, and verify access controls related to: ${originalTask}`;
+        case 'verification':
+            return `Accountability: commit cryptographic proof hashes and create immutable audit trail for: ${originalTask}`;
+        case 'analytics':
+            return `Post-execution analysis: monitor results, generate performance metrics, and create status report for: ${originalTask}`;
+        case 'deployment':
+            return `Infrastructure support: prepare and deploy supporting contracts for: ${originalTask}`;
+        default:
+            return `${agent.name}: support execution of ${originalTask}`;
+    }
 }
 
-// ── Complementary Task Inference ────────────────────────────
+// ── Agent-First Decomposition ───────────────────────────────
 
 /**
- * Based on the primary tasks, suggest additional complementary agents
- * to create a thorough execution plan.
- */
-function getComplementaryTasks(
-    primaryCategories: Set<string>,
-    originalPrompt: string,
-): { query: string; categories: string[] }[] {
-    const extras: { query: string; categories: string[] }[] = [];
-
-    // Deployment → always add security audit
-    if (primaryCategories.has('deployment') && !primaryCategories.has('security')) {
-        extras.push({
-            query: `security audit and permission review for ${originalPrompt}`,
-            categories: ['security'],
-        });
-    }
-
-    // Deployment → add verification/proof trail
-    if (primaryCategories.has('deployment') && !primaryCategories.has('verification')) {
-        extras.push({
-            query: `verify and commit proof trail for ${originalPrompt}`,
-            categories: ['verification'],
-        });
-    }
-
-    // Security → add analytics monitoring
-    if (primaryCategories.has('security') && !primaryCategories.has('analytics')) {
-        extras.push({
-            query: `monitor and analyze results for ${originalPrompt}`,
-            categories: ['analytics'],
-        });
-    }
-
-    // Payments → add verification
-    if (primaryCategories.has('payments') && !primaryCategories.has('verification')) {
-        extras.push({
-            query: `verify payment proofs for ${originalPrompt}`,
-            categories: ['verification'],
-        });
-    }
-
-    // Escrow → add analytics
-    if (primaryCategories.has('escrow') && !primaryCategories.has('analytics')) {
-        extras.push({
-            query: `inspect and report on escrow state for ${originalPrompt}`,
-            categories: ['analytics'],
-        });
-    }
-
-    return extras;
-}
-
-// ── Main Local Decomposition ────────────────────────────────
-
-/**
- * Intelligent local task decomposition.
- * No AI API required — uses semantic matching + rule-based inference.
+ * AGENT-FIRST decomposition strategy:
+ *
+ * Instead of "split prompt → match agents" (which often picks wrong agents),
+ * we do: "score ALL agents against FULL prompt → pick top N from different
+ * categories → generate plan based on agents' capabilities."
+ *
+ * This ensures the most relevant agents are always selected first.
  */
 function localIntelligentDecompose(
     prompt: string,
     agents: any[],
     maxAgents: number,
 ): { steps: DecompositionStep[]; reasoning: string } {
-    const subTasks = splitPromptIntoTasks(prompt);
-    const usedIds = new Set<string>();
-    const steps: DecompositionStep[] = [];
-    const primaryCategories = new Set<string>();
+    const queryTokens = tokenize(prompt);
 
-    // ── Phase 1: Match agents to explicit sub-tasks ──
-    for (const subTask of subTasks) {
-        if (steps.length >= maxAgents) break;
+    // ── Phase 1: Score ALL agents against the full prompt ──
+    const allScored = agents
+        .map(a => scoreAgent(prompt, a, queryTokens))
+        .sort((a, b) => b.score - a.score);
 
-        const categories = detectCategories(subTask);
-        const best = findBestAgent(subTask, agents, usedIds, categories);
-
-        if (best) {
-            usedIds.add(best.agent.id);
-            categories.forEach(c => primaryCategories.add(c));
-            primaryCategories.add(best.agent.category.toLowerCase());
-
-            steps.push({
-                stepIndex: steps.length,
-                agentId: best.agent.id,
-                agentName: best.agent.name,
-                agentEmoji: best.agent.avatarEmoji || '🤖',
-                prompt: generateSubTaskPrompt(prompt, subTask, best.agent),
-                budgetAllocation: 0, // Set later
-                dependsOn: steps.length > 0 ? [steps.length - 1] : [],
-                category: best.agent.category,
-            });
-        }
-    }
-
-    // ── Phase 2: Add complementary agents for thorough execution ──
-    const complementary = getComplementaryTasks(primaryCategories, prompt);
-
-    for (const comp of complementary) {
-        if (steps.length >= maxAgents) break;
-
-        const best = findBestAgent(comp.query, agents, usedIds, comp.categories);
-        if (best && best.score > 10) {
-            usedIds.add(best.agent.id);
-
-            steps.push({
-                stepIndex: steps.length,
-                agentId: best.agent.id,
-                agentName: best.agent.name,
-                agentEmoji: best.agent.avatarEmoji || '🤖',
-                prompt: generateSubTaskPrompt(prompt, comp.query, best.agent),
-                budgetAllocation: 0,
-                dependsOn: steps.length > 0 ? [steps.length - 1] : [],
-                category: best.agent.category,
-            });
-        }
-    }
-
-    // ── Phase 3: If only 1 step, try to add the most relevant different-category agent ──
-    if (steps.length === 1 && agents.length > 1) {
-        const primaryCat = steps[0].category.toLowerCase();
-        const secondBest = agents
-            .filter(a => !usedIds.has(a.id) && a.category.toLowerCase() !== primaryCat)
-            .map(a => scoreAgent(prompt, a))
-            .sort((a, b) => b.score - a.score)[0];
-
-        if (secondBest && secondBest.score > 5) {
-            usedIds.add(secondBest.agent.id);
-            steps.push({
-                stepIndex: 1,
-                agentId: secondBest.agent.id,
-                agentName: secondBest.agent.name,
-                agentEmoji: secondBest.agent.avatarEmoji || '🤖',
-                prompt: generateSubTaskPrompt(prompt, prompt, secondBest.agent),
-                budgetAllocation: 0,
-                dependsOn: [0],
-                category: secondBest.agent.category,
-            });
-        }
-    }
-
-    // ── Build reasoning ──
-    if (steps.length === 0) {
+    if (allScored.length === 0 || allScored[0].score <= 5) {
         return { steps: [], reasoning: 'No matching agents found for this task.' };
     }
 
-    const categoryList = [...new Set(steps.map(s => s.category))].join(', ');
+    // ── Phase 2: Select top agents — only from RELEVANT categories ──
+    // Key insight: only pick agents whose score is meaningful (> 30% of top score)
+    const selectedAgents: ScoredAgent[] = [];
+    const usedCategories = new Set<string>();
+    const usedIds = new Set<string>();
+    const topScore = allScored[0].score;
+    const relevanceThreshold = Math.max(topScore * 0.3, 15); // At least 30% of best, min 15
+
+    // Detect which categories the prompt explicitly asks for
+    const promptCategories = new Set<string>();
+    for (const [keyword, categories] of Object.entries(ACTION_CATEGORY_MAP)) {
+        if (new RegExp(`\\b${keyword}\\w*\\b`, 'i').test(prompt.toLowerCase())) {
+            categories.forEach(c => promptCategories.add(c));
+        }
+    }
+
+    // Pick best agent per category — but ONLY if score exceeds threshold
+    // AND category is related to the prompt
+    for (const scored of allScored) {
+        if (selectedAgents.length >= 3) break; // Max 3 primary agents
+        const cat = scored.agent.category.toLowerCase();
+        if (usedCategories.has(cat)) continue;
+        if (scored.score < relevanceThreshold) continue;
+
+        // Only pick from prompt-relevant categories OR if score is very high
+        if (!promptCategories.has(cat) && scored.score < topScore * 0.6) continue;
+
+        selectedAgents.push(scored);
+        usedCategories.add(cat);
+        usedIds.add(scored.agent.id);
+    }
+
+    // If only 1 agent matched, add the second-best from a different category
+    if (selectedAgents.length === 1) {
+        const secondBest = allScored.find(s =>
+            !usedIds.has(s.agent.id) &&
+            s.score >= relevanceThreshold &&
+            s.agent.category.toLowerCase() !== selectedAgents[0].agent.category.toLowerCase()
+        );
+        if (secondBest) {
+            selectedAgents.push(secondBest);
+            usedCategories.add(secondBest.agent.category.toLowerCase());
+            usedIds.add(secondBest.agent.id);
+        }
+    }
+
+    // ── Phase 3: Add complementary agents (max 2 extras) ──
+    // Only add from explicitly useful complementary categories
+    const complementRules: Record<string, string[]> = {
+        deployment: ['security', 'verification'],
+        security:   ['verification'],
+        payments:   ['verification'],
+        escrow:     ['analytics'],
+        streams:    ['verification'],
+    };
+
+    let extrasAdded = 0;
+    for (const selected of [...selectedAgents]) {
+        if (extrasAdded >= 2) break; // Max 2 complementary agents
+        const cat = selected.agent.category.toLowerCase();
+        const complements = complementRules[cat] || [];
+        for (const compCat of complements) {
+            if (extrasAdded >= 2) break;
+            if (selectedAgents.length >= 5) break;
+            if (usedCategories.has(compCat)) continue;
+
+            const compAgent = allScored.find(s =>
+                !usedIds.has(s.agent.id) &&
+                s.agent.category.toLowerCase() === compCat
+            );
+            if (compAgent) {
+                selectedAgents.push(compAgent);
+                usedCategories.add(compCat);
+                usedIds.add(compAgent.agent.id);
+                extrasAdded++;
+            }
+        }
+    }
+
+    // ── Phase 4: Sort by execution order ──
+    // Primary task agent first, then supporting agents
+    const CATEGORY_ORDER: Record<string, number> = {
+        deployment: 1, orchestration: 1,
+        security: 2, escrow: 2,
+        payments: 3, payroll: 3, streams: 3, privacy: 3,
+        verification: 4,
+        analytics: 5, admin: 6,
+    };
+
+    selectedAgents.sort((a, b) => {
+        const orderA = CATEGORY_ORDER[a.agent.category.toLowerCase()] || 3;
+        const orderB = CATEGORY_ORDER[b.agent.category.toLowerCase()] || 3;
+        if (orderA !== orderB) return orderA - orderB;
+        return b.score - a.score; // Higher score first within same order
+    });
+
+    // ── Phase 5: Build steps with contextual prompts ──
+    const steps: DecompositionStep[] = selectedAgents.map((scored, idx) => ({
+        stepIndex: idx,
+        agentId: scored.agent.id,
+        agentName: scored.agent.name,
+        agentEmoji: scored.agent.avatarEmoji || '🤖',
+        prompt: generateContextualPrompt(prompt, scored.agent, idx === 0 ? 'primary' : 'secondary'),
+        budgetAllocation: 0, // Set by caller
+        dependsOn: idx === 0 ? [] : [idx - 1],
+        category: scored.agent.category,
+    }));
+
+    // ── Build reasoning ──
+    const categoryList = [...usedCategories].join(' → ');
     const reasoning = steps.length >= 3
-        ? `Orchestration plan with ${steps.length} specialized agents across ${categoryList}. Tasks execute sequentially with dependency chaining for reliable results.`
+        ? `Orchestration plan: ${steps.length} specialized agents (${categoryList}). Sequential execution with dependency chaining ensures each step builds on the previous.`
         : steps.length === 2
-            ? `Two-phase execution: ${steps[0].agentName} (${steps[0].category}) → ${steps[1].agentName} (${steps[1].category}). Sequential execution ensures quality.`
+            ? `Two-phase execution: ${steps[0].agentName} (${steps[0].category}) → ${steps[1].agentName} (${steps[1].category}). The second agent validates and extends the first agent's work.`
             : `Single-agent execution by ${steps[0].agentName} (${steps[0].category}).`;
 
     return { steps, reasoning };
@@ -587,26 +563,25 @@ Respond ONLY with valid JSON in this exact format:
         reasoning = result.reasoning;
     }
 
-    // 5. Budget allocation — proportional to agent basePrice (realistic pricing)
+    // 5. Budget allocation — proportional to agent basePrice, guaranteed within budget
     if (steps.length > 0) {
         const totalBasePrice = steps.reduce((sum, s) => {
             const agent = agents.find(a => a.id === s.agentId);
             return sum + (agent?.basePrice || 5);
         }, 0);
 
-        for (const step of steps) {
-            const agent = agents.find(a => a.id === step.agentId);
-            const base = agent?.basePrice || 5;
-            // Allocate proportionally based on agent's base price
-            step.budgetAllocation = Math.round((base / totalBasePrice) * availableBudget * 100) / 100;
-        }
-
-        // Validate total doesn't exceed available
-        const allocatedSum = steps.reduce((sum, s) => sum + s.budgetAllocation, 0);
-        if (allocatedSum > availableBudget && allocatedSum > 0) {
-            const scale = availableBudget / allocatedSum;
-            for (const step of steps) {
-                step.budgetAllocation = Math.round(step.budgetAllocation * scale * 100) / 100;
+        // Allocate all steps except the last
+        let allocated = 0;
+        for (let i = 0; i < steps.length; i++) {
+            if (i === steps.length - 1) {
+                // Last step gets whatever remains (prevents floating-point overflow)
+                steps[i].budgetAllocation = Math.round((availableBudget - allocated) * 100) / 100;
+            } else {
+                const agent = agents.find(a => a.id === steps[i].agentId);
+                const base = agent?.basePrice || 5;
+                const share = Math.floor((base / totalBasePrice) * availableBudget * 100) / 100;
+                steps[i].budgetAllocation = share;
+                allocated += share;
             }
         }
     }

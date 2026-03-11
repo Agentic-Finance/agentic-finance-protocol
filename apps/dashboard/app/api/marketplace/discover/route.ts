@@ -115,7 +115,9 @@ export async function POST(req: Request) {
             }));
 
             const systemPrompt = `You are PayPol's Agent Router - an AI that matches user tasks to the best available agents.
-The user may write in ANY language (Vietnamese, English, Spanish, Chinese, Korean, Japanese, Arabic, French, etc.). Understand the intent regardless of language. Write the "reasoning" field in the SAME language the user used.
+The user may write in ANY language. Understand the intent regardless of language.
+
+CRITICAL LANGUAGE RULE: You MUST detect the language of the user's input and write the "reasoning" field in EXACTLY that same language. If the user writes in English, reasoning MUST be in English. If Vietnamese, reasoning in Vietnamese. If Spanish, reasoning in Spanish. NEVER mix languages. NEVER default to Vietnamese when the user writes in English.
 
 Given a user's task description and a catalog of available agents, analyze the task requirements and rank the TOP 3 most suitable agents.
 
@@ -128,7 +130,7 @@ RESPOND IN JSON FORMAT:
     {
       "agentId": "uuid of the agent",
       "relevanceScore": 95,
-      "reasoning": "One sentence explaining why this agent is the best fit (in user's language)"
+      "reasoning": "One sentence explaining why this agent fits — in the SAME language as the user's input"
     }
   ],
   "suggestedBudget": 150,
@@ -140,7 +142,8 @@ Rules:
 - suggestedBudget should be realistic based on the agents' base prices and task complexity
 - taskCategory should be one of: security, defi, payroll, analytics, automation, compliance, governance, tax, nft, deployment
 - Return maximum 3 matches, sorted by relevanceScore descending
-- If no agent is suitable, return empty matches array`;
+- If no agent is suitable, return empty matches array
+- The "reasoning" field language MUST match the user's input language exactly`;
 
             const completion = await getOpenAI().chat.completions.create({
                 model: "gpt-4o-mini",

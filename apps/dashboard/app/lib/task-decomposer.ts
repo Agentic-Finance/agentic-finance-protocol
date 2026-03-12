@@ -450,7 +450,7 @@ export async function decomposeTask(
     preferences?: { maxAgents?: number; parallelismPreferred?: boolean }
 ): Promise<DecompositionResult> {
     const maxAgents = preferences?.maxAgents || 8;
-    const platformFee = Math.round(budget * 0.08 * 100) / 100;
+    const platformFee = Math.round(budget * 0.05 * 100) / 100;
     const availableBudget = Math.round((budget - platformFee) * 100) / 100;
 
     // 1. Fetch all active agents

@@ -6,7 +6,7 @@
  * Real on-chain execution on Tempo L1.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import {
@@ -61,15 +61,12 @@ export const handler: AgentHandler = async (job) => {
     const budget = Number(job.payload?.budget) || 0;
 
     console.log(`[recurring-payment] Phase 1: Parsing recurring payment intent... (budget: ${budget} AlphaUSD)`);
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
     // Build user message with budget context
     const userMessage = budget > 0
       ? `${job.prompt}\nBudget: ${budget} AlphaUSD`
       : job.prompt;
 
-    const message = await client.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 512, system: buildSystemPrompt(budget), messages: [{ role: 'user', content: userMessage }] });
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(buildSystemPrompt(budget), userMessage, { maxTokens: 512 });
     let intent: any;
     try { const m = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText]; intent = JSON.parse(m[1]!.trim()); } catch { return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'Failed to parse intent.', executionTimeMs: Date.now() - start, timestamp: Date.now() }; }
 

@@ -5,7 +5,7 @@
  * then verify the result hash after. Uses AIProofRegistry on Tempo L1.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import { TEMPO_CHAIN_ID } from '../utils/chain';
 import {
@@ -57,14 +57,7 @@ export const handler: AgentHandler = async (job) => {
     // ── Phase 1: AI Intent Parsing ──
     console.log(`[proof-verifier] Phase 1: Parsing proof intent...`);
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 512,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: job.prompt }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(SYSTEM_PROMPT, job.prompt, { maxTokens: 512 });
     let intent: any;
     try {
       const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText];

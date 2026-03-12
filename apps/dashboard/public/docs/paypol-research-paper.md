@@ -1,6 +1,6 @@
 # PayPol: A Deterministic Financial Substrate for Autonomous Agent Economies
 
-**Technical Research Paper v2.1**
+**Technical Research Paper v3.0**
 
 ---
 
@@ -13,9 +13,9 @@
 
 ## Abstract
 
-We present PayPol, a decentralized financial infrastructure protocol designed as the deterministic settlement layer for autonomous AI agent economies. As machine-to-machine (M2M) economic interactions proliferate, the need for programmable, privacy-preserving, and trustlessly verifiable payment rails becomes critical. PayPol addresses this through five interlocking mechanisms: (1) a batched payroll engine with zero-knowledge privacy guarantees via PLONK ZK-SNARKs with a nullifier anti-double-spend pattern, (2) a neural agent marketplace with automated multi-round price negotiation and on-chain escrow, (3) a game-theoretically sound arbitration protocol that monetizes dispute resolution while deterring adversarial behavior, (4) an Agent-to-Agent (A2A) economy where agents autonomously hire other agents through per-sub-task escrow chains, and (5) a verifiable AI proof commitment registry that creates an immutable on-chain audit trail for AI reasoning. We formalize the economic models underpinning each revenue engine, analyze the cryptographic privacy guarantees of the upgraded Phantom Shield V2 system, present real benchmark data demonstrating Tempo's cost advantage over Ethereum, and demonstrate how the protocol achieves deterministic financial execution in an inherently probabilistic AI landscape. PayPol is deployed on Tempo L1 (Moderato Testnet) with 9 source-verified smart contracts, 32+ native agents, 14 community-built agents, and real on-chain transactions.
+We present PayPol, a decentralized financial infrastructure protocol designed as the deterministic settlement layer for autonomous AI agent economies. As machine-to-machine (M2M) economic interactions proliferate, the need for programmable, privacy-preserving, and trustlessly verifiable payment rails becomes critical. PayPol addresses this through five interlocking mechanisms: (1) a batched payroll engine with zero-knowledge privacy guarantees via PLONK ZK-SNARKs with a nullifier anti-double-spend pattern, (2) a neural agent marketplace with automated multi-round price negotiation and on-chain escrow, (3) a game-theoretically sound arbitration protocol that monetizes dispute resolution while deterring adversarial behavior, (4) an Agent-to-Agent (A2A) economy where agents autonomously hire other agents through per-sub-task escrow chains, and (5) a verifiable AI proof commitment registry that creates an immutable on-chain audit trail for AI reasoning. Version 3.0 introduces five additional infrastructure primitives: Google A2A protocol compatibility for cross-ecosystem agent interoperability, decentralized agent identity (DID) with on-chain reputation synchronization, streaming micropayments via per-inference metering sessions, the x402 HTTP-native payment protocol for pay-per-use agent APIs, and ZK compliance proofs enabling privacy-preserving regulatory attestation via Poseidon hashing on BN254. PayPol is deployed on Tempo L1 (Moderato Testnet) with 9 source-verified smart contracts, 32+ native agents, 24 production features, and real on-chain transactions.
 
-**Keywords:** *Zero-Knowledge Proofs, PLONK, Nullifier Pattern, Agent Economy, A2A Hiring, AI Proof Commitment, APS-1 Global Standard, Cross-Chain Interoperability, Decentralized Payroll, Escrow Arbitration, Poseidon Hash, Deterministic Finance, Tempo L1*
+**Keywords:** *Zero-Knowledge Proofs, PLONK, Nullifier Pattern, Agent Economy, A2A Hiring, AI Proof Commitment, APS-1 Global Standard, Google A2A Protocol, Decentralized Identifiers (DID), x402 Payment Protocol, Streaming Micropayments, ZK Compliance, Poseidon Hash, Selective Disclosure, Cross-Chain Interoperability, Decentralized Payroll, Escrow Arbitration, Deterministic Finance, Tempo L1*
 
 ---
 
@@ -57,6 +57,7 @@ This paper makes the following contributions:
 - **Section 11**: We present the ZK Agent Identity system for privacy-preserving reputation and compliance proofs.
 - **Section 12**: We describe the Swarm Coordination system for multi-agent collaboration with shared budgets and role-based execution.
 - **Section 13**: We present Cortex Intelligence Hub and Sentinel Command Center for real-time protocol monitoring and 3D visualization.
+- **Section 14**: We detail Google A2A protocol integration, agent identity via decentralized identifiers (DIDs), streaming micropayment metering, the x402 HTTP-native payment protocol, and ZK compliance proofs with selective disclosure.
 
 ---
 
@@ -676,7 +677,92 @@ Sentinel processes data from three sources:
 
 ---
 
-## 14. Related Work
+## 14. Interoperability & Advanced Payment Infrastructure (v3.0)
+
+Version 3.0 introduces five infrastructure primitives that extend PayPol from a standalone protocol into a fully interoperable financial substrate for the global agent economy.
+
+### 14.1 Google A2A Protocol Compatibility
+
+PayPol implements full compatibility with Google's Agent-to-Agent (A2A) communication protocol, exposing all 32 native agents through a standardized interface:
+
+**Agent Card Discovery:**
+A machine-readable manifest at `/.well-known/agent-card.json` describes PayPol's capabilities, authentication schemes, and 32 agent skills with structured metadata. Any A2A-compatible orchestrator can discover PayPol agents without prior integration.
+
+**JSON-RPC 2.0 Task Interface:**
+The `/api/a2a/rpc` endpoint implements the standard A2A methods (`tasks/send`, `tasks/get`, `tasks/list`, `tasks/cancel`) with full task lifecycle management. Tasks transition through `submitted -> working -> completed/failed/canceled` states, with message history preservation for multi-turn interactions.
+
+**Auto-Discovery Routing:**
+When an A2A client sends a task without specifying an agent, PayPol's semantic matching engine (combining keyword search and AI-powered intent analysis) routes the task to the optimal agent, effectively making PayPol a self-routing payment network.
+
+### 14.2 Decentralized Agent Identity (DID)
+
+Each wallet on PayPol receives a Decentralized Identifier following the format `did:paypol:tempo:42431:<wallet>`. The identity system aggregates data from five on-chain contracts and three off-chain data stores into a unified, queryable profile.
+
+**On-Chain Reputation Synchronization:**
+A daemon process pushes off-chain metrics (job completion rates, average ratings, proof reliability) to the on-chain `ReputationRegistry` contract every 5 minutes, ensuring that on-chain reputation always reflects current performance. This enables third-party protocols to query PayPol agent trust scores directly from the blockchain without API dependency.
+
+**Verifiable Credential Generation:**
+The identity API automatically generates credentials based on provable conditions: `on-chain-reputation` (score > 0), `trusted-agent` (score >= 7000), `staked-agent` (deposit > 0), `zero-slash-record` (0 penalties), `centurion` (100+ completed jobs), and `marketplace-verified` (manual verification).
+
+### 14.3 Streaming Micropayments via Metering Sessions
+
+For high-frequency agent interactions where per-job escrow creates excessive overhead, PayPol introduces metering sessions with per-inference billing:
+
+**Economic Model:**
+A client opens a session with budget `B` and per-call price `p`. Each inference call deducts `p` from the remaining balance. When `spent >= B`, the session transitions to `EXHAUSTED` and returns HTTP 402 on subsequent calls. Settlement applies a 5% platform fee on total usage.
+
+```
+Budget utilization: U = n * p where n = number of calls
+Session exhaustion: U >= B triggers EXHAUSTED state
+Agent payout: A = U * 0.95
+Platform fee: F = U * 0.05
+Client refund: R = B - U (if session closed before exhaustion)
+```
+
+This model enables sub-cent granularity for AI inference billing while maintaining the economic guarantees of the PayPol platform fee structure.
+
+### 14.4 x402 HTTP-Native Payment Protocol
+
+The x402 protocol transforms every PayPol agent into a pay-per-use API endpoint using standard HTTP semantics:
+
+**Protocol Flow:**
+1. Client sends request without payment -> Server returns 402 with structured requirements (token, amount, nonce, recipient, payment methods)
+2. Client constructs payment proof (EIP-191 signature or metering session reference)
+3. Client retries with `X-Payment` header -> Server verifies, executes, returns result
+
+**Payment Verification:**
+Two verification paths are supported:
+- **Signed Message:** `verify(keccak256("x402-payment", payer, amount, token, nonce), signature)` recovers the payer address via EIP-191
+- **Metering Session:** Validates that the referenced session is ACTIVE with sufficient remaining budget
+
+**Nonce Management:**
+Each 402 response includes a unique nonce with 5-minute TTL, preventing replay attacks. Nonces are consumed on successful verification.
+
+### 14.5 ZK Compliance: Privacy-Preserving Regulatory Proofs
+
+The ZK compliance system enables agents to prove regulatory attributes without revealing underlying data, using Poseidon hashing on the BN254 elliptic curve.
+
+**Construction:**
+For each claim type (KYC, reputation, zero-slash, deposit, audit), the system computes:
+```
+claimHash = Poseidon(walletBigInt, claimData..., salt)
+nullifier = Poseidon(nullifierSecret, walletBigInt)
+```
+
+The `salt` is known only to the prover, ensuring zero-knowledge property. The `nullifier` prevents double-claiming.
+
+**Proof Aggregation (Merkle-like):**
+Multiple claims aggregate into a single `proofRoot` via pairwise Poseidon hashing, producing a compact value that can be verified on-chain while representing arbitrarily many compliance attestations.
+
+**Selective Disclosure:**
+Agents can reveal specific fields (e.g., wallet address, reputation tier) while proving the existence and validity of hidden fields (e.g., exact deposit amount, slash count) through Poseidon commitments. This enables graduated transparency: verifiers see what they need, nothing more.
+
+**Regulatory Applicability:**
+The system supports compliance attestations relevant to MiCA (EU), Travel Rule (FATF), and GDPR requirements, where entities must prove compliance without exposing personally identifiable information.
+
+---
+
+## 15. Related Work
 
 | System | Scope | Privacy | Agent Support | A2A Economy | AI Verification | Arbitration |
 |---|---|---|---|---|---|---|
@@ -686,11 +772,11 @@ Sentinel processes data from three sources:
 | Morpheus | AI agents | None | Basic | None | None | None |
 | **PayPol** | **Full stack** | **PLONK ZK** | **32 agents** | **A2A chains** | **On-chain proofs** | **Game-theoretic** |
 
-PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, multi-agent swarm coordination with ZK intelligence markets, real-time 3D protocol surveillance, and a **global open protocol standard (APS-1 v2.1)** with cross-chain interoperability, compliance framework, and governance model — in a unified architecture designed for worldwide adoption.
+PayPol is, to our knowledge, the first protocol to combine ZK-private payments with nullifier protection, autonomous agent-to-agent hiring with per-sub-task escrow, verifiable on-chain AI proof commitments, ZK agent identity, multi-agent swarm coordination with ZK intelligence markets, real-time 3D protocol surveillance, Google A2A protocol interoperability, HTTP 402-native payment flows, per-inference streaming micropayments, decentralized agent identifiers, privacy-preserving ZK compliance proofs with selective disclosure, and a **global open protocol standard (APS-1 v2.1)** with cross-chain interoperability, compliance framework, and governance model --- in a unified architecture designed for worldwide adoption.
 
 ---
 
-## 15. Future Work
+## 16. Future Work
 
 1. **APS-1 Global Standardization**: Submit APS-1 to relevant standards bodies (W3C, IEEE, or IETF) for formal recognition as the universal agent payment standard.
 2. **Multi-Chain Deployment**: Deploy APS-1 reference contracts on Ethereum, Base, Arbitrum, and Polygon with cross-chain escrow bridges.
@@ -698,24 +784,27 @@ PayPol is, to our knowledge, the first protocol to combine ZK-private payments w
 4. **Recursive ZK Proofs**: Aggregating proofs into a single recursive proof for batch verification.
 5. **Cross-Chain A2A**: Extending A2A chains across multiple EVM chains with bridge-mediated settlement.
 6. **Formal Verification**: Machine-checked proofs of contract correctness using Certora or Halmos.
-7. **Agent Reputation Network**: Cross-chain reputation aggregation from commitment match rates, ratings, and A2A participation.
-8. **Compliance Framework**: Jurisdictional adapters for MiCA (EU), Travel Rule (FATF), GDPR, and SOC 2.
-9. **DePIN Micro-Payment Channels**: State channels for high-frequency micro-transactions.
-10. **Google A2A Integration**: APS-1 as the payment settlement layer for Google's Agent-to-Agent communication protocol.
+7. **Cross-Chain DID Resolution**: Federated DID resolution across multiple chains, enabling portable agent identity.
+8. **On-Chain ZK Compliance Verifier**: Deploy a contract that validates Poseidon proof roots directly on-chain for smart contract-level regulatory enforcement.
+9. **x402 State Channels**: Extend x402 with payment channels for sub-millisecond settlement in high-frequency interactions.
+10. **Metering Pools**: Shared budget sessions for collaborative multi-client agent usage.
+11. **W3C DID Compliance**: Align PayPol DID format with W3C DID Core specification for maximum interoperability.
 
 ---
 
-## 16. Conclusion
+## 17. Conclusion
 
 PayPol addresses the fundamental infrastructure gap between probabilistic AI intent and deterministic financial execution. Through its Triple-Engine architecture, the protocol achieves sustainable revenue. The Phantom Shield V2 provides cryptographic privacy with nullifier anti-double-spend protection. The A2A Economy creates a composable agent marketplace where agents autonomously hire agents. The AIProofRegistry establishes on-chain accountability for AI reasoning. The Tempo Benchmark demonstrates that this entire stack operates at negligible cost on Tempo L1, making autonomous agent economies economically viable at scale.
 
-Most critically, APS-1 v2.1 establishes the **first global open standard for agent payments** — chain-agnostic, framework-agnostic, and compliance-ready. Just as HTTP standardized web communication and ERC-20 standardized tokens, APS-1 aims to standardize how autonomous agents transact across every chain, every framework, and every jurisdiction. The protocol's roadmap targets multi-chain deployment across Ethereum, Base, and Arbitrum by Q4 2026, with enterprise compliance adapters and standards body submission by 2027.
+Version 3.0 extends the protocol with five infrastructure primitives that address the remaining gaps in agent interoperability and economic accessibility. Google A2A compatibility ensures that PayPol agents are discoverable by any A2A-compliant orchestrator. Decentralized identifiers provide portable, verifiable agent reputation across ecosystems. Streaming micropayments enable sub-cent billing granularity for high-frequency AI inference. The x402 protocol transforms every agent into a pay-per-use API endpoint accessible from any HTTP client. ZK compliance proofs bridge the gap between regulatory requirements and on-chain privacy, enabling agents to prove compliance without revealing sensitive data.
 
-As autonomous AI agents become primary economic actors, the need for a universal, deterministic, privacy-preserving, verifiable, and arbitration-capable payment standard will only intensify. PayPol and APS-1 are positioned as the foundational substrate for this emerging global machine economy.
+Most critically, APS-1 v2.1 establishes the **first global open standard for agent payments** --- chain-agnostic, framework-agnostic, and compliance-ready. Just as HTTP standardized web communication and ERC-20 standardized tokens, APS-1 aims to standardize how autonomous agents transact across every chain, every framework, and every jurisdiction. The protocol's roadmap targets multi-chain deployment across Ethereum, Base, and Arbitrum by Q4 2026, with enterprise compliance adapters and standards body submission by 2027.
+
+As autonomous AI agents become primary economic actors, the need for a universal, deterministic, privacy-preserving, verifiable, interoperable, and arbitration-capable payment standard will only intensify. PayPol and APS-1 are positioned as the foundational substrate for this emerging global machine economy.
 
 ---
 
-## 17. References
+## 18. References
 
 [1] Gabizon, A., Williamson, Z.J., & Ciobotaru, O. (2019). PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge. *IACR ePrint 2019/953*.
 
@@ -731,7 +820,11 @@ As autonomous AI agents become primary economic actors, the need for a universal
 
 [7] Tempo Network (2025). Tempo L1: A High-Performance EVM-Compatible Blockchain. *Tempo Technical Documentation*.
 
+[8] Google (2025). Agent-to-Agent (A2A) Protocol Specification. *Google Agent Ecosystem Documentation*.
+
+[9] W3C (2022). Decentralized Identifiers (DIDs) v1.0. *W3C Recommendation*.
+
 ---
 
-*PayPol Protocol --- The Financial OS for the Agentic Economy*
-*Deployed on Tempo L1 | Powered by PLONK ZK-SNARKs | Verified on Sourcify*
+*PayPol Protocol v3.0 --- The Financial Operating System for the Agentic Economy*
+*Deployed on Tempo L1 | Powered by PLONK ZK-SNARKs | Google A2A Compatible | x402 Native | ZK Compliance Ready*

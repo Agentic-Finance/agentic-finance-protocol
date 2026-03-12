@@ -187,6 +187,8 @@ model AgentJob {
   depth           Int       @default(0) // Recursion depth in A2A chain
   stepIndex       Int?      // Position in orchestration plan (0-based)
   dependsOn       String?   // JSON array of step indices this step waits on: "[0, 1]"
+  retryCount      Int       @default(0)  // Number of retry attempts (0 = first try)
+  originalAgentId String?   // Original agent ID before fallback substitution
 
   // ── AI Proof Fields ──
   planHash        String?   // keccak256 of agent's planned approach
@@ -266,6 +268,31 @@ model Milestone {
   createdAt     DateTime  @default(now())
 
   @@unique([streamJobId, index])
+}
+
+// ── Streaming Micropayments — Per-inference metering ──
+model MeteringSession {
+  id              String    @id @default(uuid())
+  clientWallet    String
+  agentWallet     String
+  agentId         String?                // MarketplaceAgent ID
+  token           String    @default("0x20c0000000000000000000000000000000000001")
+  budgetCap       Float                  // Max spend allowed
+  spent           Float     @default(0)  // Running total spent
+  pricePerCall    Float     @default(0.1) // Price per inference/call
+  totalCalls      Int       @default(0)  // Number of metered calls
+  status          String    @default("ACTIVE") // ACTIVE, EXHAUSTED, CLOSED, SETTLED
+  onChainStreamId Int?                   // Links to StreamV1 if on-chain
+  settleTxHash    String?                // Final settlement transaction
+  metadata        String?   @db.Text     // JSON: call log, usage details
+  expiresAt       DateTime?              // Auto-close after this time
+  closedAt        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([clientWallet])
+  @@index([agentWallet])
+  @@index([status])
 }
 
 // In-app notification system

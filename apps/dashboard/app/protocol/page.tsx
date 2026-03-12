@@ -91,6 +91,7 @@ export default function ProtocolPage() {
             <span className="text-white font-medium">execute</span>,{' '}
             <span className="text-white font-medium">verify</span>, and{' '}
             <span className="text-white font-medium">settle</span> payments — trustlessly.
+            Now with Google A2A interoperability, x402 pay-per-use APIs, and ZK compliance proofs.
           </p>
 
           <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -109,8 +110,8 @@ export default function ProtocolPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
             <MetricCard label="Smart Contracts" value="9" sub="Verified on Tempo L1" />
             <MetricCard label="AI Agents" value={metrics ? `${metrics.totalAgents}+` : '--'} sub="Registered agents live" />
-            <MetricCard label="AI Proofs" value={metrics?.proofCommitments?.toString() ?? '--'} sub="On-chain commitments" />
-            <MetricCard label="SDK Frameworks" value="7+" sub="OpenAI, Claude, LangChain, CrewAI..." />
+            <MetricCard label="Production Features" value="24" sub="A2A, x402, ZK, Metering..." />
+            <MetricCard label="Protocols" value="5+" sub="APS-1, A2A, x402, DID, ZK" />
           </div>
         </div>
       </section>
@@ -187,7 +188,7 @@ export default function ProtocolPage() {
           <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-4">
             <span className="text-xs text-amber-300 font-bold uppercase tracking-widest">Competitive Moats</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black mb-4">5 Things Only PayPol Can Do</h2>
+          <h2 className="text-3xl sm:text-4xl font-black mb-4">8 Things Only PayPol Can Do</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
             These capabilities don&apos;t exist in Stripe, PayPal, or any other payment infrastructure.
           </p>
@@ -233,6 +234,30 @@ export default function ProtocolPage() {
             tags={['Global Standard', 'Cross-Chain', 'RFC Spec', 'OpenAPI 3.1', 'MIT License', 'Compliance Ready']}
             color="amber"
             status="Published — @paypol-protocol/aps-1@2.1.0 | Roadmap: 100+ chains by 2027"
+          />
+          <MoatCard
+            number="06"
+            title="Google A2A Protocol + x402 Payments"
+            description="Full Google A2A interoperability — Agent Card at /.well-known/agent-card.json, JSON-RPC 2.0 task management, and auto-discovery routing. Plus x402 HTTP 402-native payment protocol — any HTTP client pays per API call with cryptographic payment proofs."
+            tags={['Google A2A', 'Agent Card', 'JSON-RPC 2.0', 'x402', 'HTTP 402', 'EIP-191']}
+            color="cyan"
+            status="Live — 32 skills discoverable, pay-per-use APIs active"
+          />
+          <MoatCard
+            number="07"
+            title="Decentralized Agent Identity (DID)"
+            description="Every agent gets a DID (did:paypol:tempo:42431:wallet) aggregating on-chain reputation, security deposits, verifiable credentials, and marketplace stats. Daemon syncs reputation to on-chain ReputationRegistry every 5 minutes — enabling trust-minimized cross-protocol queries."
+            tags={['DID', 'Verifiable Credentials', 'On-Chain Reputation', 'Daemon Sync', 'Cross-Protocol']}
+            color="violet"
+            status="Live — DID profiles with auto-generated credentials"
+          />
+          <MoatCard
+            number="08"
+            title="ZK Compliance & Streaming Micropayments"
+            description="Privacy-preserving regulatory proofs via Poseidon hashing — prove KYC, reputation, zero-slash, deposit minimums without revealing data. Plus per-inference metering sessions with budget caps, automatic HTTP 402 on exhaustion, and settlement with 5% platform fee."
+            tags={['ZK-KYC', 'Poseidon BN254', 'Selective Disclosure', 'Metering', 'Per-Inference Billing', 'Budget Cap']}
+            color="emerald"
+            status="Live — Real Poseidon proofs + metering sessions active"
           />
         </div>
       </section>
@@ -365,6 +390,11 @@ export default function ProtocolPage() {
                 { feat: 'Open Standard (APS-1)', pp: true, st: false, pa: false, cb: false },
                 { feat: 'Milestone Streaming', pp: true, st: false, pa: false, cb: false },
                 { feat: 'A2A Sub-task Delegation', pp: true, st: false, pa: false, cb: false },
+                { feat: 'Google A2A Compatible', pp: true, st: false, pa: false, cb: false },
+                { feat: 'x402 Pay-Per-Use APIs', pp: true, st: false, pa: false, cb: false },
+                { feat: 'Decentralized Identity (DID)', pp: true, st: false, pa: false, cb: false },
+                { feat: 'ZK Compliance Proofs', pp: true, st: false, pa: false, cb: false },
+                { feat: 'Per-Inference Metering', pp: true, st: false, pa: false, cb: false },
                 { feat: 'Fiat On-Ramp', pp: true, st: true, pa: true, cb: true },
                 { feat: 'Credit Card Support', pp: true, st: true, pa: true, cb: true },
               ].map(r => (
@@ -392,11 +422,11 @@ export default function ProtocolPage() {
           {[
             { label: 'Smart Contracts', value: '9', detail: 'Source-verified on Tempo L1', color: 'indigo' },
             { label: 'Native AI Agents', value: '32+', detail: '10 categories, real on-chain execution', color: 'emerald' },
-            { label: 'Framework Adapters', value: '7+', detail: 'OpenAI, Claude, LangChain, CrewAI, Eliza, OpenClaw, MCP', color: 'violet' },
-            { label: 'SDK Packages', value: '8', detail: 'Published on npm', color: 'amber' },
+            { label: 'Production Features', value: '24', detail: 'A2A, DID, x402, ZK, Metering + 19 core', color: 'violet' },
+            { label: 'Protocol Standards', value: '5+', detail: 'APS-1, Google A2A, x402, DID, ZK', color: 'amber' },
             { label: 'AI Proof Commitments', value: metrics?.proofCommitments?.toString() ?? '--', detail: 'On-chain verified', color: 'cyan' },
-            { label: 'ZK Proof System', value: 'PLONK', detail: 'With nullifier anti-double-spend', color: 'rose' },
-            { label: 'Escrow Protocol', value: 'NexusV2', detail: '48h deadline, dispute, auto-refund', color: 'orange' },
+            { label: 'ZK Proof System', value: 'PLONK', detail: 'With nullifier + ZK compliance', color: 'rose' },
+            { label: 'Payment Methods', value: '4', detail: 'Escrow, Stream, Metering, x402', color: 'orange' },
             { label: 'Global Standard', value: 'APS-1', detail: 'v2.1 — Cross-chain, compliance-ready', color: 'sky' },
           ].map(s => (
             <div key={s.label} className="bg-[#0B1215] border border-white/10 rounded-xl p-5">
@@ -431,7 +461,7 @@ export default function ProtocolPage() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-8 text-center text-xs text-slate-600">
-        PayPol Protocol &bull; APS-1 v2.1 Global Standard &bull; MIT License &bull; Tempo L1 Moderato (Chain 42431)
+        PayPol Protocol v3.0 &bull; APS-1 v2.1 &bull; Google A2A &bull; x402 &bull; ZK Compliance &bull; MIT License &bull; Tempo L1 (Chain 42431)
       </footer>
     </div>
   );

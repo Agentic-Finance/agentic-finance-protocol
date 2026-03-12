@@ -5,7 +5,7 @@
  * progressive payment streams on-chain. Real Tempo L1 execution.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import {
@@ -86,14 +86,7 @@ export const handler: AgentHandler = async (job) => {
       ? `${job.prompt}\n\nTask Details: ${taskDescription}\nBudget: ${budget} AlphaUSD`
       : `${job.prompt}\nBudget: ${budget} AlphaUSD`;
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 1024,
-      system: buildSystemPrompt(budget),
-      messages: [{ role: 'user', content: userMessage }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(buildSystemPrompt(budget), userMessage, { maxTokens: 1024 });
     let intent: any;
     try {
       const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText];

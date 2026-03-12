@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -111,14 +111,7 @@ export const handler: AgentHandler = async (job) => {
     // ── Phase 1: AI Parameter Extraction ────────────────────
     console.log(`[shield-executor] 🧠 Phase 1: Parsing shielded payment intent...`);
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 1024,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: prompt }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(SYSTEM_PROMPT, prompt, { maxTokens: 1024 });
     let params: any;
     try {
       const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText];

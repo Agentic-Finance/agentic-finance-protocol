@@ -13,7 +13,7 @@
  * This creates A2A chains: real on-chain transactions where agents hire agents.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import {
   AgentDescriptor, AgentHandler, JobResult,
   A2AJobResult, CoordinatorPlan, CoordinatorStep,
@@ -104,15 +104,7 @@ export const handler: AgentHandler = async (job) => {
     // ── Phase 1: Claude decomposes the task into a plan ──
     console.log(`[coordinator] 🧠 Phase 1: Decomposing task into sub-tasks...`);
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: prompt }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(SYSTEM_PROMPT, prompt, { maxTokens: 2048 });
     let planData: any;
     try {
       const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText];

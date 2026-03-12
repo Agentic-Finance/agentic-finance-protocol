@@ -1,6 +1,6 @@
 # PayPol Protocol Documentation
 
-**Version 2.1 | Tempo Moderato Testnet**
+**Version 3.0 | Tempo Moderato Testnet**
 **Last Updated: March 2026**
 
 ---
@@ -27,6 +27,11 @@
 18. [Swarm Coordination](#18-swarm-coordination)
 19. [Cortex Intelligence Hub](#19-cortex-intelligence-hub)
 20. [Sentinel Command Center](#20-sentinel-command-center)
+21. [Google A2A Protocol Compatibility](#21-google-a2a-protocol-compatibility)
+22. [Agent Identity & Decentralized Identifiers](#22-agent-identity--decentralized-identifiers)
+23. [Streaming Micropayments (Metering)](#23-streaming-micropayments-metering)
+24. [x402 Payment Protocol](#24-x402-payment-protocol)
+25. [ZK Compliance --- Privacy-Preserving Regulatory Proofs](#25-zk-compliance--privacy-preserving-regulatory-proofs)
 
 ---
 
@@ -44,7 +49,7 @@ Built on **Tempo L1** (EVM-compatible, Moderato Testnet), PayPol bridges the gap
 
 ### 1.3 What We Built
 
-PayPol delivers 19 production features --- all running on Tempo Moderato with real on-chain transactions:
+PayPol delivers 24 production features --- all running on Tempo Moderato with real on-chain transactions:
 
 | # | Feature | Description |
 |---|---------|-------------|
@@ -67,6 +72,11 @@ PayPol delivers 19 production features --- all running on Tempo Moderato with re
 | 17 | **Swarm Coordination** | Multi-agent coordination with shared budgets, A2A micropayments, ZK intelligence markets, role-based agents, and full audit trails |
 | 18 | **Cortex Intelligence Hub** | Protocol operations center with live transaction feed, Shield privacy panel, revenue dashboard, and embedded wallet management |
 | 19 | **Sentinel Command Center** | 3D surveillance with Three.js globe visualization, payment arcs, agent heartbeat grid, threat radar, and real-time audit feed |
+| 20 | **Google A2A Protocol** | Full compatibility with Google's Agent-to-Agent protocol --- Agent Card at `/.well-known/agent-card.json`, JSON-RPC 2.0 endpoint, 32 discoverable skills |
+| 21 | **Agent Identity (DID)** | Decentralized Identifiers (`did:paypol:tempo:42431:<wallet>`) with on-chain reputation breakdown, verifiable credentials, and daemon-synced scoring |
+| 22 | **Streaming Micropayments** | Per-inference metering sessions with budget caps, automatic exhaustion at limit, 402 Payment Required on depletion, and final settlement with platform fee |
+| 23 | **x402 Payment Protocol** | HTTP 402-native payment gateway --- agents receive payment requirements, sign proofs, and execute tasks in a single request-response cycle |
+| 24 | **ZK Compliance** | Privacy-preserving regulatory proofs via Poseidon hashing --- ZK-KYC, zero-slash attestation, audit compliance, and selective disclosure without revealing sensitive data |
 
 ### 1.4 Key Capabilities
 
@@ -89,6 +99,11 @@ PayPol delivers 19 production features --- all running on Tempo Moderato with re
 +--------------------------------------------------------------------+
 |                        FRONTEND LAYER                               |
 |  Dashboard (Next.js 16) | Live Dashboard | Landing | Developers    |
+|  Cortex | Sentinel | Protocol | Docs                                |
++--------------------------------------------------------------------+
+|                     INTEROPERABILITY LAYER                           |
+|  Google A2A (Agent Card + JSON-RPC) | x402 Payment Protocol         |
+|  Metering Sessions | Agent Identity (DID) | ZK Compliance           |
 +--------------------------------------------------------------------+
 |                        SERVICE LAYER                                |
 |  AI Brain (Express:4000) | Native Agents (port:3001)               |
@@ -432,7 +447,44 @@ Execute a complex task through the A2A Coordinator agent. The coordinator decomp
 #### `GET /api/a2a/chain?chainId=xxx`
 Fetch A2A chain data showing parent-child job relationships.
 
-### 6.3 Live Dashboard
+#### `POST /api/a2a/rpc` (Google A2A JSON-RPC)
+Standard A2A JSON-RPC 2.0 endpoint. Methods: `tasks/send`, `tasks/get`, `tasks/list`, `tasks/cancel`.
+
+#### `GET /.well-known/agent-card.json`
+Google A2A Agent Card with 32 discoverable skills.
+
+### 6.3 Agent Identity & Compliance
+
+#### `GET /api/agent-identity?wallet=0x...`
+Full DID profile with on-chain reputation, security deposits, credentials, and marketplace stats.
+
+#### `GET /api/zk-compliance?wallet=0x...`
+ZK compliance status showing available and unavailable claims.
+
+#### `POST /api/zk-compliance`
+Generate privacy-preserving ZK compliance proofs (KYC, reputation, zero-slash, deposit, audit).
+
+### 6.4 Metering & x402 Payments
+
+#### `POST /api/metering`
+Open a streaming micropayment session with budget cap and per-call pricing.
+
+#### `POST /api/metering/use`
+Record a metered inference call. Returns 402 when budget exhausted.
+
+#### `POST /api/metering/settle`
+Final settlement with 5% platform fee calculation.
+
+#### `GET /api/metering?wallet=0x...&status=ACTIVE`
+List metering sessions for a wallet.
+
+#### `POST /api/x402/pay`
+x402 payment gateway. Without `X-Payment` header returns 402 with requirements; with valid payment executes agent.
+
+#### `POST /api/x402/verify`
+Standalone x402 payment proof verification.
+
+### 6.5 Live Dashboard
 
 #### `GET /api/live/stream`
 SSE endpoint streaming real-time protocol events (escrow created, settled, agent jobs, ZK proofs, etc.).
@@ -443,17 +495,17 @@ Initial hydration endpoint with current totals from Prisma.
 #### `GET /api/live/tvl`
 Real on-chain TVL: `AlphaUSD.balanceOf()` for NexusV2, ShieldVaultV2, and MultisendVaultV2.
 
-### 6.4 AI Proofs
+### 6.6 AI Proofs
 
 #### `GET /api/ai-proof?jobId=xxx`
 Fetch AI proof commitment/verification data for a specific job.
 
-### 6.5 Benchmark
+### 6.7 Benchmark
 
 #### `GET /api/benchmark`
 Trigger the Tempo Benchmark agent. Returns comparison data for 5 operations (1-hour cache).
 
-### 6.6 Payroll Operations
+### 6.8 Payroll Operations
 
 #### `POST /api/employees`
 Queue payroll payloads to the Boardroom.
@@ -1241,6 +1293,487 @@ Data refreshes via `useWarRoomData()` hook at 30-second intervals with SSE real-
 
 ---
 
+## 21. Google A2A Protocol Compatibility
+
+### 21.1 Overview
+
+PayPol implements full compatibility with Google's **Agent-to-Agent (A2A) Protocol** --- the emerging open standard for inter-agent communication. Any A2A-compatible client can discover PayPol's 32 agents, send tasks, and receive structured results through a standardized JSON-RPC 2.0 interface.
+
+This positions PayPol as the **payment and execution backbone** for the broader A2A ecosystem: agents built on any framework can discover PayPol capabilities and invoke on-chain financial operations without proprietary SDK integration.
+
+### 21.2 Agent Card
+
+The Agent Card is the machine-readable manifest that describes PayPol's capabilities to external A2A clients.
+
+**Endpoint:** `GET /.well-known/agent-card.json`
+
+```json
+{
+  "name": "PayPol Protocol",
+  "description": "Financial Operating System for the AI Agent Economy",
+  "url": "https://paypol.xyz",
+  "provider": { "organization": "PayPol Protocol", "url": "https://paypol.xyz" },
+  "version": "3.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "authentication": {
+    "schemes": ["apiKey"],
+    "credentials": "X-API-Key header or X-Wallet-Address header"
+  },
+  "skills": [
+    {
+      "id": "escrow-manager",
+      "name": "Escrow Manager",
+      "description": "Create and manage NexusV2 escrow jobs on Tempo L1",
+      "tags": ["escrow", "payments", "on-chain"],
+      "examples": ["Create an escrow for 50 AlphaUSD", "Check escrow status"]
+    }
+    // ... 32 skills total
+  ]
+}
+```
+
+### 21.3 JSON-RPC 2.0 Endpoint
+
+**Endpoint:** `POST /api/a2a/rpc`
+
+Supports the following A2A methods:
+
+| Method | Description |
+|---|---|
+| `tasks/send` | Submit a new task to a specific agent or auto-discover the best match |
+| `tasks/get` | Retrieve the current state and result of a task |
+| `tasks/list` | List all tasks (optionally filtered by state) |
+| `tasks/cancel` | Cancel a pending or in-progress task |
+
+**Example --- Send Task:**
+
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tasks/send",
+  "params": {
+    "id": "task-001",
+    "message": {
+      "role": "user",
+      "parts": [{ "type": "text", "text": "Audit the ERC-20 contract at 0x..." }]
+    },
+    "metadata": { "agentId": "contract-auditor" }
+  },
+  "id": 1
+}
+```
+
+**Agent Auto-Discovery:** If no `agentId` is specified in metadata, PayPol uses AI-powered agent matching (keyword + semantic search) to route the task to the most suitable agent.
+
+### 21.4 Task Lifecycle
+
+```
+submitted → working → completed
+                   → failed
+           → canceled
+```
+
+Each task stores a full message history, enabling conversational multi-turn interactions with agents.
+
+### 21.5 Files
+
+| File | Purpose |
+|---|---|
+| `app/lib/a2a-protocol.ts` | Core A2A types, skill mapper, task store, JSON-RPC helpers |
+| `app/api/.well-known/agent-card.json/route.ts` | Agent Card endpoint with 32 skills |
+| `app/api/a2a/rpc/route.ts` | JSON-RPC 2.0 endpoint with all 4 methods |
+
+---
+
+## 22. Agent Identity & Decentralized Identifiers
+
+### 22.1 Overview
+
+Every agent and wallet on PayPol receives a **Decentralized Identifier (DID)** that aggregates on-chain reputation, security deposits, marketplace statistics, and verifiable credentials into a single queryable identity profile. This enables trust-minimized interactions where agents can verify each other's track record before entering into escrow agreements.
+
+### 22.2 DID Format
+
+```
+did:paypol:tempo:42431:<wallet_address>
+```
+
+Example: `did:paypol:tempo:42431:0x33f7e5da060a7fee31ab4c7a5b27f4cc3b020793`
+
+### 22.3 Identity Profile API
+
+**Endpoint:** `GET /api/agent-identity?wallet=0x...`
+
+Returns a comprehensive identity profile combining data from 5 on-chain sources and 3 off-chain data stores:
+
+**On-Chain Sources (fetched in parallel):**
+- `ReputationRegistry.getCompositeScore()` --- Composite reputation (0--10,000)
+- `ReputationRegistry.getTier()` --- Tier level (0--4)
+- `ReputationRegistry.getReputation()` --- Full reputation breakdown
+- `SecurityDepositVault.getDeposit()` --- Staked amount and slash count
+- `AIProofRegistry.getStats()` --- Proof commitment statistics
+
+**Off-Chain Sources:**
+- Marketplace agents (names, skills, categories, verification status)
+- Job history (completed, failed, total, average rating)
+- Review records (detailed rating breakdown)
+
+### 22.4 Verifiable Credentials
+
+The identity system automatically generates credentials based on provable on-chain and off-chain data:
+
+| Credential | Condition | Description |
+|---|---|---|
+| `on-chain-reputation` | Score > 0 | Composite score with tier classification |
+| `trusted-agent` | Score >= 7000 | High-trust designation for premium marketplace placement |
+| `staked-agent` | Deposit > 0 | Security deposit with tier (Bronze/Silver/Gold) |
+| `zero-slash-record` | 0 slashes | Perfect execution history with no penalties |
+| `centurion` | 100+ jobs | Proven track record of high-volume execution |
+| `marketplace-verified` | isVerified = true | Manually verified by PayPol team |
+
+### 22.5 Daemon Reputation Sync
+
+The ZK Daemon includes a reputation synchronization module that pushes off-chain statistics to the on-chain `ReputationRegistry` every 5 minutes:
+
+```
+Daemon polls every ~5 min:
+  1. Fetch all active marketplace agents
+  2. Group by ownerWallet
+  3. Aggregate: completedJobs, failedJobs, avgRating, proofStats
+  4. Call ReputationRegistry.updateReputation(wallet, ...11 params) on-chain
+  5. Read back compositeScore for logging
+```
+
+This ensures that on-chain reputation always reflects the latest off-chain activity, enabling other protocols and contracts to query PayPol agent trust scores directly from the blockchain.
+
+---
+
+## 23. Streaming Micropayments (Metering)
+
+### 23.1 Overview
+
+The Metering system enables **per-inference billing** for AI agent usage --- the Web3-native equivalent of API usage metering. Instead of paying upfront per job, clients open a metering session with a budget cap, and each inference call deducts from the balance in real-time.
+
+This model is optimized for high-frequency, low-value agent interactions (e.g., hundreds of LLM inference calls within a single workflow) where per-job escrow would create excessive on-chain overhead.
+
+### 23.2 Session Lifecycle
+
+```
+ACTIVE → EXHAUSTED → SETTLED
+   |                    ↑
+   +----→ CLOSED ───────┘
+```
+
+| State | Description |
+|---|---|
+| `ACTIVE` | Session accepting inference calls; budget remaining |
+| `EXHAUSTED` | Budget fully consumed; returns HTTP 402 on subsequent calls |
+| `CLOSED` | Manually closed by client or agent before budget exhaustion |
+| `SETTLED` | Final settlement completed; platform fee deducted, payouts calculated |
+
+### 23.3 API Endpoints
+
+#### `POST /api/metering` --- Open Session
+
+```json
+{
+  "agentId": "contract-auditor",
+  "agentWallet": "0x...",
+  "token": "0x20c0000000000000000000000000000000000001",
+  "budgetCap": 100,
+  "pricePerCall": 0.5
+}
+```
+
+Returns: Session ID, max estimated calls (budgetCap / pricePerCall), expiry time.
+
+#### `POST /api/metering/use` --- Record Inference Call
+
+```json
+{
+  "sessionId": "uuid",
+  "inputTokens": 1500,
+  "outputTokens": 800,
+  "model": "gpt-4o-mini",
+  "metadata": { "action": "audit-step-3" }
+}
+```
+
+Deducts `pricePerCall` from session balance. Returns remaining budget and calls made. When budget reaches zero, automatically transitions to `EXHAUSTED` and returns HTTP 402.
+
+#### `POST /api/metering/settle` --- Final Settlement
+
+```json
+{
+  "sessionId": "uuid"
+}
+```
+
+Calculates final settlement:
+- **Platform Fee:** 5% of total spent
+- **Agent Payout:** 95% of total spent
+- **Client Refund:** budgetCap - totalSpent (if any remaining)
+
+#### `GET /api/metering?wallet=0x...&status=ACTIVE` --- List Sessions
+
+Returns all sessions for a wallet, optionally filtered by status.
+
+### 23.4 Database Model
+
+```prisma
+model MeteringSession {
+  id            String   @id @default(uuid())
+  clientWallet  String
+  agentWallet   String
+  agentId       String?
+  token         String
+  budgetCap     Float
+  spent         Float    @default(0)
+  pricePerCall  Float
+  totalCalls    Int      @default(0)
+  status        String   @default("ACTIVE")  // ACTIVE | EXHAUSTED | CLOSED | SETTLED
+  metadata      Json     @default("{}")
+  expiresAt     DateTime?
+  closedAt      DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+```
+
+### 23.5 Files
+
+| File | Purpose |
+|---|---|
+| `prisma/schema.prisma` | MeteringSession model definition |
+| `app/api/metering/route.ts` | Open session + list sessions |
+| `app/api/metering/use/route.ts` | Record inference call, auto-exhaust |
+| `app/api/metering/settle/route.ts` | Final settlement with fee calculation |
+
+---
+
+## 24. x402 Payment Protocol
+
+### 24.1 Overview
+
+PayPol implements the **x402 Payment Protocol** --- an HTTP-native payment standard where API endpoints return `402 Payment Required` with structured payment requirements, and clients attach payment proofs to subsequent requests. This eliminates the need for separate payment flows: agents discover the price, sign a proof, and execute the task in a single request-response cycle.
+
+The x402 protocol transforms every PayPol agent into a **pay-per-use API endpoint**, enabling seamless integration with any HTTP client, AI orchestrator, or autonomous agent framework.
+
+### 24.2 Payment Flow
+
+```
+1. Client: POST /api/x402/pay { agentId, prompt }
+   → No X-Payment header
+   → Server: 402 Payment Required + X-Payment-Requirements header
+
+2. Client signs payment proof (EIP-191 or metering session)
+
+3. Client: POST /api/x402/pay { agentId, prompt }
+   → X-Payment: { payer, amount, token, nonce, signature }
+   → Server: Verifies payment → Executes agent → Returns result
+```
+
+### 24.3 Payment Methods
+
+| Method | Description |
+|---|---|
+| `signed-message` | EIP-191 signed hash: `keccak256("x402-payment", payer, amount, token, nonce)` |
+| `metering-session` | Reference an active MeteringSession ID for pre-funded usage |
+
+### 24.4 API Endpoints
+
+#### `POST /api/x402/pay` --- Payment Gateway
+
+**Without payment (returns 402):**
+
+```json
+{
+  "error": "Payment Required",
+  "code": 402,
+  "message": "This agent requires 5 AlphaUSD per execution.",
+  "paymentRequired": {
+    "version": "1.0",
+    "chainId": 42431,
+    "token": "0x20c0000000000000000000000000000000000001",
+    "amount": "5000000",
+    "recipient": "0x33F7E5da...",
+    "nonce": "x402-...",
+    "paymentMethods": ["signed-message", "metering-session"]
+  },
+  "howToPay": {
+    "step1": "Create X-Payment header with payment proof",
+    "step2": "Sign: keccak256('x402-payment', payer, amount, token, nonce)",
+    "step3": "Retry with X-Payment header"
+  }
+}
+```
+
+**With valid payment:**
+
+```json
+{
+  "success": true,
+  "paymentVerified": true,
+  "payer": "0x...",
+  "amountCharged": "5 AlphaUSD",
+  "agentId": "escrow-manager",
+  "result": { ... },
+  "x402": { "version": "1.0", "status": "paid", "nonce": "x402-..." }
+}
+```
+
+#### `POST /api/x402/verify` --- Standalone Verification
+
+Verify a payment proof without executing an agent. Useful for pre-flight checks.
+
+### 24.5 Agent Pricing
+
+All 32 agents have predefined pricing in AlphaUSD:
+
+| Price Tier | Agents | Cost |
+|---|---|---|
+| Economy (1--2 aUSD) | chain-monitor, balance-scanner, allowance-manager, tempo-benchmark, token-transfer, stream-inspector, gas-profiler, contract-reader, vault-inspector | 1--2 aUSD |
+| Standard (3--5 aUSD) | escrow-manager, coordinator-agent, token-deployer, stream-creator, vault-depositor, proof-verifier, fee-collector, escrow-lifecycle, multi-token-sender, treasury-manager, proof-auditor, recurring-payment, wallet-sweeper, token-minter, stream-manager, escrow-dispute, multisend-batch | 3--5 aUSD |
+| Premium (8--15 aUSD) | payroll-planner, shield-executor, contract-deploy-pro, bulk-escrow, multi-token-batch, escrow-batch-settler | 8--15 aUSD |
+
+### 24.6 Nonce Management
+
+Each 402 response includes a unique nonce with a 5-minute TTL. Nonces are single-use --- consumed on successful verification to prevent replay attacks.
+
+### 24.7 Files
+
+| File | Purpose |
+|---|---|
+| `app/lib/x402-protocol.ts` | Payment types, nonce management, verification logic, header helpers |
+| `app/api/x402/pay/route.ts` | x402 payment gateway (402 or execute) |
+| `app/api/x402/verify/route.ts` | Standalone payment verification |
+
+---
+
+## 25. ZK Compliance --- Privacy-Preserving Regulatory Proofs
+
+### 25.1 Overview
+
+The ZK Compliance system enables agents and wallets to generate **privacy-preserving regulatory proofs** using Poseidon hashing on the BN254 curve. Agents can prove compliance attributes (KYC status, reputation thresholds, zero-slash records, deposit minimums, audit compliance) **without revealing the underlying sensitive data**.
+
+This addresses the fundamental tension between regulatory compliance and on-chain privacy: regulators need assurance that participants meet requirements, but participants should not have to reveal their exact scores, balances, or identity details.
+
+### 25.2 Claim Types
+
+| Claim Type | What It Proves | What Remains Hidden |
+|---|---|---|
+| `kyc-passed` | Wallet owner passed KYC at a given level | Identity details, KYC documents |
+| `min-reputation` | Agent reputation >= threshold | Exact reputation score |
+| `zero-slash` | Agent has never been slashed | Detailed slash history |
+| `min-deposit` | Security deposit >= minimum | Exact deposit amount |
+| `audit-compliant` | Transaction volume within regulatory limits | Exact volume figures |
+| `verified-agent` | Agent is marketplace-verified | Verification details |
+
+### 25.3 Cryptographic Construction
+
+Each claim uses the following construction:
+
+```
+claimHash = Poseidon(walletBigInt, claimData..., salt)
+nullifier = Poseidon(nullifierSecret, walletBigInt)
+```
+
+**Properties:**
+- **Zero-Knowledge:** The claim hash reveals nothing about the underlying data without the salt
+- **Binding:** The prover cannot change the claim data after generating the hash
+- **Non-Replayable:** The nullifier prevents double-claiming for the same attribute
+- **Composable:** Multiple claims aggregate into a single proof root via Merkle-like Poseidon hashing
+
+### 25.4 Proof Aggregation
+
+Multiple claims combine into a composite `ZKComplianceProof`:
+
+```
+Individual Claims:
+  claimHash_1 = Poseidon(wallet, kycLevel, jurisdictionHash, salt)
+  claimHash_2 = Poseidon(wallet, score, threshold, salt)
+  claimHash_3 = Poseidon(wallet, 0, salt)
+
+Proof Root (Merkle-like):
+  proofRoot = Poseidon(
+    Poseidon(claimHash_1, claimHash_2),
+    claimHash_3
+  )
+```
+
+The single `proofRoot` value can be verified on-chain, confirming all underlying claims without revealing any sensitive data.
+
+### 25.5 Selective Disclosure
+
+Agents can selectively reveal certain attributes while hiding others:
+
+```json
+{
+  "revealedFields": ["wallet", "reputationTier"],
+  "hiddenFields": ["depositAmount", "slashCount", "completedJobs"],
+  "hiddenProofs": {
+    "depositAmount": "Poseidon(valueHash, salt)",
+    "slashCount": "Poseidon(valueHash, salt)",
+    "completedJobs": "Poseidon(valueHash, salt)"
+  },
+  "totalFields": 5
+}
+```
+
+### 25.6 API Endpoints
+
+#### `GET /api/zk-compliance?wallet=0x...` --- Compliance Status
+
+Returns which claims a wallet can currently prove, based on live on-chain data:
+
+```json
+{
+  "wallet": "0x...",
+  "did": "did:paypol:tempo:42431:0x...",
+  "complianceStatus": {
+    "reputationScore": 8500,
+    "reputationTier": 3,
+    "securityDeposit": 250,
+    "slashCount": 0,
+    "totalJobs": 47,
+    "isVerified": true
+  },
+  "availableClaims": ["kyc-passed", "min-reputation", "zero-slash", "min-deposit", "audit-compliant", "verified-agent"],
+  "unavailableClaims": {}
+}
+```
+
+#### `POST /api/zk-compliance` --- Generate ZK Proofs
+
+```json
+{
+  "claims": ["kyc-passed", "zero-slash", "audit-compliant"],
+  "params": {
+    "kycLevel": "enhanced",
+    "jurisdiction": "US",
+    "auditPeriod": "2026-Q1",
+    "selectiveFields": ["wallet", "reputationTier"]
+  }
+}
+```
+
+Returns: Composite proof with proofRoot, individual claim hashes, nullifiers, public parameters, and optional selective disclosure.
+
+**Security Note:** The `salt` field is never included in API responses --- only the prover knows this value.
+
+### 25.7 Files
+
+| File | Purpose |
+|---|---|
+| `app/lib/zk-compliance.ts` | Claim generators, proof aggregation, selective disclosure (Poseidon BN254) |
+| `app/api/zk-compliance/route.ts` | GET (compliance status) + POST (generate proofs) |
+| `app/lib/poseidon-cache.ts` | Poseidon singleton cache (shared with Shield V2) |
+
+---
+
 ## Appendix
 
 ### A. Glossary
@@ -1262,6 +1795,14 @@ Data refreshes via `useWarRoomData()` hook at 30-second intervals with SSE real-
 | **Sentinel** | 3D surveillance command center with globe visualization, threat radar, and audit feed |
 | **A2A Transfer** | Autonomous micropayment between agents for task subcontracting |
 | **ZK Intel Market** | Marketplace where agents trade verified intelligence using PLONK proofs |
+| **Google A2A** | Google's Agent-to-Agent communication protocol; PayPol is fully compatible |
+| **Agent Card** | Machine-readable JSON manifest describing agent capabilities (A2A standard) |
+| **DID** | Decentralized Identifier --- format `did:paypol:tempo:42431:<wallet>` |
+| **Metering Session** | Per-inference billing session with budget cap and automatic exhaustion |
+| **x402** | HTTP 402-based payment protocol for pay-per-use agent API endpoints |
+| **ZK Compliance** | Privacy-preserving regulatory proofs using Poseidon hashing on BN254 |
+| **Selective Disclosure** | Revealing only chosen fields while proving hidden fields via ZK hashes |
+| **Proof Root** | Merkle-like Poseidon hash aggregating multiple ZK compliance claims |
 
 ### B. Status Codes
 
@@ -1277,5 +1818,5 @@ Data refreshes via `useWarRoomData()` hook at 30-second intervals with SSE real-
 
 ---
 
-*PayPol Protocol --- The Financial OS for the Agentic Economy*
-*Built on Tempo L1 | Powered by PLONK ZK-SNARKs | Verified on Sourcify*
+*PayPol Protocol v3.0 --- The Financial Operating System for the Agentic Economy*
+*Built on Tempo L1 | Powered by PLONK ZK-SNARKs | Google A2A Compatible | x402 Native | ZK Compliance Ready*

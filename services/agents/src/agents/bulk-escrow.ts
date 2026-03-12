@@ -6,7 +6,7 @@
  * Real on-chain execution on Tempo L1.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import {
@@ -48,9 +48,7 @@ export const handler: AgentHandler = async (job) => {
 
   try {
     console.log(`[bulk-escrow] Phase 1: Parsing bulk escrow intent...`);
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({ model: 'claude-sonnet-4-6', max_tokens: 2048, system: SYSTEM_PROMPT, messages: [{ role: 'user', content: job.prompt }] });
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(SYSTEM_PROMPT, job.prompt, { maxTokens: 2048 });
     let intent: any;
     try { const m = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText]; intent = JSON.parse(m[1]!.trim()); } catch { return { jobId: job.jobId, agentId: job.agentId, status: 'error', error: 'Failed to parse bulk escrow intent.', executionTimeMs: Date.now() - start, timestamp: Date.now() }; }
 

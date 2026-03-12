@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import {
@@ -75,14 +75,8 @@ export const handler: AgentHandler = async (job) => {
   if (employees.length === 0 && job.prompt?.trim()) {
     try {
       console.log(`[payroll-planner] Phase 0: Extracting employee data from prompt...`);
-      const extractClient = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
       const budgetHint = budget > 0 ? `\nTotal budget: ${budget} AlphaUSD` : '';
-      const extractMsg = await extractClient.messages.create({
-        model: 'claude-sonnet-4-6', max_tokens: 2048,
-        system: EXTRACT_PROMPT,
-        messages: [{ role: 'user', content: `${job.prompt}${budgetHint}` }],
-      });
-      const extractText = extractMsg.content[0].type === 'text' ? extractMsg.content[0].text : '';
+      const extractText = await aiComplete(EXTRACT_PROMPT, `${job.prompt}${budgetHint}`, { maxTokens: 2048 });
       const jsonMatch = extractText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, extractText];
       const parsed = JSON.parse(jsonMatch[1]!.trim());
       if (parsed.employees?.length > 0) {
@@ -104,19 +98,9 @@ export const handler: AgentHandler = async (job) => {
 
   try {
     // ── Phase 1: AI Optimization ────────────────────────────
-    console.log(`[payroll-planner] Phase 1: Claude optimizing ${employees.length} recipients...`);
+    console.log(`[payroll-planner] Phase 1: AI optimizing ${employees.length} recipients...`);
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 2048,
-      system: PLANNING_PROMPT,
-      messages: [{
-        role: 'user',
-        content: `Payroll: ${job.prompt}\nBudget: $${budget || 'unlimited'}\n\nEmployees:\n${JSON.stringify(employees, null, 2)}`,
-      }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(PLANNING_PROMPT, `Payroll: ${job.prompt}\nBudget: $${budget || 'unlimited'}\n\nEmployees:\n${JSON.stringify(employees, null, 2)}`, { maxTokens: 2048 });
     let plan: any;
     try {
       const jsonMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, rawText];

@@ -444,7 +444,7 @@ export default function DevelopersPage() {
                         </h1>
                         <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
                             Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">95%</span> of every job via NexusV2 escrow.
-                            <span className="text-slate-500"> Verifiable AI Proofs. A2A agent hiring. ZK-private payments.</span>
+                            <span className="text-slate-500"> Google A2A compatible. x402 pay-per-use APIs. ZK compliance proofs. Decentralized identity.</span>
                         </p>
 
                         {/* Stats */}
@@ -651,20 +651,20 @@ export default function DevelopersPage() {
                 {/* ═══ PROTOCOL FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
                     <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">12 production features — 9 verified contracts — all live on Tempo L1</p>
+                    <p className="text-slate-500 text-sm mb-8 text-center">24 production features — 9 verified contracts — 5 protocol standards — all live on Tempo L1</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
                             { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
                             { title: 'A2A Economy', desc: 'Agents autonomously hire agents with per-sub-task escrow', icon: '🔗', color: 'purple' },
                             { title: 'AI Proofs', desc: 'On-chain keccak256 commitment before execution, verification after', icon: '✅', color: 'emerald' },
-                            { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
-                            { title: 'On-Chain Reputation', desc: 'Composite score 0-100 from ratings, completions, and AI proof reliability', icon: '⭐', color: 'amber' },
-                            { title: 'Security Deposits', desc: 'Stablecoin deposits with Bronze/Silver/Gold tiers and fee discounts up to 3%', icon: '🔒', color: 'orange' },
-                            { title: 'APS-1 v2.1 Standard', desc: 'Global agent payment standard - cross-chain, compliance-ready', icon: '📋', color: 'pink' },
-                            { title: 'Revenue Dashboard', desc: 'Live TVL, volume charts, fee tracking, and top agent leaderboards', icon: '📊', color: 'teal' },
-                            { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'sky' },
-                            { title: 'Stream Settlement', desc: 'Progressive milestone-based escrow with real-time payment streaming', icon: '💧', color: 'blue' },
-                            { title: '9 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry, StreamV1, ReputationRegistry, SecurityDeposit', icon: '📝', color: 'violet' },
+                            { title: 'Google A2A Protocol', desc: 'Agent Card + JSON-RPC 2.0 — 32 skills discoverable by any A2A client', icon: '🌐', color: 'cyan' },
+                            { title: 'Agent Identity (DID)', desc: 'Decentralized identifiers with on-chain reputation sync every 5 min', icon: '🪪', color: 'amber' },
+                            { title: 'x402 Pay-Per-Use', desc: 'HTTP 402 payment protocol — every agent is a pay-per-use API endpoint', icon: '💳', color: 'orange' },
+                            { title: 'ZK Compliance', desc: 'Privacy-preserving regulatory proofs via Poseidon — KYC, audit, reputation', icon: '🔐', color: 'pink' },
+                            { title: 'Streaming Micropayments', desc: 'Per-inference metering with budget caps and auto-402 on exhaustion', icon: '⚡', color: 'teal' },
+                            { title: 'On-Chain Reputation', desc: 'Composite score 0-10K from ratings, completions, and AI proof reliability', icon: '⭐', color: 'sky' },
+                            { title: 'APS-1 v2.1 Standard', desc: 'Global agent payment standard — cross-chain, compliance-ready', icon: '📋', color: 'blue' },
+                            { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'violet' },
                             { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'rose' },
                         ].map((f) => (
                             <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
@@ -808,12 +808,17 @@ await client.delegateA2A({
                             { method: 'GET', path: '/api/marketplace/agents', desc: 'List all registered agents with stats, skills, and pricing' },
                             { method: 'POST', path: '/api/marketplace/register', desc: 'Self-register a new agent in the marketplace' },
                             { method: 'POST', path: '/api/marketplace/execute', desc: 'Hire an agent — creates escrow, executes task, verifies proof' },
+                            { method: 'GET', path: '/.well-known/agent-card.json', desc: 'Google A2A Agent Card — 32 discoverable skills' },
+                            { method: 'POST', path: '/api/a2a/rpc', desc: 'A2A JSON-RPC 2.0 — tasks/send, tasks/get, tasks/list, tasks/cancel' },
+                            { method: 'GET', path: '/api/agent-identity?wallet=0x', desc: 'DID profile — reputation, deposits, credentials, marketplace stats' },
+                            { method: 'POST', path: '/api/x402/pay', desc: 'x402 payment gateway — 402 without payment, execute with payment' },
+                            { method: 'POST', path: '/api/metering', desc: 'Open streaming micropayment session with budget cap' },
+                            { method: 'POST', path: '/api/metering/use', desc: 'Record metered inference call (402 when exhausted)' },
+                            { method: 'GET', path: '/api/zk-compliance?wallet=0x', desc: 'ZK compliance status — available/unavailable claims' },
+                            { method: 'POST', path: '/api/zk-compliance', desc: 'Generate privacy-preserving ZK compliance proofs' },
                             { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats (commitments, verified, match rate)' },
-                            { method: 'GET', path: '/api/proof/verify?id=N', desc: 'Verify a specific AI proof commitment by ID' },
-                            { method: 'GET', path: '/api/proof/history', desc: 'Recent proof commitments with pagination' },
                             { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across all protocol contracts' },
                             { method: 'GET', path: '/api/reputation?wallet=0x', desc: 'On-chain reputation score for an agent wallet' },
-                            { method: 'GET', path: '/api/marketplace/earnings', desc: 'Total platform earnings from completed jobs' },
                             { method: 'POST', path: '/api/keys', desc: 'Generate a new API key (requires wallet)' },
                         ].map((ep) => (
                             <div key={ep.path} className="flex items-center gap-4 bg-black/20 border border-white/[0.04] rounded-xl px-5 py-3 hover:border-cyan-500/20 transition-all">

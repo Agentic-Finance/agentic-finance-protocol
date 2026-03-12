@@ -43,6 +43,7 @@ const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
 const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
 const PAYPOL_NEXUS_V2_ADDRESS = process.env.NEXUS_V2_ADDRESS || "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS || "0x20c0000000000000000000000000000000000001";
+const REPUTATION_REGISTRY_ADDRESS = process.env.REPUTATION_REGISTRY_ADDRESS || "0x9332c1B2bb94C96DA2D729423f345c76dB3494D0";
 const TOKEN_DECIMALS = 6;
 
 // Parallel processing config
@@ -231,6 +232,7 @@ class PayPolDaemon {
         let judgeCycleCounter = 0;
         let conditionalCycleCounter = 0;
         let orchCycleCounter = 0;
+        let reputationCycleCounter = 0;
 
         while (this.isRunning) {
             try {
@@ -272,6 +274,13 @@ class PayPolDaemon {
                 if (orchCycleCounter >= 12) {
                     orchCycleCounter = 0;
                     await this.processOrchestrationTimeouts();
+                }
+
+                // ═══ Reputation Sync to On-Chain (every ~5 min) ═══
+                reputationCycleCounter++;
+                if (reputationCycleCounter >= 60) {
+                    reputationCycleCounter = 0;
+                    await this.syncReputationOnChain();
                 }
 
                 // ═══ Off-Ramp Status Sync (every ~30s) ═══
@@ -709,7 +718,7 @@ class PayPolDaemon {
 
             console.log(`[DAEMON] [Orchestration] Found ${staleRoots.length} stale orchestration root(s) (>24h). Checking sub-tasks...`);
 
-            const TERMINAL_STATUSES = ['COMPLETED', 'FAILED', 'REFUNDED', 'SETTLED'];
+            const TERMINAL_STATUSES = ['COMPLETED', 'FAILED', 'REFUNDED', 'SETTLED', 'CANCELLED'];
 
             for (const root of staleRoots) {
                 try {
@@ -1157,6 +1166,105 @@ class PayPolDaemon {
     // ═══════════════════════════════════════════════════════════
     // Helper: Sync TimeVaultPayload status with AgentJob
     // ═══════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    // REPUTATION SYNC — Push off-chain stats to ReputationRegistry
+    // ═══════════════════════════════════════════════════════════
+
+    private async syncReputationOnChain() {
+        try {
+            const REPUTATION_ABI = [
+                "function updateReputation(address _agent, uint256 _nexusRatingSum, uint256 _nexusRatingCount, uint256 _offChainRatingSum, uint256 _offChainRatingCount, uint256 _totalJobsCompleted, uint256 _totalJobsFailed, uint256 _proofCommitments, uint256 _proofVerified, uint256 _proofMatched, uint256 _proofSlashed) external",
+                "function getCompositeScore(address _agent) external view returns (uint256)",
+            ];
+
+            const registry = new ethers.Contract(REPUTATION_REGISTRY_ADDRESS, REPUTATION_ABI, this.wallet);
+
+            // Fetch all agents with owner wallets
+            const agents = await this.prisma.marketplaceAgent.findMany({
+                where: { isActive: true, ownerWallet: { not: '' } },
+                select: {
+                    id: true,
+                    name: true,
+                    ownerWallet: true,
+                    totalJobs: true,
+                    successRate: true,
+                    avgRating: true,
+                    ratingCount: true,
+                },
+            });
+
+            if (agents.length === 0) return;
+
+            // Group agents by ownerWallet (one wallet can own multiple agents)
+            const walletMap = new Map<string, typeof agents>();
+            for (const agent of agents) {
+                const w = agent.ownerWallet.toLowerCase();
+                if (!walletMap.has(w)) walletMap.set(w, []);
+                walletMap.get(w)!.push(agent);
+            }
+
+            let synced = 0;
+            for (const [wallet, walletAgents] of walletMap) {
+                try {
+                    // Aggregate stats across all agents for this wallet
+                    let totalCompleted = 0, totalFailed = 0, ratingSum = 0, ratingCount = 0;
+
+                    for (const a of walletAgents) {
+                        const completed = Math.round((a.totalJobs * a.successRate) / 100);
+                        totalCompleted += completed;
+                        totalFailed += a.totalJobs - completed;
+                        ratingSum += Math.round(a.avgRating * a.ratingCount);
+                        ratingCount += a.ratingCount;
+                    }
+
+                    // Get AIProof stats for this wallet's jobs
+                    const proofJobs = await this.prisma.agentJob.count({
+                        where: { clientWallet: wallet, commitmentId: { not: null } },
+                    });
+                    const verifiedJobs = await this.prisma.agentJob.count({
+                        where: { clientWallet: wallet, verifyTxHash: { not: null } },
+                    });
+
+                    // Submit to on-chain ReputationRegistry
+                    const tx = await registry.updateReputation(
+                        wallet,
+                        ratingSum,                // nexusRatingSum
+                        ratingCount,              // nexusRatingCount
+                        ratingSum,                // offChainRatingSum (same source for now)
+                        ratingCount,              // offChainRatingCount
+                        totalCompleted,           // totalJobsCompleted
+                        totalFailed,              // totalJobsFailed
+                        proofJobs,                // proofCommitments
+                        verifiedJobs,             // proofVerified
+                        verifiedJobs,             // proofMatched (assume all verified = matched)
+                        0,                        // proofSlashed
+                        { type: 0 }               // Legacy tx for Tempo compatibility
+                    );
+
+                    await tx.wait();
+                    synced++;
+
+                    // Read back composite score
+                    const score = await registry.getCompositeScore(wallet);
+                    console.log(`[DAEMON] ⭐ Reputation synced: ${wallet.slice(0, 10)}... → score: ${Number(score)/100}/100 (${totalCompleted} completed, ${ratingCount} ratings)`);
+
+                } catch (err: any) {
+                    // Skip wallets that fail (might not be registered yet)
+                    if (!err.message?.includes('gas') && !err.message?.includes('revert')) {
+                        console.warn(`[DAEMON] ⚠️ Reputation sync failed for ${wallet.slice(0, 10)}...: ${err.reason || err.message}`);
+                    }
+                }
+            }
+
+            if (synced > 0) {
+                console.log(`[DAEMON] ⭐ Reputation sync complete: ${synced}/${walletMap.size} wallets updated on-chain`);
+            }
+
+        } catch (err: any) {
+            console.error("[DAEMON] 🚨 Reputation sync error:", err.message);
+        }
+    }
+
     private async syncTimeVaultPayload(clientWallet: string, jobId: string, newStatus: string) {
         try {
             const relatedPayloads = await this.prisma.timeVaultPayload.findMany({

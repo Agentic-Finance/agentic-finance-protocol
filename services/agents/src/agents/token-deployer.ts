@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import { getWallet, getProvider, explorerUrl, TEMPO_CHAIN_ID } from '../utils/chain';
@@ -74,16 +74,9 @@ export const handler: AgentHandler = async (job) => {
 
   try {
     // ── Phase 1: AI Design ──────────────────────────────────
-    console.log(`[token-deployer] 🧠 Phase 1: Claude designing token for: "${requirements.slice(0, 80)}..."`);
+    console.log(`[token-deployer] 🧠 Phase 1: AI designing token for: "${requirements.slice(0, 80)}..."`);
 
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 2048,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: requirements }],
-    });
-
-    const rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const rawText = await aiComplete(SYSTEM_PROMPT, requirements, { maxTokens: 2048 });
     let design: any;
     try {
       // Extract JSON from potential markdown code blocks

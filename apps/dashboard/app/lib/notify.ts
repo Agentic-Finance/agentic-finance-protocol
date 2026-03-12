@@ -44,6 +44,17 @@ export type NotificationType =
   | 'swarm:settled'
   // A2A Micropayments
   | 'a2a:transfer'
+  // A2A Orchestration (Super-Level)
+  | 'a2a:wave_started'
+  | 'a2a:step_started'
+  | 'a2a:step_completed'
+  | 'a2a:step_failed'
+  | 'a2a:step_retry'
+  | 'a2a:step_fallback'
+  | 'a2a:step_log'
+  | 'a2a:budget_rebalanced'
+  | 'a2a:chain_completed'
+  | 'a2a:chain_cancelled'
   // Intelligence Market
   | 'intel:listed'
   // Payroll
@@ -189,6 +200,59 @@ async function fireWebhook(payload: NotifyPayload): Promise<void> {
     });
   } catch {
     // Webhook might be down - non-critical
+  }
+}
+
+// ── A2A Orchestration Real-Time Push (SSE only, no DB persist) ──
+
+export interface A2AEventPayload {
+  a2aChainId: string;
+  type: NotificationType;
+  stepIndex?: number;
+  jobId?: string;
+  agentName?: string;
+  agentEmoji?: string;
+  status?: string;
+  result?: any;
+  executionTime?: number;
+  logLine?: string;
+  waveIndex?: number;
+  budget?: { allocated?: number; spent?: number; surplus?: number };
+  reallocation?: { stepIndex: number; oldBudget: number; newBudget: number }[];
+  message?: string;
+}
+
+/**
+ * Push A2A orchestration event to SSE bus ONLY (no DB persist).
+ * Ultra-lightweight for real-time step-by-step progress.
+ */
+export async function notifyA2A(payload: A2AEventPayload): Promise<void> {
+  try {
+    await fetch(SSE_NOTIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: payload.type,
+        data: {
+          a2aChainId: payload.a2aChainId,
+          stepIndex: payload.stepIndex,
+          jobId: payload.jobId,
+          agentName: payload.agentName,
+          agentEmoji: payload.agentEmoji,
+          status: payload.status,
+          result: payload.result,
+          executionTime: payload.executionTime,
+          logLine: payload.logLine,
+          waveIndex: payload.waveIndex,
+          budget: payload.budget,
+          reallocation: payload.reallocation,
+          message: payload.message,
+          timestamp: Date.now(),
+        },
+      }),
+    });
+  } catch {
+    // SSE server might not be running — non-critical
   }
 }
 

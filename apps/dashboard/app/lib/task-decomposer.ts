@@ -232,6 +232,72 @@ function scoreAgent(query: string, agent: any, queryTokens?: string[]): ScoredAg
     };
 }
 
+// ── Exported Agent Utilities (for retry & fallback) ─────────
+
+/**
+ * Find a fallback agent in the same category when the original agent fails.
+ * Used by A2A orchestration retry logic.
+ */
+export async function findFallbackAgent(
+    originalAgentId: string,
+    category: string,
+    prompt: string,
+): Promise<{ agentId: string; agentName: string; agentEmoji: string } | null> {
+    try {
+        // Query active agents in the same category, excluding the failed one
+        const candidates = await prisma.marketplaceAgent.findMany({
+            where: {
+                isActive: true,
+                category: { equals: category, mode: 'insensitive' },
+                id: { not: originalAgentId },
+            },
+            orderBy: { avgRating: 'desc' },
+            take: 10,
+        });
+
+        if (candidates.length === 0) {
+            // Widen search: try any agent with matching skills
+            const allAgents = await prisma.marketplaceAgent.findMany({
+                where: {
+                    isActive: true,
+                    id: { not: originalAgentId },
+                },
+                orderBy: { avgRating: 'desc' },
+                take: 30,
+            });
+
+            const scored = allAgents
+                .map(a => scoreAgent(prompt, a))
+                .filter(s => s.score > 15)
+                .sort((a, b) => b.score - a.score);
+
+            if (scored.length === 0) return null;
+
+            const best = scored[0].agent;
+            return {
+                agentId: best.id,
+                agentName: best.name,
+                agentEmoji: best.avatarEmoji || '\uD83E\uDD16',
+            };
+        }
+
+        // Score candidates against the prompt and pick the best
+        const scored = candidates
+            .map(a => scoreAgent(prompt, a))
+            .sort((a, b) => b.score - a.score);
+
+        const best = scored[0].agent;
+        return {
+            agentId: best.id,
+            agentName: best.name,
+            agentEmoji: best.avatarEmoji || '\uD83E\uDD16',
+        };
+    } catch (error: any) {
+        console.error('[findFallbackAgent] Error:', error.message);
+        return null;
+    }
+}
+
 // ── Contextual Prompt Generation ────────────────────────────
 
 /**

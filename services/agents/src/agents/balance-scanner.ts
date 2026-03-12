@@ -6,7 +6,7 @@
  * on-chain portfolio overview. Reads from Tempo L1.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import { aiComplete } from '../ai-client';
 import { ethers } from 'ethers';
 import { AgentDescriptor, AgentHandler, JobResult } from '../types';
 import {

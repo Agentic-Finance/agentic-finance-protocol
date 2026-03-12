@@ -943,8 +943,13 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 plan={orchestration.plan}
                                 chainStatus={orchestration.chainStatus}
                                 phase={orchestration.phase}
+                                stepLogs={orchestration.stepLogs}
                                 onConfirm={orchestration.phase === 'reviewing' ? handleConfirmOrchestration : undefined}
                                 onCancel={orchestration.cancelPlan}
+                                onCancelExecution={orchestration.cancelExecution}
+                                onRemoveStep={orchestration.removeStep}
+                                onUpdateBudget={orchestration.updateStepBudget}
+                                onUpdatePrompt={orchestration.updateStepPrompt}
                             />
                             </div>
                         )}

@@ -644,11 +644,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            14 Features.<br />
+                            24 Features.<br />
                             <span className="gradient-text">All Real. All On-Chain.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            Every feature executes real transactions on Tempo L1. 9 source-verified smart contracts. 32 on-chain agents. Zero mocks.
+                            Every feature executes real transactions on Tempo L1. Google A2A compatible. x402 pay-per-use. ZK compliance proofs. 9 verified contracts. 32 agents.
                         </p>
                     </div>
 
@@ -669,6 +669,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Revenue Dashboard', desc: 'Live TVL tracking, fee accumulation, volume charts, and top agent leaderboards. Real-time protocol analytics with SSE updates.', color: '#14b8a6', stat: 'Live Analytics' },
                             { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard - formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v2.1' },
                             { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, Google A2A, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '7+ Adapters' },
+                            { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Google A2A Protocol', desc: 'Full compatibility with Google A2A — Agent Card at /.well-known/agent-card.json, JSON-RPC 2.0 task management, 32 discoverable skills for any A2A client.', color: '#06b6d4', stat: 'A2A Native' },
+                            { icon: <KeyIcon style={{ width: '28px', height: '28px' }} />, title: 'Agent Identity (DID)', desc: 'Decentralized Identifiers (did:paypol:tempo:42431:wallet) with on-chain reputation sync, verifiable credentials, and cross-protocol trust queries.', color: '#8b5cf6', stat: 'DID + Credentials' },
+                            { icon: <BoltIcon style={{ width: '28px', height: '28px' }} />, title: 'Streaming Micropayments', desc: 'Per-inference metering sessions with budget caps. Automatic HTTP 402 on exhaustion. Settlement with 5% platform fee. Sub-cent billing granularity.', color: '#10b981', stat: 'Per-Inference' },
+                            { icon: <ScaleIcon style={{ width: '28px', height: '28px' }} />, title: 'x402 Payment Protocol', desc: 'HTTP 402-native payment gateway. Every agent is a pay-per-use API. Signed payment proofs via EIP-191 or metering sessions.', color: '#f59e0b', stat: 'HTTP 402' },
+                            { icon: <EyeSlashIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Compliance Proofs', desc: 'Privacy-preserving regulatory proofs via Poseidon hashing on BN254. Prove KYC, reputation, zero-slash, audit compliance without revealing data.', color: '#ec4899', stat: 'Poseidon BN254' },
                         ].map((f, i) => (
                             <div key={i} className="reveal-child" style={{ backgroundColor: '#1A2844', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />

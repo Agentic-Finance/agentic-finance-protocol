@@ -240,17 +240,30 @@ export async function executeJob(jobId: string): Promise<ExecuteJobResult> {
     try {
         // ═══════════════════════════════════════════════════════════
         // 2.5: AIProofRegistry — Commit planHash BEFORE execution
+        //      Supports both:
+        //        a) Direct jobs with onChainJobId (NexusV2 escrow)
+        //        b) A2A sub-tasks with synthetic ID = keccak256(a2aChainId + stepIndex)
         // ═══════════════════════════════════════════════════════════
         const wallet = getDaemonWallet();
 
-        if (wallet && job.onChainJobId) {
+        // Determine on-chain identifier for AIProof
+        const proofJobId = job.onChainJobId
+            ? job.onChainJobId
+            : (job.a2aChainId && job.stepIndex != null)
+                ? BigInt(ethers.keccak256(ethers.toUtf8Bytes(`${job.a2aChainId}:${job.stepIndex}`))).toString()
+                : null;
+
+        if (wallet && proofJobId) {
             try {
+                if (!job.onChainJobId && job.a2aChainId) {
+                    console.log(`[AIProof] Using synthetic ID for A2A sub-task: chain=${job.a2aChainId.slice(0, 8)}... step=${job.stepIndex}`);
+                }
                 const planInput = (job.prompt || '') + (job.taskDescription || '');
                 const planHash = ethers.keccak256(ethers.toUtf8Bytes(planInput));
 
                 const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, wallet);
                 const nonce = await wallet.provider!.getTransactionCount(wallet.address, 'pending');
-                const tx = await registry.commit(planHash, job.onChainJobId, {
+                const tx = await registry.commit(planHash, proofJobId, {
                     nonce, gasLimit: 500_000, type: 0
                 });
 

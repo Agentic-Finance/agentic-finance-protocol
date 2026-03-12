@@ -215,12 +215,10 @@ function A2AChainViewer({ plan, chainStatus, phase, onConfirm, onCancel }: A2ACh
         );
     }
 
-    // Show error state
-    if (phase === 'failed' && !plan && !chainStatus) {
+    // Show error state — only hide if no plan AND no chainStatus
+    if (!plan && !chainStatus) {
         return null; // Error shown via toast
     }
-
-    if (!plan && !chainStatus) return null;
 
     const steps = plan?.steps || [];
     const progress = chainStatus?.progress;

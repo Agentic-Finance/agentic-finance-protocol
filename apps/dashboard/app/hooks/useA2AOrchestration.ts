@@ -231,6 +231,9 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
     // ════════════════════════════════════
     // 2. CONFIRM EXECUTION: Start the chain
     // ════════════════════════════════════
+    // NOTE: The execute API is SYNCHRONOUS — it blocks until all waves complete.
+    // We set phase='executing' immediately for UX, then use the response data
+    // directly (no polling needed since execution is complete when API returns).
     const confirmExecution = useCallback(async () => {
         if (!plan || !orchestratorJobId || !a2aChainId) {
             setError('No plan to execute. Orchestrate a task first.');
@@ -242,6 +245,7 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
 
         setIsLoading(true);
         setError(null);
+        setPhase('executing'); // Show executing immediately (optimistic UI)
 
         try {
             const walletHeader: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -254,23 +258,87 @@ export function useA2AOrchestration(): UseA2AOrchestrationReturn {
                 signal: abortRef.current.signal,
             });
 
+            const data = await res.json().catch(() => ({ success: false, error: 'No response body' }));
+
             if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Execution failed (${res.status})`);
+                throw new Error(data.error || `Execution failed (${res.status})`);
             }
 
-            setPhase('executing');
+            // ═══ Build chainStatus from the synchronous response ═══
+            const subTasks: A2ASubTask[] = (data.subTasks || []).map((t: any) => ({
+                id: t.id || '',
+                stepIndex: t.stepIndex ?? 0,
+                agentId: t.agentId || '',
+                agentName: t.agentName || '',
+                agentEmoji: t.agentEmoji || '🤖',
+                prompt: t.prompt || '',
+                budget: t.budget || 0,
+                status: t.status || 'COMPLETED',
+                result: t.result,
+                dependsOn: t.dependsOn || [],
+                executionTime: t.executionTime,
+            }));
 
-            // Start polling for progress
-            setTimeout(() => startPolling(), 100);
+            const completed = subTasks.filter(t => t.status === 'COMPLETED').length;
+            const failed = subTasks.filter(t => t.status === 'FAILED').length;
+            const total = subTasks.length;
+
+            setChainStatus({
+                a2aChainId,
+                rootJob: { status: data.status },
+                subTasks,
+                progress: {
+                    total,
+                    completed,
+                    failed,
+                    executing: 0,
+                    pending: total - completed - failed,
+                    percentComplete: total > 0 ? Math.round((completed / total) * 100) : 0,
+                },
+                budget: {
+                    total: plan.totalBudget,
+                    spent: subTasks
+                        .filter(t => t.status === 'COMPLETED')
+                        .reduce((sum, t) => sum + (t.budget || 0), 0),
+                    remaining: 0,
+                },
+            });
+
+            // Set terminal phase based on results
+            if (data.status === 'FAILED' || failed > 0) {
+                if (completed === 0) {
+                    setPhase('failed');
+                    setError(`All ${failed} sub-task${failed > 1 ? 's' : ''} failed.`);
+                } else {
+                    setPhase('completed');
+                    setError(`${completed}/${total} tasks completed, ${failed} failed.`);
+                }
+            } else {
+                setPhase('completed');
+                setError(null);
+            }
         } catch (err: any) {
             if (err.name === 'AbortError') return;
+
+            // Try to fetch chain status — maybe some sub-tasks were created before the error
+            try {
+                const headers: Record<string, string> = {};
+                if (walletRef.current) headers['X-Wallet-Address'] = walletRef.current;
+                const statusRes = await fetch(`/api/a2a/chain/${a2aChainId}`, { headers });
+                if (statusRes.ok) {
+                    const statusData = await statusRes.json();
+                    if (statusData.subTasks && statusData.subTasks.length > 0) {
+                        setChainStatus(statusData);
+                    }
+                }
+            } catch { /* ignore fallback status fetch errors */ }
+
             setError(err.message || 'Failed to start execution.');
             setPhase('failed');
         } finally {
             setIsLoading(false);
         }
-    }, [plan, orchestratorJobId, a2aChainId, startPolling]);
+    }, [plan, orchestratorJobId, a2aChainId]);
 
     // ════════════════════════════════════
     // 3. CANCEL PLAN

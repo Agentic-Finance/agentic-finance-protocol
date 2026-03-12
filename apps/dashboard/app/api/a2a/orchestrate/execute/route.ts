@@ -118,10 +118,11 @@ export async function POST(req: Request) {
     let hasFailure = false;
 
     for (const wave of waves) {
-      // Create sub-jobs for each step in this wave
-      const waveJobs = await Promise.all(
-        wave.map(async (stepIdx) => {
-          const step = plan.steps.find(s => s.stepIndex === stepIdx)!;
+      // Create sub-jobs for each step in this wave (individually, so one failure doesn't kill the wave)
+      const waveJobs: { stepIndex: number; jobId: string }[] = [];
+      for (const stepIdx of wave) {
+        const step = plan.steps.find(s => s.stepIndex === stepIdx)!;
+        try {
           const subJob = await prisma.agentJob.create({
             data: {
               agentId: step.agentId,
@@ -137,9 +138,19 @@ export async function POST(req: Request) {
               dependsOn: JSON.stringify(step.dependsOn),
             },
           });
-          return { stepIndex: stepIdx, jobId: subJob.id };
-        }),
-      );
+          waveJobs.push({ stepIndex: stepIdx, jobId: subJob.id });
+        } catch (createError: any) {
+          console.error(`[A2A_EXECUTE] Failed to create sub-job for step ${stepIdx} (agent: ${step.agentId}):`, createError.message);
+          stepResults[stepIdx] = {
+            jobId: 'creation-failed',
+            status: 'FAILED',
+            result: { error: `Failed to create job: ${createError.message}` },
+          };
+          hasFailure = true;
+        }
+      }
+
+      if (waveJobs.length === 0) continue; // All jobs in this wave failed to create
 
       // Execute all jobs in this wave in parallel
       const waveResults = await Promise.allSettled(
@@ -169,7 +180,8 @@ export async function POST(req: Request) {
           // Promise rejected — mark as failed
           const matchingJob = waveJobs.find(j => j.stepIndex === (outcome as any).value?.stepIndex);
           const jobId = matchingJob?.jobId || 'unknown';
-          stepResults[(outcome as any).value?.stepIndex ?? -1] = {
+          const failedStepIdx = (outcome as any).value?.stepIndex ?? matchingJob?.stepIndex ?? -1;
+          stepResults[failedStepIdx] = {
             jobId,
             status: 'FAILED',
             result: { error: outcome.reason?.message || 'Execution failed' },

@@ -7,6 +7,8 @@
  *
  * Handles: agent dispatch, AIProof commit/verify, stats update,
  * notifications, and chat channel updates.
+ *
+ * SAFETY: Uses try/finally to GUARANTEE jobs never stay stuck in EXECUTING.
  */
 
 import prisma from '@/app/lib/prisma';
@@ -40,10 +42,15 @@ export interface ExecuteJobResult {
  * Returns null if DAEMON_PRIVATE_KEY not configured.
  */
 function getDaemonWallet(): ethers.Wallet | null {
-    const key = process.env.DAEMON_PRIVATE_KEY || process.env.BOT_PRIVATE_KEY || process.env.ADMIN_PRIVATE_KEY;
-    if (!key) return null;
-    const provider = new ethers.JsonRpcProvider(RPC_URL);
-    return new ethers.Wallet(key, provider);
+    try {
+        const key = process.env.DAEMON_PRIVATE_KEY || process.env.BOT_PRIVATE_KEY || process.env.ADMIN_PRIVATE_KEY;
+        if (!key) return null;
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        return new ethers.Wallet(key, provider);
+    } catch (e: any) {
+        console.error(`[Execute] getDaemonWallet failed:`, e.message);
+        return null;
+    }
 }
 
 /**
@@ -169,17 +176,23 @@ export function formatAgentResultForChat(raw: any): string {
 /**
  * Execute a marketplace job end-to-end.
  *
+ * SAFETY GUARANTEE: Jobs NEVER remain stuck in EXECUTING.
+ * A try/finally block ensures status is always updated to a
+ * terminal state (COMPLETED or FAILED), even on unexpected crashes.
+ *
  * Steps:
- *   1. Fetch job + agent from DB
+ *   1. Fetch job + agent
  *   2. Mark as EXECUTING
  *   3. AIProof commit (planHash)
  *   4. Dispatch to agent (native / webhook / simulated)
  *   5. AIProof verify (resultHash)
- *   6. Update job record
+ *   6. Update job record (GUARANTEED via finally)
  *   7. Update agent stats
  *   8. Send notifications + chat updates
  */
 export async function executeJob(jobId: string): Promise<ExecuteJobResult> {
+    const startTime = Date.now();
+
     // ═══════════════════════════════════════════════════════════
     // 1. Fetch job + agent
     // ═══════════════════════════════════════════════════════════
@@ -192,6 +205,8 @@ export async function executeJob(jobId: string): Promise<ExecuteJobResult> {
     if (job.status !== 'MATCHED' && job.status !== 'ESCROW_LOCKED' && job.status !== 'ORCHESTRATING') {
         throw new Error(`Cannot execute job in status: ${job.status}`);
     }
+
+    console.log(`[Execute] ▶ Starting job ${jobId.slice(0, 8)} for agent "${job.agent.name}" (${job.agent.nativeAgentId || 'simulated'})`);
 
     // ═══════════════════════════════════════════════════════════
     // 2. Mark as EXECUTING
@@ -211,250 +226,307 @@ export async function executeJob(jobId: string): Promise<ExecuteJobResult> {
     }).catch(() => {});
 
     // ═══════════════════════════════════════════════════════════
-    // 2.5: AIProofRegistry — Commit planHash BEFORE execution
-    // Proves on-chain what the agent was ASKED to do.
+    // SAFETY NET: Everything below is wrapped in try/finally to
+    // GUARANTEE the job is updated to a terminal state.
     // ═══════════════════════════════════════════════════════════
     let commitmentId: string | null = null;
     let commitTxHash: string = '';
-    const wallet = getDaemonWallet();
-
-    if (wallet && job.onChainJobId) {
-        try {
-            const planInput = (job.prompt || '') + (job.taskDescription || '');
-            const planHash = ethers.keccak256(ethers.toUtf8Bytes(planInput));
-
-            const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, wallet);
-            const nonce = await wallet.provider!.getTransactionCount(wallet.address, 'pending');
-            const tx = await registry.commit(planHash, job.onChainJobId, {
-                nonce, gasLimit: 500_000, type: 0
-            });
-
-            commitTxHash = tx.hash;
-            console.log(`[AIProof] Commitment TX sent: ${commitTxHash}`);
-
-            try { await tx.wait(1); } catch (e: any) {
-                if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
-                    await verifyTxOnChain(commitTxHash, 'AIProofRegistry.commit');
-                } else { throw e; }
-            }
-
-            // Extract commitmentId from event logs (try raw RPC if ethers fails)
-            try {
-                const receipt = await wallet.provider!.getTransactionReceipt(commitTxHash);
-                if (receipt) {
-                    for (const log of receipt.logs) {
-                        try {
-                            const parsed = registry.interface.parseLog({ topics: log.topics as string[], data: log.data });
-                            if (parsed && parsed.name === 'CommitmentMade') {
-                                commitmentId = parsed.args.commitmentId;
-                                break;
-                            }
-                        } catch { /* skip */ }
-                    }
-                }
-            } catch {
-                // Tempo parse error -- use planHash as fallback commitmentId
-                commitmentId = planHash;
-            }
-
-            // Store commitment data
-            await prisma.agentJob.update({
-                where: { id: jobId },
-                data: { planHash, commitmentId, commitTxHash: commitTxHash || null },
-            });
-
-            console.log(`[AIProof] Commitment registered on-chain. ID: ${commitmentId?.slice(0, 16)}...`);
-        } catch (proofError: any) {
-            console.error(`[AIProof] Commitment failed (non-blocking):`, proofError.message);
-            // Don't block execution -- AIProof is an enhancement, not critical path
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    // 3. Execute agent task
-    // ═══════════════════════════════════════════════════════════
-    const startTime = Date.now();
     let result: any = null;
     let finalStatus = 'COMPLETED';
-
-    try {
-        if (job.agent.nativeAgentId) {
-            // ════ Native PayPol Agent (Claude-powered) ════
-            const response = await fetch(`${AGENT_SERVICE_URL}/agents/${job.agent.nativeAgentId}/execute`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    prompt: job.prompt,
-                    taskDescription: job.taskDescription,
-                    budget: job.budget,
-                    callerWallet: job.clientWallet,
-                }),
-                signal: AbortSignal.timeout(120000),
-            });
-
-            if (!response.ok) throw new Error(`Agent service returned ${response.status}`);
-            result = await response.json();
-
-        } else if (job.agent.webhookUrl) {
-            // ════ Third-party Agent (via webhook) ════
-            const response = await fetch(job.agent.webhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jobId: job.id,
-                    prompt: job.prompt,
-                    taskDescription: job.taskDescription,
-                    budget: job.budget,
-                    callerWallet: job.clientWallet,
-                    token: job.token,
-                }),
-                signal: AbortSignal.timeout(120000),
-            });
-
-            if (!response.ok) throw new Error(`Webhook returned ${response.status}`);
-            result = await response.json();
-
-        } else {
-            // ════ No execution endpoint — Simulate for demo agents ════
-            result = {
-                status: 'completed',
-                output: `Task "${job.prompt}" has been queued for processing by ${job.agent.name}. The agent will deliver results to your workspace.`,
-                metadata: {
-                    agentName: job.agent.name,
-                    category: job.agent.category,
-                    estimatedTime: `${job.agent.responseTime}s`,
-                },
-            };
-        }
-    } catch (execError: any) {
-        console.error(`[Execute] Agent execution failed:`, execError.message);
-        finalStatus = 'FAILED';
-        result = { error: execError.message };
-    }
-
-    const executionTime = Math.round((Date.now() - startTime) / 1000);
-
-    // ═══════════════════════════════════════════════════════════
-    // 3.5: AIProofRegistry — Verify resultHash AFTER execution
-    // Records on-chain what the agent ACTUALLY did.
-    // ═══════════════════════════════════════════════════════════
     let resultHash: string = '';
     let verifyTxHashStr: string = '';
     let proofMatched: boolean | null = null;
 
-    if (wallet && commitmentId && finalStatus === 'COMPLETED') {
-        try {
-            resultHash = ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(result)));
+    try {
+        // ═══════════════════════════════════════════════════════════
+        // 2.5: AIProofRegistry — Commit planHash BEFORE execution
+        // ═══════════════════════════════════════════════════════════
+        const wallet = getDaemonWallet();
 
-            const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, wallet);
-            const nonce = await wallet.provider!.getTransactionCount(wallet.address, 'pending');
-            const tx = await registry.verify(commitmentId, resultHash, {
-                nonce, gasLimit: 500_000, type: 0
-            });
+        if (wallet && job.onChainJobId) {
+            try {
+                const planInput = (job.prompt || '') + (job.taskDescription || '');
+                const planHash = ethers.keccak256(ethers.toUtf8Bytes(planInput));
 
-            verifyTxHashStr = tx.hash;
-            console.log(`[AIProof] Verification TX sent: ${verifyTxHashStr}`);
+                const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, wallet);
+                const nonce = await wallet.provider!.getTransactionCount(wallet.address, 'pending');
+                const tx = await registry.commit(planHash, job.onChainJobId, {
+                    nonce, gasLimit: 500_000, type: 0
+                });
 
-            try { await tx.wait(1); } catch (e: any) {
-                if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
-                    await verifyTxOnChain(verifyTxHashStr, 'AIProofRegistry.verify');
-                } else { throw e; }
+                commitTxHash = tx.hash;
+                console.log(`[AIProof] Commitment TX sent: ${commitTxHash}`);
+
+                try { await tx.wait(1); } catch (e: any) {
+                    if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                        await verifyTxOnChain(commitTxHash, 'AIProofRegistry.commit');
+                    } else { throw e; }
+                }
+
+                try {
+                    const receipt = await wallet.provider!.getTransactionReceipt(commitTxHash);
+                    if (receipt) {
+                        for (const log of receipt.logs) {
+                            try {
+                                const parsed = registry.interface.parseLog({ topics: log.topics as string[], data: log.data });
+                                if (parsed && parsed.name === 'CommitmentMade') {
+                                    commitmentId = parsed.args.commitmentId;
+                                    break;
+                                }
+                            } catch { /* skip */ }
+                        }
+                    }
+                } catch {
+                    commitmentId = planHash;
+                }
+
+                await prisma.agentJob.update({
+                    where: { id: jobId },
+                    data: { planHash, commitmentId, commitTxHash: commitTxHash || null },
+                });
+
+                console.log(`[AIProof] Commitment registered on-chain. ID: ${commitmentId?.slice(0, 16)}...`);
+            } catch (proofError: any) {
+                console.error(`[AIProof] Commitment failed (non-blocking):`, proofError.message);
             }
-
-            // planHash !== resultHash by design (one hashes the question, other the answer)
-            // The AIProofRegistry contract records both for accountability
-            const planInput = (job.prompt || '') + (job.taskDescription || '');
-            const planHash = ethers.keccak256(ethers.toUtf8Bytes(planInput));
-            proofMatched = planHash === resultHash;
-
-            console.log(`[AIProof] Verification recorded on-chain. planHash vs resultHash match: ${proofMatched}`);
-        } catch (verifyError: any) {
-            console.error(`[AIProof] Verification failed (non-blocking):`, verifyError.message);
         }
-    }
 
-    // ═══════════════════════════════════════════════════════════
-    // 4. Update job with result + AI proof data
-    // ═══════════════════════════════════════════════════════════
-    await prisma.agentJob.update({
-        where: { id: jobId },
-        data: {
-            status: finalStatus,
-            result: JSON.stringify(result),
-            executionTime,
-            completedAt: new Date(),
-            resultHash: resultHash || null,
-            verifyTxHash: verifyTxHashStr || null,
-            proofMatched,
-        },
-    });
+        // ═══════════════════════════════════════════════════════════
+        // 3. Execute agent task
+        // ═══════════════════════════════════════════════════════════
+        try {
+            if (job.agent.nativeAgentId) {
+                // ════ Native PayPol Agent (Claude-powered) ════
+                console.log(`[Execute] Calling agent service: ${AGENT_SERVICE_URL}/agents/${job.agent.nativeAgentId}/execute`);
 
-    // ═══════════════════════════════════════════════════════════
-    // 5. Update agent stats
-    // ═══════════════════════════════════════════════════════════
-    const agent = job.agent;
-    const newTotal = agent.totalJobs + 1;
-    const prevSuccessCount = Math.round(agent.successRate * agent.totalJobs / 100);
-    const newSuccessCount = finalStatus === 'COMPLETED' ? prevSuccessCount + 1 : prevSuccessCount;
-    const newRate = newTotal > 0 ? (newSuccessCount / newTotal) * 100 : 100;
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 120000);
 
-    await prisma.marketplaceAgent.update({
-        where: { id: agent.id },
-        data: {
-            totalJobs: newTotal,
-            successRate: Math.round(newRate * 10) / 10,
-            responseTime: Math.round((agent.responseTime * agent.totalJobs + executionTime) / newTotal),
-        },
-    });
+                try {
+                    const response = await fetch(`${AGENT_SERVICE_URL}/agents/${job.agent.nativeAgentId}/execute`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: job.prompt,
+                            taskDescription: job.taskDescription,
+                            budget: job.budget,
+                            callerWallet: job.clientWallet,
+                        }),
+                        signal: controller.signal,
+                    });
+                    clearTimeout(timeout);
 
-    // ═══════════════════════════════════════════════════════════
-    // 6. Notifications
-    // ═══════════════════════════════════════════════════════════
-    notify({
-        wallet: job.clientWallet,
-        type: finalStatus === 'COMPLETED' ? 'job:completed' : 'job:failed',
-        title: finalStatus === 'COMPLETED' ? 'Task Completed' : 'Task Failed',
-        message: finalStatus === 'COMPLETED'
-            ? `${job.agent.name} completed your task in ${executionTime}s`
-            : `Execution failed: ${(result as any)?.error || 'Unknown error'}`,
-        streamJobId: jobId,
-    }).catch(() => {});
+                    if (!response.ok) {
+                        throw new Error(`Agent service returned HTTP ${response.status}`);
+                    }
 
-    // ═══════════════════════════════════════════════════════════
-    // 7. Post result to agent chat channel
-    // ═══════════════════════════════════════════════════════════
-    if (finalStatus === 'COMPLETED') {
-        const resultSummary = formatAgentResultForChat(result);
-        postJobUpdate({
-            jobId,
-            agentId: job.agent.id,
-            agentName: job.agent.name,
-            content: `Task completed in ${executionTime}s.\n\n${resultSummary}`,
-            messageType: 'agent_result',
-            metadata: {
-                status: 'completed',
-                executionTime,
-                commitTxHash: commitTxHash || null,
-                verifyTxHash: verifyTxHashStr || null,
-                proofMatched,
-            },
+                    result = await response.json();
+                    console.log(`[Execute] Agent response: status=${result?.status}, hasError=${!!result?.error}`);
+
+                    // ════ CHECK RESPONSE BODY STATUS ════
+                    // Agent service returns HTTP 200 but may include status:"error" in body
+                    if (result?.status === 'error' || result?.status === 'failed' || result?.error) {
+                        console.error(`[Execute] Agent returned error in body: ${result.error || 'Unknown'}`);
+                        finalStatus = 'FAILED';
+                    }
+                } catch (fetchErr: any) {
+                    clearTimeout(timeout);
+                    throw fetchErr;
+                }
+
+            } else if (job.agent.webhookUrl) {
+                // ════ Third-party Agent (via webhook) ════
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 120000);
+
+                try {
+                    const response = await fetch(job.agent.webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jobId: job.id,
+                            prompt: job.prompt,
+                            taskDescription: job.taskDescription,
+                            budget: job.budget,
+                            callerWallet: job.clientWallet,
+                            token: job.token,
+                        }),
+                        signal: controller.signal,
+                    });
+                    clearTimeout(timeout);
+
+                    if (!response.ok) throw new Error(`Webhook returned ${response.status}`);
+                    result = await response.json();
+
+                    // Check body status
+                    if (result?.status === 'error' || result?.status === 'failed' || result?.error) {
+                        finalStatus = 'FAILED';
+                    }
+                } catch (fetchErr: any) {
+                    clearTimeout(timeout);
+                    throw fetchErr;
+                }
+
+            } else {
+                // ════ No execution endpoint — Simulate for demo agents ════
+                result = {
+                    status: 'completed',
+                    output: `Task "${job.prompt}" has been queued for processing by ${job.agent.name}. The agent will deliver results to your workspace.`,
+                    metadata: {
+                        agentName: job.agent.name,
+                        category: job.agent.category,
+                        estimatedTime: `${job.agent.responseTime}s`,
+                    },
+                };
+            }
+        } catch (execError: any) {
+            console.error(`[Execute] Agent execution failed for ${jobId.slice(0, 8)}:`, execError.message);
+            finalStatus = 'FAILED';
+            result = { error: execError.message };
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // 3.5: AIProofRegistry — Verify resultHash AFTER execution
+        // ═══════════════════════════════════════════════════════════
+        if (wallet && commitmentId && finalStatus === 'COMPLETED') {
+            try {
+                resultHash = ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(result)));
+
+                const registry = new ethers.Contract(AI_PROOF_REGISTRY_ADDRESS, AI_PROOF_REGISTRY_ABI, wallet);
+                const nonce = await wallet.provider!.getTransactionCount(wallet.address, 'pending');
+                const tx = await registry.verify(commitmentId, resultHash, {
+                    nonce, gasLimit: 500_000, type: 0
+                });
+
+                verifyTxHashStr = tx.hash;
+                console.log(`[AIProof] Verification TX sent: ${verifyTxHashStr}`);
+
+                try { await tx.wait(1); } catch (e: any) {
+                    if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                        await verifyTxOnChain(verifyTxHashStr, 'AIProofRegistry.verify');
+                    } else { throw e; }
+                }
+
+                const planInput = (job.prompt || '') + (job.taskDescription || '');
+                const planHash = ethers.keccak256(ethers.toUtf8Bytes(planInput));
+                proofMatched = planHash === resultHash;
+
+                console.log(`[AIProof] Verification recorded on-chain. planHash vs resultHash match: ${proofMatched}`);
+            } catch (verifyError: any) {
+                console.error(`[AIProof] Verification failed (non-blocking):`, verifyError.message);
+            }
+        }
+    } catch (unexpectedError: any) {
+        // Catch-all for ANY unexpected error in the entire execution pipeline
+        console.error(`[Execute] UNEXPECTED ERROR for job ${jobId.slice(0, 8)}:`, unexpectedError.message, unexpectedError.stack);
+        finalStatus = 'FAILED';
+        if (!result) result = { error: unexpectedError.message };
+    } finally {
+        // ═══════════════════════════════════════════════════════════
+        // 4. GUARANTEED: Update job to terminal state
+        // This ALWAYS runs — even if everything above crashes.
+        // Jobs NEVER remain stuck in EXECUTING.
+        // ═══════════════════════════════════════════════════════════
+        const executionTime = Math.round((Date.now() - startTime) / 1000);
+
+        try {
+            await prisma.agentJob.update({
+                where: { id: jobId },
+                data: {
+                    status: finalStatus,
+                    result: JSON.stringify(result || { error: 'Unknown execution error' }),
+                    executionTime,
+                    completedAt: new Date(),
+                    resultHash: resultHash || null,
+                    verifyTxHash: verifyTxHashStr || null,
+                    proofMatched,
+                },
+            });
+            console.log(`[Execute] ✓ Job ${jobId.slice(0, 8)} → ${finalStatus} (${executionTime}s)`);
+        } catch (updateError: any) {
+            // LAST RESORT: If even the DB update fails, log it loudly
+            console.error(`[Execute] ❌ CRITICAL: Failed to update job ${jobId} to ${finalStatus}:`, updateError.message);
+            // Try a minimal update as absolute fallback
+            try {
+                await prisma.agentJob.update({
+                    where: { id: jobId },
+                    data: { status: 'FAILED', completedAt: new Date() },
+                });
+            } catch { /* truly nothing we can do */ }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // 5. Update agent stats (non-blocking — don't let this fail the job)
+        // ═══════════════════════════════════════════════════════════
+        try {
+            const agent = job.agent;
+            const newTotal = agent.totalJobs + 1;
+            const prevSuccessCount = Math.round(agent.successRate * agent.totalJobs / 100);
+            const newSuccessCount = finalStatus === 'COMPLETED' ? prevSuccessCount + 1 : prevSuccessCount;
+            const newRate = newTotal > 0 ? (newSuccessCount / newTotal) * 100 : 100;
+
+            await prisma.marketplaceAgent.update({
+                where: { id: agent.id },
+                data: {
+                    totalJobs: newTotal,
+                    successRate: Math.round(newRate * 10) / 10,
+                    responseTime: Math.round((agent.responseTime * agent.totalJobs + executionTime) / newTotal),
+                },
+            });
+        } catch (statsError: any) {
+            console.error(`[Execute] Stats update failed (non-blocking):`, statsError.message);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // 6. Notifications (non-blocking)
+        // ═══════════════════════════════════════════════════════════
+        const executionTimeForNotif = Math.round((Date.now() - startTime) / 1000);
+        notify({
+            wallet: job.clientWallet,
+            type: finalStatus === 'COMPLETED' ? 'job:completed' : 'job:failed',
+            title: finalStatus === 'COMPLETED' ? 'Task Completed' : 'Task Failed',
+            message: finalStatus === 'COMPLETED'
+                ? `${job.agent.name} completed your task in ${executionTimeForNotif}s`
+                : `Execution failed: ${(result as any)?.error || 'Unknown error'}`,
+            streamJobId: jobId,
         }).catch(() => {});
-    } else {
-        postJobUpdate({
-            jobId,
-            agentId: job.agent.id,
-            agentName: job.agent.name,
-            content: `Task failed: ${(result as any)?.error || 'Unknown error'}`,
-            messageType: 'system',
-            metadata: { status: 'failed' },
-        }).catch(() => {});
+
+        // ═══════════════════════════════════════════════════════════
+        // 7. Post result to agent chat channel (non-blocking)
+        // ═══════════════════════════════════════════════════════════
+        if (finalStatus === 'COMPLETED') {
+            const resultSummary = formatAgentResultForChat(result);
+            postJobUpdate({
+                jobId,
+                agentId: job.agent.id,
+                agentName: job.agent.name,
+                content: `Task completed in ${executionTimeForNotif}s.\n\n${resultSummary}`,
+                messageType: 'agent_result',
+                metadata: {
+                    status: 'completed',
+                    executionTime: executionTimeForNotif,
+                    commitTxHash: commitTxHash || null,
+                    verifyTxHash: verifyTxHashStr || null,
+                    proofMatched,
+                },
+            }).catch(() => {});
+        } else {
+            postJobUpdate({
+                jobId,
+                agentId: job.agent.id,
+                agentName: job.agent.name,
+                content: `Task failed: ${(result as any)?.error || 'Unknown error'}`,
+                messageType: 'system',
+                metadata: { status: 'failed' },
+            }).catch(() => {});
+        }
     }
 
     return {
         success: finalStatus === 'COMPLETED',
         status: finalStatus,
         result,
-        executionTime,
+        executionTime: Math.round((Date.now() - startTime) / 1000),
         aiProof: commitmentId ? {
             commitmentId,
             commitTxHash,

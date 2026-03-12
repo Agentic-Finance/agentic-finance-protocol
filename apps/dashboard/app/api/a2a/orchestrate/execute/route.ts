@@ -112,6 +112,8 @@ export async function POST(req: Request) {
       data: { status: 'EXECUTING' },
     });
 
+    console.log(`[A2A_EXECUTE] Starting chain ${a2aChainId.slice(0, 8)} with ${plan.steps.length} steps`);
+
     // ── Build dependency graph and execute in waves ──
     const waves = getExecutionWaves(plan.steps);
     const stepResults: Record<number, { jobId: string; status: string; result: any }> = {};
@@ -160,35 +162,57 @@ export async function POST(req: Request) {
         }),
       );
 
-      // Process wave results
-      for (const outcome of waveResults) {
+      // Process wave results — read final status from DB (executeJob guarantees terminal state)
+      for (let i = 0; i < waveResults.length; i++) {
+        const outcome = waveResults[i];
+        // For rejected promises, outcome.value is undefined — use waveJobs index instead
+        const waveJob = waveJobs[i];
+        const stepIndex = waveJob.stepIndex;
+        const jobId = waveJob.jobId;
+
         if (outcome.status === 'fulfilled') {
-          const { stepIndex, jobId, result } = outcome.value;
           const updatedJob = await prisma.agentJob.findUnique({
             where: { id: jobId },
-            select: { status: true, result: true },
+            select: { status: true, result: true, executionTime: true },
           });
           stepResults[stepIndex] = {
             jobId,
             status: updatedJob?.status || 'UNKNOWN',
             result: updatedJob?.result || null,
           };
-          if (updatedJob?.status === 'FAILED') {
+          if (updatedJob?.status !== 'COMPLETED') {
             hasFailure = true;
           }
         } else {
-          // Promise rejected — mark as failed
-          const matchingJob = waveJobs.find(j => j.stepIndex === (outcome as any).value?.stepIndex);
-          const jobId = matchingJob?.jobId || 'unknown';
-          const failedStepIdx = (outcome as any).value?.stepIndex ?? matchingJob?.stepIndex ?? -1;
-          stepResults[failedStepIdx] = {
+          // Promise rejected — read from DB (executeJob's finally should have set terminal state)
+          console.error(`[A2A_EXECUTE] Step ${stepIndex} promise rejected:`, outcome.reason?.message);
+          const updatedJob = await prisma.agentJob.findUnique({
+            where: { id: jobId },
+            select: { status: true, result: true },
+          });
+          stepResults[stepIndex] = {
             jobId,
-            status: 'FAILED',
-            result: { error: outcome.reason?.message || 'Execution failed' },
+            status: updatedJob?.status || 'FAILED',
+            result: updatedJob?.result || JSON.stringify({ error: outcome.reason?.message || 'Execution failed' }),
           };
           hasFailure = true;
         }
       }
+    }
+
+    // ── Safety sweep: force any stuck EXECUTING sub-jobs to FAILED ──
+    const stuckJobs = await prisma.agentJob.findMany({
+      where: { a2aChainId, depth: { gt: 0 }, status: 'EXECUTING' },
+    });
+    if (stuckJobs.length > 0) {
+      console.error(`[A2A_EXECUTE] Found ${stuckJobs.length} stuck EXECUTING jobs — forcing to FAILED`);
+      for (const sj of stuckJobs) {
+        await prisma.agentJob.update({
+          where: { id: sj.id },
+          data: { status: 'FAILED', result: JSON.stringify({ error: 'Execution timed out or crashed' }), completedAt: new Date() },
+        }).catch(() => {});
+      }
+      hasFailure = true;
     }
 
     // ── Aggregate results ──

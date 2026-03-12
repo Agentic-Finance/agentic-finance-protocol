@@ -488,33 +488,56 @@ export async function decomposeTask(
 
     if (hasRealKey) {
         try {
-            const systemPrompt = `You are PayPol's A2A Orchestration Planner. You decompose complex tasks into sub-tasks that specialized AI agents can execute.
+            // Build compact catalog (only essential fields to save tokens)
+            const compactCatalog = catalog.map(a => ({
+                id: a.id,
+                name: a.name,
+                cat: a.category,
+                skills: a.skills.slice(0, 5), // Limit skills for context
+                price: a.basePrice,
+                rating: a.avgRating,
+            }));
+
+            const systemPrompt = `You are PayPol's A2A Task Planner. Decompose user tasks into MINIMAL sub-tasks using ONLY directly relevant agents.
+
+CRITICAL RULES — Follow strictly:
+1. ONLY select agents whose skills DIRECTLY match the user's request. Do NOT add agents "just in case."
+2. Use 2-4 agents typically. Only exceed 4 if the task genuinely requires more distinct capabilities.
+3. Every selected agent MUST have a clear, specific role justified by the task. If you can't explain why an agent is needed in one sentence, don't include it.
+4. Match agent SKILLS and CATEGORY to actual task requirements — not tangential associations.
+5. Budget allocations must sum to <= ${availableBudget} (total: ${budget}, fee: ${platformFee}).
+6. Each step's prompt must be specific and actionable — describe exactly what that agent should do.
+7. Use dependsOn for execution ordering: steps that need prior output should depend on earlier steps.
+${preferences?.parallelismPreferred ? '8. Prefer parallel execution where possible.' : '8. Use sequential dependencies where outputs feed into next steps.'}
+
+EXAMPLES of correct behavior:
+- "Build landing page with security audit" → deployment agent (build) + security agent (audit) + verification agent (proof trail) = 3 agents
+- "Send payment to 0xABC" → payment agent only = 1 agent
+- "Deploy token and set up payroll" → deployment agent (deploy token) + payroll agent (setup payroll) = 2 agents
+- "Create escrow with milestone payments" → escrow agent + streams agent = 2 agents
+
+EXAMPLES of WRONG behavior (do NOT do this):
+- Adding "Token Minter" when user said "landing page" — NOT relevant
+- Adding "Recurring Payment" when user didn't mention recurring — NOT relevant
+- Adding "Treasury Manager" when no treasury analysis needed — NOT relevant
+- Selecting 6+ agents for a simple 2-concept task — TOO MANY
 
 AVAILABLE AGENTS:
-${JSON.stringify(catalog)}
+${JSON.stringify(compactCatalog)}
 
-Rules:
-- Break the task into 2-${Math.min(maxAgents, 8)} sub-tasks
-- Each sub-task must be assigned to exactly one agent from the catalog
-- Use dependsOn to define execution order (step indices that must complete first)
-- Steps with no dependencies can run in parallel
-- Budget allocations must sum to <= ${availableBudget} (total: ${budget}, platform fee: ${platformFee})
-- Each step budget should be >= agent's basePrice * 0.7
-${preferences?.parallelismPreferred ? '- Prefer parallel execution where possible (minimize dependencies)' : '- Use sequential dependencies where outputs feed into next steps'}
-
-Respond ONLY with valid JSON in this exact format:
+Respond ONLY with valid JSON:
 {
   "steps": [
     {
       "stepIndex": 0,
       "agentId": "uuid-from-catalog",
-      "prompt": "Specific sub-task instruction for this agent",
+      "prompt": "Specific actionable instruction for this agent",
       "budgetAllocation": 50,
       "dependsOn": [],
       "category": "agent-category"
     }
   ],
-  "reasoning": "Brief explanation of the decomposition strategy"
+  "reasoning": "One sentence explaining the decomposition"
 }`;
 
             const completion = await getOpenAI().chat.completions.create({
@@ -533,22 +556,45 @@ Respond ONLY with valid JSON in this exact format:
                 reasoning = parsed.reasoning || 'AI-planned decomposition.';
 
                 if (parsed.steps && Array.isArray(parsed.steps)) {
-                    steps = parsed.steps
-                        .map((step: any, idx: number) => {
-                            const agent = agents.find(a => a.id === step.agentId);
-                            if (!agent) return null;
-                            return {
-                                stepIndex: step.stepIndex ?? idx,
-                                agentId: agent.id,
-                                agentName: agent.name,
-                                agentEmoji: agent.avatarEmoji || '🤖',
-                                prompt: step.prompt || prompt,
-                                budgetAllocation: step.budgetAllocation || 0,
-                                dependsOn: Array.isArray(step.dependsOn) ? step.dependsOn : [],
-                                category: step.category || agent.category,
-                            } as DecompositionStep;
-                        })
-                        .filter(Boolean) as DecompositionStep[];
+                    // Deduplicate by category — keep highest budget per category
+                    const seenCategories = new Set<string>();
+                    const validSteps: DecompositionStep[] = [];
+
+                    for (const step of parsed.steps) {
+                        const agent = agents.find(a => a.id === step.agentId);
+                        if (!agent) continue;
+                        const cat = (step.category || agent.category).toLowerCase();
+
+                        // Skip duplicate categories (AI sometimes assigns 2 agents from same category)
+                        if (seenCategories.has(cat)) continue;
+                        seenCategories.add(cat);
+
+                        validSteps.push({
+                            stepIndex: validSteps.length,
+                            agentId: agent.id,
+                            agentName: agent.name,
+                            agentEmoji: agent.avatarEmoji || '🤖',
+                            prompt: step.prompt || prompt,
+                            budgetAllocation: step.budgetAllocation || 0,
+                            dependsOn: Array.isArray(step.dependsOn) ? step.dependsOn : [],
+                            category: step.category || agent.category,
+                        });
+                    }
+
+                    // Re-index dependsOn after filtering
+                    steps = validSteps.map((s, idx) => ({
+                        ...s,
+                        stepIndex: idx,
+                        dependsOn: s.dependsOn
+                            .filter(d => d < validSteps.length)
+                            .map(d => Math.min(d, idx - 1))
+                            .filter(d => d >= 0),
+                    }));
+
+                    // Limit to max 6 agents even from AI
+                    if (steps.length > 6) {
+                        steps = steps.slice(0, 6);
+                    }
                 }
             }
         } catch (aiError: any) {

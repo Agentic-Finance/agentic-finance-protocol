@@ -17,6 +17,7 @@
     "@prisma/client": "^6.2.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
+    "@tanstack/react-query": "^5.90.21",
     "@types/three": "^0.183.1",
     "circomlibjs": "^0.1.7",
     "ethers": "^6.16.0",
@@ -31,6 +32,8 @@
     "remark-gfm": "^4.0.1",
     "snarkjs": "^0.7.6",
     "three": "^0.183.2",
+    "viem": "^2.47.2",
+    "wagmi": "^3.5.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

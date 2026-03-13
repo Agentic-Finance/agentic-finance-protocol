@@ -672,3 +672,58 @@ model AuditEvent {
   @@index([eventType])
   @@index([createdAt])
 }
+
+// ==========================================
+// ⏰ TEMPO AA: SCHEDULED TRANSACTIONS
+// ==========================================
+
+// Pre-signed transactions with time-window execution (Tempo validAfter/validBefore)
+model ScheduledTransaction {
+  id            String    @id @default(uuid())
+  wallet        String                                     // Sender address
+  label         String                                     // "Payroll March 2026" or "Agent budget refill"
+  toAddress     String                                     // Target contract
+  calldata      String                                     // Hex-encoded calldata
+  value         String    @default("0")                    // Value in wei (string for BigInt)
+  token         String?                                    // Token symbol if applicable
+  validAfter    DateTime                                   // Earliest execution time (Tempo validAfter)
+  validBefore   DateTime                                   // Latest execution time (Tempo validBefore)
+  status        String    @default("PENDING")              // PENDING | BROADCAST | CONFIRMED | EXPIRED | CANCELLED
+  txHash        String?
+  gasUsed       String?
+  errorMessage  String?
+  createdAt     DateTime  @default(now())
+  executedAt    DateTime?
+
+  @@index([wallet])
+  @@index([status])
+  @@index([validAfter])
+}
+
+// ==========================================
+// 🔑 TEMPO AA: ACCESS KEYS
+// ==========================================
+
+// Scoped signing authority for agent embedded wallets (Tempo Access Keys)
+model AccessKey {
+  id                String    @id @default(uuid())
+  agentId           String?                                // MarketplaceAgent id
+  agentWallet       String                                 // Agent's embedded wallet address
+  daemonWallet      String                                 // Root account (daemon) that granted the key
+  spendingLimit     Float                                  // Max AlphaUSD per period
+  spentThisPeriod   Float     @default(0)                  // Amount spent in current period
+  periodResetAt     DateTime                               // When spending counter resets
+  allowedContracts  String    @default("*")                // CSV of allowed contract addresses, or "*" for all
+  validUntil        DateTime                               // Access key expiry
+  isActive          Boolean   @default(true)
+  revokedAt         DateTime?
+  revokeReason      String?
+  txCount           Int       @default(0)                  // Total transactions executed with this key
+  createdAt         DateTime  @default(now())
+  lastUsedAt        DateTime?
+
+  @@unique([agentWallet])
+  @@index([agentId])
+  @@index([isActive])
+  @@index([validUntil])
+}

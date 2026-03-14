@@ -229,7 +229,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                 const response = await fetch('/api/ai-parse', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
                     body: JSON.stringify({
                         prompt: debouncedPrompt,
                         supportedTokens: currentTokens.map((t: any) => t.symbol),
@@ -341,7 +341,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             try {
                 const { SUPPORTED_TOKENS: currentTokens, contacts: currentContacts } = latestDataRef.current;
                 const safeContacts = currentContacts.length > 0 ? currentContacts : [{ name: 'Tony', wallet: '0xe89b...' }];
-                const response = await fetch('/api/ai-parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: `Extract payroll intents. Each row should have: name, wallet (0x address), amount, token, note.\nRaw Data:\n${csvText}`, supportedTokens: currentTokens.map((t: any) => t.symbol), addressBook: safeContacts.map(c => c.name) }) });
+                const response = await fetch('/api/ai-parse', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' }, body: JSON.stringify({ prompt: `Extract payroll intents. Each row should have: name, wallet (0x address), amount, token, note.\nRaw Data:\n${csvText}`, supportedTokens: currentTokens.map((t: any) => t.symbol), addressBook: safeContacts.map(c => c.name) }) });
                 if (!response.ok) throw new Error('File parsing failed');
                 const data = await response.json();
                 if (data.intents && data.intents.length > 0) {

@@ -14,6 +14,16 @@ function getOpenAI() {
 const MAX_PROMPT_LENGTH = 10_000;
 
 export async function POST(req: Request) {
+    // Clone request so body can be read twice (dryRun check + main flow)
+    const cloned = req.clone();
+    try {
+        const peek = await cloned.json();
+        if (peek?.dryRun) {
+            const hasKey = !!process.env.OPENAI_API_KEY;
+            return NextResponse.json({ ok: hasKey, model: 'gpt-4o-mini' }, { status: hasKey ? 200 : 503 });
+        }
+    } catch { /* not JSON — proceed to auth */ }
+
     const auth = requireWalletAuth(req);
     if (!auth.valid) return auth.response!;
     const rateCheck = aiParseLimiter.check(getClientId(req));
@@ -21,13 +31,7 @@ export async function POST(req: Request) {
 
     try {
         const body = await req.json();
-        const { prompt, supportedTokens, addressBook, systemData, dryRun } = body;
-
-        // Health-check probe: return 200 without calling OpenAI
-        if (dryRun) {
-            const hasKey = !!process.env.OPENAI_API_KEY;
-            return NextResponse.json({ ok: hasKey, model: 'gpt-4o-mini' }, { status: hasKey ? 200 : 503 });
-        }
+        const { prompt, supportedTokens, addressBook, systemData } = body;
 
         // Input validation
         if (!prompt || typeof prompt !== 'string') {

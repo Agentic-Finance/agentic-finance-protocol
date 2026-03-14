@@ -5,7 +5,7 @@ import { ResearchPaperClient } from './ResearchPaperClient';
 
 export const metadata = {
     title: 'Research Paper - PayPol Protocol',
-    description: 'PayPol: Autonomous Agent-Native Financial Infrastructure with Zero-Knowledge Privacy Guarantees - economic models and ZK mechanics.',
+    description: 'PayPol: A Deterministic Financial Substrate for Autonomous Agent Economies — MCP, x402, stealth addresses, verifiable AI, PayFi credit, and ZK privacy.',
 };
 
 export default function ResearchPaperPage() {

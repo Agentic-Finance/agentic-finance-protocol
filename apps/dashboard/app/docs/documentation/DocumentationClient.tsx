@@ -4,59 +4,55 @@ import { DocsSidebar, type TocItem } from '../_components/DocsSidebar';
 
 const tocItems: TocItem[] = [
     { id: '1-introduction', label: 'Introduction', level: 2 },
-    { id: '2-architecture-overview', label: 'Architecture Overview', level: 2 },
+    { id: '2-architecture-overview', label: 'Architecture', level: 2 },
     { id: '3-getting-started', label: 'Getting Started', level: 2 },
     { id: '4-core-modules', label: 'Core Modules', level: 2 },
-    { id: '5-smart-contract-reference', label: 'Smart Contract Reference', level: 2 },
-    { id: '6-api-reference', label: 'API Reference', level: 2 },
-    { id: '7-zk-privacy-shield-v2', label: 'ZK Privacy Shield V2', level: 2 },
-    { id: '8-agent-to-agent-a2a-economy', label: 'A2A Economy', level: 2 },
-    { id: '9-verifiable-ai-proofs', label: 'Verifiable AI Proofs', level: 2 },
-    { id: '10-real-time-live-dashboard', label: 'Live Dashboard', level: 2 },
-    { id: '11-tempo-benchmark-report', label: 'Tempo Benchmark', level: 2 },
-    { id: '12-sdk--plugin-ecosystem', label: 'SDK & Plugin Ecosystem', level: 2 },
-    { id: '13-aps-1-v21-the-global-agent-payment-standard', label: 'APS-1 v2.1 Global Standard', level: 2 },
-    { id: '14-zk-agent-identity', label: 'ZK Agent Identity', level: 2 },
+    { id: '5-mcp-server', label: 'MCP Server', level: 2 },
+    { id: '6-x402-payment-protocol', label: 'x402 Protocol', level: 2 },
+    { id: '7-stealth-addresses', label: 'Stealth Addresses', level: 2 },
+    { id: '8-verifiable-ai-engine', label: 'Verifiable AI', level: 2 },
+    { id: '9-payfi-credit-layer', label: 'PayFi Credit', level: 2 },
+    { id: '10-zk-privacy-shield', label: 'ZK Privacy Shield', level: 2 },
+    { id: '11-smart-contract-reference', label: 'Smart Contracts', level: 2 },
+    { id: '12-api-reference', label: 'API Reference', level: 2 },
+    { id: '13-sdk--plugin-ecosystem', label: 'SDK & Plugins', level: 2 },
+    { id: '14-aps-1-v21', label: 'APS-1 v2.1', level: 2 },
     { id: '15-fee-schedule', label: 'Fee Schedule', level: 2 },
     { id: '16-security-model', label: 'Security Model', level: 2 },
-    { id: '17-deployment-guide', label: 'Deployment Guide', level: 2 },
-    { id: '18-swarm-coordination', label: 'Swarm Coordination', level: 2 },
-    { id: '19-cortex-intelligence-hub', label: 'Cortex Intelligence', level: 2 },
-    { id: '20-sentinel-command-center', label: 'Sentinel Command', level: 2 },
-    { id: 'appendix', label: 'Appendix', level: 2 },
+    { id: '17-deployment-guide', label: 'Deployment', level: 2 },
 ];
 
 const quickLinks = [
     {
         title: 'Getting Started',
-        desc: 'Prerequisites, project structure, and quick start guide',
+        desc: 'Prerequisites, project structure, and quick start',
         href: '#3-getting-started',
         icon: (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
         ),
     },
     {
-        title: 'Smart Contracts',
-        desc: 'NexusV2, ShieldVault, and MultisendVault references',
-        href: '#5-smart-contract-reference',
-        icon: (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" /></svg>
-        ),
-    },
-    {
-        title: 'API Reference',
-        desc: 'REST endpoints for workspace, payroll, marketplace, and escrow',
-        href: '#6-api-reference',
+        title: 'MCP Server',
+        desc: '10 JSON-RPC payment tools for any AI model',
+        href: '#5-mcp-server',
         icon: (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
         ),
     },
     {
-        title: 'ZK Privacy Shield',
-        desc: 'Poseidon commitments, PLONK proofs, and privacy guarantees',
-        href: '#7-zk-privacy-shield',
+        title: 'PayFi Credit',
+        desc: 'AI agent lending with 5-tier credit scoring',
+        href: '#9-payfi-credit-layer',
         icon: (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        ),
+    },
+    {
+        title: 'API Reference',
+        desc: 'REST endpoints for all protocol features',
+        href: '#12-api-reference',
+        icon: (
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" /></svg>
         ),
     },
 ];
@@ -74,8 +70,8 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 mb-5">
-                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/20">v2.1</span>
-                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Tempo Moderato Testnet</span>
+                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/20">v4.0</span>
+                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Tempo Moderato L1</span>
                     <span className="text-xs text-slate-500">Last updated: March 2026</span>
                 </div>
 
@@ -83,7 +79,7 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                     Protocol <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Documentation</span>
                 </h1>
                 <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
-                    Comprehensive guides, API references, and smart contract integration for the PayPol Protocol - the autonomous payroll and agent marketplace infrastructure.
+                    Complete reference for the PayPol financial operating system — MCP server, x402 payments, stealth addresses, verifiable AI, PayFi credit, ZK privacy, and 9 verified smart contracts.
                 </p>
             </div>
 

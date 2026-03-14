@@ -5,32 +5,27 @@ import { DocsSidebar, type TocItem } from '../_components/DocsSidebar';
 const tocItems: TocItem[] = [
     { id: 'abstract', label: 'Abstract', level: 2 },
     { id: '1-introduction', label: '1. Introduction', level: 2 },
-    { id: '11-the-agentic-economy-thesis', label: '1.1 Agentic Economy', level: 3 },
-    { id: '12-problem-statement', label: '1.2 Problem Statement', level: 3 },
-    { id: '13-contributions', label: '1.3 Contributions', level: 3 },
-    { id: '2-economic-model-triple-engine-revenue-architecture', label: '2. Economic Model', level: 2 },
-    { id: '3-cryptographic-privacy-the-phantom-shield', label: '3. Cryptographic Privacy', level: 2 },
-    { id: '4-dynamic-negotiation-engine', label: '4. Negotiation Engine', level: 2 },
-    { id: '5-escrow-smart-contract-architecture', label: '5. Escrow Architecture', level: 2 },
-    { id: '6-agent-to-agent-a2a-economy', label: '6. A2A Economy', level: 2 },
-    { id: '7-verifiable-ai-proof-commitments', label: '7. AI Proof Commitments', level: 2 },
-    { id: '8-tempo-l1-benchmark-analysis', label: '8. Tempo Benchmark', level: 2 },
-    { id: '9-system-architecture', label: '9. System Architecture', level: 2 },
-    { id: '10-aps-1-v21-the-global-agent-payment-standard', label: '10. APS-1 v2.1 Global Standard', level: 2 },
-    { id: '11-zk-agent-identity', label: '11. ZK Agent Identity', level: 2 },
-    { id: '12-swarm-coordination-multi-agent-collaboration', label: '12. Swarm Coordination', level: 2 },
-    { id: '13-cortex-intelligence-hub--sentinel-command-center', label: '13. Cortex & Sentinel', level: 2 },
-    { id: '14-related-work', label: '14. Related Work', level: 2 },
-    { id: '15-future-work', label: '15. Future Work', level: 2 },
-    { id: '16-conclusion', label: '16. Conclusion', level: 2 },
-    { id: '17-references', label: '17. References', level: 2 },
+    { id: '2-economic-model', label: '2. Economic Model', level: 2 },
+    { id: '3-cryptographic-privacy', label: '3. Cryptographic Privacy', level: 2 },
+    { id: '4-mcp--x402-architecture', label: '4. MCP & x402', level: 2 },
+    { id: '5-verifiable-ai-proofs', label: '5. Verifiable AI', level: 2 },
+    { id: '6-payfi-credit-model', label: '6. PayFi Credit', level: 2 },
+    { id: '7-escrow-architecture', label: '7. Escrow Architecture', level: 2 },
+    { id: '8-agent-to-agent-economy', label: '8. A2A Economy', level: 2 },
+    { id: '9-tempo-benchmark', label: '9. Tempo Benchmark', level: 2 },
+    { id: '10-system-architecture', label: '10. System Architecture', level: 2 },
+    { id: '11-aps-1-v21', label: '11. APS-1 v2.1', level: 2 },
+    { id: '12-related-work', label: '12. Related Work', level: 2 },
+    { id: '13-future-work', label: '13. Future Work', level: 2 },
+    { id: '14-conclusion', label: '14. Conclusion', level: 2 },
+    { id: '15-references', label: '15. References', level: 2 },
 ];
 
 const paperStats = [
-    { label: 'Sections', value: '17' },
-    { label: 'References', value: '7' },
+    { label: 'Sections', value: '15' },
+    { label: 'References', value: '9' },
     { label: 'Smart Contracts', value: '9' },
-    { label: 'ZK Circuits', value: '1' },
+    { label: 'Protocols', value: '7' },
 ];
 
 export function ResearchPaperClient({ children }: { children: React.ReactNode }) {
@@ -47,7 +42,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
 
                 <div className="flex flex-wrap items-center gap-3 mb-5">
                     <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20">Research</span>
-                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Technical Paper v2.1</span>
+                    <span className="px-2.5 py-1 bg-white/5 text-slate-400 text-xs rounded-full border border-white/10">Technical Paper v4.0</span>
                     <span className="text-xs text-slate-500">March 2026</span>
                 </div>
 
@@ -59,7 +54,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                 </h1>
 
                 <p className="text-base md:text-lg text-slate-400 max-w-3xl leading-relaxed mb-8">
-                    Economic models, cryptographic privacy mechanisms, and protocol design for the PayPol financial operating system.
+                    Economic models, cryptographic privacy, AI-native credit systems, and protocol design for the PayPol financial operating system.
                 </p>
 
                 {/* Author Card */}
@@ -84,7 +79,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2 pt-3 border-t border-white/5">
-                        {['Zero-Knowledge Proofs', 'Agent Economy', 'APS-1 Global Standard', 'Cross-Chain', 'ZK-SNARKs', 'Deterministic Finance'].map((kw) => (
+                        {['ZK-SNARKs', 'MCP', 'x402', 'Stealth Addresses', 'PayFi', 'Verifiable AI', 'APS-1'].map((kw) => (
                             <span key={kw} className="px-2 py-0.5 bg-white/5 text-slate-500 text-[10px] rounded-full border border-white/5 font-medium">
                                 {kw}
                             </span>

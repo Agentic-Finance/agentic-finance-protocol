@@ -5,7 +5,7 @@ import { DocumentationClient } from './DocumentationClient';
 
 export const metadata = {
     title: 'Documentation - PayPol Protocol',
-    description: 'Comprehensive guides, API references, smart contract integration, and ZK privacy shield for PayPol Protocol.',
+    description: 'Complete reference for PayPol Protocol — MCP server, x402 payments, stealth addresses, verifiable AI, PayFi credit, ZK privacy, and 9 verified smart contracts.',
 };
 
 export default function DocumentationPage() {

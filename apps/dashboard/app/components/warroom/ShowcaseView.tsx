@@ -160,7 +160,7 @@ export default function ShowcaseView() {
                     <span className="text-xs font-black uppercase tracking-widest text-emerald-400">LIVE</span>
                 </div>
                 <h2 className="text-xl font-black text-white/90 tracking-tight" style={{ animation: 'glowPulse 4s ease-in-out infinite' }}>
-                    PayPol War Room
+                    Agentic Finance War Room
                 </h2>
                 <p className="text-[10px] text-slate-500 mt-0.5">Real-time Agent Economy</p>
             </div>
@@ -238,7 +238,7 @@ export default function ShowcaseView() {
                         className="px-3 py-2 rounded-xl text-slate-400 hover:text-white text-[10px] font-bold uppercase tracking-wider transition-all"
                         style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', textDecoration: 'none' }}
                     >
-                        Explore PayPol
+                        Explore Agentic Finance
                     </a>
                     <a href="/?app=1"
                         className="px-3 py-2 rounded-xl text-indigo-400 hover:text-indigo-300 text-[10px] font-bold uppercase tracking-wider transition-all"
@@ -258,7 +258,7 @@ export default function ShowcaseView() {
                 {/* Watermark */}
                 <div className="text-right">
                     <div className="text-[9px] text-slate-600 font-mono tracking-wider" style={{ opacity: 0.4 }}>
-                        paypol.xyz
+                        agt.finance
                     </div>
                 </div>
             </div>

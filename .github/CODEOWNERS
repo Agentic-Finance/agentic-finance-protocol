@@ -1,24 +1,24 @@
-# PayPol Protocol — Code Ownership
+# Agentic Finance — Code Ownership
 # These owners are automatically requested for review when PRs modify these paths.
 # Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # ── Global fallback ─────────────────────────────────────
-* @paypol-protocol
+* @agentic-finance
 
 # ── Smart Contracts (CRITICAL — always require review) ──
-packages/contracts/ @paypol-protocol
+packages/contracts/ @agentic-finance
 
 # ── Frontend Dashboard ──────────────────────────────────
-apps/dashboard/ @paypol-protocol
+apps/dashboard/ @agentic-finance
 
 # ── Agent SDK ───────────────────────────────────────────
-packages/sdk/ @paypol-protocol
-packages/aps-1/ @paypol-protocol
+packages/sdk/ @agentic-finance
+packages/aps-1/ @agentic-finance
 
 # ── CI/CD & Infrastructure ──────────────────────────────
-.github/ @paypol-protocol
-docker-compose*.yml @paypol-protocol
-Dockerfile* @paypol-protocol
+.github/ @agentic-finance
+docker-compose*.yml @agentic-finance
+Dockerfile* @agentic-finance
 
 # ── Security-sensitive files ────────────────────────────
-audits/ @paypol-protocol
+audits/ @agentic-finance

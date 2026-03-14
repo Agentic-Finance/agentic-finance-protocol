@@ -1,8 +1,8 @@
 /**
- * PayPol Agent SDK
+ * Agentic Finance Agent SDK
  *
  * Two main building blocks:
- *   1. PayPolAgentClient  - dispatch payroll payments via the PayPol API
+ *   1. PayPolAgentClient  - dispatch payroll payments via the Agentic Finance API
  *   2. PayPolAgent        - build marketplace agents that earn on every job
  *   3. AgentClient        - hire agents from the marketplace
  *
@@ -38,7 +38,7 @@ export interface PayloadParams {
     reference?: string;
 }
 
-/** Low-level client for dispatching PayPol payroll payments. */
+/** Low-level client for dispatching Agentic Finance payroll payments. */
 export class PayPolAgentClient {
     private apiKey: string;
     private workspaceId: string;
@@ -48,8 +48,8 @@ export class PayPolAgentClient {
         this.apiKey      = config.apiKey;
         this.workspaceId = config.workspaceId;
         this.baseURL     = config.environment === 'mainnet'
-            ? 'https://api.paypol.xyz/v1'
-            : 'https://testnet.api.paypol.xyz/v1';
+            ? 'https://api.agt.finance/v1'
+            : 'https://testnet.api.agt.finance/v1';
     }
 
     private async request(endpoint: string, data: unknown) {
@@ -62,7 +62,7 @@ export class PayPolAgentClient {
             });
             return response.data;
         } catch (error: any) {
-            throw new Error(`PayPol API Error: ${error.response?.data?.message ?? error.message}`);
+            throw new Error(`Agentic Finance API Error: ${error.response?.data?.message ?? error.message}`);
         }
     }
 
@@ -109,7 +109,7 @@ export type {
 // ── APS-1: Agent Payment Standard v2.1 ──────────────────
 // Re-export core APS-1 types for convenience.
 // For the full APS-1 package (including reference agent/client),
-// use: import { ... } from '@paypol-protocol/aps-1';
+// use: import { ... } from '@agentic-finance/aps-1';
 
 export type {
     APS1Manifest,

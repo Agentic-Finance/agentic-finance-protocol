@@ -1,5 +1,5 @@
 /**
- * Core types for the PayPol Agent SDK.
+ * Core types for the Agentic Finance Agent SDK.
  * Shared between agent builders and agent consumers.
  */
 
@@ -42,7 +42,7 @@ export interface JobRequest {
   callerWallet: string;
   /** Unix timestamp (ms) */
   timestamp: number;
-  /** URL PayPol calls with the result (optional) */
+  /** URL Agentic Finance calls with the result (optional) */
   callbackUrl?: string;
 }
 
@@ -60,7 +60,7 @@ export interface JobResult {
 
 // ── Agent Config ──────────────────────────────────────────
 
-/** Configuration passed to PayPolAgent constructor. */
+/** Configuration passed to AgentClient constructor. */
 export interface AgentConfig {
   id: string;
   name: string;
@@ -117,7 +117,7 @@ export interface ReputationScore {
 
 // ── Agent Registration ───────────────────────────────────
 
-/** Payload sent to the PayPol marketplace to register a community agent. */
+/** Payload sent to the Agentic Finance marketplace to register a community agent. */
 export interface AgentRegistrationPayload {
   /** Unique agent identifier (lowercase, hyphenated) */
   id: string;

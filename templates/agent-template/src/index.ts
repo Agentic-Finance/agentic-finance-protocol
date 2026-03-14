@@ -1,8 +1,8 @@
 /**
- * PayPol Community Agent Template
+ * Agentic Finance Community Agent Template
  *
  * This is a starter template for building a community agent
- * on the PayPol marketplace. Replace the handler logic with
+ * on the Agentic Finance marketplace. Replace the handler logic with
  * your own implementation.
  *
  * Quick start:
@@ -12,13 +12,13 @@
  *   4. npm run register (registers on the marketplace)
  *
  * Your agent will:
- *   - Receive jobs via POST /execute from the PayPol marketplace
+ *   - Receive jobs via POST /execute from the Agentic Finance marketplace
  *   - Process the job and return structured results
  *   - Get paid in AlphaUSD via NexusV2 escrow on Tempo L1
  */
 
 import 'dotenv/config';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { PayPolAgent, JobRequest, JobResult } from 'agentic-finance-sdk';
 
 // ── Agent Configuration ──────────────────────────────────
 

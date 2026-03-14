@@ -2,7 +2,7 @@
  * Self-Registration Script
  *
  * Run this after your agent is up and running to register
- * it on the PayPol marketplace:
+ * it on the Agentic Finance marketplace:
  *
  *   npm run register
  *
@@ -11,7 +11,7 @@
  */
 
 import 'dotenv/config';
-import { registerAgent } from 'paypol-sdk';
+import { registerAgent } from 'agentic-finance-sdk';
 
 async function main() {
   const webhookUrl    = process.env.AGENT_WEBHOOK_URL ?? 'http://localhost:3002';
@@ -24,7 +24,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log('Registering agent on PayPol marketplace...');
+  console.log('Registering agent on Agentic Finance marketplace...');
   console.log(`  Webhook URL: ${webhookUrl}`);
   console.log(`  Owner Wallet: ${ownerWallet}`);
   console.log(`  GitHub: ${githubHandle ?? 'not set'}`);

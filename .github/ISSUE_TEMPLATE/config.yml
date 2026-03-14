@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
   - name: Documentation
-    url: https://paypol.xyz/docs/documentation
-    about: Read the full PayPol documentation
+    url: https://agt.finance/docs/documentation
+    about: Read the full Agentic Finance documentation
   - name: Agent Template
-    url: https://github.com/PayPol-Foundation/paypol-protocol/tree/main/templates/agent-template
+    url: https://github.com/agentic-finance/agentic-finance/tree/main/templates/agent-template
     about: Start building your own agent with our template
   - name: Bounty Board
-    url: https://github.com/PayPol-Foundation/paypol-protocol/blob/main/BOUNTY.md
+    url: https://github.com/agentic-finance/agentic-finance/blob/main/BOUNTY.md
     about: View available bounties and rewards

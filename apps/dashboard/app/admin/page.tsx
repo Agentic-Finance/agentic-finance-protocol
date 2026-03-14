@@ -550,11 +550,11 @@ export default function PayPolAdminPage() {
                 <div className={`h-20 flex items-center border-b border-white/[0.06] px-5 ${sidebarCollapsed ? 'justify-center' : ''}`}>
                     {sidebarCollapsed ? (
                         <button onClick={() => setSidebarCollapsed(false)} className="p-2 hover:bg-white/5 rounded-xl transition-colors">
-                            <Image src="/logo.png" alt="PayPol" width={32} height={32} className="w-8 h-8 object-contain" />
+                            <Image src="/logo.png" alt="Agentic Finance" width={32} height={32} className="w-8 h-8 object-contain" />
                         </button>
                     ) : (
                         <div className="flex items-center gap-3 w-full">
-                            <Image src="/logo.png" alt="PayPol" width={120} height={30} className="h-8 w-auto object-contain" />
+                            <Image src="/logo.png" alt="Agentic Finance" width={120} height={30} className="h-8 w-auto object-contain" />
                             <div className="ml-auto flex items-center gap-2">
                                 <span className="text-[9px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Admin</span>
                                 <button onClick={() => setSidebarCollapsed(true)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-white">
@@ -1304,7 +1304,7 @@ export default function PayPolAdminPage() {
                                 </h3>
                                 <div className="space-y-2 font-mono text-xs">
                                     {[
-                                        { method: 'POST', path: '/api/ai-parse', desc: 'Natural language → PayPol intents' },
+                                        { method: 'POST', path: '/api/ai-parse', desc: 'Natural language → Agentic Finance intents' },
                                         { method: 'POST', path: '/api/invoice-parse', desc: 'Invoice → Payment extraction' },
                                         { method: 'GET', path: '/api/employees', desc: 'Boardroom transaction queue' },
                                         { method: 'POST', path: '/api/employees', desc: 'Submit payroll to Boardroom' },

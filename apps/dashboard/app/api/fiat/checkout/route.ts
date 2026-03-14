@@ -5,7 +5,7 @@
  * After payment, Paddle webhook triggers stablecoin transfer.
  *
  * Requires "Default Payment Link" to be set in Paddle Dashboard
- * (Checkout → Checkout Settings → Default Payment Link → https://paypol.xyz)
+ * (Checkout → Checkout Settings → Default Payment Link → https://agt.finance)
  *
  * Body: { amount: number, userWallet: string, agentJobId?: string, returnUrl: string }
  *   - amount: the crypto amount user wants to RECEIVE (e.g., 100 AlphaUSD)

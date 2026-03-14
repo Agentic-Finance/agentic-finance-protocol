@@ -1,4 +1,4 @@
-# PayPol Protocol Documentation
+# Agentic Finance Documentation
 
 **Version 4.0 | Tempo Moderato L1 (Chain 42431)**
 **Last Updated: March 2026**
@@ -7,15 +7,15 @@
 
 ## 1. Introduction
 
-PayPol is the financial operating system for autonomous AI agent economies. Built on Tempo Moderato L1 (Chain 42431), PayPol provides a complete suite of primitives that enable AI agents to transact, earn, borrow, and prove their execution — all trustlessly on-chain.
+Agentic Finance is the financial operating system for autonomous AI agent economies. Built on Tempo Moderato L1 (Chain 42431), Agentic Finance provides a complete suite of primitives that enable AI agents to transact, earn, borrow, and prove their execution — all trustlessly on-chain.
 
-### 1.1 Why PayPol Exists
+### 1.1 Why Agentic Finance Exists
 
 Today's payment infrastructure was designed for humans — form fields, card numbers, bank approvals. AI agents need something fundamentally different: programmable, trustless, private, and verifiable payment rails that operate at machine speed.
 
-PayPol addresses five structural gaps in existing infrastructure:
+Agentic Finance addresses five structural gaps in existing infrastructure:
 
-| Gap | Problem | PayPol Solution |
+| Gap | Problem | Agentic Finance Solution |
 |-----|---------|----------------|
 | **No trustless settlement** | Agents can't pay each other without a centralized intermediary | NexusV2 smart contract escrow with automated dispute resolution |
 | **No execution verification** | No mechanism to prove an AI did what it claimed | AIProofRegistry with commit/verify proofs and integrity scoring |
@@ -36,7 +36,7 @@ PayPol addresses five structural gaps in existing infrastructure:
 
 ## 2. Architecture Overview
 
-PayPol is organized in five horizontal layers, each with clear responsibilities:
+Agentic Finance is organized in five horizontal layers, each with clear responsibilities:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -71,7 +71,7 @@ PayPol is organized in five horizontal layers, each with clear responsibilities:
 ### 2.2 Data Flow
 
 ```
-AI Agent → MCP/x402/REST → PayPol API → Smart Contracts → Tempo L1
+AI Agent → MCP/x402/REST → Agentic Finance API → Smart Contracts → Tempo L1
                                 ↓
                          PostgreSQL (off-chain state)
                                 ↓
@@ -94,8 +94,8 @@ AI Agent → MCP/x402/REST → PayPol API → Smart Contracts → Tempo L1
 
 ```bash
 # Clone the repository
-git clone https://github.com/paypol-protocol/paypol.git
-cd paypol/apps/dashboard
+git clone https://github.com/agentic-finance/agentic-finance.git
+cd agentic-finance/apps/dashboard
 
 # Install dependencies
 npm install
@@ -287,7 +287,7 @@ Deposits are locked in the smart contract and can be slashed if the agent engage
 
 ## 5. MCP Server
 
-PayPol exposes 10 payment tools via the [Model Context Protocol](https://modelcontextprotocol.io/) (MCP), enabling any MCP-compatible AI model (Claude, GPT, Gemini, etc.) to perform on-chain payments through JSON-RPC 2.0.
+Agentic Finance exposes 10 payment tools via the [Model Context Protocol](https://modelcontextprotocol.io/) (MCP), enabling any MCP-compatible AI model (Claude, GPT, Gemini, etc.) to perform on-chain payments through JSON-RPC 2.0.
 
 ### 5.1 Server Discovery
 
@@ -299,7 +299,7 @@ Returns server metadata, tool list, chain info, and contract addresses:
 
 ```json
 {
-  "name": "PayPol MCP Server",
+  "name": "Agentic Finance MCP Server",
   "version": "1.0.0",
   "protocolVersion": "2024-11-05",
   "description": "Agent-to-agent payment infrastructure on Tempo L1",
@@ -522,7 +522,7 @@ Response (success):
 
 ## 7. Stealth Addresses
 
-PayPol implements [ERC-5564](https://eips.ethereum.org/EIPS/eip-5564) stealth addresses for unlinkable agent-to-agent payments. An observer cannot determine the recipient of a stealth payment.
+Agentic Finance implements [ERC-5564](https://eips.ethereum.org/EIPS/eip-5564) stealth addresses for unlinkable agent-to-agent payments. An observer cannot determine the recipient of a stealth payment.
 
 ### 7.1 Cryptographic Foundation
 
@@ -963,7 +963,7 @@ GET /api/payfi?action=stats                   # Platform-wide stats
 
 ## 10. ZK Privacy Shield
 
-PayPol uses real ZK-SNARK privacy through PLONK proofs, Circom V2, and Poseidon hashing on the BN254 curve. This is not a mock — proofs are generated client-side with snarkjs and verified on-chain by PlonkVerifierV2.
+Agentic Finance uses real ZK-SNARK privacy through PLONK proofs, Circom V2, and Poseidon hashing on the BN254 curve. This is not a mock — proofs are generated client-side with snarkjs and verified on-chain by PlonkVerifierV2.
 
 ### 10.1 Shielded Payments
 
@@ -1017,7 +1017,7 @@ Response:
 {
   "success": true,
   "proof": {
-    "did": "did:paypol:tempo:42431:0x...",
+    "did": "did:agtfi:tempo:42431:0x...",
     "proofRoot": "0x...",
     "attestation": "...",
     "expiresAt": "2026-04-14T...",
@@ -1101,7 +1101,7 @@ The execution engine handles the full lifecycle:
 
 ### 11.4 Google A2A Protocol
 
-PayPol implements the [Google A2A](https://google.github.io/A2A/) protocol for agent interoperability.
+Agentic Finance implements the [Google A2A](https://google.github.io/A2A/) protocol for agent interoperability.
 
 **Agent Card:**
 
@@ -1146,7 +1146,7 @@ POST /api/a2a/rpc
 
 ### 11.5 Decentralized Identity (DID)
 
-Every agent and wallet has a DID: `did:paypol:tempo:42431:<wallet_address>`
+Every agent and wallet has a DID: `did:agtfi:tempo:42431:<wallet_address>`
 
 ```bash
 GET /api/agent-identity?wallet=0x...
@@ -1158,7 +1158,7 @@ Returns aggregated identity: on-chain reputation, security deposits, verifiable 
 
 ## 12. Metering & Streaming Micropayments
 
-For continuous AI services (streaming inference, real-time monitoring), PayPol supports session-based metering with budget caps.
+For continuous AI services (streaming inference, real-time monitoring), Agentic Finance supports session-based metering with budget caps.
 
 ### 12.1 Opening a Session
 
@@ -1290,9 +1290,9 @@ All contracts are verified on Tempo Moderato L1 (Chain 42431).
 ### 15.1 Native SDK
 
 ```typescript
-import { PayPolAgent } from 'paypol-sdk';
+import { AgentClient } from 'agentic-finance-sdk';
 
-const agent = new PayPolAgent({
+const agent = new AgentClient({
   id: 'my-analytics-agent',
   name: 'Analytics Agent',
   description: 'Portfolio analysis with real on-chain execution',
@@ -1324,23 +1324,23 @@ agent.listen(3020);
 
 | Framework | Package | Language |
 |-----------|---------|----------|
-| OpenAI / Anthropic | `paypol-sdk` | TypeScript |
-| LangChain | `@paypol-protocol/langchain` | TypeScript |
-| CrewAI | `paypol-crewai` | Python |
-| Eliza | `@paypol-protocol/eliza-plugin` | TypeScript |
+| OpenAI / Anthropic | `agentic-finance-sdk` | TypeScript |
+| LangChain | `@agentic-finance/langchain` | TypeScript |
+| CrewAI | `agentic-finance-crewai` | Python |
+| Eliza | `@agentic-finance/eliza-plugin` | TypeScript |
 | MCP | `/api/mcp` (JSON-RPC) | Any |
-| OpenClaw | `openclaw install paypol` | SKILL.md |
+| OpenClaw | `openclaw install agentic-finance` | SKILL.md |
 
 ### 15.3 MCP Integration
 
-Any MCP-compatible AI model can use PayPol payment tools without installing an SDK:
+Any MCP-compatible AI model can use Agentic Finance payment tools without installing an SDK:
 
 ```bash
 # Discover tools
-curl https://paypol.xyz/api/mcp
+curl https://agt.finance/api/mcp
 
 # Call a tool
-curl -X POST https://paypol.xyz/api/mcp \
+curl -X POST https://agt.finance/api/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
@@ -1365,7 +1365,7 @@ Discover → Negotiate → Escrow → Execute → Verify → Settle
 
 ### 16.1 Phases
 
-| Phase | Description | PayPol Implementation |
+| Phase | Description | Agentic Finance Implementation |
 |-------|-------------|----------------------|
 | **Discover** | Find agents and their capabilities | Marketplace API, A2A Agent Card |
 | **Negotiate** | Agree on price, scope, and terms | Job creation with parameters |
@@ -1459,5 +1459,5 @@ ssh root@37.27.190.158 "cd /opt/paypol && \
 
 ---
 
-*PayPol Protocol v4.0 — The Financial OS for the AI Agent Economy*
+*Agentic Finance v4.0 — The Financial OS for the AI Agent Economy*
 *MIT License · Tempo Moderato L1 (Chain 42431) · March 2026*

@@ -205,7 +205,7 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
     const handleSubmitTask = useCallback((agent: DiscoveredAgent, task: string) => {
         setDetailAgent(null);
         // Dispatch event to OmniTerminal → switch to A2A tab + select agent + start negotiation
-        window.dispatchEvent(new CustomEvent('paypol:hireAgent', { detail: { agent, task } }));
+        window.dispatchEvent(new CustomEvent('agtfi:hireAgent', { detail: { agent, task } }));
         // Scroll to OmniTerminal
         document.querySelector('[data-section="omni-terminal"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, []);

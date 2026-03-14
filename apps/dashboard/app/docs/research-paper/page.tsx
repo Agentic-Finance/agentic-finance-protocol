@@ -4,8 +4,8 @@ import { MarkdownRenderer } from '../_components/MarkdownRenderer';
 import { ResearchPaperClient } from './ResearchPaperClient';
 
 export const metadata = {
-    title: 'Research Paper - PayPol Protocol',
-    description: 'PayPol: A Deterministic Financial Substrate for Autonomous Agent Economies — MCP, x402, stealth addresses, verifiable AI, PayFi credit, and ZK privacy.',
+    title: 'Research Paper - Agentic Finance',
+    description: 'Agentic Finance: A Deterministic Financial Substrate for Autonomous Agent Economies — MCP, x402, stealth addresses, verifiable AI, PayFi credit, and ZK privacy.',
 };
 
 export default function ResearchPaperPage() {

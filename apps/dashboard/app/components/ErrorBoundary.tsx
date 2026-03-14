@@ -13,7 +13,7 @@ interface ErrorBoundaryState {
 }
 
 /**
- * Root-level Error Boundary for the PayPol Dashboard.
+ * Root-level Error Boundary for the Agentic Finance Dashboard.
  * Catches React rendering errors and shows a styled fallback UI.
  */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {

@@ -227,7 +227,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                             <span className="p-2 bg-teal-500/10 text-teal-400 rounded-xl shadow-[0_0_15px_rgba(20,184,166,0.2)]">
                                 <ShieldCheckIcon className="w-6 h-6" />
                             </span>
-                            {isPaypolArbitrator ? 'PayPol Arbitration Node' : 'Escrow Node'}
+                            {isPaypolArbitrator ? 'Agentic Finance Arbitration Node' : 'Escrow Node'}
                         </h2>
                         <p className="text-sm text-teal-400/80 mt-2 ml-14">
                             {isPaypolArbitrator ? 'Resolve disputes and issue final verdicts on-chain.' : 'Manage payments and track dispute results.'}
@@ -300,7 +300,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                                     <div className="flex items-center gap-3">
                                         <span className="text-2xl">🤖</span>
                                         <div>
-                                            <h3 className={`font-bold text-lg ${isResolved ? 'text-slate-400' : 'text-white'}`}>{escrow.name || 'PayPol Neural Agent'}</h3>
+                                            <h3 className={`font-bold text-lg ${isResolved ? 'text-slate-400' : 'text-white'}`}>{escrow.name || 'Agentic Finance Neural Agent'}</h3>
                                             {escrow.onChainJobId != null && (
                                                 <span className="text-[10px] text-teal-500/60 font-mono">Job #{escrow.onChainJobId}</span>
                                             )}
@@ -415,7 +415,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                                         ) : (
                                             <div className="w-full bg-amber-500/10 border border-amber-500/20 py-4 rounded-xl flex items-center justify-center gap-2">
                                                 <ScaleIcon className="w-5 h-5 text-amber-400" />
-                                                <span className="text-amber-400 text-sm font-bold">Awaiting PayPol Arbitration</span>
+                                                <span className="text-amber-400 text-sm font-bold">Awaiting Agentic Finance Arbitration</span>
                                             </div>
                                         )
                                     )

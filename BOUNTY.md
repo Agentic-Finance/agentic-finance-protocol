@@ -1,6 +1,6 @@
-# PayPol Open Contributor Program
+# Agentic Finance Open Contributor Program
 
-> PayPol is an early-stage, community-driven protocol. We value transparency: bounties are currently **non-monetary** - instead, we offer production experience, public credit, and a tracked commitment to retroactively reward early builders when the project reaches funding milestones.
+> Agentic Finance is an early-stage, community-driven protocol. We value transparency: bounties are currently **non-monetary** - instead, we offer production experience, public credit, and a tracked commitment to retroactively reward early builders when the project reaches funding milestones.
 >
 > The best open-source projects were built by people who showed up before the money did.
 
@@ -9,13 +9,13 @@
 ## Why Contribute (Without Getting Paid Yet)
 
 ### 1. Your code ships to production
-PayPol has **9 verified smart contracts** on Tempo L1, a live dashboard at [paypol.xyz](https://paypol.xyz), and 32 agents in the marketplace. Your contribution goes live - not into a side project graveyard.
+Agentic Finance has **9 verified smart contracts** on Tempo L1, a live dashboard at [agt.finance](https://agt.finance), and 32 agents in the marketplace. Your contribution goes live - not into a side project graveyard.
 
 ### 2. Portfolio proof
 Every merged PR is a public, verifiable record. Smart contract work is verified on-chain via Sourcify. Agent work is deployed and callable. Recruiters can see it. Investors can see it.
 
 ### 3. Early Builder Equity
-We maintain a **Contributor Ledger** (below). When PayPol secures funding or launches a token, early contributors receive retroactive compensation proportional to their contribution weight. This is not a vague promise - it's tracked, timestamped, and public.
+We maintain a **Contributor Ledger** (below). When Agentic Finance secures funding or launches a token, early contributors receive retroactive compensation proportional to their contribution weight. This is not a vague promise - it's tracked, timestamped, and public.
 
 ### 4. Architecture influence
 Active contributors get invited to architecture discussions, roadmap input, and co-authorship on protocol decisions. Your opinion shapes the protocol.
@@ -55,14 +55,14 @@ Instead of dollar bounties, we use **weight points** that track the relative val
 
 ## Open Tasks: AI Agents
 
-Build agents that run on the PayPol marketplace. Each agent becomes a permanent part of the protocol.
+Build agents that run on the Agentic Finance marketplace. Each agent becomes a permanent part of the protocol.
 
 | # | Agent | Category | Weight | Status |
 |---|-------|----------|--------|--------|
-| [#2](https://github.com/PayPol-Foundation/paypol-protocol/issues/2) | Token Vesting Agent | DeFi | 3 | 🔄 In Review |
-| [#4](https://github.com/PayPol-Foundation/paypol-protocol/issues/4) | Airdrop Distribution Agent | DeFi | 3 | 🔄 In Review |
-| [#7](https://github.com/PayPol-Foundation/paypol-protocol/issues/7) | Gas Estimation Agent (Multi-chain) | Analytics | 3 | 🟢 Open |
-| [#10](https://github.com/PayPol-Foundation/paypol-protocol/issues/10) | Portfolio Rebalancer | DeFi | 5 | 🟢 Open |
+| [#2](https://github.com/agentic-finance/agentic-finance/issues/2) | Token Vesting Agent | DeFi | 3 | 🔄 In Review |
+| [#4](https://github.com/agentic-finance/agentic-finance/issues/4) | Airdrop Distribution Agent | DeFi | 3 | 🔄 In Review |
+| [#7](https://github.com/agentic-finance/agentic-finance/issues/7) | Gas Estimation Agent (Multi-chain) | Analytics | 3 | 🟢 Open |
+| [#10](https://github.com/agentic-finance/agentic-finance/issues/10) | Portfolio Rebalancer | DeFi | 5 | 🟢 Open |
 | - | DAO Treasury Reporter | DeFi | 5 | 🟢 Open |
 | - | Liquidation Monitor | Security | 5 | 🟢 Open |
 | - | Smart Contract Fuzzer | Security | 8 | 🟢 Open |
@@ -74,7 +74,7 @@ Every agent submission must include:
 
 - Source code in `agents/your-agent-name/`
 - Working endpoints: `/health`, `/manifest`, `/execute`
-- Self-registration via PayPol SDK (`npm run register`)
+- Self-registration via Agentic Finance SDK (`npm run register`)
 - Error handling with informative messages
 - README with setup instructions and usage examples
 - TypeScript with proper types
@@ -110,7 +110,7 @@ Every agent submission must include:
 |------|--------|--------|
 | Interactive agent playground (live demo) | 8 | 🟢 Open |
 | OpenAPI/Swagger spec for all API routes | 3 | 🟢 Open |
-| Video tutorial: "Build Your First PayPol Agent" | 3 | 🟢 Open |
+| Video tutorial: "Build Your First Agentic Finance Agent" | 3 | 🟢 Open |
 | Translate docs (Chinese, Spanish) | 1 each | 🟢 Open |
 
 ---
@@ -150,7 +150,7 @@ This ledger is the official record. It will be used to calculate retroactive rew
 
 ## Propose a New Task
 
-Don't see what you want to build? Open a [New Agent Proposal](https://github.com/PayPol-Foundation/paypol-protocol/issues/new?template=agent_proposal.yml) and we'll assign a weight.
+Don't see what you want to build? Open a [New Agent Proposal](https://github.com/agentic-finance/agentic-finance/issues/new?template=agent_proposal.yml) and we'll assign a weight.
 
 ---
 

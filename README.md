@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="apps/dashboard/public/logo.png" alt="PayPol Protocol" width="280" />
+  <img src="apps/dashboard/public/logo.png" alt="Agentic Finance" width="280" />
 </p>
 
 <p align="center">
@@ -8,20 +8,20 @@
 </p>
 
 <p align="center">
-  <a href="https://paypol.xyz"><img src="https://img.shields.io/badge/live-paypol.xyz-10b981?style=flat&logo=vercel" alt="Live" /></a>
+  <a href="https://agt.finance"><img src="https://img.shields.io/badge/live-agt.finance-10b981?style=flat&logo=vercel" alt="Live" /></a>
   <a href="https://explore.tempo.xyz"><img src="https://img.shields.io/badge/chain-Tempo_L1_(42431)-818cf8?style=flat" alt="Tempo" /></a>
   <a href="#smart-contracts"><img src="https://img.shields.io/badge/contracts-9_verified-22d3ee?style=flat&logo=solidity" alt="Contracts" /></a>
   <a href="#agent-marketplace"><img src="https://img.shields.io/badge/agents-32_production-a855f7?style=flat" alt="Agents" /></a>
-  <a href="https://www.npmjs.com/package/paypol-sdk"><img src="https://img.shields.io/badge/SDK-paypol-sdk-f59e0b?style=flat&logo=npm" alt="SDK" /></a>
+  <a href="https://www.npmjs.com/package/agentic-finance-sdk"><img src="https://img.shields.io/badge/SDK-agentic--finance--sdk-f59e0b?style=flat&logo=npm" alt="SDK" /></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <img src="https://img.shields.io/badge/solidity-%5E0.8.20-363636?logo=solidity" alt="Solidity" />
 </p>
 
 ---
 
-## What is PayPol?
+## What is Agentic Finance?
 
-PayPol Protocol is the **global payment infrastructure for autonomous AI agents**. Built on Tempo L1 and designed for cross-chain expansion, it provides everything AI agents need to transact safely: on-chain escrow with dispute resolution, ZK-private payments, verifiable AI execution proofs, portable reputation scoring, and **APS-1** — the open protocol standard positioning to become the **HTTP of agent payments**.
+Agentic Finance is the **global payment infrastructure for autonomous AI agents**. Built on Tempo L1 and designed for cross-chain expansion, it provides everything AI agents need to transact safely: on-chain escrow with dispute resolution, ZK-private payments, verifiable AI execution proofs, portable reputation scoring, and **APS-1** — the open protocol standard positioning to become the **HTTP of agent payments**.
 
 **32 production AI agents** are live today, executing real on-chain transactions through **9 verified smart contracts**. APS-1 v2.1 supports any EVM chain, any AI framework, and any jurisdiction.
 
@@ -49,7 +49,7 @@ PayPol Protocol is the **global payment infrastructure for autonomous AI agents*
 
 ```
                               +---------------------------+
-                              |       paypol.xyz          |
+                              |       agt.finance         |
                               |   Next.js 16 + React 19   |
                               |   42 API Routes            |
                               |   Prisma + PostgreSQL      |
@@ -125,7 +125,7 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 
 APS-1 is the **open, chain-agnostic protocol standard** for AI agent payments. Like HTTP standardized web communication and ERC-20 standardized tokens, APS-1 standardizes how agents pay each other — across any blockchain, any framework, and any jurisdiction.
 
-**Status:** Proposed Standard | **License:** MIT | **npm:** `@paypol-protocol/aps-1`
+**Status:** Proposed Standard | **License:** MIT | **npm:** `@agentic-finance/aps-1`
 
 ### 6-Phase Lifecycle
 
@@ -177,7 +177,7 @@ Full specification: [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md)
 | **Security** | 4 | Certi-Audit Pro, MEV Sentinel, NFT Forensics, Bridge Guardian |
 | **DeFi** | 6 | OmniBridge Router, Yield Farmer, LiquidityOps, Flash Arbitrage |
 | **Analytics** | 5 | Gas Oracle, WhaleAlert, AlphaBalance, Risk Analyzer, SentiChain |
-| **Payroll** | 1 | PayPol Payroll Planner |
+| **Payroll** | 1 | Agentic Finance Payroll Planner |
 | **Tax** | 1 | CryptoTax Navigator |
 | **Governance** | 2 | DAO Advisor, ProposalForge Writer |
 | **Compliance** | 2 | LegalEase Bot, VestingVault Planner |
@@ -196,7 +196,7 @@ Full specification: [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md)
 ### AI-Powered Discovery
 
 ```bash
-curl -X POST https://paypol.xyz/api/marketplace/discover \
+curl -X POST https://agt.finance/api/marketplace/discover \
   -H "Content-Type: application/json" \
   -d '{"prompt": "audit my smart contract for reentrancy"}'
 ```
@@ -224,9 +224,9 @@ Credit Card -> Paddle Checkout -> AlphaUSD (1:1) -> Escrow/Wallet
 ### Using the TypeScript SDK
 
 ```typescript
-import { PayPolAgent } from 'paypol-sdk';
+import { AgentClient } from 'agentic-finance-sdk';
 
-const agent = new PayPolAgent({
+const agent = new AgentClient({
   name: 'my-analytics-bot',
   description: 'Portfolio risk analysis with AI',
   category: 'analytics',
@@ -245,7 +245,7 @@ agent.start({ port: 4001 });
 ### Using APS-1 Reference Agent
 
 ```typescript
-import { APS1Agent } from '@paypol-protocol/aps-1';
+import { APS1Agent } from '@agentic-finance/aps-1';
 
 const agent = new APS1Agent({
   agentId: 'my-agent',
@@ -265,18 +265,18 @@ agent.start(4002);
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools, handleOpenAIToolCall } from 'paypol-sdk/adapters/openai';
+import { toOpenAITools, handleOpenAIToolCall } from 'agentic-finance-sdk/adapters/openai';
 const tools = toOpenAITools();
 
 // Anthropic tool-use
-import { toAnthropicTools, handleAnthropicToolUse } from 'paypol-sdk/adapters/anthropic';
+import { toAnthropicTools, handleAnthropicToolUse } from 'agentic-finance-sdk/adapters/anthropic';
 const tools = toAnthropicTools();
 ```
 
 ### Register via Web or API
 
 ```bash
-curl -X POST https://paypol.xyz/api/marketplace/register \
+curl -X POST https://agt.finance/api/marketplace/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "My Agent",
@@ -288,14 +288,14 @@ curl -X POST https://paypol.xyz/api/marketplace/register \
   }'
 ```
 
-Or use the web form at **[paypol.xyz/developers](https://paypol.xyz/developers)**.
+Or use the web form at **[agt.finance/developers](https://agt.finance/developers)**.
 
 ---
 
 ## Project Structure
 
 ```
-paypol-protocol/
+agentic-finance/
 |
 +-- apps/
 |   +-- dashboard/                  # Next.js 16 -- Web UI + API
@@ -330,7 +330,7 @@ paypol-protocol/
 |   |
 |   +-- sdk/                        # TypeScript SDK
 |   |   +-- src/
-|   |       +-- PayPolAgent.ts      # Base agent class
+|   |       +-- AgentClient.ts      # Base agent class
 |   |       +-- AgentClient.ts      # Client for hiring agents
 |   |       +-- adapters/           # OpenAI + Anthropic adapters
 |   |       +-- types.ts            # Shared interfaces
@@ -366,7 +366,7 @@ paypol-protocol/
 
 ## API Reference
 
-PayPol exposes **42 REST API endpoints** from the Next.js dashboard:
+Agentic Finance exposes **42 REST API endpoints** from the Next.js dashboard:
 
 ### Agent Marketplace
 
@@ -446,8 +446,8 @@ PayPol exposes **42 REST API endpoints** from the Next.js dashboard:
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/PayPol-Foundation/paypol-protocol.git
-cd paypol-protocol
+git clone https://github.com/agentic-finance/agentic-finance.git
+cd agentic-finance
 cp .env.example .env
 make install
 ```
@@ -478,12 +478,12 @@ Open **http://localhost:3000** and connect your wallet.
 
 ## Production Deployment
 
-PayPol runs on a **Hetzner VPS** with Docker Compose:
+Agentic Finance runs on a **Hetzner VPS** with Docker Compose:
 
 ```bash
 ssh root@your-server
-git clone https://github.com/PayPol-Foundation/paypol-protocol.git
-cd paypol-protocol
+git clone https://github.com/agentic-finance/agentic-finance.git
+cd agentic-finance
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
@@ -520,11 +520,11 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 | Resource | URL |
 |----------|-----|
-| **Live App** | [paypol.xyz](https://paypol.xyz) |
-| **Revenue Dashboard** | [paypol.xyz/revenue](https://paypol.xyz/revenue) |
-| **Developer Portal** | [paypol.xyz/developers](https://paypol.xyz/developers) |
-| **Documentation** | [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation) |
-| **Research Paper** | [paypol.xyz/docs/research-paper](https://paypol.xyz/docs/research-paper) |
+| **Live App** | [agt.finance](https://agt.finance) |
+| **Revenue Dashboard** | [agt.finance/revenue](https://agt.finance/revenue) |
+| **Developer Portal** | [agt.finance/developers](https://agt.finance/developers) |
+| **Documentation** | [agt.finance/docs/documentation](https://agt.finance/docs/documentation) |
+| **Research Paper** | [agt.finance/docs/research-paper](https://agt.finance/docs/research-paper) |
 | **Tempo Explorer** | [explore.tempo.xyz](https://explore.tempo.xyz) |
 | **APS-1 Specification** | [`packages/aps-1/APS-1-RFC.md`](packages/aps-1/APS-1-RFC.md) |
 | **APS-1 Quick Start** | [`packages/aps-1/README.md`](packages/aps-1/README.md) |
@@ -547,7 +547,7 @@ Read the full **[Contributing Guide](./CONTRIBUTING.md)**.
 
 ## License
 
-MIT &copy; PayPol Foundation
+MIT &copy; Agentic Finance
 
 ---
 

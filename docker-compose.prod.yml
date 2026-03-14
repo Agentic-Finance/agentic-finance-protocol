@@ -1,13 +1,13 @@
 # ═══════════════════════════════════════════════════════════
-# PayPol Protocol — Production Docker Compose
-# Domain: paypol.xyz | VPS: 37.27.190.158 (Hetzner)
+# Agentic Finance — Production Docker Compose
+# Domain: agt.finance | VPS: 37.27.190.158 (Hetzner)
 # ═══════════════════════════════════════════════════════════
 
 services:
   # ── PostgreSQL Database ────────────────────────────────
   db:
     image: postgres:16-alpine
-    container_name: paypol-db
+    container_name: agtfi-db
     restart: always
     environment:
       POSTGRES_USER: paypol
@@ -18,7 +18,7 @@ services:
     expose:
       - "5432"
     networks:
-      - paypol-net
+      - agtfi-net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U paypol -d paypol_core"]
       interval: 10s
@@ -31,7 +31,7 @@ services:
     build:
       context: ./apps/dashboard
       dockerfile: Dockerfile
-    container_name: paypol-dashboard
+    container_name: agtfi-dashboard
     restart: always
     env_file:
       - ./apps/dashboard/.env.production
@@ -44,7 +44,7 @@ services:
     expose:
       - "3000"
     networks:
-      - paypol-net
+      - agtfi-net
       - coolify
     depends_on:
       db:
@@ -61,7 +61,7 @@ services:
     build:
       context: ./services/agents
       dockerfile: Dockerfile
-    container_name: paypol-agents
+    container_name: agtfi-agents
     restart: always
     env_file:
       - ./apps/dashboard/.env.production
@@ -73,7 +73,7 @@ services:
     expose:
       - "3001"
     networks:
-      - paypol-net
+      - agtfi-net
     healthcheck:
       test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3001/health').then(r=>{process.exit(r.ok?0:1)}).catch(()=>process.exit(1))\""]
       interval: 30s
@@ -86,7 +86,7 @@ services:
     build:
       context: .
       dockerfile: services/daemon/Dockerfile
-    container_name: paypol-daemon
+    container_name: agtfi-daemon
     restart: always
     env_file:
       - ./apps/dashboard/.env.production
@@ -98,7 +98,7 @@ services:
       - NEXUS_V2_ADDRESS=0x6A467Cd4156093bB528e448C04366586a1052Fab
       - TOKEN_ADDRESS=0x20c0000000000000000000000000000000000001
     networks:
-      - paypol-net
+      - agtfi-net
     depends_on:
       db:
         condition: service_healthy
@@ -113,7 +113,7 @@ volumes:
   pgdata:
 
 networks:
-  paypol-net:
+  agtfi-net:
     driver: bridge
   coolify:
     external: true

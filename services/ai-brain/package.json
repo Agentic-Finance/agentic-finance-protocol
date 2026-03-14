@@ -1,7 +1,7 @@
 {
-  "name": "paypol-ai-brain",
+  "name": "agentic-finance-ai-brain",
   "version": "2.0.0",
-  "description": "PayPol AI Brain Orchestrator — Intent parsing, agent routing, workflow management, on-chain escrow settlement.",
+  "description": "Agentic Finance AI Brain Orchestrator — Intent parsing, agent routing, workflow management, on-chain escrow settlement.",
   "main": "dist/orchestrator.js",
   "scripts": {
     "dev":   "ts-node-dev --respawn --transpile-only src/orchestrator.ts",

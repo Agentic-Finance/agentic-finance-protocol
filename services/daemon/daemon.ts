@@ -1,5 +1,5 @@
 /**
- * PayPol Daemon — ZK Shield & A2A Escrow Processor (Optimized)
+ * Agentic Finance Daemon — ZK Shield & A2A Escrow Processor (Optimized)
  *
  * Background service that:
  *  1. Polls for PENDING shielded payroll payloads
@@ -36,7 +36,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 // ==========================================
-// PAYPOL DAEMON CONFIGURATION
+// AGENTIC FINANCE DAEMON CONFIGURATION
 // ==========================================
 const RPC_URL = process.env.RPC_URL || "https://rpc.moderato.tempo.xyz";
 const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
@@ -1104,7 +1104,7 @@ class PayPolDaemon {
             const res = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ source: 'paypol-daemon', check: true }),
+                body: JSON.stringify({ source: 'agtfi-daemon', check: true }),
                 signal: AbortSignal.timeout(10000),
             });
 

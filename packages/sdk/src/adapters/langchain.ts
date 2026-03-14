@@ -1,11 +1,11 @@
 /**
- * PayPol LangChain Adapter
+ * Agentic Finance LangChain Adapter
  *
- * Converts PayPol APS-1 agents into LangChain-compatible tools.
+ * Converts Agentic Finance APS-1 agents into LangChain-compatible tools.
  * Works with LangChain, LangGraph, and any LangChain-compatible framework.
  *
  * Usage:
- *   import { toPayPolLangChainTools, handleLangChainToolCall } from 'paypol-sdk/adapters';
+ *   import { toPayPolLangChainTools, handleLangChainToolCall } from 'agentic-finance-sdk/adapters';
  *
  *   // Get tools for LangChain agent
  *   const tools = toPayPolLangChainTools();
@@ -35,15 +35,15 @@ export interface LangChainToolDefinition {
     }>;
     required: string[];
   };
-  /** PayPol agent ID mapped to this tool */
+  /** Agentic Finance agent ID mapped to this tool */
   _paypol_agent_id: string;
-  /** PayPol agent category */
+  /** Agentic Finance agent category */
   _paypol_category: string;
 }
 
 // ── Agent Catalog (all 32 native + dynamic) ───────────────
 
-interface PayPolAgentDef {
+interface AgentDef {
   id: string;
   name: string;
   description: string;
@@ -52,7 +52,7 @@ interface PayPolAgentDef {
   params: Record<string, { type: string; description: string; required?: boolean }>;
 }
 
-const CORE_AGENTS: PayPolAgentDef[] = [
+const CORE_AGENTS: AgentDef[] = [
   {
     id: 'escrow-manager', name: 'Escrow Manager', category: 'escrow', price: 0.50,
     description: 'Create, settle, refund, or dispute NexusV2 escrow jobs on Tempo L1',
@@ -138,17 +138,17 @@ const CORE_AGENTS: PayPolAgentDef[] = [
 // ── Tool Conversion ────────────────────────────────────────
 
 /**
- * Convert PayPol agents to LangChain-compatible tool definitions.
+ * Convert Agentic Finance agents to LangChain-compatible tool definitions.
  * Returns tools that can be used with LangChain agents, ChatModels, or LangGraph.
  */
 export function toPayPolLangChainTools(
-  agents?: PayPolAgentDef[],
+  agents?: AgentDef[],
 ): LangChainToolDefinition[] {
   const catalog = agents ?? CORE_AGENTS;
 
   return catalog.map(agent => ({
     name: `paypol_${agent.id.replace(/-/g, '_')}`,
-    description: `[PayPol ${agent.category}] ${agent.description}. Price: $${agent.price}/job. APS-1 compliant with on-chain execution.`,
+    description: `[Agentic Finance ${agent.category}] ${agent.description}. Price: $${agent.price}/job. APS-1 compliant with on-chain execution.`,
     parameters: {
       type: 'object' as const,
       properties: Object.fromEntries(
@@ -167,7 +167,7 @@ export function toPayPolLangChainTools(
 }
 
 /**
- * Handle a LangChain tool invocation by routing to the correct PayPol agent.
+ * Handle a LangChain tool invocation by routing to the correct Agentic Finance agent.
  * Returns the agent's execution result.
  */
 export async function handleLangChainToolCall(
@@ -209,8 +209,8 @@ export async function handleLangChainToolCall(
  * For use with LangChain's `StructuredTool` base class.
  *
  * Usage:
- *   const toolClass = createPayPolStructuredTool('escrow-manager');
- *   const tool = new toolClass();
+ *   const toolConfig = createPayPolStructuredToolConfig('escrow-manager');
+ *   const tool = new StructuredTool(toolConfig);
  *   const result = await tool.call({ prompt: '...', callerWallet: '0x...' });
  */
 export function createPayPolStructuredToolConfig(agentId: string) {

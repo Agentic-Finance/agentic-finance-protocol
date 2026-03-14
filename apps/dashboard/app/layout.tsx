@@ -16,21 +16,21 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PayPol Protocol - Agent Payment Infrastructure on Tempo L1",
-    template: "%s | PayPol Protocol",
+    default: "Agentic Finance - Agent Payment Infrastructure on Tempo L1",
+    template: "%s | Agentic Finance",
   },
   description: "The first agent-to-agent payment protocol on Tempo L1. Escrow, streaming, ZK-shielded payroll, and 32+ autonomous AI agents - all on-chain.",
-  keywords: ["PayPol", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy"],
+  keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy"],
   openGraph: {
-    title: "PayPol Protocol - Agent Payment Infrastructure",
+    title: "Agentic Finance - Agent Payment Infrastructure",
     description: "Escrow, streaming, ZK-shielded payroll, and 32+ AI agents on Tempo L1.",
-    url: "https://paypol.xyz",
-    siteName: "PayPol Protocol",
+    url: "https://agt.finance",
+    siteName: "Agentic Finance",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PayPol Protocol",
+    title: "Agentic Finance",
     description: "Agent-to-agent payment infrastructure on Tempo L1.",
   },
   robots: { index: true, follow: true },

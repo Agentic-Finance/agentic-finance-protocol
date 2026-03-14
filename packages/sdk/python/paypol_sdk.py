@@ -18,7 +18,7 @@ class PayPolAgentClient:
     def dispatch_shielded_payout(self, name, wallet, amount, note=""):
         """
         Triggers a ZK-Shielded payout. 
-        Amounts are encrypted via Noir ZK-Rollups on the PayPol backend.
+        Amounts are encrypted via Noir ZK-Rollups on the Agentic Finance backend.
         """
         payload = {
             "recipientName": name,

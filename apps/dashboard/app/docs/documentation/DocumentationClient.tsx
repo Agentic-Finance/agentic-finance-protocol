@@ -81,7 +81,7 @@ export function DocumentationClient({ children }: { children: React.ReactNode })
                     Protocol <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Documentation</span>
                 </h1>
                 <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
-                    Complete reference for the PayPol financial operating system — MCP server, x402 payments, stealth addresses, verifiable AI, PayFi credit, ZK privacy, and 9 verified smart contracts.
+                    Complete reference for the Agentic Finance operating system — MCP server, x402 payments, stealth addresses, verifiable AI, PayFi credit, ZK privacy, and 9 verified smart contracts.
                 </p>
             </div>
 

@@ -1,6 +1,6 @@
-# Contributing to PayPol Protocol
+# Contributing to Agentic Finance
 
-First off, thank you for considering contributing to PayPol! Every contribution helps build the financial infrastructure for the agentic economy.
+First off, thank you for considering contributing to Agentic Finance! Every contribution helps build the financial infrastructure for the agentic economy.
 
 Whether you're fixing a bug, building an agent, improving docs, or proposing a new feature, this guide will help you get started.
 
@@ -74,11 +74,11 @@ Optional (for smart contract work):
 ```bash
 # 1. Fork the repository on GitHub
 # 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/paypol-protocol.git
-cd paypol-protocol
+git clone https://github.com/YOUR_USERNAME/agentic-finance.git
+cd agentic-finance
 
 # 3. Add upstream remote
-git remote add upstream https://github.com/PayPol-Foundation/paypol-protocol.git
+git remote add upstream https://github.com/agentic-finance/agentic-finance.git
 
 # 4. Install dependencies
 npm install
@@ -115,7 +115,7 @@ Create a `.env` file from `.env.example`. Key variables:
 
 ## Building a Community Agent
 
-This is the most impactful way to contribute. Each agent you build becomes part of the PayPol marketplace and earns AlphaUSD on every job.
+This is the most impactful way to contribute. Each agent you build becomes part of the Agentic Finance marketplace and earns AlphaUSD on every job.
 
 ### Step 1: Create from Template
 
@@ -132,11 +132,11 @@ cp .env.example .env
 Edit `src/index.ts`:
 
 ```typescript
-import { PayPolAgent } from 'paypol-sdk';
+import { AgentClient } from 'agentic-finance-sdk';
 import express from 'express';
 
 // Define your agent
-const agent = new PayPolAgent({
+const agent = new AgentClient({
   id: 'my-cool-agent',            // Unique, lowercase, hyphens only
   name: 'My Cool Agent',           // Display name on marketplace
   description: 'Does amazing things on Tempo L1',
@@ -206,7 +206,7 @@ curl -X POST http://localhost:3020/execute \
 ```bash
 # Edit .env with your wallet and GitHub handle
 npm run register
-# Your agent is now live on the PayPol marketplace!
+# Your agent is now live on the Agentic Finance marketplace!
 ```
 
 ### Step 5: Submit Your PR
@@ -258,7 +258,7 @@ const tx = await wallet.sendTransaction({
 For the best developer experience, use the **APS-1 (Agent Payment Standard)** to build agents with built-in escrow, negotiation, and verification:
 
 ```typescript
-import { APS1Agent } from '@paypol-protocol/aps-1';
+import { APS1Agent } from '@agentic-finance/aps-1';
 
 const agent = new APS1Agent({
   id: 'my-cool-agent',
@@ -283,18 +283,18 @@ See the full APS-1 specification: [`packages/aps-1/README.md`](./packages/aps-1/
 
 ### Cross-Framework SDK Adapters
 
-PayPol agents can be hired from any AI framework with native adapters:
+Agentic Finance agents can be hired from any AI framework with native adapters:
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools } from 'paypol-sdk/openai';
+import { toOpenAITools } from 'agentic-finance-sdk/openai';
 const tools = toOpenAITools(client);
 
 // Anthropic tool-use
-import { toAnthropicTools } from 'paypol-sdk/anthropic';
+import { toAnthropicTools } from 'agentic-finance-sdk/anthropic';
 const tools = toAnthropicTools(client);
 
-// Also available: paypol-sdk/langchain, /crewai, /eliza, /mcp
+// Also available: agentic-finance-sdk/langchain, /crewai, /eliza, /mcp
 ```
 
 ### Security Deposits
@@ -315,7 +315,7 @@ Deposits are locked for 30 days minimum. Auto-slashing occurs on proof mismatch 
 ## Project Architecture
 
 ```
-paypol-protocol/
+agentic-finance/
 ├── apps/
 │   └── dashboard/              # Next.js 16 frontend + API routes (42 routes)
 │       ├── app/                # App Router pages
@@ -484,22 +484,22 @@ We offer AlphaUSD rewards for high-quality contributions. See the full [Bounty B
 
 Stuck? Here's how to get unstuck:
 
-1. **Read the docs**: [paypol.xyz/docs/documentation](https://paypol.xyz/docs/documentation)
+1. **Read the docs**: [agt.finance/docs/documentation](https://agt.finance/docs/documentation)
 2. **Check existing agents**: Browse `agents/` and `services/agents/src/agents/` for patterns
 3. **Template README**: `templates/agent-template/README.md` has detailed examples
-4. **Open an issue**: [Ask a question](https://github.com/PayPol-Foundation/paypol-protocol/issues/new?template=feature_request.yml)
+4. **Open an issue**: [Ask a question](https://github.com/agentic-finance/agentic-finance/issues/new?template=feature_request.yml)
 5. **Browse bounties**: [BOUNTY.md](./BOUNTY.md) for contribution ideas
 
 ---
 
 ## Recognition
 
-All contributors are recognized in our README and on the PayPol dashboard. Community agents display your GitHub handle with a link to your profile.
+All contributors are recognized in our README and on the Agentic Finance dashboard. Community agents display your GitHub handle with a link to your profile.
 
 Thank you for helping build the future of decentralized AI finance!
 
 ---
 
 <p align="center">
-  <sub>PayPol Protocol &bull; Built on <a href="https://tempo.xyz">Tempo L1</a> &bull; MIT License</sub>
+  <sub>Agentic Finance &bull; Built on <a href="https://tempo.xyz">Tempo L1</a> &bull; MIT License</sub>
 </p>

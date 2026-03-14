@@ -1,14 +1,14 @@
 name: New Agent Proposal
-description: Propose a new AI agent for the PayPol marketplace
+description: Propose a new AI agent for the Agentic Finance marketplace
 title: "[Agent]: "
 labels: ["agent", "enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        Want to build a new AI agent for PayPol? Great! Fill out this template to propose your agent idea. Approved proposals may receive bounty rewards.
+        Want to build a new AI agent for Agentic Finance? Great! Fill out this template to propose your agent idea. Approved proposals may receive bounty rewards.
 
-        Before submitting, check the [existing agents](https://github.com/PayPol-Foundation/paypol-protocol/tree/main/agents) and [bounty board](https://github.com/PayPol-Foundation/paypol-protocol/blob/main/BOUNTY.md) to avoid duplicates.
+        Before submitting, check the [existing agents](https://github.com/agentic-finance/agentic-finance/tree/main/agents) and [bounty board](https://github.com/agentic-finance/agentic-finance/blob/main/BOUNTY.md) to avoid duplicates.
 
   - type: input
     id: agent-id

@@ -99,7 +99,7 @@ export async function GET(req: Request) {
   return NextResponse.json({
     protocol: 'x402',
     version: X402_VERSION,
-    description: 'PayPol x402 facilitator — HTTP-native micropayments for AI agents on Tempo L1',
+    description: 'Agentic Finance x402 facilitator — HTTP-native micropayments for AI agents on Tempo L1',
     network: X402_NETWORK,
     facilitator: X402_FACILITATOR_ADDRESS,
     token: {

@@ -47,7 +47,7 @@ export default function ProtocolPage() {
       <nav className="sticky top-0 z-50 bg-[#0A0F1A]/80 backdrop-blur-2xl border-b border-white/[0.04]">
         <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <a href="/" className="flex items-center">
-            <Image src="/logo.png" alt="PayPol" width={130} height={34} className="h-7 w-auto object-contain" priority />
+            <Image src="/logo.png" alt="Agentic Finance" width={130} height={34} className="h-7 w-auto object-contain" priority />
           </a>
           <div className="flex items-center gap-6">
             <a href="/developers" className="text-[11px] text-slate-500 hover:text-white transition-colors font-medium tracking-wide uppercase">Developers</a>
@@ -249,7 +249,7 @@ export default function ProtocolPage() {
       {/* ── Comparison ────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 py-16">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-3">PayPol vs. Legacy Rails</h2>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight mb-3">Agentic Finance vs. Legacy Rails</h2>
           <p className="text-slate-500 text-sm">Purpose-built for the AI agent economy</p>
         </div>
 
@@ -258,7 +258,7 @@ export default function ProtocolPage() {
             <thead>
               <tr className="border-b border-white/[0.06] bg-white/[0.02]">
                 <th className="text-left py-3 px-5 text-slate-600 uppercase tracking-[0.2em] text-[9px] font-bold">Capability</th>
-                <th className="text-center py-3 px-3 text-indigo-400 text-[9px] font-bold uppercase tracking-[0.2em]">PayPol</th>
+                <th className="text-center py-3 px-3 text-indigo-400 text-[9px] font-bold uppercase tracking-[0.2em]">Agentic Finance</th>
                 <th className="text-center py-3 px-3 text-slate-600 text-[9px] uppercase tracking-[0.2em]">Stripe</th>
                 <th className="text-center py-3 px-3 text-slate-600 text-[9px] uppercase tracking-[0.2em]">PayPal</th>
               </tr>
@@ -340,7 +340,7 @@ export default function ProtocolPage() {
 
       {/* Footer */}
       <footer className="border-t border-white/[0.04] py-8 text-center text-[10px] text-slate-700 tracking-wide">
-        PayPol Protocol v4.0 · APS-1 v2.1 · MCP · x402 · Stealth · PayFi · ZK Compliance · MIT License · Tempo L1
+        Agentic Finance v4.0 · APS-1 v2.1 · MCP · x402 · Stealth · PayFi · ZK Compliance · MIT License · Tempo L1
       </footer>
     </div>
   );

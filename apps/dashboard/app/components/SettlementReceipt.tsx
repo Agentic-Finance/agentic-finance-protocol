@@ -56,7 +56,7 @@ function truncHash(hash: string | null | undefined): string {
 
 const FLOW_STEPS = [
     { label: 'Wallet', icon: '👛', desc: 'User wallet' },
-    { label: 'Vault', icon: '🏦', desc: 'PayPol Vault' },
+    { label: 'Vault', icon: '🏦', desc: 'Agentic Finance Vault' },
     { label: 'Daemon', icon: '⚙️', desc: 'Processed by Daemon' },
     { label: 'Recipients', icon: '👥', desc: 'Delivered' },
 ];

@@ -11,7 +11,7 @@ import {
 import { registerAgent } from './register';
 
 /**
- * Base class for building PayPol-compatible agents.
+ * Base class for building Agentic Finance-compatible agents.
  *
  * Usage:
  *   const agent = new PayPolAgent({ id: 'my-agent', ... });
@@ -64,7 +64,7 @@ export class PayPolAgent {
   }
 
   /**
-   * Self-register this agent on the PayPol marketplace.
+   * Self-register this agent on the Agentic Finance marketplace.
    * Calls /api/marketplace/register with the agent's manifest + webhook URL.
    *
    * @param webhookUrl   Publicly reachable base URL of this agent's server

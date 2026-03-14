@@ -1,7 +1,7 @@
 /**
- * PayPol SDK - Framework Adapters v2.1
+ * Agentic Finance SDK - Framework Adapters v2.1
  *
- * Adapters that convert PayPol agents into native tool definitions
+ * Adapters that convert Agentic Finance agents into native tool definitions
  * for popular AI frameworks. All adapters follow the APS-1 protocol.
  *
  * Supported Frameworks:
@@ -11,10 +11,10 @@
  *   - CrewAI (BaseTool, Python code generation)
  *
  * Usage:
- *   import { toOpenAITools } from 'paypol-sdk/adapters/openai';
- *   import { toAnthropicTools } from 'paypol-sdk/adapters/anthropic';
- *   import { toPayPolLangChainTools } from 'paypol-sdk/adapters/langchain';
- *   import { toCrewAITools, generateCrewAIPython } from 'paypol-sdk/adapters/crewai';
+ *   import { toOpenAITools } from 'agentic-finance-sdk/adapters/openai';
+ *   import { toAnthropicTools } from 'agentic-finance-sdk/adapters/anthropic';
+ *   import { toPayPolLangChainTools } from 'agentic-finance-sdk/adapters/langchain';
+ *   import { toCrewAITools, generateCrewAIPython } from 'agentic-finance-sdk/adapters/crewai';
  */
 
 // ── OpenAI Adapter ─────────────────────────────────────────

@@ -49,7 +49,7 @@ APS-1 defines a 6-phase lifecycle for agent payments:
 ## Installation
 
 ```bash
-npm install @paypol-protocol/aps-1
+npm install @agentic-finance/aps-1
 ```
 
 ## Quick Start
@@ -57,7 +57,7 @@ npm install @paypol-protocol/aps-1
 ### Build an APS-1 Agent
 
 ```typescript
-import { APS1Agent } from '@paypol-protocol/aps-1';
+import { APS1Agent } from '@agentic-finance/aps-1';
 
 const agent = new APS1Agent({
   id: 'data-analyzer',
@@ -100,10 +100,10 @@ agent.listen(3002);
 ### Hire an APS-1 Agent
 
 ```typescript
-import { APS1Client } from '@paypol-protocol/aps-1';
+import { APS1Client } from '@agentic-finance/aps-1';
 
 const client = new APS1Client({
-  agentServiceUrl: 'https://paypol.xyz',
+  agentServiceUrl: 'https://agt.finance',
 });
 
 // Discover available agents
@@ -124,7 +124,7 @@ console.log(result.result);  // { analysis: ... }
 ### Validate APS-1 Data
 
 ```typescript
-import { validateManifest, validateResult } from '@paypol-protocol/aps-1';
+import { validateManifest, validateResult } from '@agentic-finance/aps-1';
 
 // Validate a manifest
 const manifestCheck = validateManifest(someData);
@@ -313,23 +313,23 @@ After successful execution and verification:
 
 ## Framework Compatibility
 
-APS-1 is framework-agnostic. Use the `paypol-sdk` adapters:
+APS-1 is framework-agnostic. Use the `agentic-finance-sdk` adapters:
 
 ```typescript
 // OpenAI function-calling
-import { toOpenAITools } from 'paypol-sdk/openai';
+import { toOpenAITools } from 'agentic-finance-sdk/openai';
 
 // Anthropic tool-use
-import { toAnthropicTools } from 'paypol-sdk/anthropic';
+import { toAnthropicTools } from 'agentic-finance-sdk/anthropic';
 
 // LangChain
-import { PayPolToolkit } from 'paypol-sdk/langchain';
+import { PayPolToolkit } from 'agentic-finance-sdk/langchain';
 
 // CrewAI
-import { PayPolCrewAITool } from 'paypol-sdk/crewai';
+import { PayPolCrewAITool } from 'agentic-finance-sdk/crewai';
 
 // MCP
-import { PayPolMCPServer } from 'paypol-sdk/mcp';
+import { PayPolMCPServer } from 'agentic-finance-sdk/mcp';
 ```
 
 ## Global Adoption Roadmap
@@ -349,7 +349,7 @@ See the full [APS-1 RFC](./APS-1-RFC.md) for the complete roadmap and governance
 
 APS-1 is an **open global standard**. Contributions welcome:
 - **Build APS-1 agents** — See the [Contributing Guide](../../CONTRIBUTING.md)
-- **Submit AIPs** — Propose protocol improvements via [APS Improvement Proposals](https://github.com/PayPol-Foundation/aps-1/issues)
+- **Submit AIPs** — Propose protocol improvements via [APS Improvement Proposals](https://github.com/Agentic-Finance/aps-1/issues)
 - **Build framework adapters** — Integrate APS-1 with new AI frameworks
 - **Deploy on new chains** — Bring APS-1 to your blockchain
 

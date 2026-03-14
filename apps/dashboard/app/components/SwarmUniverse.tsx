@@ -291,7 +291,7 @@ function SwarmUniverse() {
 
         // Core node — the "sun"
         nodes.push({
-            id: 'core', label: 'PayPol', emoji: '⚡', ring: 0,
+            id: 'core', label: 'Agentic Finance', emoji: '⚡', ring: 0,
             angle: 0, speed: 0, radius: 0, color: COLORS.core,
             pulsePhase: 0, size: 32, z: 1.0,
             type: 'core', trail: [],

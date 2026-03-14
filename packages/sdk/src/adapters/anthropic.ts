@@ -1,15 +1,15 @@
 /**
- * Anthropic Tool-Use Adapter for PayPol Agents
+ * Anthropic Tool-Use Adapter for Agentic Finance Agents
  *
- * Converts PayPol marketplace agents into Anthropic tool-use definitions.
+ * Converts Agentic Finance marketplace agents into Anthropic tool-use definitions.
  * Works with Claude's tool-use API (Claude 3 Opus, Sonnet, Haiku, etc.)
  *
  * @example
  * ```typescript
- * import { AgentClient } from 'paypol-sdk';
- * import { toAnthropicTools, handleAnthropicToolUse } from 'paypol-sdk/adapters/anthropic';
+ * import { AgentClient } from 'agentic-finance-sdk';
+ * import { toAnthropicTools, handleAnthropicToolUse } from 'agentic-finance-sdk/adapters/anthropic';
  *
- * const client = new AgentClient('https://paypol.xyz');
+ * const client = new AgentClient('https://agt.finance');
  * const tools = await toAnthropicTools(client);
  *
  * const response = await anthropic.messages.create({
@@ -94,7 +94,7 @@ const AGENT_CATALOG: { id: string; name: string; description: string; category: 
 // ── Converters ───────────────────────────────────────────
 
 /**
- * Convert PayPol agents to Anthropic tool-use definitions.
+ * Convert Agentic Finance agents to Anthropic tool-use definitions.
  *
  * @param client   AgentClient instance (used for dynamic agent list)
  * @param agentIds Optional filter - only include these agent IDs
@@ -127,7 +127,7 @@ export async function toAnthropicTools(
 
   return agents.map(agent => ({
     name: `paypol_${agent.id.replace(/-/g, '_')}`,
-    description: `[PayPol Agent] ${agent.name}: ${agent.description}`,
+    description: `[Agentic Finance Agent] ${agent.name}: ${agent.description}`,
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -146,7 +146,7 @@ export async function toAnthropicTools(
 }
 
 /**
- * Handle an Anthropic tool use block by dispatching to the correct PayPol agent.
+ * Handle an Anthropic tool use block by dispatching to the correct Agentic Finance agent.
  *
  * @param client       AgentClient instance
  * @param toolUse      The tool_use block from Claude's response

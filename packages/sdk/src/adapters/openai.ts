@@ -1,15 +1,15 @@
 /**
- * OpenAI Function-Calling Adapter for PayPol Agents
+ * OpenAI Function-Calling Adapter for Agentic Finance Agents
  *
- * Converts PayPol marketplace agents into OpenAI function-calling tools.
+ * Converts Agentic Finance marketplace agents into OpenAI function-calling tools.
  * Works with the OpenAI Chat Completions API (GPT-4, GPT-3.5-turbo, etc.)
  *
  * @example
  * ```typescript
- * import { AgentClient } from 'paypol-sdk';
- * import { toOpenAITools, handleOpenAIToolCall } from 'paypol-sdk/adapters/openai';
+ * import { AgentClient } from 'agentic-finance-sdk';
+ * import { toOpenAITools, handleOpenAIToolCall } from 'agentic-finance-sdk/adapters/openai';
  *
- * const client = new AgentClient('https://paypol.xyz');
+ * const client = new AgentClient('https://agt.finance');
  * const tools = await toOpenAITools(client);
  *
  * const response = await openai.chat.completions.create({
@@ -92,7 +92,7 @@ const AGENT_CATALOG: { id: string; name: string; description: string; category: 
 // ── Converters ───────────────────────────────────────────
 
 /**
- * Convert PayPol agents to OpenAI function-calling tools.
+ * Convert Agentic Finance agents to OpenAI function-calling tools.
  *
  * @param client  AgentClient instance (used for dynamic agent list)
  * @param agentIds  Optional filter - only include these agent IDs
@@ -129,7 +129,7 @@ export async function toOpenAITools(
     type: 'function' as const,
     function: {
       name: `paypol_${agent.id.replace(/-/g, '_')}`,
-      description: `[PayPol Agent] ${agent.name}: ${agent.description}`,
+      description: `[Agentic Finance Agent] ${agent.name}: ${agent.description}`,
       parameters: {
         type: 'object' as const,
         properties: {
@@ -149,7 +149,7 @@ export async function toOpenAITools(
 }
 
 /**
- * Handle an OpenAI tool call by dispatching it to the correct PayPol agent.
+ * Handle an OpenAI tool call by dispatching it to the correct Agentic Finance agent.
  *
  * @param client       AgentClient instance
  * @param toolCall     The tool call from OpenAI's response

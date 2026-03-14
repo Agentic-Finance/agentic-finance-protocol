@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { CommunityNavbar } from './_components/CommunityNavbar';
 
 export const metadata: Metadata = {
-    title: 'PayPol Community',
-    description: 'Blog posts, research, and insights from the PayPol Protocol team — AI-powered payroll infrastructure on Tempo L1.',
+    title: 'Agentic Finance Community',
+    description: 'Blog posts, research, and insights from the Agentic Finance team — AI-powered payment infrastructure on Tempo L1.',
     openGraph: {
-        title: 'PayPol Community',
-        description: 'Blog posts, research, and insights from the PayPol Protocol team.',
+        title: 'Agentic Finance Community',
+        description: 'Blog posts, research, and insights from the Agentic Finance team.',
         type: 'website',
     },
 };
@@ -25,17 +25,17 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                         {/* Brand */}
                         <div className="md:col-span-2">
                             <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
-                                <img src="/logo.png" alt="PayPol Protocol" className="h-9 w-auto" />
+                                <img src="/logo.png" alt="Agentic Finance" className="h-9 w-auto" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
                             </p>
                             <div className="mt-4 flex items-center gap-4">
-                                <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
+                                <a href="https://x.com/agtfinance" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
-                                <a href="mailto:team@paypol.xyz" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
-                                    team@paypol.xyz
+                                <a href="mailto:team@agt.finance" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
+                                    team@agt.finance
                                 </a>
                             </div>
                         </div>
@@ -64,7 +64,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                     </div>
 
                     <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>&copy; 2026 PayPol Protocol. All rights reserved.</p>
+                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

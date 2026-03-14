@@ -222,7 +222,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
         // Helper: scroll to a section on the main page
         const scrollToSection = (section: string) => {
             if (pathname === '/') {
-                window.dispatchEvent(new CustomEvent('paypol:scrollToSection', {
+                window.dispatchEvent(new CustomEvent('agtfi:scrollToSection', {
                     detail: { section },
                 }));
             } else {
@@ -233,7 +233,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
         // Helper: open chat panel with optional jobId
         const openChat = (jobId?: string | null) => {
             if (pathname === '/') {
-                window.dispatchEvent(new CustomEvent('paypol:openChat', {
+                window.dispatchEvent(new CustomEvent('agtfi:openChat', {
                     detail: { jobId: jobId || null },
                 }));
             } else {

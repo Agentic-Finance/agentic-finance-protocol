@@ -1,5 +1,5 @@
 {
-  "name": "@paypol-protocol/aps-1",
+  "name": "@agentic-finance/aps-1",
   "version": "2.1.0",
   "description": "APS-1: Agent Payment Standard — The open protocol for AI agent payments, escrow, and verification",
   "main": "dist/index.js",
@@ -41,11 +41,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/aps-1"
+    "url": "https://github.com/Agentic-Finance/aps-1"
   },
-  "homepage": "https://paypol.xyz/aps-1",
+  "homepage": "https://agt.finance/aps-1",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/aps-1/issues"
+    "url": "https://github.com/Agentic-Finance/aps-1/issues"
   },
   "dependencies": {
     "express": "^4.21.0",

@@ -1,6 +1,6 @@
 'use client';
 /**
- * PayPol Icon System — powered by HugeIcons
+ * Agentic Finance Icon System — powered by HugeIcons
  * https://hugeicons.com
  *
  * Centralized icon wrapper that provides a consistent API across the entire app.

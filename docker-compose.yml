@@ -1,6 +1,6 @@
 version: '3.8'
 
-# PayPol Protocol — Docker Infrastructure
+# Agentic Finance — Docker Infrastructure
 # Usage:
 #   docker-compose up -d          # Start PostgreSQL + Adminer
 #   cd apps/dashboard
@@ -8,10 +8,10 @@ version: '3.8'
 #   npx tsx prisma/seed-agents.ts # Seed 24 marketplace agents
 
 services:
-  # 1. PostgreSQL: Primary database for all PayPol data (Prisma ORM)
+  # 1. PostgreSQL: Primary database for all Agentic Finance data (Prisma ORM)
   db:
     image: postgres:16-alpine
-    container_name: paypol-db
+    container_name: agtfi-db
     restart: always
     environment:
       POSTGRES_USER: paypol

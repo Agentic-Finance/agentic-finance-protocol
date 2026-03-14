@@ -1,5 +1,5 @@
 'use client';
-// PayPol Protocol - Landing Page v2.1
+// Agentic Finance - Landing Page v2.1
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 
@@ -122,7 +122,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     setOutputStep(3);
                 } catch {
                     if (cancelled) return;
-                    // Fallback — use real PayPol ecosystem addresses
+                    // Fallback — use real ecosystem addresses
                     setAgentData({ devAddress: '0x33F7E5da', auditAddress: '0x6A467Cd4' });
                     setNexusLog(prev => [...prev, `> Agents: Dev(0x33F7...) & Audit(0x6A46...)`]);
                     setOutputStep(2);
@@ -139,7 +139,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
     const prompts = [
         { title: "Private Payroll", command: "Pay @Tony 10 AlphaUSD, use ZK Shield and lock for 7 days.", icon: <ShieldCheckIcon className="w-5 h-5" />, color: '#10b981' },
-        { title: "PayPol Nexus (A2A)", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
+        { title: "Agentic Nexus (A2A)", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
         { title: "Smart Ledger", command: "Parse Q3_Engineering_Roster.csv and map to addresses.", icon: <DocumentTextIcon className="w-5 h-5" />, color: '#818cf8' },
         { title: "Conditional Payroll", command: "Pay marketing team 500 AlphaUSD monthly if TVL exceeds $10K.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899' },
         { title: "AI Proof Verification", command: "Verify Agent #7 execution proof. Check Poseidon hash against on-chain commitment.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308' },
@@ -164,7 +164,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* NAVBAR */}
             <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(11, 17, 32, 0.95)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.10)' : 'none', backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none', transition: 'all 0.3s ease' }}>
                 <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <Image src="/logo.png" alt="PayPol Logo" width={192} height={48} className="landing-logo-img" style={{ width: 'auto', objectFit: 'contain' }} priority />
+                    <Image src="/logo.png" alt="Agentic Finance" width={192} height={48} className="landing-logo-img" style={{ width: 'auto', objectFit: 'contain' }} priority />
                 </div>
                 <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '32px', padding: '12px 40px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
                     {[
@@ -327,14 +327,14 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             </div>
                         </div>
 
-                        {/* COLUMN 2: Why PayPol? */}
+                        {/* COLUMN 2: Why Agentic Finance? */}
                         <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>PayPol Is The Answer.</h3></div>
-                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>Every AI agent needs a bank account. Every agent economy needs a central bank. PayPol is <span style={{ color: '#fff', textDecoration: 'underline', textDecorationColor: '#10b981' }}>the settlement infrastructure</span> for this entire new economy.</p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>The Answer Is Here.</h3></div>
+                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>Every AI agent needs a bank account. Every agent economy needs a central bank. Agentic Finance is <span style={{ color: '#fff', textDecoration: 'underline', textDecorationColor: '#10b981' }}>the settlement infrastructure</span> for this entire new economy.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. PayPol bridges this gap - every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. Agentic Finance bridges this gap - every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Privacy by Default</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>ZK-SNARKs protect every salary, every vendor payment, every agent settlement from public view. Enterprise-grade privacy is not a feature - it is the foundation.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Omni-Chain, One Protocol</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Capital flows to where it is needed most. PayPol abstracts away bridge complexities across EVM and SVM, so agents operate on any chain through one unified interface.</p></div></div>
+                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Omni-Chain, One Protocol</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Capital flows to where it is needed most. Agentic Finance abstracts away bridge complexities across EVM and SVM, so agents operate on any chain through one unified interface.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ScaleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Game-Theoretic Security</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Our arbitration protocol makes cheating mathematically irrational. Nash equilibrium ensures honest behavior without human judges or centralized courts.</p></div></div>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><KeyIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Sovereign Infrastructure</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Self-custodial vaults, programmable multi-sig, and time-locked escrows. No single points of failure. No permission needed. The protocol IS the trust layer.</p></div></div>
                             </div>
@@ -516,14 +516,14 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     {/* Title */}
                     <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
-                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Who Builds on PayPol</span>
+                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Who Builds on Agentic Finance</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>
                             One Protocol.<br />
                             <span className="gradient-text">Every Financial Frontier.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                            From DAO treasuries to autonomous AI swarms - PayPol is the settlement layer powering the next generation of programmable finance.
+                            From DAO treasuries to autonomous AI swarms - Agentic Finance is the settlement layer powering the next generation of programmable finance.
                         </p>
                     </div>
 
@@ -713,7 +713,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
                             <CommandLineIcon style={{ width: '14px', height: '14px', color: '#34d399' }} />
-                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Build on PayPol</span>
+                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Build on Agentic Finance</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>Developer <span className="gradient-text">Portal.</span></h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 95% of every job on the marketplace.</p>
@@ -735,7 +735,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
                             <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Framework Integrations</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire PayPol agents in 3 lines of code.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire agents in 3 lines of code.</p>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                 {['OpenAI', 'Anthropic', 'LangChain', 'CrewAI', 'Eliza', 'MCP'].map((f) => (
                                     <span key={f} style={{ fontSize: '10px', fontWeight: 700, color: '#a5b4fc', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '9999px', padding: '3px 10px' }}>{f}</span>
@@ -777,9 +777,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '600', fontFamily: 'monospace', marginLeft: '8px' }}>my-agent.ts</span>
                         </div>
                         <pre style={{ padding: '20px 24px', margin: 0, fontSize: '0.78rem', lineHeight: 1.7, fontFamily: 'monospace', color: '#94a3b8', overflowX: 'auto' }}>
-{`import { `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{` } from 'paypol-sdk';
+{`import { `}<span style={{ color: '#10b981' }}>AgentClient</span>{` } from 'agentic-finance-sdk';
 
-const agent = new `}<span style={{ color: '#10b981' }}>PayPolAgent</span>{`({
+const agent = new `}<span style={{ color: '#10b981' }}>AgentClient</span>{`({
   name: `}<span style={{ color: '#fbbf24' }}>'my-defi-bot'</span>{`,
   category: `}<span style={{ color: '#fbbf24' }}>'defi'</span>{`,
   skills: [`}<span style={{ color: '#fbbf24' }}>'swap'</span>{`, `}<span style={{ color: '#fbbf24' }}>'bridge'</span>{`, `}<span style={{ color: '#fbbf24' }}>'yield'</span>{`],
@@ -838,17 +838,17 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                         {/* Brand */}
                         <div style={{ gridColumn: 'span 2' }}>
                             <a href="/" style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                                <img src="/logo.png" alt="PayPol Protocol" style={{ height: '36px', width: 'auto' }} />
+                                <img src="/logo.png" alt="Agentic Finance" style={{ height: '36px', width: 'auto' }} />
                             </a>
                             <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>
                                 The Financial OS for the AI Agent Economy. Trustless escrow, ZK privacy, AI-native credit, MCP payments — one protocol for every agent framework.
                             </p>
                             <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
+                                <a href="https://x.com/agtfinance" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
-                                <a href="mailto:team@paypol.xyz" style={{ color: '#475569', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-                                    team@paypol.xyz
+                                <a href="mailto:team@agt.finance" style={{ color: '#475569', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
+                                    team@agt.finance
                                 </a>
                             </div>
                         </div>
@@ -877,7 +877,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                     </div>
 
                     <div style={{ paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: '#475569' }}>
-                        <p>&copy; 2026 PayPol Protocol. All rights reserved.</p>
+                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', animation: 'pulse 2s infinite' }}></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

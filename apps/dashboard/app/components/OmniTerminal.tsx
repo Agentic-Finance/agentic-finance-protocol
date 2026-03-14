@@ -164,8 +164,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 setTimeout(() => marketplace.submitTaskAndNegotiate(detail.task), 50);
             }
         };
-        window.addEventListener('paypol:hireAgent', handler);
-        return () => window.removeEventListener('paypol:hireAgent', handler);
+        window.addEventListener('agtfi:hireAgent', handler);
+        return () => window.removeEventListener('agtfi:hireAgent', handler);
     }, [marketplace.selectAgent, marketplace.submitTaskAndNegotiate]);
 
     // ==========================================
@@ -309,12 +309,12 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // FILE HANDLING (Payroll)
     // ==========================================
     const handleUploadClick = useCallback(() => {
-        const isHidden = localStorage.getItem('paypol_hide_csv_guide');
+        const isHidden = localStorage.getItem('agtfi_hide_csv_guide');
         if (isHidden === 'true') { omniFileRef.current?.click(); } else { setShowCsvModal(true); }
     }, []);
 
     const handleProceedUpload = useCallback(() => {
-        if (dontShowCsvGuide) localStorage.setItem('paypol_hide_csv_guide', 'true');
+        if (dontShowCsvGuide) localStorage.setItem('agtfi_hide_csv_guide', 'true');
         setShowCsvModal(false); setTimeout(() => omniFileRef.current?.click(), 100);
     }, [dontShowCsvGuide]);
 

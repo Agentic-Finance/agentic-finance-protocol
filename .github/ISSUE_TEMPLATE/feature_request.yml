@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        We love new ideas! Describe the feature you'd like to see in PayPol Protocol.
+        We love new ideas! Describe the feature you'd like to see in Agentic Finance.
 
   - type: dropdown
     id: area

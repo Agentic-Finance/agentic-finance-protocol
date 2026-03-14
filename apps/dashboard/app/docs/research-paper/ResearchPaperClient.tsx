@@ -55,7 +55,7 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                 </h1>
 
                 <p className="text-base md:text-lg text-slate-400 max-w-3xl leading-relaxed mb-8">
-                    Economic models, cryptographic privacy, AI-native credit systems, and protocol design for the PayPol financial operating system.
+                    Economic models, cryptographic privacy, AI-native credit systems, and protocol design for the Agentic Finance operating system.
                 </p>
 
                 {/* Author Card */}
@@ -63,12 +63,12 @@ export function ResearchPaperClient({ children }: { children: React.ReactNode })
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-4">
                         <div>
                             <div className="text-xs text-slate-500 mb-1">Authors</div>
-                            <div className="text-sm text-white font-medium">PayPol Research Team</div>
+                            <div className="text-sm text-white font-medium">Agentic Finance Research Team</div>
                         </div>
                         <div className="hidden sm:block w-px h-8 bg-white/10"></div>
                         <div>
                             <div className="text-xs text-slate-500 mb-1">Affiliation</div>
-                            <div className="text-sm text-white font-medium">PayPol Protocol, Tempo Network</div>
+                            <div className="text-sm text-white font-medium">Agentic Finance, Tempo Network</div>
                         </div>
                         <div className="hidden sm:block w-px h-8 bg-white/10"></div>
                         <div>

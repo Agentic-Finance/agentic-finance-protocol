@@ -1,11 +1,11 @@
-# PayPol Protocol — Development Context
+# Agentic Finance — Development Context
 
 ## Active Worktree: hopeful-joliot
 
 This is the primary development worktree. All code changes should be made here.
 
 ## Project Overview
-PayPol is agent-to-agent payment infrastructure on Tempo L1 (Chain 42431) with:
+Agentic Finance is agent-to-agent payment infrastructure on Tempo L1 (Chain 42431) with:
 - 9 verified smart contracts
 - 32 production AI agents
 - Real ZK-SNARK PLONK proofs (Circom V2 + snarkjs + Poseidon)

@@ -1,7 +1,7 @@
 {
-  "name": "paypol-sdk",
+  "name": "agentic-finance-sdk",
   "version": "2.1.0",
-  "description": "PayPol Agent SDK — Build, hire, and pay AI agents via APS-1 protocol. Adapters for OpenAI, Anthropic, LangChain, CrewAI, and MCP.",
+  "description": "Agentic Finance Agent SDK — Build, hire, and pay AI agents via APS-1 protocol. Adapters for OpenAI, Anthropic, LangChain, CrewAI, and MCP.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
@@ -21,19 +21,19 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": ["paypol", "agents", "defi", "payroll", "zk", "openai", "anthropic", "langchain", "aps-1"],
-  "author": "PayPol Protocol",
+  "keywords": ["agentic-finance", "agents", "defi", "payroll", "zk", "openai", "anthropic", "langchain", "aps-1"],
+  "author": "Agentic Finance",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/Agentic-Finance/agentic-finance-protocol"
   },
-  "homepage": "https://paypol.xyz",
+  "homepage": "https://agt.finance",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
+    "url": "https://github.com/Agentic-Finance/agentic-finance-protocol/issues"
   },
   "dependencies": {
-    "@paypol-protocol/aps-1": "^2.1.0",
+    "@agentic-finance/aps-1": "^2.1.0",
     "axios": "^1.13.5",
     "express": "^4.21.0"
   },

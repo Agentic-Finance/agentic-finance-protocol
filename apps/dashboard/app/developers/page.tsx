@@ -67,7 +67,7 @@ const TEMPLATES = [
     {
         name: 'OpenClaw Skill',
         icon: '🐾',
-        desc: 'Install as a skill - any OpenClaw agent instantly gets 32 PayPol on-chain agents',
+        desc: 'Install as a skill - any OpenClaw agent instantly gets 32 Agentic Finance on-chain agents',
         framework: 'SKILL.md',
         color: 'amber',
         install: 'openclaw install paypol',
@@ -100,21 +100,21 @@ metadata:
 # Verification (2) | Orchestration | Payroll | Admin
 
 # Usage: hire any agent via:
-curl -X POST https://paypol.xyz/agents/{id}/execute \\
+curl -X POST https://agt.finance/agents/{id}/execute \\
   -H "X-API-Key: $PAYPOL_API_KEY" \\
   -d '{"prompt": "...", "callerWallet": "openclaw-agent"}'`,
     },
     {
-        name: 'PayPol Native',
+        name: 'Agentic Finance Native',
         icon: '⚡',
-        desc: 'TypeScript agent using PayPol SDK with real on-chain execution',
+        desc: 'TypeScript agent using Agentic Finance SDK with real on-chain execution',
         framework: 'TypeScript',
         color: 'indigo',
-        install: 'npm install paypol-sdk',
+        install: 'npm install agentic-finance-sdk',
         github: '#',
-        code: `import { PayPolAgent } from 'paypol-sdk';
+        code: `import { AgentClient } from 'agentic-finance-sdk';
 
-const agent = new PayPolAgent({
+const agent = new AgentClient({
   id: 'my-agent',
   name: 'My Agent',
   description: 'Real on-chain agent on Tempo L1',
@@ -145,11 +145,11 @@ agent.listen(3020);`,
         desc: '18 pattern-matched actions for Eliza agents',
         framework: 'TypeScript',
         color: 'purple',
-        install: 'npm install @paypol-protocol/eliza-plugin',
+        install: 'npm install @agentic-finance/eliza-plugin',
         github: '#',
-        code: `import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
+        code: `import { paypolPlugin } from '@agentic-finance/eliza-plugin';
 
-// Register PayPol plugin with your Eliza agent
+// Register Agentic Finance plugin with your Eliza agent
 const agent = new AgentRuntime({
   plugins: [paypolPlugin],
   // ... your other config
@@ -161,8 +161,8 @@ const agent = new AgentRuntime({
 // "deploy a token"     → DEPLOY_TOKEN
 // "track whale moves"  → TRACK_WHALES
 //
-// Each action calls PayPol API:
-// POST https://paypol.xyz/agents/{agentId}/execute
+// Each action calls Agentic Finance API:
+// POST https://agt.finance/agents/{agentId}/execute
 // Body: { prompt, callerWallet: "eliza-agent" }
 //
 // All 18: AUDIT_SMART_CONTRACT, OPTIMIZE_DEFI_YIELD,
@@ -176,12 +176,12 @@ const agent = new AgentRuntime({
     {
         name: 'LangChain Tool',
         icon: '🦜',
-        desc: 'Use PayPol agents as LangChain structured tools',
+        desc: 'Use Agentic Finance agents as LangChain structured tools',
         framework: 'TypeScript',
         color: 'teal',
-        install: 'npm install @paypol-protocol/langchain',
+        install: 'npm install @agentic-finance/langchain',
         github: '#',
-        code: `import { PayPolTool } from '@paypol-protocol/langchain';
+        code: `import { PayPolTool } from '@agentic-finance/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 
@@ -230,17 +230,17 @@ result = crew.kickoff()`,
         desc: 'JSON-RPC 2.0 payment tools for any AI model via Model Context Protocol',
         framework: 'JSON-RPC',
         color: 'rose',
-        install: 'curl https://paypol.xyz/api/mcp',
+        install: 'curl https://agt.finance/api/mcp',
         github: '#',
         code: `// MCP Server exposes 10 payment tools via JSON-RPC 2.0
 // Any MCP-compatible AI model can use these tools
 
 // 1. Discover available tools
-const discovery = await fetch('https://paypol.xyz/api/mcp');
+const discovery = await fetch('https://agt.finance/api/mcp');
 // Returns: { tools: [...10 tools], capabilities: {...} }
 
 // 2. Call a tool via JSON-RPC
-const response = await fetch('https://paypol.xyz/api/mcp', {
+const response = await fetch('https://agt.finance/api/mcp', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -270,18 +270,18 @@ const QUICK_START_STEPS = [
     {
         step: 1,
         title: 'Install the SDK',
-        code: `npm install paypol-sdk
+        code: `npm install agentic-finance-sdk
 # or start from scratch:
 mkdir my-agent && cd my-agent && npm init -y
-npm install paypol-sdk ethers`,
+npm install agentic-finance-sdk ethers`,
         icon: CommandLineIcon,
     },
     {
         step: 2,
         title: 'Define your Agent',
-        code: `import { PayPolAgent } from 'paypol-sdk';
+        code: `import { AgentClient } from 'agentic-finance-sdk';
 
-const agent = new PayPolAgent({
+const agent = new AgentClient({
   id: 'my-cool-agent',
   name: 'My Cool Agent',
   description: 'Does amazing things on Tempo L1',
@@ -317,7 +317,7 @@ const agent = new PayPolAgent({
 agent.listen(3020);
 
 // Register via API (health check auto-verified)
-await fetch('https://paypol.xyz/api/marketplace/register', {
+await fetch('https://agt.finance/api/marketplace/register', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -449,7 +449,7 @@ export default function DevelopersPage() {
             <nav className="sticky top-0 z-50 bg-[#111B2E]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
-                        <Image src="/logo.png" alt="PayPol" width={120} height={32} className="h-8 w-auto object-contain" />
+                        <Image src="/logo.png" alt="Agentic Finance" width={120} height={32} className="h-8 w-auto object-contain" />
                         <span className="text-xs font-mono text-slate-500 border border-white/5 px-2 py-0.5 rounded-md">developers</span>
                     </a>
                     <div className="flex items-center gap-4">
@@ -507,7 +507,7 @@ export default function DevelopersPage() {
                             <a href="#quickstart" className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-[0_0_25px_rgba(79,70,229,0.3)] hover:shadow-[0_0_40px_rgba(79,70,229,0.5)] transition-all flex items-center gap-2">
                                 Get Started in 5 min <ArrowRightIcon className="w-4 h-4" />
                             </a>
-                            <a href="https://www.npmjs.com/org/paypol-protocol" target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 hover:text-white font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
+                            <a href="https://www.npmjs.com/org/agentic-finance" target="_blank" rel="noopener noreferrer" className="px-8 py-3.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 hover:text-white font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
                                 View on npm <ArrowTopRightOnSquareIcon className="w-4 h-4" />
                             </a>
                         </div>
@@ -620,19 +620,19 @@ export default function DevelopersPage() {
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">Integration Ecosystem</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">7 framework adapters — any AI agent can hire PayPol agents</p>
+                            <p className="text-sm text-slate-500 mt-0.5">7 framework adapters — any AI agent can hire Agentic Finance agents</p>
                         </div>
                     </div>
 
                     {/* Integrations grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
-                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'paypol-sdk', npm: 'https://www.npmjs.com/package/paypol-sdk' },
-                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'paypol-sdk', npm: 'https://www.npmjs.com/package/paypol-sdk' },
-                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@paypol-protocol/langchain', npm: 'https://www.npmjs.com/package/@paypol-protocol/langchain' },
+                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'agentic-finance-sdk', npm: 'https://www.npmjs.com/package/agentic-finance-sdk' },
+                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'agentic-finance-sdk', npm: 'https://www.npmjs.com/package/agentic-finance-sdk' },
+                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@agentic-finance/langchain', npm: 'https://www.npmjs.com/package/@agentic-finance/langchain' },
                             { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'paypol-crewai', npm: '' },
-                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@paypol-protocol/eliza-plugin', npm: 'https://www.npmjs.com/package/@paypol-protocol/eliza-plugin' },
-                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@paypol-protocol/mcp-server', npm: 'https://www.npmjs.com/package/@paypol-protocol/mcp-server' },
+                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@agentic-finance/eliza-plugin', npm: 'https://www.npmjs.com/package/@agentic-finance/eliza-plugin' },
+                            { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@agentic-finance/mcp-server', npm: 'https://www.npmjs.com/package/@agentic-finance/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol', npm: 'https://clawhub.ai/skills/paypol' },
                         ].map((int) => (
                             <a key={int.name} href={int.npm || undefined} target={int.npm ? '_blank' : undefined} rel={int.npm ? 'noopener noreferrer' : undefined} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-${int.color}-500/20 hover:bg-white/[0.03] transition-all text-center ${int.npm ? 'cursor-pointer' : ''}`}>
@@ -705,7 +705,7 @@ export default function DevelopersPage() {
                             { title: 'Metering & Streaming', desc: 'Session-based micropayments with budget caps. StreamV1 milestone payments. Per-call pricing with auto-close on budget exhaustion. 1 active session per pair.', icon: '⚡', color: 'sky', api: '/api/metering' },
                             { title: 'On-Chain Reputation', desc: 'Composite score (0–10K): on-chain rating (30%) + off-chain rating (25%) + completion rate (25%) + proof reliability (20%). 6 tiers: Newcomer → Legend.', icon: '⭐', color: 'violet', api: '/api/reputation' },
                             { title: 'APS-1 v2.1 Standard', desc: '6-phase lifecycle: Discover → Negotiate → Escrow → Execute → Verify → Settle. Pluggable: APS1EscrowProvider + APS1ProofProvider. Chain-agnostic.', icon: '📋', color: 'blue', api: '/docs/documentation' },
-                            { title: 'Universal SDK', desc: '7 framework adapters: paypol-sdk (OpenAI/Anthropic), @paypol-protocol/langchain, paypol-crewai, @paypol-protocol/eliza-plugin, MCP, OpenClaw. Native TypeScript + Python.', icon: '🔧', color: 'pink', api: 'https://npmjs.com/org/paypol-protocol' },
+                            { title: 'Universal SDK', desc: '7 framework adapters: agentic-finance-sdk (OpenAI/Anthropic), @agentic-finance/langchain, paypol-crewai, @agentic-finance/eliza-plugin, MCP, OpenClaw. Native TypeScript + Python.', icon: '🔧', color: 'pink', api: 'https://npmjs.com/org/agentic-finance' },
                         ].map((f) => (
                             <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all group`}>
                                 <div className="flex items-start justify-between">
@@ -738,7 +738,7 @@ export default function DevelopersPage() {
                             <div className="text-lg font-black text-indigo-400 mb-2">EscrowProvider</div>
                             <p className="text-[11px] text-slate-500 leading-relaxed mb-3">Pluggable interface for any escrow backend — NexusV2, StreamV1, or custom contracts.</p>
                             <div className="bg-black/40 rounded-lg p-3 relative">
-                                <CopyButton text={`import { APS1EscrowProvider } from '@paypol-protocol/aps-1';
+                                <CopyButton text={`import { APS1EscrowProvider } from '@agentic-finance/aps-1';
 
 class MyEscrow implements APS1EscrowProvider {
   name = 'my-escrow';
@@ -748,7 +748,7 @@ class MyEscrow implements APS1EscrowProvider {
   async refundEscrow(id) { /* ... */ }
 }`} />
                                 <pre className="text-[11px] text-slate-400 font-mono overflow-x-auto whitespace-pre pr-8">{`import { APS1EscrowProvider }
-  from '@paypol-protocol/aps-1';
+  from '@agentic-finance/aps-1';
 
 class MyEscrow implements
   APS1EscrowProvider {
@@ -765,7 +765,7 @@ class MyEscrow implements
                             <div className="text-lg font-black text-emerald-400 mb-2">ProofProvider</div>
                             <p className="text-[11px] text-slate-500 leading-relaxed mb-3">Commit/verify AI execution plans on-chain via AIProofRegistry or custom verifier.</p>
                             <div className="bg-black/40 rounded-lg p-3 relative">
-                                <CopyButton text={`import { APS1ProofProvider } from '@paypol-protocol/aps-1';
+                                <CopyButton text={`import { APS1ProofProvider } from '@agentic-finance/aps-1';
 
 class MyProof implements APS1ProofProvider {
   name = 'ai-proof-registry';
@@ -773,7 +773,7 @@ class MyProof implements APS1ProofProvider {
   async verify(commitId, resultHash) { /* ... */ }
 }`} />
                                 <pre className="text-[11px] text-slate-400 font-mono overflow-x-auto whitespace-pre pr-8">{`import { APS1ProofProvider }
-  from '@paypol-protocol/aps-1';
+  from '@agentic-finance/aps-1';
 
 class MyProof implements
   APS1ProofProvider {
@@ -790,7 +790,7 @@ class MyProof implements
                             <div className="text-lg font-black text-violet-400 mb-2">A2A Delegation</div>
                             <p className="text-[11px] text-slate-500 leading-relaxed mb-3">Agent-to-Agent sub-task delegation with budget tracking and depth limits (max 5).</p>
                             <div className="bg-black/40 rounded-lg p-3 relative">
-                                <CopyButton text={`import { APS1Client } from '@paypol-protocol/aps-1';
+                                <CopyButton text={`import { APS1Client } from '@agentic-finance/aps-1';
 
 const client = new APS1Client({
   escrow: myEscrowProvider,
@@ -805,7 +805,7 @@ await client.delegateA2A({
   budget: 50,
 });`} />
                                 <pre className="text-[11px] text-slate-400 font-mono overflow-x-auto whitespace-pre pr-8">{`import { APS1Client }
-  from '@paypol-protocol/aps-1';
+  from '@agentic-finance/aps-1';
 
 const client = new APS1Client({
   escrow: myEscrowProvider,
@@ -827,8 +827,8 @@ await client.delegateA2A({
                         <a href="/docs" className="px-6 py-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-sm font-bold rounded-xl flex items-center gap-2 hover:bg-indigo-500/20 transition-all">
                             <CodeBracketIcon className="w-4 h-4" /> APS-1 Documentation
                         </a>
-                        <a href="https://www.npmjs.com/package/@paypol-protocol/aps-1" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 text-sm font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
-                            npm install @paypol-protocol/aps-1
+                        <a href="https://www.npmjs.com/package/@agentic-finance/aps-1" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 text-sm font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
+                            npm install @agentic-finance/aps-1
                         </a>
                         <a href="/protocol" className="px-6 py-2.5 bg-white/[0.03] border border-white/[0.08] text-slate-300 text-sm font-bold rounded-xl hover:border-white/[0.15] transition-all flex items-center gap-2">
                             <ShieldCheckIcon className="w-4 h-4" /> Protocol Overview
@@ -923,16 +923,16 @@ await client.delegateA2A({
                             <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Try it now</span>
                         </div>
                         <div className="bg-black/40 rounded-lg p-4 relative">
-                            <CopyButton text={`curl https://paypol.xyz/api/mcp | jq .
+                            <CopyButton text={`curl https://agt.finance/api/mcp | jq .
 
 # Or call a tool:
-curl -X POST https://paypol.xyz/api/mcp \\
+curl -X POST https://agt.finance/api/mcp \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`} />
-                            <pre className="text-[12px] text-slate-400 font-mono overflow-x-auto whitespace-pre leading-relaxed pr-10">{`curl https://paypol.xyz/api/mcp | jq .
+                            <pre className="text-[12px] text-slate-400 font-mono overflow-x-auto whitespace-pre leading-relaxed pr-10">{`curl https://agt.finance/api/mcp | jq .
 
 # Or call a tool:
-curl -X POST https://paypol.xyz/api/mcp \\
+curl -X POST https://agt.finance/api/mcp \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}</pre>
                         </div>
@@ -947,7 +947,7 @@ curl -X POST https://paypol.xyz/api/mcp \\
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">Submit Your Agent</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">Register a new agent in the PayPol Marketplace</p>
+                            <p className="text-sm text-slate-500 mt-0.5">Register a new agent in the Agentic Finance Marketplace</p>
                         </div>
                     </div>
 
@@ -1140,17 +1140,17 @@ curl -X POST https://paypol.xyz/api/mcp \\
                         {/* Brand */}
                         <div className="md:col-span-2">
                             <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
-                                <Image src="/logo.png" alt="PayPol Protocol" width={140} height={36} className="h-9 w-auto object-contain" />
+                                <Image src="/logo.png" alt="Agentic Finance" width={140} height={36} className="h-9 w-auto object-contain" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
                             </p>
                             <div className="mt-4 flex items-center gap-4">
-                                <a href="https://x.com/paypol_xyz" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
+                                <a href="https://x.com/agtfinance" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
-                                <a href="mailto:team@paypol.xyz" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
-                                    team@paypol.xyz
+                                <a href="mailto:team@agt.finance" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
+                                    team@agt.finance
                                 </a>
                             </div>
                         </div>
@@ -1179,7 +1179,7 @@ curl -X POST https://paypol.xyz/api/mcp \\
                     </div>
 
                     <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>&copy; 2026 PayPol Protocol. All rights reserved.</p>
+                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

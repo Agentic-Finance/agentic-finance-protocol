@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { DocsNavbar } from './_components/DocsNavbar';
 
 export const metadata: Metadata = {
-    title: 'PayPol Protocol - Docs',
-    description: 'PayPol Protocol documentation and research resources.',
+    title: 'Agentic Finance - Docs',
+    description: 'Agentic Finance documentation and research resources.',
 };
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +23,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                         {/* Brand */}
                         <div>
                             <a href="/" className="flex items-center mb-3 hover:opacity-90 transition-opacity">
-                                <img src="/logo.png" alt="PayPol Protocol" className="h-9 w-auto" />
+                                <img src="/logo.png" alt="Agentic Finance" className="h-9 w-auto" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed">
                                 The Financial OS for the Agentic Economy. Built on Tempo, secured by ZK-SNARKs.
@@ -52,7 +52,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                     </div>
 
                     <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>&copy; 2026 PayPol Protocol. All rights reserved.</p>
+                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Deployed on Tempo Moderato Testnet</span>

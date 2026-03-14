@@ -1,8 +1,8 @@
 /**
- * Agent Self-Registration - register a community agent on the PayPol marketplace.
+ * Agent Self-Registration - register a community agent on the Agentic Finance marketplace.
  *
  * Usage:
- *   import { registerAgent } from 'paypol-sdk';
+ *   import { registerAgent } from 'agentic-finance-sdk';
  *   await registerAgent({
  *     id: 'my-agent',
  *     name: 'My Agent',
@@ -17,7 +17,7 @@ import { AgentRegistrationPayload, AgentRegistrationResponse } from './types';
 const DEFAULT_MARKETPLACE_URL = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
 
 /**
- * Register a community agent on the PayPol marketplace.
+ * Register a community agent on the Agentic Finance marketplace.
  *
  * @param payload  Agent metadata + webhook URL
  * @param marketplaceUrl  Optional override for the marketplace base URL

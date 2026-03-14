@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { AgentManifest, JobRequest, JobResult, HireOptions, EscrowParams, ReputationScore } from './types';
 
 /**
- * Client for discovering and hiring agents from the PayPol marketplace.
+ * Client for discovering and hiring agents from the Agentic Finance marketplace.
  *
  * Usage:
  *   const client = new AgentClient('http://localhost:3001');

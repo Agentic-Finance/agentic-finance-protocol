@@ -1,13 +1,13 @@
 /**
- * PayPol CrewAI Adapter
+ * Agentic Finance CrewAI Adapter
  *
- * Converts PayPol APS-1 agents into CrewAI-compatible tool definitions.
+ * Converts Agentic Finance APS-1 agents into CrewAI-compatible tool definitions.
  * CrewAI uses @tool decorators in Python, but this adapter provides
  * the TypeScript equivalent for CrewAI's Node.js/TypeScript runtime
  * and also generates Python code snippets for Python users.
  *
  * Usage (TypeScript):
- *   import { toCrewAITools, handleCrewAIToolCall, generateCrewAIPython } from 'paypol-sdk/adapters';
+ *   import { toCrewAITools, handleCrewAIToolCall, generateCrewAIPython } from 'agentic-finance-sdk/adapters';
  *
  *   // Get tool definitions for CrewAI
  *   const tools = toCrewAITools();
@@ -33,7 +33,7 @@ export interface CrewAIToolDefinition {
     description: string;
     required: boolean;
   }>;
-  /** PayPol agent metadata */
+  /** Agentic Finance agent metadata */
   metadata: {
     paypol_agent_id: string;
     category: string;
@@ -77,7 +77,7 @@ const AGENT_CATALOG: AgentDef[] = [
   { id: 'gas-profiler', name: 'Gas Profiler', category: 'analytics', price: 0.10,
     description: 'Profile gas costs for smart contract operations on Tempo L1' },
   { id: 'treasury-manager', name: 'Treasury Overview', category: 'analytics', price: 0.25,
-    description: 'Provide treasury overview across all PayPol vaults and contracts' },
+    description: 'Provide treasury overview across all Agentic Finance vaults and contracts' },
   { id: 'recurring-payment', name: 'Recurring Payment Scheduler', category: 'payments', price: 0.50,
     description: 'Set up scheduled recurring payments on Tempo L1' },
   { id: 'chain-monitor', name: 'Chain Health Monitor', category: 'analytics', price: 0.10,
@@ -87,7 +87,7 @@ const AGENT_CATALOG: AgentDef[] = [
 // ── Tool Conversion ────────────────────────────────────────
 
 /**
- * Convert PayPol agents to CrewAI tool definitions.
+ * Convert Agentic Finance agents to CrewAI tool definitions.
  */
 export function toCrewAITools(agents?: AgentDef[]): CrewAIToolDefinition[] {
   const catalog = agents ?? AGENT_CATALOG;
@@ -118,7 +118,7 @@ export function toCrewAITools(agents?: AgentDef[]): CrewAIToolDefinition[] {
 }
 
 /**
- * Handle a CrewAI tool invocation by routing to the correct PayPol agent.
+ * Handle a CrewAI tool invocation by routing to the correct Agentic Finance agent.
  */
 export async function handleCrewAIToolCall(
   toolName: string,
@@ -151,18 +151,18 @@ export async function handleCrewAIToolCall(
 
 /**
  * Generate Python code for CrewAI Python users.
- * Returns a complete Python module that wraps the PayPol API.
+ * Returns a complete Python module that wraps the Agentic Finance API.
  */
 export function generateCrewAIPython(apiUrl?: string): string {
   const url = apiUrl ?? AGENT_API;
   const agents = AGENT_CATALOG;
 
   return `"""
-PayPol CrewAI Tools - Auto-generated Python adapter
+Agentic Finance CrewAI Tools - Auto-generated Python adapter
 APS-1 Protocol v2.1 - Agent Payment Standard
 
 Usage:
-    from paypol_crewai import PayPolAuditTool, PayPolTransferTool
+    from agentic_finance_crewai import PayPolAuditTool, PayPolTransferTool
 
     crew = Crew(
         agents=[auditor_agent, finance_agent],
@@ -176,17 +176,17 @@ import requests
 from crewai_tools import BaseTool
 from pydantic import BaseModel, Field
 
-PAYPOL_API = "${url}"
+AGENTIC_FINANCE_API = "${url}"
 
 class PayPolToolInput(BaseModel):
     prompt: str = Field(description="Natural language instruction for the agent")
     caller_wallet: str = Field(description="Wallet address (0x...) of the caller")
 
-def _call_paypol_agent(agent_id: str, prompt: str, caller_wallet: str) -> str:
-    """Call a PayPol agent via the APS-1 API."""
+def _call_agent(agent_id: str, prompt: str, caller_wallet: str) -> str:
+    """Call an Agentic Finance agent via the APS-1 API."""
     try:
         resp = requests.post(
-            f"{PAYPOL_API}/agents/{agent_id}/execute",
+            f"{AGENTIC_FINANCE_API}/agents/{agent_id}/execute",
             json={
                 "jobId": f"crewai-py-{agent_id}",
                 "prompt": prompt,
@@ -212,7 +212,7 @@ class PayPol${a.name.replace(/\s+/g, '')}Tool(BaseTool):
     args_schema: type[BaseModel] = PayPolToolInput
 
     def _run(self, prompt: str, caller_wallet: str) -> str:
-        return _call_paypol_agent("${a.id}", prompt, caller_wallet)
+        return _call_agent("${a.id}", prompt, caller_wallet)
 `).join('')}
 
 # Convenience list of all tools

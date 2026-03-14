@@ -727,3 +727,168 @@ model AccessKey {
   @@index([isActive])
   @@index([validUntil])
 }
+
+// ==========================================
+// 💰 x402 MICROPAYMENTS
+// ==========================================
+
+// x402 payment records — HTTP-native micropayments for AI agents
+model x402Payment {
+  id            String    @id @default(uuid())
+  nonce         String    @unique                         // Unique per payment (replay protection)
+  payer         String                                    // Agent wallet that paid
+  facilitator   String                                    // PayPol treasury
+  token         String                                    // Token address
+  amount        Float                                     // AlphaUSD amount
+  resource      String                                    // What was paid for (e.g., "mcp:send_payment")
+  signature     String                                    // EIP-191 payment signature
+  timestamp     DateTime                                  // Payment timestamp
+  status        String    @default("VERIFIED")            // VERIFIED | SETTLED | FAILED
+  txHash        String?                                   // On-chain settlement tx (if batch-settled)
+  settledAt     DateTime?
+  createdAt     DateTime  @default(now())
+
+  @@index([payer])
+  @@index([status])
+  @@index([resource])
+  @@index([createdAt])
+}
+
+// ==========================================
+// 🕵️ STEALTH ADDRESSES (ERC-5564)
+// ==========================================
+
+// Stealth meta-address registry — recipients publish these for senders
+model StealthMetaAddress {
+  id              String    @id @default(uuid())
+  wallet          String    @unique                       // Owner wallet
+  spendingPubKey  String                                  // Public spending key
+  viewingPubKey   String                                  // Public viewing key
+  metaAddress     String                                  // st:tempo:0xSpend:0xView
+  createdAt       DateTime  @default(now())
+  payments        StealthPayment[]
+
+  @@index([wallet])
+}
+
+// Stealth payment announcements — senders publish, recipients scan
+model StealthPayment {
+  id              String    @id @default(uuid())
+  senderWallet    String                                  // Sender (or "anonymous")
+  recipientMetaId String                                  // Ref to StealthMetaAddress
+  recipientMeta   StealthMetaAddress @relation(fields: [recipientMetaId], references: [id])
+  stealthAddress  String                                  // One-time stealth address
+  ephemeralPubKey String                                  // Ephemeral key for scanning
+  viewTag         String                                  // First byte of shared secret (scan filter)
+  amount          Float
+  token           String    @default("AlphaUSD")
+  memo            String?
+  txHash          String?                                 // On-chain transfer tx
+  status          String    @default("PENDING")           // PENDING | SENT | CLAIMED | EXPIRED
+  createdAt       DateTime  @default(now())
+  claimedAt       DateTime?
+
+  @@index([stealthAddress])
+  @@index([viewTag])
+  @@index([senderWallet])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ==========================================
+// 🧠 VERIFIABLE AI (Model Registry + Decision Proofs)
+// ==========================================
+
+// Registered AI models — hash of model weights/code for verification
+model ModelRegistry {
+  id              String    @id @default(uuid())
+  agentId         String                                  // MarketplaceAgent id
+  modelName       String                                  // "routing-optimizer-v3"
+  modelVersion    String                                  // "3.1.0"
+  modelHash       String                                  // keccak256 of model code/weights
+  frameworkHash   String?                                 // keccak256 of framework + deps
+  inputSchema     String?   @db.Text                      // JSON Schema for inputs
+  outputSchema    String?   @db.Text                      // JSON Schema for outputs
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  deprecatedAt    DateTime?
+
+  @@index([agentId])
+  @@index([modelHash])
+  @@index([isActive])
+}
+
+// Decision proofs — cryptographic commitment to AI decisions
+model DecisionProof {
+  id              String    @id @default(uuid())
+  agentId         String                                  // MarketplaceAgent id
+  jobId           String?                                 // AgentJob id (optional)
+  inputHash       String                                  // keccak256 of input
+  outputHash      String?                                 // keccak256 of output (set after verify)
+  planHash        String                                  // Pre-execution commitment hash
+  resultHash      String?                                 // Post-execution result hash
+  modelHash       String?                                 // Model version hash (links to ModelRegistry)
+  commitmentId    String?                                 // On-chain AIProofRegistry commitment
+  commitTxHash    String?                                 // On-chain commit tx
+  verifyTxHash    String?                                 // On-chain verify tx
+  verified        Boolean   @default(false)
+  matched         Boolean   @default(false)               // Did planHash match resultHash?
+  slashed         Boolean   @default(false)
+  verifiedAt      DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@index([agentId])
+  @@index([jobId])
+  @@index([verified])
+  @@index([matched])
+  @@index([commitmentId])
+  @@index([createdAt])
+}
+
+// ==========================================
+// 🏦 PAYFI CREDIT LAYER
+// ==========================================
+
+// Credit lines — agents borrow AlphaUSD based on payment history
+model CreditLine {
+  id              String    @id @default(uuid())
+  borrowerWallet  String                                  // Agent wallet
+  amount          Float                                   // Principal borrowed
+  interestRate    Float                                   // Annual interest rate (%)
+  interestAmount  Float                                   // Calculated interest
+  totalDue        Float                                   // Principal + interest
+  repaidAmount    Float     @default(0)                   // Amount repaid so far
+  termDays        Int                                     // Loan term in days
+  dueDate         DateTime                                // When the credit is due
+  purpose         String?                                 // "Job #xxx working capital"
+  creditScore     Int                                     // Score at time of approval
+  tier            String                                  // Credit tier name
+  status          String    @default("ACTIVE")            // ACTIVE | REPAID | DEFAULTED | CANCELLED
+  txHash          String?                                 // Disbursement tx
+  repaidAt        DateTime?
+  defaultedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  transactions    CreditTransaction[]
+
+  @@index([borrowerWallet])
+  @@index([status])
+  @@index([dueDate])
+  @@index([borrowerWallet, status])
+}
+
+// Credit transactions — disbursements, repayments, interest accruals
+model CreditTransaction {
+  id              String    @id @default(uuid())
+  creditLineId    String
+  creditLine      CreditLine @relation(fields: [creditLineId], references: [id])
+  type            String                                  // DISBURSEMENT | REPAYMENT | INTEREST | AUTO_REPAY
+  amount          Float
+  description     String?
+  txHash          String?
+  createdAt       DateTime  @default(now())
+
+  @@index([creditLineId])
+  @@index([type])
+  @@index([createdAt])
+}

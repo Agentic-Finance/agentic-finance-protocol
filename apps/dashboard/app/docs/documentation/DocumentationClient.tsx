@@ -13,13 +13,15 @@ const tocItems: TocItem[] = [
     { id: '8-verifiable-ai-engine', label: 'Verifiable AI', level: 2 },
     { id: '9-payfi-credit-layer', label: 'PayFi Credit', level: 2 },
     { id: '10-zk-privacy-shield', label: 'ZK Privacy Shield', level: 2 },
-    { id: '11-smart-contract-reference', label: 'Smart Contracts', level: 2 },
-    { id: '12-api-reference', label: 'API Reference', level: 2 },
-    { id: '13-sdk--plugin-ecosystem', label: 'SDK & Plugins', level: 2 },
-    { id: '14-aps-1-v21', label: 'APS-1 v2.1', level: 2 },
-    { id: '15-fee-schedule', label: 'Fee Schedule', level: 2 },
-    { id: '16-security-model', label: 'Security Model', level: 2 },
-    { id: '17-deployment-guide', label: 'Deployment', level: 2 },
+    { id: '11-agent-marketplace', label: 'Agent Marketplace', level: 2 },
+    { id: '12-metering--streaming-micropayments', label: 'Metering & Streaming', level: 2 },
+    { id: '13-smart-contract-reference', label: 'Smart Contracts', level: 2 },
+    { id: '14-api-reference', label: 'API Reference', level: 2 },
+    { id: '15-sdk--plugin-ecosystem', label: 'SDK & Plugins', level: 2 },
+    { id: '16-aps-1-v21', label: 'APS-1 v2.1', level: 2 },
+    { id: '17-fee-schedule', label: 'Fee Schedule', level: 2 },
+    { id: '18-security-model', label: 'Security Model', level: 2 },
+    { id: '19-deployment', label: 'Deployment', level: 2 },
 ];
 
 const quickLinks = [
@@ -33,7 +35,7 @@ const quickLinks = [
     },
     {
         title: 'MCP Server',
-        desc: '10 JSON-RPC payment tools for any AI model',
+        desc: '10 JSON-RPC 2.0 payment tools for any AI model',
         href: '#5-mcp-server',
         icon: (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
@@ -49,8 +51,8 @@ const quickLinks = [
     },
     {
         title: 'API Reference',
-        desc: 'REST endpoints for all protocol features',
-        href: '#12-api-reference',
+        desc: 'Complete REST & JSON-RPC endpoint reference',
+        href: '#14-api-reference',
         icon: (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" /></svg>
         ),

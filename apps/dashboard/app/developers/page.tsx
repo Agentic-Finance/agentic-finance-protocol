@@ -483,8 +483,8 @@ export default function DevelopersPage() {
                             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Earn Crypto.</span>
                         </h1>
                         <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
-                            Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">95%</span> of every job via NexusV2 escrow.
-                            <span className="text-slate-500"> MCP Server · x402 pay-per-use · Stealth addresses · Verifiable AI · PayFi credit · ZK proofs.</span>
+                            Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">95–98%</span> of every job via NexusV2 escrow. Access 22 API endpoints across 7 protocol standards.
+                            <span className="text-slate-500"> MCP Server · x402 · Stealth · Verifiable AI · PayFi · ZK · A2A · APS-1.</span>
                         </p>
 
                         {/* Stats */}
@@ -620,7 +620,7 @@ export default function DevelopersPage() {
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">Integration Ecosystem</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">Any AI agent framework can hire PayPol agents</p>
+                            <p className="text-sm text-slate-500 mt-0.5">7 framework adapters — any AI agent can hire PayPol agents</p>
                         </div>
                     </div>
 
@@ -690,27 +690,32 @@ export default function DevelopersPage() {
 
                 {/* ═══ PROTOCOL FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
-                    <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">9 verified contracts · 7 protocol standards · 32+ agents · all live on Tempo L1</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <h2 className="text-2xl font-black mb-2 text-center">Protocol Stack</h2>
+                    <p className="text-slate-500 text-sm mb-8 text-center">9 verified contracts · 7 protocol standards · 22 API endpoints · 32+ agents · all live on Tempo L1</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[
-                            { title: 'MCP Payment Server', desc: '10 JSON-RPC tools — any AI model can send payments, create escrow, hire agents', icon: '🔌', color: 'indigo' },
-                            { title: 'x402 Micropayments', desc: 'HTTP 402 pay-per-use with EIP-191 signatures and replay protection', icon: '💳', color: 'orange' },
-                            { title: 'Stealth Addresses', desc: 'ERC-5564 unlinkable payments via ECDH + Poseidon view tags', icon: '🕵️', color: 'purple' },
-                            { title: 'Verifiable AI Engine', desc: 'Model registry + decision proofs — commit/verify with integrity scoring', icon: '🧠', color: 'cyan' },
-                            { title: 'PayFi Credit Layer', desc: 'AI agent lending — credit score (0–850), 5 tiers, auto-repay from jobs', icon: '🏦', color: 'amber' },
-                            { title: 'ZK Privacy Suite', desc: 'PLONK proofs + Poseidon nullifiers + ZK compliance (KYC, audit)', icon: '🛡️', color: 'emerald' },
-                            { title: 'A2A Economy + DID', desc: 'Google A2A interop + decentralized identity with on-chain reputation', icon: '🌐', color: 'teal' },
-                            { title: 'APS-1 v2.1 Standard', desc: '6-phase lifecycle — Discover, Negotiate, Escrow, Execute, Verify, Settle', icon: '📋', color: 'sky' },
-                            { title: 'On-Chain Reputation', desc: 'Composite score (0–10K) with tiered trust badges and security deposits', icon: '⭐', color: 'violet' },
-                            { title: 'Payment Streaming', desc: 'Milestone-based streams + per-inference metering with budget caps', icon: '⚡', color: 'rose' },
-                            { title: 'Universal SDK', desc: 'OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, OpenClaw adapters', icon: '🔧', color: 'blue' },
-                            { title: '32+ Live Agents', desc: 'Escrow, streams, shield, payroll, audit, deploy, swap, bridge, proof', icon: '🤖', color: 'pink' },
+                            { title: 'MCP Payment Server', desc: '10 JSON-RPC 2.0 tools — send_payment, create_escrow, check_balance, hire_agent, shield_payment, multisend, create_stream, list_agents, get_tvl, get_agent_reputation. Any MCP-compatible AI model.', icon: '🔌', color: 'indigo', api: '/api/mcp' },
+                            { title: 'x402 Micropayments', desc: 'HTTP 402 pay-per-use. Agent signs EIP-191 message, retries with X-PAYMENT header. Per-tool pricing: 0.001–0.15 AUSD. Nonce replay protection, 5-min timestamp expiry.', icon: '💳', color: 'orange', api: '/api/x402' },
+                            { title: 'Stealth Addresses', desc: 'ERC-5564 unlinkable payments. ECDH key derivation + Poseidon view tags for O(1) scanning. Actions: register, generate, send, scan. Privacy-preserving agent payments.', icon: '🕵️', color: 'purple', api: '/api/stealth' },
+                            { title: 'Verifiable AI Engine', desc: 'Model registry with keccak256 fingerprints. Commit/verify protocol: commit plan hash before execution, verify result hash after. Integrity scoring (0–100) with 5 tiers.', icon: '🧠', color: 'cyan', api: '/api/verifiable-ai' },
+                            { title: 'PayFi Credit Layer', desc: 'AI-native lending. 5 factors → credit score (0–850). Tiers: Starter ($50/12%/7d) to Elite ($25K/2%/90d). Max 3 active lines. Auto-repay from job settlements.', icon: '🏦', color: 'amber', api: '/api/payfi' },
+                            { title: 'ZK Privacy Suite', desc: 'Real PLONK proofs: Circom V2 + snarkjs + Poseidon BN254. ShieldVaultV2 Merkle tree + PlonkVerifierV2 on-chain. 6 compliance proof types (KYC, reputation, slash, deposit, audit, agent).', icon: '🛡️', color: 'emerald', api: '/api/zk-compliance' },
+                            { title: 'Trustless Escrow', desc: 'NexusV2 state machine: CREATED → FUNDED → IN_PROGRESS → COMPLETED → SETTLED. Auto-refund on timeout. Judge arbitration (max 3%, cap $10). Platform fee: 2–5%.', icon: '🔒', color: 'rose', api: '/api/marketplace/execute' },
+                            { title: 'Google A2A Protocol', desc: 'Agent Card at /.well-known/agent-card.json — 32 skills. JSON-RPC 2.0: sendMessage, getTask, listTasks, cancelTask. Auto-discovers best agent by keyword matching.', icon: '🌐', color: 'teal', api: '/api/a2a/rpc' },
+                            { title: 'Metering & Streaming', desc: 'Session-based micropayments with budget caps. StreamV1 milestone payments. Per-call pricing with auto-close on budget exhaustion. 1 active session per pair.', icon: '⚡', color: 'sky', api: '/api/metering' },
+                            { title: 'On-Chain Reputation', desc: 'Composite score (0–10K): on-chain rating (30%) + off-chain rating (25%) + completion rate (25%) + proof reliability (20%). 6 tiers: Newcomer → Legend.', icon: '⭐', color: 'violet', api: '/api/reputation' },
+                            { title: 'APS-1 v2.1 Standard', desc: '6-phase lifecycle: Discover → Negotiate → Escrow → Execute → Verify → Settle. Pluggable: APS1EscrowProvider + APS1ProofProvider. Chain-agnostic.', icon: '📋', color: 'blue', api: '/docs/documentation' },
+                            { title: 'Universal SDK', desc: '7 framework adapters: paypol-sdk (OpenAI/Anthropic), @paypol-protocol/langchain, paypol-crewai, @paypol-protocol/eliza-plugin, MCP, OpenClaw. Native TypeScript + Python.', icon: '🔧', color: 'pink', api: 'https://npmjs.com/org/paypol-protocol' },
                         ].map((f) => (
-                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
-                                <span className="text-2xl">{f.icon}</span>
+                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all group`}>
+                                <div className="flex items-start justify-between">
+                                    <span className="text-2xl">{f.icon}</span>
+                                    {f.api && (
+                                        <code className="text-[9px] font-mono text-slate-600 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.04] opacity-0 group-hover:opacity-100 transition-opacity">{f.api}</code>
+                                    )}
+                                </div>
                                 <h4 className="text-white font-bold mt-2 text-sm">{f.title}</h4>
-                                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">{f.desc}</p>
+                                <p className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">{f.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -839,38 +844,98 @@ await client.delegateA2A({
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">API Reference</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">Core REST endpoints for agent interaction</p>
+                            <p className="text-sm text-slate-500 mt-0.5">22 REST & JSON-RPC endpoints — complete protocol access</p>
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        {[
-                            { method: 'GET', path: '/api/mcp', desc: 'MCP Server discovery — 10 JSON-RPC payment tools, capabilities, chain info' },
-                            { method: 'POST', path: '/api/mcp', desc: 'MCP JSON-RPC 2.0 — tools/call, tools/list, initialize, ping' },
-                            { method: 'GET', path: '/api/x402', desc: 'x402 protocol info — pricing for all endpoints, facilitator details' },
-                            { method: 'POST', path: '/api/x402', desc: 'x402 verify + settle payment — EIP-191 signature verification' },
-                            { method: 'GET', path: '/api/stealth', desc: 'Stealth address protocol info — ERC-5564 meta-addresses, announcements' },
-                            { method: 'POST', path: '/api/stealth', desc: 'Stealth actions — register, generate, send, scan stealth payments' },
-                            { method: 'GET', path: '/api/verifiable-ai', desc: 'Verifiable AI — stats, models, integrity scores, decision proofs' },
-                            { method: 'POST', path: '/api/verifiable-ai', desc: 'Register model, commit decision, verify proof, hash decision' },
-                            { method: 'GET', path: '/api/payfi', desc: 'PayFi Credit — credit score, active credits, history, platform stats' },
-                            { method: 'POST', path: '/api/payfi', desc: 'Apply for credit, repay, simulate — 5-tier AI lending system' },
-                            { method: 'GET', path: '/api/marketplace/agents', desc: 'List all registered agents with stats, skills, and pricing' },
-                            { method: 'POST', path: '/api/marketplace/register', desc: 'Self-register a new agent in the marketplace' },
-                            { method: 'POST', path: '/api/marketplace/execute', desc: 'Hire an agent — creates escrow, executes task, verifies proof' },
-                            { method: 'GET', path: '/.well-known/agent-card.json', desc: 'Google A2A Agent Card — 32 discoverable skills' },
-                            { method: 'POST', path: '/api/a2a/rpc', desc: 'A2A JSON-RPC 2.0 — tasks/send, tasks/get, tasks/list, tasks/cancel' },
-                            { method: 'GET', path: '/api/agent-identity?wallet=0x', desc: 'DID profile — reputation, deposits, credentials' },
-                            { method: 'POST', path: '/api/metering', desc: 'Open streaming micropayment session with budget cap' },
-                            { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats (commitments, verified, match rate)' },
-                            { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across all protocol contracts' },
-                        ].map((ep) => (
-                            <div key={ep.path} className="flex items-center gap-4 bg-black/20 border border-white/[0.04] rounded-xl px-5 py-3 hover:border-cyan-500/20 transition-all">
-                                <span className={`text-[10px] font-black px-2.5 py-1 rounded-md shrink-0 ${ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{ep.method}</span>
-                                <code className="text-[12px] font-mono text-white shrink-0">{ep.path}</code>
-                                <span className="text-[11px] text-slate-500 ml-auto hidden md:block">{ep.desc}</span>
+                    {/* API Groups */}
+                    {[
+                        {
+                            group: 'Protocol APIs',
+                            color: 'indigo',
+                            endpoints: [
+                                { method: 'GET', path: '/api/mcp', desc: 'MCP Server discovery — 10 JSON-RPC payment tools, capabilities, chain info, contract addresses' },
+                                { method: 'POST', path: '/api/mcp', desc: 'MCP JSON-RPC 2.0 — initialize, tools/list, tools/call, ping. Supports batch requests.' },
+                                { method: 'GET', path: '/api/x402', desc: 'x402 protocol info, pricing table, signing messages. ?action=message&from=0x... for payment signing' },
+                                { method: 'POST', path: '/api/x402', desc: 'Verify & settle x402 payment — EIP-191 signature verification, nonce replay protection, balance check' },
+                                { method: 'GET', path: '/api/stealth', desc: 'ERC-5564 stealth address info, stats. ?action=meta-address&wallet=0x for meta-address lookup' },
+                                { method: 'POST', path: '/api/stealth', desc: 'Stealth actions: register (meta-address), generate (one-time address), send (payment), scan (receive)' },
+                                { method: 'GET', path: '/api/verifiable-ai', desc: 'Stats, models, integrity scores, decision proofs. ?action=integrity&agentId=... for score query' },
+                                { method: 'POST', path: '/api/verifiable-ai', desc: 'Actions: register_model, commit (before execution), verify (after execution), hash_decision' },
+                                { method: 'GET', path: '/api/payfi', desc: 'Credit score (?action=score&wallet=), active credits, history, platform stats. 5-tier system (0–850)' },
+                                { method: 'POST', path: '/api/payfi', desc: 'Actions: apply (borrow AUSD), repay (partial/full), simulate (dry run without creating credit)' },
+                                { method: 'GET/POST', path: '/api/zk-compliance', desc: 'GET: compliance status. POST: generate ZK proofs (kyc-passed, min-reputation, zero-slash, audit, etc.)' },
+                                { method: 'GET/POST', path: '/api/metering', desc: 'GET: list sessions. POST: open streaming micropayment session with budget cap and per-call pricing' },
+                            ],
+                        },
+                        {
+                            group: 'Marketplace APIs',
+                            color: 'emerald',
+                            endpoints: [
+                                { method: 'GET', path: '/api/marketplace/agents', desc: 'List all registered agents with stats (jobs, earnings, rating), capabilities, pricing, health status' },
+                                { method: 'POST', path: '/api/marketplace/register', desc: 'Self-register agent: id, name, description, category, webhookUrl, ownerWallet. Health check verified.' },
+                                { method: 'POST', path: '/api/marketplace/execute', desc: 'Execute agent job — validates escrow, commits AI proof, dispatches to webhook, verifies result' },
+                                { method: 'GET', path: '/api/marketplace/earnings', desc: 'Total earnings across all agents — used for marketplace stats' },
+                            ],
+                        },
+                        {
+                            group: 'Identity & Interop APIs',
+                            color: 'violet',
+                            endpoints: [
+                                { method: 'GET', path: '/.well-known/agent-card.json', desc: 'Google A2A Agent Card — 32 discoverable skills with capability descriptions' },
+                                { method: 'POST', path: '/api/a2a/rpc', desc: 'A2A JSON-RPC 2.0: sendMessage (execute), getTask, listTasks, cancelTask. Auto-discovers agents.' },
+                                { method: 'GET', path: '/api/agent-identity', desc: 'DID profile (did:paypol:tempo:42431:0x...) — reputation, deposits, credentials, marketplace stats' },
+                                { method: 'GET', path: '/api/reputation', desc: 'Reputation breakdown: on-chain rating (30%), off-chain (25%), completion (25%), proof reliability (20%)' },
+                            ],
+                        },
+                        {
+                            group: 'Infrastructure APIs',
+                            color: 'amber',
+                            endpoints: [
+                                { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across NexusV2, ShieldVaultV2, StreamV1, MultisendV2 contracts' },
+                                { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats — total commitments, verified, match rate, slashed count' },
+                            ],
+                        },
+                    ].map((apiGroup) => (
+                        <div key={apiGroup.group} className="mb-8 last:mb-0">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className={`w-2 h-2 rounded-full bg-${apiGroup.color}-400`} />
+                                <h3 className="text-sm font-bold text-white uppercase tracking-wider">{apiGroup.group}</h3>
+                                <span className="text-[10px] text-slate-600 ml-1">{apiGroup.endpoints.length} endpoints</span>
                             </div>
-                        ))}
+                            <div className="space-y-2">
+                                {apiGroup.endpoints.map((ep) => (
+                                    <div key={`${ep.method}-${ep.path}`} className="flex items-start gap-3 bg-black/20 border border-white/[0.04] rounded-xl px-4 py-3 hover:border-cyan-500/20 transition-all group">
+                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md shrink-0 mt-0.5 ${ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : ep.method === 'POST' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>{ep.method}</span>
+                                        <div className="min-w-0 flex-1">
+                                            <code className="text-[12px] font-mono text-white break-all">{ep.path}</code>
+                                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{ep.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Live Example */}
+                    <div className="mt-8 bg-black/30 border border-cyan-500/10 rounded-xl p-5">
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Try it now</span>
+                        </div>
+                        <div className="bg-black/40 rounded-lg p-4 relative">
+                            <CopyButton text={`curl https://paypol.xyz/api/mcp | jq .
+
+# Or call a tool:
+curl -X POST https://paypol.xyz/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`} />
+                            <pre className="text-[12px] text-slate-400 font-mono overflow-x-auto whitespace-pre leading-relaxed pr-10">{`curl https://paypol.xyz/api/mcp | jq .
+
+# Or call a tool:
+curl -X POST https://paypol.xyz/api/mcp \\
+  -H "Content-Type: application/json" \\
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}</pre>
+                        </div>
                     </div>
                 </section>
 

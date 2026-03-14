@@ -84,7 +84,7 @@ function ZKFlowDiagram() {
 
 // ── Main Component ──────────────────────────────────────────
 
-export default function ShieldPanel() {
+export default function ShieldPanel({ walletAddress }: { walletAddress?: string | null }) {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +118,7 @@ export default function ShieldPanel() {
     try {
       const commitRes = await fetch("/api/shield", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Wallet-Address": walletAddress || "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793" },
         body: JSON.stringify({ action: "generate_commitment", amount, recipient }),
       });
       const commitData = await commitRes.json();
@@ -129,7 +129,7 @@ export default function ShieldPanel() {
 
       const vaultRes = await fetch("/api/shield", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Wallet-Address": walletAddress || "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793" },
         body: JSON.stringify({ salary: amount, recipientWallet: recipient, shieldEnabled: true }),
       });
       const vaultData = await vaultRes.json();

@@ -1032,6 +1032,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     agentName={marketplace.selectedAgent.agent.name}
                     jobId={marketplace.activeJob.id}
                     agentId={marketplace.selectedAgent.agent.id}
+                    walletAddress={walletAddress}
                     onClose={() => setShowReviewModal(false)}
                     onSubmitted={() => {
                         showToast('success', 'Review submitted successfully!');

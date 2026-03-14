@@ -1136,7 +1136,7 @@ export default function PayPolAdminPage() {
                     {/* ─── ARBITRATION ─── */}
                     {activeSection === 'arbitration' && (
                         <div className="animate-in fade-in duration-300">
-                            <JudgeDashboard isPaypolArbitrator={true} />
+                            <JudgeDashboard isPaypolArbitrator={true} walletAddress="0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793" />
                         </div>
                     )}
 

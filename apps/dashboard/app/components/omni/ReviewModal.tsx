@@ -8,13 +8,14 @@ interface ReviewModalProps {
     agentName: string;
     jobId: string;
     agentId: string;
+    walletAddress?: string | null;
     onClose: () => void;
     onSubmitted: () => void;
 }
 
 const RATING_LABELS = ['', 'Poor', 'Below average', 'Good', 'Great work!', 'Excellent!'];
 
-function ReviewModal({ isOpen, agentName, jobId, agentId, onClose, onSubmitted }: ReviewModalProps) {
+function ReviewModal({ isOpen, agentName, jobId, agentId, walletAddress, onClose, onSubmitted }: ReviewModalProps) {
     const [rating, setRating] = useState(0);
     const [hoveredRating, setHoveredRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -28,7 +29,7 @@ function ReviewModal({ isOpen, agentName, jobId, agentId, onClose, onSubmitted }
         try {
             const res = await fetch('/api/marketplace/reviews', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
                 body: JSON.stringify({ jobId, agentId, rating, comment: comment.trim() || undefined }),
             });
             if (res.ok) {

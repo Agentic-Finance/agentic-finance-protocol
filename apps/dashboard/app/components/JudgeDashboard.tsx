@@ -21,7 +21,7 @@ interface EscrowPayload {
     agentJobId: string | null;
 }
 
-export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypolArbitrator?: boolean }) {
+export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddress }: { isPaypolArbitrator?: boolean; walletAddress?: string | null }) {
     const [escrows, setEscrows] = useState<EscrowPayload[]>([]);
 
     // SMART TABS: Default tab depends on role
@@ -126,7 +126,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false }: { isPaypo
             syncPromises.push(
                 fetch('/api/escrow', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
                     body: JSON.stringify(legacyPayload)
                 }).then(res => { if (!res.ok) console.error('Failed to sync legacy escrow to DB'); }).catch(err => console.error('Legacy escrow sync error:', err))
             );

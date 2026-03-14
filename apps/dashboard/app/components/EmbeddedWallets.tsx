@@ -41,7 +41,7 @@ function truncateAddress(addr: string): string {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
-export default function EmbeddedWallets() {
+export default function EmbeddedWallets({ walletAddress }: { walletAddress?: string | null }) {
     const [wallets, setWallets] = useState<WalletItem[]>([]);
     const [summary, setSummary] = useState<WalletSummary | null>(null);
     const [loading, setLoading] = useState(true);
@@ -76,7 +76,7 @@ export default function EmbeddedWallets() {
         try {
             const res = await fetch('/api/wallets/generate', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
                 body: JSON.stringify({ label: genLabel.trim(), ownerType: genType }),
             });
             const json = await res.json();

@@ -521,7 +521,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 // STANDARD MODE: Send all intents as a batch to Boardroom
                 const empRes = await fetch('/api/employees', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
                     body: JSON.stringify({ intents: recipients })
                 });
                 if (!empRes.ok) {

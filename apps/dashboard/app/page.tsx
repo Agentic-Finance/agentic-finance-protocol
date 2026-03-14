@@ -337,8 +337,8 @@ export default function Dashboard() {
     // ==========================================
     // ACTION HANDLERS (wrapped in useCallback)
     // ==========================================
-    const removeAwaitingTx = useCallback(async (id: number | string) => { setAwaitingTxs(prev => prev.filter(tx => tx.id !== id)); showToast('success', 'Payload purged.'); try { await fetch('/api/employees', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }); fetchData(); } catch (error) { fetchData(); } }, [showToast, fetchData]);
-    const executeAbort = useCallback(async () => { if (!isAdmin) return; setShowAbortModal(false); await fetch('/api/employees', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'cancel_vault' }) }); showToast('success', 'Override signal transmitted.'); await fetchData(); }, [isAdmin, showToast, fetchData]);
+    const removeAwaitingTx = useCallback(async (id: number | string) => { setAwaitingTxs(prev => prev.filter(tx => tx.id !== id)); showToast('success', 'Payload purged.'); try { await fetch('/api/employees', { method: 'DELETE', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' }, body: JSON.stringify({ id }) }); fetchData(); } catch (error) { fetchData(); } }, [showToast, fetchData, walletAddress]);
+    const executeAbort = useCallback(async () => { if (!isAdmin) return; setShowAbortModal(false); await fetch('/api/employees', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' }, body: JSON.stringify({ action: 'cancel_vault' }) }); showToast('success', 'Override signal transmitted.'); await fetchData(); }, [isAdmin, showToast, fetchData, walletAddress]);
     const toggleAutopilotState = useCallback(async (id: number, currentStatus: string) => { if (!isAdmin) return showToast('error', 'Admin privileges required.'); const action = currentStatus === 'Active' ? 'pause' : 'resume'; await fetch('/api/autopilot', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, action }) }); showToast('success', `Agent ${action === 'pause' ? 'paused' : 'resumed'}.`); await fetchData(); }, [isAdmin, showToast, fetchData]);
     const triggerAutopilotAgent = useCallback(async (id: number, ruleName: string) => { if (!isAdmin) return; try { const res = await fetch('/api/autopilot', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, action: 'trigger' }) }); if (res.ok) { showToast('success', `Agent [${ruleName}] executed! Payload sent to Boardroom.`); await fetchData(); setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300); } } catch (error) { showToast('error', 'Failed to trigger agent.'); } }, [isAdmin, showToast, fetchData]);
     const deleteAutopilotAgent = useCallback(async (id: number) => { if (!isAdmin) return; if (!confirm("Terminate this Autopilot Agent?")) return; try { const res = await fetch('/api/autopilot', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }); if (res.ok) { showToast('success', 'Agent wiped from memory.'); await fetchData(); } } catch (error) { } }, [isAdmin, showToast, fetchData]);
@@ -547,7 +547,7 @@ export default function Dashboard() {
                 // Store ZK data via employees API
                 await fetch('/api/employees', {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' },
                     body: JSON.stringify({
                         action: 'approve',
                         isShielded: true,
@@ -577,7 +577,7 @@ export default function Dashboard() {
 
             await fetch('/api/employees', {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' },
                 body: JSON.stringify({ action: 'approve', isShielded: usePhantomShield, batchTxHash: activeTxHash })
             });
 

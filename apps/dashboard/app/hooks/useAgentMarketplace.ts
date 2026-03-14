@@ -432,7 +432,7 @@ export function useAgentMarketplace(): UseAgentMarketplaceReturn {
                 try {
                     const escrowRes = await fetch('/api/employees', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': clientWallet || '' },
                         body: JSON.stringify({
                             name: selectedAgent.agent.name,
                             wallet: selectedAgent.agent.ownerWallet,

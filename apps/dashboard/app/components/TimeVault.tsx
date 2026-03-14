@@ -55,8 +55,11 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
                             const timeMatch = batch.status?.match(/\((\d+)s\)/);
                             const timeLeft = timeMatch ? parseInt(timeMatch[1]) : 0;
                             const totalTime = 15;
-                            const progressPercent = timeMatch ? Math.max(5, Math.min(100, ((totalTime - timeLeft) / totalTime) * 100)) : 100;
-                            const isComplete = progressPercent >= 100;
+                            // If no timer in status, show indeterminate progress (not 100%)
+                            const progressPercent = timeMatch
+                                ? Math.max(5, Math.min(100, ((totalTime - timeLeft) / totalTime) * 100))
+                                : (batch.status?.includes('Generating') ? 60 : 30);
+                            const isComplete = timeMatch ? progressPercent >= 100 : false;
 
                             const isZK = batch.isShielded;
 
@@ -85,7 +88,7 @@ function TimeVault({ localEscrow }: TimeVaultProps) {
                                                     {isZK ? '🛡️ ZK-SNARK SHIELD' : '🌐 PUBLIC MULTISEND'}
                                                 </div>
                                                 <h4 className="text-white font-bold text-lg">Batch {batch.id}</h4>
-                                                <p className="text-xs text-slate-400 mt-1">{isZK ? 'Generating cryptographic proofs...' : 'Broadcasting array to L2...'}</p>
+                                                <p className="text-xs text-slate-400 mt-1">{isZK ? `Generating cryptographic proofs${batch.count > 1 ? ` for ${batch.count} recipients` : ''}...` : `Broadcasting${batch.count > 1 ? ` ${batch.count} transfers` : ''} to L1...`}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm font-bold text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">

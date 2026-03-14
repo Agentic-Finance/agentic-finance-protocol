@@ -99,7 +99,7 @@ export function usePollingEngine({
                 const realPendingJobs = (data.vaulted || []).filter((tx: any) => tx.status === 'PENDING' || tx.status === 'PROCESSING');
                 const queueMap: Record<string, any> = {};
                 realPendingJobs.forEach((tx: any) => {
-                    // Extract depositTxHash from zkProof JSON for grouping & display
+                    // Extract depositTxHash from zkProof JSON for display
                     let depositTxHash: string | null = null;
                     if (tx.zkProof) {
                         try {
@@ -111,21 +111,27 @@ export function usePollingEngine({
                         }
                     }
 
-                    // Group by depositTxHash (same deposit = same batch), fallback to zkCommitment or id
-                    const batchId = depositTxHash || tx.zkCommitment || tx.id;
+                    // Group by createdAt (rounded to minute) — all employees approved together = 1 batch
+                    const createdMinute = tx.createdAt ? new Date(tx.createdAt).toISOString().slice(0, 16) : 'unknown';
+                    const batchId = createdMinute;
                     // Display: prefer zkCommitment (actual commitment hash), then depositTxHash
                     const displayHash = tx.zkCommitment || depositTxHash || 'Awaiting Sync...';
 
                     if (!queueMap[batchId]) {
+                        const shortId = depositTxHash
+                            ? depositTxHash.substring(0, 10) + '...'
+                            : (tx.zkCommitment ? tx.zkCommitment.substring(0, 10) + '...' : tx.id.substring(0, 10) + '...');
                         queueMap[batchId] = {
-                            id: batchId.substring(0, 10) + '...',
+                            id: shortId,
                             amount: 0,
+                            count: 0,
                             isShielded: tx.isShielded,
                             status: tx.status === 'PROCESSING' ? 'Daemon Generating ZK...' : 'Awaiting Daemon...',
                             zkCommitment: displayHash,
                         };
                     }
                     queueMap[batchId].amount += parseFloat(tx.amount || 0);
+                    queueMap[batchId].count += 1;
                 });
                 setLocalEscrow(Object.values(queueMap).map(q => ({ ...q, amount: typeof q.amount === 'number' ? q.amount.toFixed(2) : q.amount })));
             }

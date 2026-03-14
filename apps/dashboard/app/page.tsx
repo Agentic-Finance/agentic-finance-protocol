@@ -486,7 +486,7 @@ export default function Dashboard() {
                     }
                     const res = await fetch('/api/shield', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' },
                         body: JSON.stringify({
                             action: 'generate_commitment',
                             amount: tx.amount,

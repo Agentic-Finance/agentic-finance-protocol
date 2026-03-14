@@ -29,6 +29,7 @@ export async function GET(req: Request) {
             isDiscovery: item.isDiscovery || false,
             status: item.status,
             zkProof: item.zkProof,
+            zkCommitment: item.zkCommitment,
             createdAt: item.createdAt,
         });
 

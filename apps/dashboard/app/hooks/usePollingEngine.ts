@@ -99,14 +99,30 @@ export function usePollingEngine({
                 const realPendingJobs = (data.vaulted || []).filter((tx: any) => tx.status === 'PENDING' || tx.status === 'PROCESSING');
                 const queueMap: Record<string, any> = {};
                 realPendingJobs.forEach((tx: any) => {
-                    const batchId = tx.zkProof || tx.id;
+                    // Extract depositTxHash from zkProof JSON for grouping & display
+                    let depositTxHash: string | null = null;
+                    if (tx.zkProof) {
+                        try {
+                            const parsed = JSON.parse(tx.zkProof);
+                            depositTxHash = parsed.depositTxHash || null;
+                        } catch {
+                            // Not JSON — might be a raw tx hash (legacy flow)
+                            depositTxHash = tx.zkProof;
+                        }
+                    }
+
+                    // Group by depositTxHash (same deposit = same batch), fallback to zkCommitment or id
+                    const batchId = depositTxHash || tx.zkCommitment || tx.id;
+                    // Display: prefer zkCommitment (actual commitment hash), then depositTxHash
+                    const displayHash = tx.zkCommitment || depositTxHash || 'Awaiting Sync...';
+
                     if (!queueMap[batchId]) {
                         queueMap[batchId] = {
                             id: batchId.substring(0, 10) + '...',
                             amount: 0,
                             isShielded: tx.isShielded,
                             status: tx.status === 'PROCESSING' ? 'Daemon Generating ZK...' : 'Awaiting Daemon...',
-                            zkCommitment: tx.zkProof || 'Awaiting Sync...'
+                            zkCommitment: displayHash,
                         };
                     }
                     queueMap[batchId].amount += parseFloat(tx.amount || 0);

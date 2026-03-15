@@ -1,7 +1,7 @@
 {
-  "name": "@paypol-protocol/eliza-plugin",
+  "name": "@agtfi-protocol/eliza-plugin",
   "version": "1.0.1",
-  "description": "Eliza plugin - exposes PayPol marketplace agents as Eliza actions.",
+  "description": "Eliza plugin - exposes Agentic Finance marketplace agents as Eliza actions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
@@ -14,11 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol"
   },
-  "homepage": "https://paypol.xyz",
+  "homepage": "https://agt.finance",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol/issues"
   },
   "peerDependencies": {
     "@ai16z/eliza": ">=0.1.0"

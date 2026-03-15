@@ -1,18 +1,18 @@
 /**
- * PayPol LangChain Integration
+ * Agentic Finance LangChain Integration
  * ============================
  *
- * Exposes all 32 PayPol marketplace agents as LangChain StructuredTool
+ * Exposes all 32 Agentic Finance marketplace agents as LangChain StructuredTool
  * instances, enabling use in LangChain agents, chains, and pipelines.
  *
  * Usage:
- *   import { PayPolTool, getAllPayPolTools } from '@paypol-protocol/langchain';
+ *   import { Agentic FinanceTool, getAllAgentic FinanceTools } from '@agtfi-protocol/langchain';
  *
  *   // Single tool
- *   const auditTool = new PayPolTool({ agentId: 'contract-auditor' });
+ *   const auditTool = new Agentic FinanceTool({ agentId: 'contract-auditor' });
  *
  *   // All 32 tools
- *   const allTools = getAllPayPolTools();
+ *   const allTools = getAllAgentic FinanceTools();
  *
  *   // Use in LangChain AgentExecutor
  *   const agent = new AgentExecutor({ tools: [auditTool], llm });
@@ -48,33 +48,33 @@ abstract class StructuredToolBase {
   }
 }
 
-// ── PayPol API ────────────────────────────────────────────
+// ── Agentic Finance API ────────────────────────────────────────────
 
-const AGENT_API = process.env.PAYPOL_AGENT_API ?? 'http://localhost:3001';
+const AGENT_API = process.env.AGTFI_AGENT_API ?? 'http://localhost:3001';
 
-// ── PayPolTool ────────────────────────────────────────────
+// ── Agentic FinanceTool ────────────────────────────────────────────
 
-export const PayPolToolSchema = z.object({
-  prompt: z.string().describe('Task description or data for the PayPol agent'),
+export const Agentic FinanceToolSchema = z.object({
+  prompt: z.string().describe('Task description or data for the Agentic Finance agent'),
   callerWallet: z.string().optional().default('langchain-agent').describe('Caller wallet address'),
 });
 
-export type PayPolToolInput = z.infer<typeof PayPolToolSchema>;
+export type Agentic FinanceToolInput = z.infer<typeof Agentic FinanceToolSchema>;
 
-export class PayPolTool extends StructuredToolBase {
+export class Agentic FinanceTool extends StructuredToolBase {
   agentId: string;
-  schema = PayPolToolSchema;
+  schema = Agentic FinanceToolSchema;
 
   constructor({ agentId, name, description }: { agentId: string; name?: string; description?: string }) {
     const catalog = AGENT_CATALOG.find(a => a[0] === agentId);
     super({
-      name: name || catalog?.[1] || `paypol_${agentId}`,
-      description: description || catalog?.[2] || `Execute task using PayPol agent: ${agentId}`,
+      name: name || catalog?.[1] || `agtfi_${agentId}`,
+      description: description || catalog?.[2] || `Execute task using Agentic Finance agent: ${agentId}`,
     });
     this.agentId = agentId;
   }
 
-  async _call(input: PayPolToolInput | string): Promise<string> {
+  async _call(input: Agentic FinanceToolInput | string): Promise<string> {
     const prompt = typeof input === 'string' ? input : input.prompt;
     const callerWallet = typeof input === 'string' ? 'langchain-agent' : (input.callerWallet || 'langchain-agent');
 
@@ -89,7 +89,7 @@ export class PayPolTool extends StructuredToolBase {
       }
       return JSON.stringify(data.result ?? data, null, 2);
     } catch (err: any) {
-      return `PayPol API error: ${err.message}`;
+      return `Agentic Finance API error: ${err.message}`;
     }
   }
 }
@@ -125,13 +125,13 @@ const AGENT_CATALOG: [string, string, string][] = [
 
 // ── Factory functions ─────────────────────────────────────
 
-export function getAllPayPolTools(): PayPolTool[] {
+export function getAllAgentic FinanceTools(): Agentic FinanceTool[] {
   return AGENT_CATALOG.map(([agentId, name, description]) =>
-    new PayPolTool({ agentId, name, description })
+    new Agentic FinanceTool({ agentId, name, description })
   );
 }
 
-export function getToolsByCategory(category: string): PayPolTool[] {
+export function getToolsByCategory(category: string): Agentic FinanceTool[] {
   const categoryMap: Record<string, string[]> = {
     security:    ['contract-auditor', 'mev-sentinel'],
     defi:        ['yield-optimizer', 'arbitrage-scanner', 'airdrop-tracker', 'liquidity-manager', 'omnibridge-router', 'defi-insurance'],
@@ -146,7 +146,7 @@ export function getToolsByCategory(category: string): PayPolTool[] {
   const agentIds = categoryMap[category] || [];
   return AGENT_CATALOG
     .filter(([id]) => agentIds.includes(id))
-    .map(([agentId, name, description]) => new PayPolTool({ agentId, name, description }));
+    .map(([agentId, name, description]) => new Agentic FinanceTool({ agentId, name, description }));
 }
 
-export default PayPolTool;
+export default Agentic FinanceTool;

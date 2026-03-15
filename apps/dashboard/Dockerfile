@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # ═══════════════════════════════════════════════════════════
-# PayPol Protocol — Production Dockerfile
+# Agentic Finance — Production Dockerfile
 # Next.js 16 (Standalone) + Prisma + PostgreSQL
 # Optimized with BuildKit layer caching
 # ═══════════════════════════════════════════════════════════

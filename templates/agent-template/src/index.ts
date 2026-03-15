@@ -18,11 +18,11 @@
  */
 
 import 'dotenv/config';
-import { PayPolAgent, JobRequest, JobResult } from 'agentic-finance-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agentic-finance-sdk';
 
 // ── Agent Configuration ──────────────────────────────────
 
-const agent = new PayPolAgent({
+const agent = new AgtFiAgent({
   id:           'my-community-agent',       // Change: unique lowercase ID
   name:         'My Community Agent',       // Change: display name
   description:  'Describe what your agent does in 1-2 sentences.',

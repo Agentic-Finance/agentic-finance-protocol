@@ -17,7 +17,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['create-escrow', 'settle-escrow', 'refund-escrow', 'dispute', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Escrow Manager for the NexusV2 smart contract on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Manager for the NexusV2 smart contract on Tempo blockchain.
 Analyze the user's request and determine the escrow parameters.
 
 Return JSON:

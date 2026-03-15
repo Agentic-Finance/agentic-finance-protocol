@@ -2,7 +2,7 @@
 
 **Version:** 2.1
 **Status:** Proposed Standard
-**Authors:** PayPol Foundation
+**Authors:** Agentic Finance Foundation
 **Created:** 2026-02-28
 **Updated:** 2026-03-03
 **License:** MIT
@@ -499,10 +499,10 @@ APS-1 clients and agents SHOULD include:
 
 ## 11. Reference Implementation
 
-The reference implementation is published as `@paypol-protocol/aps-1` on npm:
+The reference implementation is published as `@agtfi-protocol/aps-1` on npm:
 
 ```bash
-npm install @paypol-protocol/aps-1
+npm install @agtfi-protocol/aps-1
 ```
 
 It includes:
@@ -547,12 +547,12 @@ APS-1 is framework-agnostic. Integration guides available for:
 
 | Framework | Integration | Status |
 |-----------|------------|--------|
-| OpenAI Function Calling | `@paypol-protocol/sdk` OpenAI adapter | Live |
-| Anthropic Claude MCP | `@paypol-protocol/mcp` MCP server | Live |
+| OpenAI Function Calling | `@agtfi-protocol/sdk` OpenAI adapter | Live |
+| Anthropic Claude MCP | `@agtfi-protocol/mcp` MCP server | Live |
 | Google A2A Protocol | APS-1 payment layer for A2A communication | Planned |
-| LangChain | `@paypol-protocol/sdk` LangChain adapter | Live |
-| CrewAI | `@paypol-protocol/sdk` CrewAI adapter | Live |
-| Eliza | `@paypol-protocol/eliza` Eliza plugin | Live |
+| LangChain | `@agtfi-protocol/sdk` LangChain adapter | Live |
+| CrewAI | `@agtfi-protocol/sdk` CrewAI adapter | Live |
+| Eliza | `@agtfi-protocol/eliza` Eliza plugin | Live |
 | AutoGPT | APS-1 plugin for AutoGPT agents | Planned |
 | Olas/Autonolas | APS-1 service for Olas autonomous agents | Planned |
 | HTTP | Direct REST API (this spec) | Live |
@@ -727,7 +727,7 @@ This approach satisfies regulatory requirements while preserving the privacy tha
 ### Phase 1: Foundation (Q1-Q2 2026) — CURRENT
 
 - [x] APS-1 v2.1 specification published
-- [x] Reference implementation on npm (`@paypol-protocol/aps-1`)
+- [x] Reference implementation on npm (`@agtfi-protocol/aps-1`)
 - [x] OpenAPI 3.1 specification
 - [x] 7+ framework adapters (OpenAI, Claude, Google A2A, LangChain, CrewAI, Eliza, OpenClaw)
 - [x] Live deployment on Tempo L1 with 32+ agents
@@ -750,7 +750,7 @@ This approach satisfies regulatory requirements while preserving the privacy tha
 ### Phase 3: Enterprise Adoption (Q1-Q2 2027)
 
 - [ ] MiCA compliance adapter for EU market
-- [ ] SOC 2 audit certification for PayPol infrastructure
+- [ ] SOC 2 audit certification for Agentic Finance infrastructure
 - [ ] Enterprise SDK with SLA guarantees
 - [ ] Fiat settlement integration (USD, EUR, SGD)
 - [ ] Agent Insurance Pool launch
@@ -810,7 +810,7 @@ APS-1 aims to be the default payment layer for every major AI agent framework:
 
 For **agent developers**:
 ```bash
-npm install @paypol-protocol/aps-1
+npm install @agtfi-protocol/aps-1
 # Implement APS1Agent → instant compatibility with the global agent economy
 ```
 
@@ -876,7 +876,7 @@ MIT License. See [LICENSE](./LICENSE) for details.
 ## Contributing
 
 APS-1 is an **open global standard**. Contributions welcome at:
-https://github.com/PayPol-Foundation/aps-1
+https://github.com/Agentic Finance-Foundation/aps-1
 
 ### How to Contribute
 

@@ -28,7 +28,7 @@ async function main() {
     console.log(`💰 Current balance: ${ethers.formatEther(balance)} USD (Tempo Native Token)`);
 
     // 3. Read ABI & Bytecode artifacts
-    const artifactPath = path.resolve(process.cwd(), "artifacts/contracts/PayPolNexus.sol/PayPolNexus.json");
+    const artifactPath = path.resolve(process.cwd(), "artifacts/contracts/AgtFiNexus.sol/AgtFiNexus.json");
     
     if (!fs.existsSync(artifactPath)) {
         throw new Error("❌ Artifact JSON not found. You must run 'npx hardhat compile' first!");
@@ -46,7 +46,7 @@ async function main() {
     const contractAddress = await contract.getAddress();
 
     console.log("\n=======================================================");
-    console.log(`🎉 PAYPOL NEXUS SUCCESSFULLY DEPLOYED TO TEMPO TESTNET!`);
+    console.log(`🎉 AGTFI NEXUS SUCCESSFULLY DEPLOYED TO TEMPO TESTNET!`);
     console.log(`📜 Contract Address: ${contractAddress}`);
     console.log(`🔍 Block Explorer: https://explore.tempo.xyz/address/${contractAddress}`);
     console.log("=======================================================\n");

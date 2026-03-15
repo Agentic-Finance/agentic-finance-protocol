@@ -25,7 +25,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['vault-deposit', 'public-payout', 'shield-vault', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Vault Depositor agent for ShieldVaultV2 on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Vault Depositor agent for ShieldVaultV2 on Tempo blockchain.
 Parse the user's vault operation request.
 
 Return JSON:

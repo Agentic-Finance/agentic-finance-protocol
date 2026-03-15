@@ -10,14 +10,14 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
 
 // ── Agent 1: Oracle Deployer ─────────────────────────────
 
-const oracleDeployer = new PayPolAgent({
+const oracleDeployer = new AgtFiAgent({
   id: 'oracle-deployer',
   name: 'Oracle Deployer',
   description: 'Deploy Chainlink-compatible price oracle contracts on Tempo L1. Configures data sources, heartbeat intervals, and deviation thresholds.',
@@ -82,7 +82,7 @@ oracleDeployer.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Price Feed Manager ──────────────────────────
 
-const priceFeedManager = new PayPolAgent({
+const priceFeedManager = new AgtFiAgent({
   id: 'price-feed-manager',
   name: 'Price Feed Manager',
   description: 'Multi-source price feed aggregation with TWAP, VWAP, and outlier detection. Real-time monitoring with on-chain updates on Tempo L1.',

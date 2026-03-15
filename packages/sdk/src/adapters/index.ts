@@ -13,7 +13,7 @@
  * Usage:
  *   import { toOpenAITools } from 'agentic-finance-sdk/adapters/openai';
  *   import { toAnthropicTools } from 'agentic-finance-sdk/adapters/anthropic';
- *   import { toPayPolLangChainTools } from 'agentic-finance-sdk/adapters/langchain';
+ *   import { toAgentic FinanceLangChainTools } from 'agentic-finance-sdk/adapters/langchain';
  *   import { toCrewAITools, generateCrewAIPython } from 'agentic-finance-sdk/adapters/crewai';
  */
 
@@ -47,9 +47,9 @@ export type {
 // ── LangChain Adapter (v2.1) ──────────────────────────────
 
 export {
-  toPayPolLangChainTools,
+  toAgentic FinanceLangChainTools,
   handleLangChainToolCall,
-  createPayPolStructuredToolConfig,
+  createAgentic FinanceStructuredToolConfig,
 } from './langchain';
 
 export type {

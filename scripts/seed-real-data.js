@@ -1,5 +1,5 @@
 /**
- * PayPol Real Data Seeder
+ * Agentic Finance Real Data Seeder
  *
  * Creates REAL on-chain transactions + DB records for VC demo:
  * - NexusV2 escrow jobs (create → start → complete → settle → rate)

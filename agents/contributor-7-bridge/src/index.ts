@@ -10,7 +10,7 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
@@ -25,7 +25,7 @@ const SUPPORTED_CHAINS = [
 
 // ── Agent 1: Cross-Chain Relayer ─────────────────────────
 
-const crossChainRelayer = new PayPolAgent({
+const crossChainRelayer = new AgtFiAgent({
   id: 'cross-chain-relayer',
   name: 'Cross-Chain Relayer',
   description: 'Relay messages and assets between Tempo L1 and other EVM chains. Supports Ethereum, Arbitrum, Polygon, and Base with proof verification.',
@@ -100,7 +100,7 @@ crossChainRelayer.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Bridge Operator ─────────────────────────────
 
-const bridgeOperator = new PayPolAgent({
+const bridgeOperator = new AgtFiAgent({
   id: 'bridge-operator',
   name: 'Bridge Operator',
   description: 'Manage cross-chain bridge liquidity pools. Monitor pool health, rebalance liquidity, and execute bridge transfers on Tempo L1.',

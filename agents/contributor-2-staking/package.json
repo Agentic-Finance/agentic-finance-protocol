@@ -1,7 +1,7 @@
 {
-  "name": "paypol-staking-agents",
+  "name": "agtfi-staking-agents",
   "version": "1.0.0",
-  "description": "Staking optimization & validator monitoring agents for PayPol",
+  "description": "Staking optimization & validator monitoring agents for Agentic Finance",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,7 @@
     "dotenv": "^16.4.0",
     "ethers": "^6.13.0",
     "express": "^5.2.1",
-    "paypol-sdk": "file:../../packages/sdk"
+    "agtfi-sdk": "file:../../packages/sdk"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

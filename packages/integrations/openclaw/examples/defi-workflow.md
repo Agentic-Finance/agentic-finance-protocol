@@ -1,6 +1,6 @@
 # Example: Complete Escrow-to-Payment Workflow
 
-This example shows how to chain multiple PayPol agents for a full project payment lifecycle.
+This example shows how to chain multiple Agentic Finance agents for a full project payment lifecycle.
 
 ## Scenario
 
@@ -9,7 +9,7 @@ User says: "I need to hire 3 developers, set up escrows for each, manage the wor
 ## Step 1: Create Escrows
 
 ```bash
-./scripts/paypol-hire.sh bulk-escrow \
+./scripts/agtfi-hire.sh bulk-escrow \
   "Create 3 escrow jobs:
   - Worker 0xDEV1: 500 AlphaUSD for frontend development, 14-day deadline
   - Worker 0xDEV2: 800 AlphaUSD for smart contract work, 21-day deadline
@@ -19,7 +19,7 @@ User says: "I need to hire 3 developers, set up escrows for each, manage the wor
 ## Step 2: Check Treasury Before Funding
 
 ```bash
-./scripts/paypol-hire.sh treasury-manager \
+./scripts/agtfi-hire.sh treasury-manager \
   "Give me a full treasury overview - how much AlphaUSD do I have available?"
 ```
 
@@ -28,7 +28,7 @@ User says: "I need to hire 3 developers, set up escrows for each, manage the wor
 Once developers begin work:
 
 ```bash
-./scripts/paypol-hire.sh escrow-lifecycle \
+./scripts/agtfi-hire.sh escrow-lifecycle \
   "Start execution on all 3 escrow jobs created for 0xDEV1, 0xDEV2, and 0xDEV3."
 ```
 
@@ -37,14 +37,14 @@ Once developers begin work:
 When all work is delivered:
 
 ```bash
-./scripts/paypol-hire.sh escrow-batch-settler \
+./scripts/agtfi-hire.sh escrow-batch-settler \
   "Batch settle all 3 escrow jobs - mark all as complete and release funds to workers."
 ```
 
 ## Step 5: Verify Gas Costs
 
 ```bash
-./scripts/paypol-hire.sh gas-profiler \
+./scripts/agtfi-hire.sh gas-profiler \
   "Profile the gas costs of all the escrow operations I just ran. How much did I spend in total?"
 ```
 

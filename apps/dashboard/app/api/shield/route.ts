@@ -101,12 +101,12 @@ export async function POST(req: Request) {
             const circuitBase = path.join(process.cwd(), '../../packages/circuits');
             const containerBase = path.join(process.cwd(), 'circuits');
 
-            let wasmPath = path.join(circuitBase, 'paypol_shield_v2_js', 'paypol_shield_v2.wasm');
-            let zkeyPath = path.join(circuitBase, 'paypol_shield_v2_final.zkey');
+            let wasmPath = path.join(circuitBase, 'agtfi_shield_v2_js', 'agtfi_shield_v2.wasm');
+            let zkeyPath = path.join(circuitBase, 'agtfi_shield_v2_final.zkey');
 
             if (!fs.existsSync(wasmPath)) {
-                wasmPath = path.join(containerBase, 'paypol_shield_v2.wasm');
-                zkeyPath = path.join(containerBase, 'paypol_shield_v2_final.zkey');
+                wasmPath = path.join(containerBase, 'agtfi_shield_v2.wasm');
+                zkeyPath = path.join(containerBase, 'agtfi_shield_v2_final.zkey');
             }
 
             if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {

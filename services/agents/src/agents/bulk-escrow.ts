@@ -24,7 +24,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['bulk-create-escrow', 'batch-hiring', 'multi-job', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Bulk Escrow agent. Parse the user's request into multiple escrow job specifications.
+const SYSTEM_PROMPT = `You are a Agentic Finance Bulk Escrow agent. Parse the user's request into multiple escrow job specifications.
 
 Return JSON:
 {

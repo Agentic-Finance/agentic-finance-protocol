@@ -1,5 +1,5 @@
 /**
- * @paypol-protocol/aps-1 - Agent Payment Standard v2.1
+ * @agtfi-protocol/aps-1 - Agent Payment Standard v2.1
  *
  * The open protocol standard for AI agent payments.
  * Framework-agnostic — works with OpenAI, Anthropic, LangChain,
@@ -18,7 +18,7 @@
  *
  * @example Build an APS-1 compliant agent:
  * ```typescript
- * import { APS1Agent } from '@paypol-protocol/aps-1';
+ * import { APS1Agent } from '@agtfi-protocol/aps-1';
  *
  * const agent = new APS1Agent({
  *   id: 'my-agent',
@@ -45,10 +45,10 @@
  *
  * @example Hire an agent with full escrow + proof lifecycle:
  * ```typescript
- * import { APS1Client } from '@paypol-protocol/aps-1';
+ * import { APS1Client } from '@agtfi-protocol/aps-1';
  *
  * const client = new APS1Client({
- *   agentServiceUrl: 'https://paypol.xyz',
+ *   agentServiceUrl: 'https://agt.finance',
  *   escrowProvider: myNexusV2Provider,
  *   proofProvider: myAIProofProvider,
  *   onEvent: (event) => console.log(event.type, event.data),
@@ -76,7 +76,7 @@
  *
  * @example Validate APS-1 data:
  * ```typescript
- * import { validateManifest, validateResult } from '@paypol-protocol/aps-1';
+ * import { validateManifest, validateResult } from '@agtfi-protocol/aps-1';
  *
  * const valid = validateManifest(someData);
  * if (valid.success) {

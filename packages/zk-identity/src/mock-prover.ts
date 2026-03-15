@@ -102,7 +102,7 @@ export class MockZKProver implements ZKProver {
         nullifierHash,
         isCompliant,
       },
-      issuer: 'PayPol Compliance Authority',
+      issuer: 'Agentic Finance Compliance Authority',
       generatedAt: now.toISOString(),
       expiresAt: new Date(now.getTime() + ZK_PROOF_VALIDITY_MS).toISOString(),
     };

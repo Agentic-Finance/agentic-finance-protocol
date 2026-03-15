@@ -17,7 +17,7 @@ import { createStreamOnChain } from '../utils/stream-settlement';
 export const manifest: AgentDescriptor = {
   id:           'stream-creator',
   name:         'Stream Creator',
-  description:  'Creates milestone-based payment streams on PayPolStreamV1. AI breaks job descriptions into milestones with budgets, then deploys the stream on-chain. Progressive escrow with real Tempo L1 execution.',
+  description:  'Creates milestone-based payment streams on Agentic FinanceStreamV1. AI breaks job descriptions into milestones with budgets, then deploys the stream on-chain. Progressive escrow with real Tempo L1 execution.',
   category:     'streams',
   version:      '1.0.0',
   price:        8,
@@ -28,7 +28,7 @@ export const manifest: AgentDescriptor = {
  * Build system prompt with budget context so the AI knows how much to allocate.
  */
 function buildSystemPrompt(budget: number): string {
-  return `You are a PayPol Stream Creator agent. Break the user's job description into milestones for a progressive payment stream.
+  return `You are a Agentic Finance Stream Creator agent. Break the user's job description into milestones for a progressive payment stream.
 
 TOTAL BUDGET: ${budget} AlphaUSD — You MUST distribute this exact amount across milestones.
 

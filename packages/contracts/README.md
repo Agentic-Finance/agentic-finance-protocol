@@ -1,6 +1,6 @@
-# PayPol Smart Contracts
+# Agentic Finance Smart Contracts
 
-Solidity smart contracts for the PayPol Protocol, built with [Foundry](https://book.getfoundry.sh/).
+Solidity smart contracts for the Agentic Finance, built with [Foundry](https://book.getfoundry.sh/).
 
 ## Deployed & Verified Contracts
 
@@ -9,16 +9,16 @@ All contracts are deployed on **Tempo Moderato Testnet (Chain ID: 42431)** and s
 | Contract | Address | Description |
 |----------|---------|-------------|
 | **PlonkVerifierV2** | [`0x9FB90e9...`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | ZK-SNARK on-chain PLONK proof verifier. Auto-generated from snarkJS trusted setup. |
-| **PayPolShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with Poseidon 4-input commitments and nullifier anti-double-spend. |
-| **PayPolNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
-| **PayPolMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX with per-transfer events. |
+| **AgtFiShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with Poseidon 4-input commitments and nullifier anti-double-spend. |
+| **AgtFiNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
+| **Agentic FinanceMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX with per-transfer events. |
 | **AIProofRegistry** | [`0x8fDB8E8...`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | AI proof commitment & verification. Pre-hash commit, post-verify, slashing. |
-| **PayPolStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
+| **Agentic FinanceStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
 | **ReputationRegistry** | [`0x9332c1B...`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0) | On-chain reputation scoring from job completions, disputes, and peer reviews. |
 | **SecurityDepositVault** | [`0x8C1d4da...`](https://explore.tempo.xyz/address/0x8C1d4da4034FFEB5E3809aa017785cB70B081A80) | Tiered deposit system (Bronze/Silver/Gold) with fee discounts and slashing. |
 | **SimpleERC20** | - | Test stablecoin (AlphaUSD) for development. |
 
-> **Legacy V1 Contracts** (still operational): PlonkVerifier V1 (`0xa7F8Bd...`), PayPolShieldVault V1 (`0x4cfcaE...`), PayPolMultisendVault V1 (`0xc0e6F0...`)
+> **Legacy V1 Contracts** (still operational): PlonkVerifier V1 (`0xa7F8Bd...`), AgtFiShieldVault V1 (`0x4cfcaE...`), Agentic FinanceMultisendVault V1 (`0xc0e6F0...`)
 
 ## Network Configuration
 
@@ -38,15 +38,15 @@ All contracts are deployed on **Tempo Moderato Testnet (Chain ID: 42431)** and s
 PlonkVerifierV2 (ZK Proof Verification — PLONK)
     │
     ▼
-PayPolShieldVaultV2 (Private Payroll — Nullifier Pattern)
+AgtFiShieldVaultV2 (Private Payroll — Nullifier Pattern)
     ├── deposit()                  - Lock tokens with Poseidon commitment
     ├── executeShieldedPayout()    - ZK-verified private transfer (PLONK proof)
     └── isNullifierUsed()          - Anti-double-spend check
 
-PayPolMultisendV2 (Batch Payroll)
+Agentic FinanceMultisendV2 (Batch Payroll)
     └── batchDisburse()            - Pay up to 100 recipients in one tx
 
-PayPolNexusV2 (Agent Marketplace Escrow)
+AgtFiNexusV2 (Agent Marketplace Escrow)
     ├── createJob()       - Employer locks ERC-20 in escrow
     ├── startJob()        - Agent begins work
     ├── completeJob()     - Agent claims completion
@@ -61,7 +61,7 @@ AIProofRegistry (Verifiable AI Proofs)
     ├── verify()          - Post-verify AI result hash
     └── slash()           - Penalize mismatched results
 
-PayPolStreamV1 (Milestone Streaming)
+Agentic FinanceStreamV1 (Milestone Streaming)
     ├── createStream()    - Create milestone-based escrow
     ├── submitMilestone() - Worker submits proof
     └── approveMilestone()- Employer approves + releases funds
@@ -91,14 +91,14 @@ forge test -vvv
 # Load environment variables
 source .env
 
-# Deploy PlonkVerifier + PayPolShieldVault
-forge script script/DeployPayPol.s.sol --rpc-url $RPC_URL --broadcast
+# Deploy PlonkVerifier + AgtFiShieldVault
+forge script script/DeployAgentic Finance.s.sol --rpc-url $RPC_URL --broadcast
 
-# Deploy PayPolMultisendVault
+# Deploy Agentic FinanceMultisendVault
 forge script script/DeployMultisend.s.sol --rpc-url $RPC_URL --broadcast
 
-# Deploy PayPolNexusV2
-forge create src/PayPolNexusV2.sol:PayPolNexusV2 --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+# Deploy AgtFiNexusV2
+forge create src/AgtFiNexusV2.sol:AgtFiNexusV2 --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
 ```
 
 ### Verify on Tempo

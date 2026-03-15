@@ -2,7 +2,7 @@ pragma circom 2.0.0;
 
 include "node_modules/circomlib/circuits/poseidon.circom";
 
-template PayPolShield() {
+template AgtFiShield() {
     // Public inputs (Exposed on-chain)
     signal input commitment;
     signal input recipient;
@@ -22,4 +22,4 @@ template PayPolShield() {
 }
 
 // Instantiate the main component
-component main {public [commitment, recipient]} = PayPolShield();
+component main {public [commitment, recipient]} = AgtFiShield();

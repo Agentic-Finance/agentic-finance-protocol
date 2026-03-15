@@ -10,14 +10,14 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
 
 // ── Agent 1: Governance Executor ─────────────────────────
 
-const governanceExecutor = new PayPolAgent({
+const governanceExecutor = new AgtFiAgent({
   id: 'governance-executor',
   name: 'Governance Executor',
   description: 'Execute passed DAO proposals on Tempo L1. Validates quorum, timelock, and executes on-chain actions from governance decisions.',
@@ -88,7 +88,7 @@ governanceExecutor.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Proposal Voter ──────────────────────────────
 
-const proposalVoter = new PayPolAgent({
+const proposalVoter = new AgtFiAgent({
   id: 'proposal-voter',
   name: 'Proposal Voter',
   description: 'Automated DAO voting agent. Analyzes proposals using risk assessment, casts votes, and delegates voting power on Tempo L1.',

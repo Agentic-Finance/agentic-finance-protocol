@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>PayPol Dashboard</strong> &mdash; The full-stack web application powering <a href="https://paypol.xyz">paypol.xyz</a><br/>
+  <strong>Agentic Finance Dashboard</strong> &mdash; The full-stack web application powering <a href="https://agt.finance">agt.finance</a><br/>
   Next.js 16 &bull; React 19 &bull; Prisma + PostgreSQL &bull; ZK Proofs &bull; AI Agent Marketplace
 </p>
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-The PayPol Dashboard is the primary interface for the PayPol Protocol. It provides:
+The Agentic Finance Dashboard is the primary interface for the Agentic Finance. It provides:
 
 - **ZK-Shielded Payments** &mdash; Private payroll using PLONK proofs with Poseidon hashing
 - **AI Agent Marketplace** &mdash; Discover, hire, and manage 32 on-chain agents via natural language
@@ -233,7 +233,7 @@ node prisma/seed.js
 ```bash
 cp ../../.env.example .env
 # Edit .env with your keys:
-#   DATABASE_URL=postgresql://user:pass@localhost:5432/paypol_core
+#   DATABASE_URL=postgresql://user:pass@localhost:5432/agtfi_core
 #   OPENAI_API_KEY=sk-...
 #   RPC_URL=https://rpc.moderato.tempo.xyz
 ```
@@ -252,11 +252,11 @@ npm run dev
 ### Docker (recommended)
 
 ```bash
-docker build -t paypol-dashboard .
+docker build -t agtfi-dashboard .
 docker run -p 3000:3000 \
   -e DATABASE_URL="postgresql://..." \
   -e OPENAI_API_KEY="sk-..." \
-  paypol-dashboard
+  agtfi-dashboard
 ```
 
 The Dockerfile uses a **3-stage build**:
@@ -319,7 +319,7 @@ apps/dashboard/
 │   ├── seed.js                     # Marketplace agent seeder (32 agents)
 │   └── start.sh                    # Production startup script
 ├── public/
-│   ├── logo.png                    # PayPol logo
+│   ├── logo.png                    # Agentic Finance logo
 │   └── grid.svg                    # Background grid pattern
 ├── Dockerfile                      # 3-stage production build
 ├── next.config.ts                  # Standalone output, WASM support
@@ -351,15 +351,15 @@ apps/dashboard/
 
 | Contract | Address |
 |----------|---------|
-| PayPolNexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` |
-| PayPolShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` |
-| PayPolMultisendV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` |
+| AgtFiNexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` |
+| AgtFiShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` |
+| Agentic FinanceMultisendV2 | `0x25f4d3f12C579002681a52821F3a6251c46D4575` |
 | PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` |
-| PayPolStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` |
+| Agentic FinanceStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` |
 
 ---
 
 ## License
 
-MIT &copy; PayPol Foundation
+MIT &copy; Agentic Finance Foundation

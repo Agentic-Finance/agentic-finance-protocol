@@ -1,12 +1,12 @@
 /**
- * PayPol Eliza Plugin
+ * Agentic Finance Eliza Plugin
  *
- * Exposes all native PayPol agents as Eliza actions so any Eliza-based
+ * Exposes all native Agentic Finance agents as Eliza actions so any Eliza-based
  * AI agent can hire them directly via natural language.
  *
  * Usage (in your Eliza agent config):
- *   import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
- *   const agent = new AgentRuntime({ plugins: [paypolPlugin], ... });
+ *   import { agtfiPlugin } from '@agtfi-protocol/eliza-plugin';
+ *   const agent = new AgentRuntime({ plugins: [agtfiPlugin], ... });
  */
 
 import axios from 'axios';
@@ -36,12 +36,12 @@ interface Plugin {
   actions:     Action[];
 }
 
-// ── PayPol API base URL (configure via env) ───────────────
-const AGENT_API = process.env.PAYPOL_AGENT_API ?? 'http://localhost:3001';
+// ── Agentic Finance API base URL (configure via env) ───────────────
+const AGENT_API = process.env.AGTFI_AGENT_API ?? 'http://localhost:3001';
 
 // ── Helper ────────────────────────────────────────────────
 
-async function callPayPolAgent(agentId: string, prompt: string, callerWallet = 'eliza-agent'): Promise<string> {
+async function callAgtFiAgent(agentId: string, prompt: string, callerWallet = 'eliza-agent'): Promise<string> {
   try {
     const { data } = await axios.post(`${AGENT_API}/agents/${agentId}/execute`, {
       prompt,
@@ -49,7 +49,7 @@ async function callPayPolAgent(agentId: string, prompt: string, callerWallet = '
     });
     return JSON.stringify(data.result ?? data.error, null, 2);
   } catch (err: any) {
-    return `Error calling PayPol agent: ${err.message}`;
+    return `Error calling Agentic Finance agent: ${err.message}`;
   }
 }
 
@@ -57,39 +57,39 @@ async function callPayPolAgent(agentId: string, prompt: string, callerWallet = '
 
 const auditContractAction: Action = {
   name:        'AUDIT_SMART_CONTRACT',
-  description: 'Audit a Solidity smart contract for security vulnerabilities using the PayPol contract auditor agent.',
+  description: 'Audit a Solidity smart contract for security vulnerabilities using the Agentic Finance contract auditor agent.',
   similes:     ['audit contract', 'check smart contract', 'security audit', 'find vulnerabilities'],
 
   validate: async (_runtime, message) =>
     /audit|security|vulnerabilit|solidity|contract/i.test(message.content.text),
 
   handler: async (_runtime, message, _state, _options, callback) => {
-    const result = await callPayPolAgent('contract-auditor', message.content.text);
+    const result = await callAgtFiAgent('contract-auditor', message.content.text);
     callback?.({ text: `**Smart Contract Audit Result:**\n\`\`\`json\n${result}\n\`\`\`` });
   },
 
   examples: [[
     { user: 'user',  content: { text: 'Audit this contract: pragma solidity ^0.8.0; contract Foo { ... }' } },
-    { user: 'agent', content: { text: 'Running security audit via PayPol...' } },
+    { user: 'agent', content: { text: 'Running security audit via Agentic Finance...' } },
   ]],
 };
 
 const optimizeYieldAction: Action = {
   name:        'OPTIMIZE_DEFI_YIELD',
-  description: 'Find the best DeFi yield opportunities for a given token using PayPol yield optimizer.',
+  description: 'Find the best DeFi yield opportunities for a given token using Agentic Finance yield optimizer.',
   similes:     ['best yield', 'highest apy', 'optimize yield', 'defi strategy'],
 
   validate: async (_runtime, message) =>
     /yield|apy|defi|liquidity|farm|earn/i.test(message.content.text),
 
   handler: async (_runtime, message, _state, _options, callback) => {
-    const result = await callPayPolAgent('yield-optimizer', message.content.text);
+    const result = await callAgtFiAgent('yield-optimizer', message.content.text);
     callback?.({ text: `**Yield Optimization Result:**\n\`\`\`json\n${result}\n\`\`\`` });
   },
 
   examples: [[
     { user: 'user',  content: { text: 'Find the best yield for 10000 USDC with low risk' } },
-    { user: 'agent', content: { text: 'Fetching yield opportunities via PayPol...' } },
+    { user: 'agent', content: { text: 'Fetching yield opportunities via Agentic Finance...' } },
   ]],
 };
 
@@ -102,32 +102,32 @@ const planPayrollAction: Action = {
     /payroll|salary|pay employee|batch pay|disburse/i.test(message.content.text),
 
   handler: async (_runtime, message, _state, _options, callback) => {
-    const result = await callPayPolAgent('payroll-planner', message.content.text);
+    const result = await callAgtFiAgent('payroll-planner', message.content.text);
     callback?.({ text: `**Payroll Plan:**\n\`\`\`json\n${result}\n\`\`\`` });
   },
 
   examples: [[
     { user: 'user',  content: { text: 'Plan payroll for 5 employees, total budget $5000 USDC' } },
-    { user: 'agent', content: { text: 'Optimizing payroll batches via PayPol...' } },
+    { user: 'agent', content: { text: 'Optimizing payroll batches via Agentic Finance...' } },
   ]],
 };
 
 const predictGasAction: Action = {
   name:        'PREDICT_GAS',
-  description: 'Predict optimal gas price and timing for a transaction using the PayPol gas predictor.',
+  description: 'Predict optimal gas price and timing for a transaction using the Agentic Finance gas predictor.',
   similes:     ['gas price', 'gas estimate', 'when to transact', 'cheap gas'],
 
   validate: async (_runtime, message) =>
     /gas|gwei|transaction cost|when.*transact|cheap.*tx/i.test(message.content.text),
 
   handler: async (_runtime, message, _state, _options, callback) => {
-    const result = await callPayPolAgent('gas-predictor', message.content.text);
+    const result = await callAgtFiAgent('gas-predictor', message.content.text);
     callback?.({ text: `**Gas Prediction:**\n\`\`\`json\n${result}\n\`\`\`` });
   },
 
   examples: [[
     { user: 'user',  content: { text: 'When is the cheapest time to send a transaction today?' } },
-    { user: 'agent', content: { text: 'Analyzing gas prices via PayPol...' } },
+    { user: 'agent', content: { text: 'Analyzing gas prices via Agentic Finance...' } },
   ]],
 };
 
@@ -141,12 +141,12 @@ function makeAction(
     name, description, similes,
     validate: async (_runtime, message) => pattern.test(message.content.text),
     handler: async (_runtime, message, _state, _options, callback) => {
-      const result = await callPayPolAgent(agentId, message.content.text);
+      const result = await callAgtFiAgent(agentId, message.content.text);
       callback?.({ text: `**${label}:**\n\`\`\`json\n${result}\n\`\`\`` });
     },
     examples: [[
       { user: 'user',  content: { text: `${description}` } },
-      { user: 'agent', content: { text: `Processing via PayPol ${label}...` } },
+      { user: 'agent', content: { text: `Processing via Agentic Finance ${label}...` } },
     ]],
   };
 }
@@ -237,9 +237,9 @@ const contractDeployProAction = makeAction(
 
 // ── Plugin export ─────────────────────────────────────────
 
-export const paypolPlugin: Plugin = {
-  name:        'paypol',
-  description: 'PayPol Agent Marketplace - 32 on-chain agents covering escrow, streams, security, payroll, analytics, deployment, treasury, and more.',
+export const agtfiPlugin: Plugin = {
+  name:        'agtfi',
+  description: 'Agentic Finance Agent Marketplace - 32 on-chain agents covering escrow, streams, security, payroll, analytics, deployment, treasury, and more.',
   actions: [
     // Wave 1 (original)
     auditContractAction, optimizeYieldAction, planPayrollAction, predictGasAction,
@@ -251,4 +251,4 @@ export const paypolPlugin: Plugin = {
   ],
 };
 
-export default paypolPlugin;
+export default agtfiPlugin;

@@ -1,20 +1,20 @@
-# @paypol-protocol/eliza-plugin
+# @agtfi-protocol/eliza-plugin
 
-Eliza plugin that exposes all 32 PayPol marketplace agents as Eliza actions. Any Eliza-based AI agent can hire PayPol agents via natural language.
+Eliza plugin that exposes all 32 Agentic Finance marketplace agents as Eliza actions. Any Eliza-based AI agent can hire Agentic Finance agents via natural language.
 
 ## Install
 
 ```bash
-npm install @paypol-protocol/eliza-plugin
+npm install @agtfi-protocol/eliza-plugin
 ```
 
 ## Usage
 
 ```typescript
-import { paypolPlugin } from '@paypol-protocol/eliza-plugin';
+import { agtfiPlugin } from '@agtfi-protocol/eliza-plugin';
 
 const agent = new AgentRuntime({
-  plugins: [paypolPlugin],
+  plugins: [agtfiPlugin],
 });
 ```
 
@@ -28,16 +28,16 @@ The plugin adds 18 pre-built actions automatically:
 
 ## Configuration
 
-Set the PayPol API URL via environment variable:
+Set the Agentic Finance API URL via environment variable:
 
 ```bash
-PAYPOL_AGENT_API=https://api.paypol.xyz
+AGTFI_AGENT_API=https://api.agt.finance
 ```
 
 ## Links
 
-- [PayPol Documentation](https://paypol.xyz/docs/documentation)
-- [GitHub](https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/eliza)
+- [Agentic Finance Documentation](https://agt.finance/docs/documentation)
+- [GitHub](https://github.com/Agentic Finance-Foundation/agtfi-protocol/tree/main/packages/integrations/eliza)
 
 ## License
 

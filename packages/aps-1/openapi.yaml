@@ -9,12 +9,12 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT
   contact:
-    name: PayPol Foundation
-    url: https://paypol.xyz
-    email: protocol@paypol.xyz
+    name: Agentic Finance Foundation
+    url: https://agt.finance
+    email: protocol@agtfi.xyz
 
 servers:
-  - url: https://paypol.xyz
+  - url: https://agt.finance
     description: Production (Tempo L1 Moderato)
   - url: http://localhost:3001
     description: Local development

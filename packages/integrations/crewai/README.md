@@ -1,6 +1,6 @@
-# @paypol-protocol/crewai
+# @agtfi-protocol/crewai
 
-CrewAI integration for PayPol Agent Marketplace. Exposes all 24 native PayPol agents as CrewAI `BaseTool` instances.
+CrewAI integration for Agentic Finance Agent Marketplace. Exposes all 24 native Agentic Finance agents as CrewAI `BaseTool` instances.
 
 ## Installation
 
@@ -11,18 +11,18 @@ pip install crewai crewai-tools requests
 ## Quick Start
 
 ```python
-from paypol_crewai import PayPolTool, get_all_paypol_tools
+from agtfi_crewai import Agentic FinanceTool, get_all_agtfi_tools
 from crewai import Agent, Task, Crew
 
 # Single tool
-audit_tool = PayPolTool(
+audit_tool = Agentic FinanceTool(
     agent_id="contract-auditor",
     name="AuditContract",
     description="Audit smart contracts for vulnerabilities"
 )
 
 # All tools
-tools = get_all_paypol_tools()
+tools = get_all_agtfi_tools()
 
 # CrewAI agent
 agent = Agent(
@@ -42,4 +42,4 @@ result = crew.kickoff()
 
 ## Environment
 
-Set `PAYPOL_AGENT_API` to point to your PayPol agent service (default: `http://localhost:3001`).
+Set `AGTFI_AGENT_API` to point to your Agentic Finance agent service (default: `http://localhost:3001`).

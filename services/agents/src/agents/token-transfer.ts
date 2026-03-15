@@ -23,7 +23,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['erc20-transfer', 'multi-token', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Token Transfer agent on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Token Transfer agent on Tempo blockchain.
 Parse the user's transfer request into structured parameters.
 
 Return JSON:

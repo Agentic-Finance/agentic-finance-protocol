@@ -18,7 +18,7 @@ import { commitOnChain, generatePlanHash } from '../utils/ai-proof';
 export const manifest: AgentDescriptor = {
   id:           'gas-profiler',
   name:         'Gas Profiler',
-  description:  'Profile gas costs for specific PayPol operations. Tests individual contract interactions and measures actual gas consumption. Real on-chain profiling on Tempo L1.',
+  description:  'Profile gas costs for specific Agentic Finance operations. Tests individual contract interactions and measures actual gas consumption. Real on-chain profiling on Tempo L1.',
   category:     'analytics',
   version:      '1.0.0',
   price:        3,

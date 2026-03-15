@@ -17,14 +17,14 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'stream-manager',
   name:         'Stream Manager',
-  description:  'Manages PayPolStreamV1 lifecycle - submit milestones with proof hashes, approve/reject deliverables, cancel streams. Full on-chain execution on Tempo L1.',
+  description:  'Manages Agentic FinanceStreamV1 lifecycle - submit milestones with proof hashes, approve/reject deliverables, cancel streams. Full on-chain execution on Tempo L1.',
   category:     'streams',
   version:      '1.0.0',
   price:        5,
   capabilities: ['submit-milestone', 'approve-milestone', 'reject-milestone', 'cancel-stream', 'stream-status', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Stream Manager agent for PayPolStreamV1 on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Stream Manager agent for Agentic FinanceStreamV1 on Tempo blockchain.
 Parse the user's request into a stream management action.
 
 Return JSON:

@@ -2,16 +2,16 @@
  * Agentic Finance Agent SDK
  *
  * Two main building blocks:
- *   1. PayPolAgentClient  - dispatch payroll payments via the Agentic Finance API
- *   2. PayPolAgent        - build marketplace agents that earn on every job
+ *   1. AgtFiAgentClient  - dispatch payroll payments via the Agentic Finance API
+ *   2. AgtFiAgent        - build marketplace agents that earn on every job
  *   3. AgentClient        - hire agents from the marketplace
  *
  * @example - send a shielded payment
- *   const client = new PayPolAgentClient({ apiKey: '...', workspaceId: '...' });
+ *   const client = new AgtFiAgentClient({ apiKey: '...', workspaceId: '...' });
  *   await client.dispatchShieldedPayload({ recipientName: 'Alice', walletAddress: '0x...', amount: 100 });
  *
  * @example - build a marketplace agent
- *   const agent = new PayPolAgent({ id: 'my-agent', name: 'My Agent', ... });
+ *   const agent = new AgtFiAgent({ id: 'my-agent', name: 'My Agent', ... });
  *   agent.onJob(async (job) => ({ ...job, status: 'success', result: {}, executionTimeMs: 0, timestamp: Date.now() }));
  *   agent.listen(3002);
  *
@@ -24,7 +24,7 @@ import axios from 'axios';
 
 // ── Payment SDK ───────────────────────────────────────────
 
-export interface PayPolConfig {
+export interface Agentic FinanceConfig {
     apiKey: string;
     workspaceId: string;
     environment?: 'mainnet' | 'testnet';
@@ -39,12 +39,12 @@ export interface PayloadParams {
 }
 
 /** Low-level client for dispatching Agentic Finance payroll payments. */
-export class PayPolAgentClient {
+export class AgtFiAgentClient {
     private apiKey: string;
     private workspaceId: string;
     private baseURL: string;
 
-    constructor(config: PayPolConfig) {
+    constructor(config: Agentic FinanceConfig) {
         this.apiKey      = config.apiKey;
         this.workspaceId = config.workspaceId;
         this.baseURL     = config.environment === 'mainnet'
@@ -90,7 +90,7 @@ export class PayPolAgentClient {
 
 // ── Agent Marketplace SDK ─────────────────────────────────
 
-export { PayPolAgent }  from './PayPolAgent';
+export { AgtFiAgent }  from './AgtFiAgent';
 export { AgentClient }  from './AgentClient';
 export { registerAgent } from './register';
 export type {
@@ -135,7 +135,7 @@ export type {
     APS1ReputationSnapshot,
     APS1SecurityDeposit,
     APS1ProtocolConfig,
-} from '@paypol-protocol/aps-1';
+} from '@agtfi-protocol/aps-1';
 
 export {
     APS1_VERSION,
@@ -146,4 +146,4 @@ export {
     APS1_CONTRACTS,
     APS1_DEFAULT_CONFIG,
     APS1ErrorCode,
-} from '@paypol-protocol/aps-1';
+} from '@agtfi-protocol/aps-1';

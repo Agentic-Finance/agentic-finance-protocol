@@ -25,7 +25,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['start-job', 'complete-job', 'rate-worker', 'job-status', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Escrow Lifecycle agent for NexusV2 on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Lifecycle agent for NexusV2 on Tempo blockchain.
 Parse the user's escrow lifecycle request.
 
 Return JSON:

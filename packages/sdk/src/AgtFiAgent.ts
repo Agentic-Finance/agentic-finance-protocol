@@ -14,11 +14,11 @@ import { registerAgent } from './register';
  * Base class for building Agentic Finance-compatible agents.
  *
  * Usage:
- *   const agent = new PayPolAgent({ id: 'my-agent', ... });
+ *   const agent = new AgtFiAgent({ id: 'my-agent', ... });
  *   agent.onJob(async (job) => { ... return result; });
  *   agent.listen(3002);
  */
-export class PayPolAgent {
+export class AgtFiAgent {
   private config: AgentConfig;
   private jobHandler?: (job: JobRequest) => Promise<JobResult>;
   private app = express();

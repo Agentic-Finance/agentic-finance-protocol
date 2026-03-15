@@ -1,5 +1,5 @@
 /**
- * PayPol AI Brain Orchestrator
+ * Agentic Finance AI Brain Orchestrator
  *
  * Production orchestrator that:
  * 1. Parses natural language intents using Claude
@@ -394,7 +394,7 @@ app.post('/api/work', async (_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`\n╔══════════════════════════════════════════════╗`);
-  console.log(`║  PayPol AI Brain Orchestrator v2.0.0          ║`);
+  console.log(`║  Agentic Finance AI Brain Orchestrator v2.0.0          ║`);
   console.log(`║  Port: ${PORT}                                  ║`);
   console.log(`║  Agents Service: ${process.env.AGENTS_SERVICE_URL || 'http://localhost:3001'}  ║`);
   console.log(`╚══════════════════════════════════════════════╝\n`);

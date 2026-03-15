@@ -1,5 +1,5 @@
 {
-  "name": "@paypol-protocol/zk-identity",
+  "name": "@agtfi-protocol/zk-identity",
   "version": "1.0.0",
   "description": "ZK Agent Identity — Zero-knowledge proofs for agent reputation, identity, and compliance verification",
   "main": "dist/index.js",
@@ -22,10 +22,10 @@
   "keywords": ["zk", "zero-knowledge", "identity", "reputation", "agent", "privacy", "compliance"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol"
   },
   "dependencies": {
-    "@paypol-protocol/aps-1": "file:../aps-1"
+    "@agtfi-protocol/aps-1": "file:../aps-1"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

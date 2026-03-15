@@ -10,7 +10,7 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
@@ -23,7 +23,7 @@ const TOKENS: Record<string, { address: string; decimals: number }> = {
 
 // ── Agent 1: DEX Deployer ────────────────────────────────
 
-const dexDeployer = new PayPolAgent({
+const dexDeployer = new AgtFiAgent({
   id: 'dex-deployer',
   name: 'DEX Deployer',
   description: 'Deploy Uniswap V2-style AMM pools on Tempo L1. Configure trading pairs, fee tiers, and initial parameters.',
@@ -88,7 +88,7 @@ dexDeployer.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Liquidity Bootstrapper ──────────────────────
 
-const liquidityBootstrapper = new PayPolAgent({
+const liquidityBootstrapper = new AgtFiAgent({
   id: 'liquidity-bootstrapper',
   name: 'Liquidity Bootstrapper',
   description: 'Bootstrap initial liquidity for DEX trading pairs on Tempo L1 with optimal price discovery and impermanent loss analysis.',

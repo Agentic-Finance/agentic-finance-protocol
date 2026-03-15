@@ -1,4 +1,4 @@
-/** Shared types for the native PayPol agent service. */
+/** Shared types for the native Agentic Finance agent service. */
 
 export interface AgentDescriptor {
   id: string;

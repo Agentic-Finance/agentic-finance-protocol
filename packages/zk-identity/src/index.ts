@@ -1,5 +1,5 @@
 /**
- * @paypol-protocol/zk-identity
+ * @agtfi-protocol/zk-identity
  *
  * Zero-Knowledge Agent Identity System
  *
@@ -14,13 +14,13 @@
  *    Proves compliance attestation is valid
  *    without revealing the attestation details.
  *
- * 3. ZK Identity Proof — "I am a verified PayPol agent"
+ * 3. ZK Identity Proof — "I am a verified Agentic Finance agent"
  *    Proves membership in the agent registry
  *    without revealing which agent (anonymous bidding).
  *
  * @example Generate a ZK credential bundle:
  * ```typescript
- * import { ZKProver, ZKVerifier } from '@paypol-protocol/zk-identity';
+ * import { ZKProver, ZKVerifier } from '@agtfi-protocol/zk-identity';
  *
  * const prover = new ZKProver({
  *   agentWallet: '0x...',

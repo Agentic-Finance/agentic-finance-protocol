@@ -24,7 +24,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['dispute-job', 'claim-timeout', 'check-timeout', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Escrow Dispute agent for NexusV2 on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Dispute agent for NexusV2 on Tempo blockchain.
 Parse the user's dispute request.
 
 Return JSON:

@@ -31,7 +31,7 @@ function buildSystemPrompt(budget: number): string {
   const budgetLine = budget > 0
     ? `\nTOTAL BUDGET: ${budget} AlphaUSD — You MUST distribute this across the periods so amountPerPeriod * periods = ${budget}.`
     : '';
-  return `You are a PayPol Recurring Payment agent. Set up a series of payment streams for recurring payments.
+  return `You are a Agentic Finance Recurring Payment agent. Set up a series of payment streams for recurring payments.
 ${budgetLine}
 Return JSON:
 {

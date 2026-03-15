@@ -1,5 +1,5 @@
 /**
- * Contract Reader Agent - Read all PayPol contract states
+ * Contract Reader Agent - Read all Agentic Finance contract states
  *
  * Comprehensive on-chain state reader. Reads NexusV2 job count,
  * MultisendV2 batch history, StreamV1 stream count, worker ratings,
@@ -18,7 +18,7 @@ import { getAIProofRegistry } from '../utils/ai-proof';
 export const manifest: AgentDescriptor = {
   id:           'contract-reader',
   name:         'Contract Reader',
-  description:  'Read all PayPol smart contract states. NexusV2 job counters, MultisendV2 batch history, StreamV1 stream count, worker ratings, and AI proof stats. Comprehensive on-chain data from Tempo L1.',
+  description:  'Read all Agentic Finance smart contract states. NexusV2 job counters, MultisendV2 batch history, StreamV1 stream count, worker ratings, and AI proof stats. Comprehensive on-chain data from Tempo L1.',
   category:     'analytics',
   version:      '1.0.0',
   price:        2,

@@ -1,8 +1,8 @@
-import { PayPolAgentClient } from '../../packages/sdk/src/index';
+import { AgtFiAgentClient } from '../../packages/sdk/src/index';
 
 // 1. Initialize the client securely (APS-1 v2.1 compatible)
-const paypol = new PayPolAgentClient({
-    apiKey: process.env.PAYPOL_API_KEY as string,
+const agtfi = new AgtFiAgentClient({
+    apiKey: process.env.AGTFI_API_KEY as string,
     workspaceId: 'ws_dragon_company_01',
     environment: 'testnet',
     apsVersion: '2.1'
@@ -13,7 +13,7 @@ async function handleTaskCompletion(freelancerWallet: string, bountyAmount: numb
     try {
         console.log('AI Agent: Task verified. Initiating ZK-Shielded payout...');
 
-        const response = await paypol.dispatchShieldedPayload({
+        const response = await agtfi.dispatchShieldedPayload({
             recipientName: 'Freelance Developer',
             walletAddress: freelancerWallet,
             amount: bountyAmount,
@@ -34,7 +34,7 @@ async function createSwarmSession() {
     try {
         console.log('Coordinator: Creating swarm session for contract audit...');
 
-        const session = await paypol.createSwarmSession({
+        const session = await agtfi.createSwarmSession({
             name: 'Smart Contract Security Audit',
             budget: 5000,
             token: 'AlphaUSD',

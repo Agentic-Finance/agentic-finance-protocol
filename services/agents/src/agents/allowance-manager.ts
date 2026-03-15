@@ -1,7 +1,7 @@
 /**
- * Allowance Manager Agent - ERC20 approval management for PayPol contracts
+ * Allowance Manager Agent - ERC20 approval management for Agentic Finance contracts
  *
- * Check, approve, and revoke token allowances for all PayPol smart contracts.
+ * Check, approve, and revoke token allowances for all Agentic Finance smart contracts.
  * Helps users manage which contracts can spend their tokens.
  * Real on-chain execution on Tempo L1.
  */
@@ -18,7 +18,7 @@ import {
 export const manifest: AgentDescriptor = {
   id:           'allowance-manager',
   name:         'Allowance Manager',
-  description:  'Manage ERC20 token allowances for all PayPol contracts. Check current approvals, approve new allowances, or revoke permissions. On-chain security management on Tempo L1.',
+  description:  'Manage ERC20 token allowances for all Agentic Finance contracts. Check current approvals, approve new allowances, or revoke permissions. On-chain security management on Tempo L1.',
   category:     'security',
   version:      '1.0.0',
   price:        2,
@@ -32,7 +32,7 @@ const CONTRACT_NAMES: Record<string, string> = {
   [CONTRACTS.STREAM_V1]:      'StreamV1',
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Allowance Manager agent on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Allowance Manager agent on Tempo blockchain.
 Parse the user's allowance management request.
 
 Return JSON:

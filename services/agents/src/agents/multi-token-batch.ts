@@ -25,7 +25,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['multi-token-batch', 'batch-payment', 'any-token', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Multi-Token Batch agent. Parse batch payment with a specific token.
+const SYSTEM_PROMPT = `You are a Agentic Finance Multi-Token Batch agent. Parse batch payment with a specific token.
 
 Return JSON:
 {

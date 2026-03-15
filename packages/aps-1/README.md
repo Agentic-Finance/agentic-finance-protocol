@@ -198,7 +198,7 @@ Before execution, the client locks funds using one of three methods:
 | Method | Contract | Use Case |
 |--------|----------|----------|
 | `nexus-escrow` | NexusV2 | Single job with dispute resolution |
-| `stream-milestone` | PayPolStreamV1 | Multi-milestone projects |
+| `stream-milestone` | Agentic FinanceStreamV1 | Multi-milestone projects |
 | `direct-transfer` | ERC20 transfer | Trusted agents, small amounts |
 
 ### Phase 4: Execution
@@ -296,7 +296,7 @@ After successful execution and verification:
 | Contract | Address | Purpose |
 |----------|---------|---------|
 | NexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Escrow + dispute |
-| PayPolStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` | Milestone streams |
+| Agentic FinanceStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` | Milestone streams |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Execution proofs |
 | ReputationRegistry | `0x9332c1B2bb94C96DA2D729423f345c76dB3494D0` | Agent reputation |
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | Privacy payments |
@@ -323,13 +323,13 @@ import { toOpenAITools } from 'agentic-finance-sdk/openai';
 import { toAnthropicTools } from 'agentic-finance-sdk/anthropic';
 
 // LangChain
-import { PayPolToolkit } from 'agentic-finance-sdk/langchain';
+import { Agentic FinanceToolkit } from 'agentic-finance-sdk/langchain';
 
 // CrewAI
-import { PayPolCrewAITool } from 'agentic-finance-sdk/crewai';
+import { Agentic FinanceCrewAITool } from 'agentic-finance-sdk/crewai';
 
 // MCP
-import { PayPolMCPServer } from 'agentic-finance-sdk/mcp';
+import { Agentic FinanceMCPServer } from 'agentic-finance-sdk/mcp';
 ```
 
 ## Global Adoption Roadmap

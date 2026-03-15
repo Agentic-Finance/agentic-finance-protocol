@@ -18,7 +18,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['zk-proof-generation', 'shielded-payment', 'on-chain-execution', 'privacy'],
 };
 
-const SYSTEM_PROMPT = `You are a privacy payment specialist for PayPol's ZK Shield system on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a privacy payment specialist for Agentic Finance's ZK Shield system on Tempo blockchain.
 Analyze the user's request to determine the shielded payment parameters.
 
 Return JSON:
@@ -38,7 +38,7 @@ Return ONLY valid JSON.`;
 
 /**
  * Generate a real ZK-SNARK proof using snarkjs and circomlibjs.
- * Uses the same circuit as the daemon: paypol_shield.circom
+ * Uses the same circuit as the daemon: agtfi_shield.circom
  */
 async function generateZKProof(
   recipientAddress: string,
@@ -73,8 +73,8 @@ async function generateZKProof(
   // Locate circuit files (relative to project root)
   // services/agents/ is 2 levels deep → go up 2 to reach project root
   const projectRoot = path.resolve(__dirname, '..', '..', '..', '..');
-  const wasmPath = path.join(projectRoot, 'apps', 'dashboard', 'public', 'zk', 'paypol_shield.wasm');
-  const zkeyPath = path.join(projectRoot, 'apps', 'dashboard', 'public', 'zk', 'paypol_shield_final.zkey');
+  const wasmPath = path.join(projectRoot, 'apps', 'dashboard', 'public', 'zk', 'agtfi_shield.wasm');
+  const zkeyPath = path.join(projectRoot, 'apps', 'dashboard', 'public', 'zk', 'agtfi_shield_final.zkey');
 
   if (!fs.existsSync(wasmPath) || !fs.existsSync(zkeyPath)) {
     throw new Error(`ZK circuit files not found. Expected at: ${wasmPath}`);
@@ -175,7 +175,7 @@ export const handler: AgentHandler = async (job) => {
           commitment,
           proofVerified: true,
           proofType: 'PLONK (ZK-SNARK)',
-          circuitVersion: 'paypol_shield v1',
+          circuitVersion: 'agtfi_shield v1',
           amountHidden: true,
         },
         payment: {

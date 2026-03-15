@@ -126,7 +126,7 @@ export async function toAnthropicTools(
   }
 
   return agents.map(agent => ({
-    name: `paypol_${agent.id.replace(/-/g, '_')}`,
+    name: `agtfi_${agent.id.replace(/-/g, '_')}`,
     description: `[Agentic Finance Agent] ${agent.name}: ${agent.description}`,
     input_schema: {
       type: 'object' as const,
@@ -158,7 +158,7 @@ export async function handleAnthropicToolUse(
   toolUse: AnthropicToolUse,
   callerWallet: string,
 ): Promise<AnthropicToolResult> {
-  const agentId = toolUse.name.replace('paypol_', '').replace(/_/g, '-');
+  const agentId = toolUse.name.replace('agtfi_', '').replace(/_/g, '-');
   const input = toolUse.input as { prompt?: string; payload?: string };
 
   if (!input.prompt) {

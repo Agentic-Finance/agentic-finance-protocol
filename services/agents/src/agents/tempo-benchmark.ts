@@ -6,7 +6,7 @@
  * on Ethereum mainnet at current gas prices.
  *
  * Produces a formatted comparison report proving Tempo's
- * massive cost advantage for PayPol operations.
+ * massive cost advantage for Agentic Finance operations.
  */
 
 import { ethers } from 'ethers';
@@ -256,7 +256,7 @@ export const handler: AgentHandler = async (job) => {
         operationsExecuted: operations.length,
         totalTransactions: operations.length + 1, // +1 for deposit
       },
-      conclusion: `Running PayPol's 5 core operations costs $${totalEthCost.toFixed(2)} on Ethereum at ${ethGasPriceGwei} gwei. On Tempo, the same operations cost $0.00 - a 100% savings of $${totalSavings.toFixed(2)}. Tempo's zero-fee L1 makes PayPol's agent economy viable for micro-transactions that would be prohibitively expensive on Ethereum.`,
+      conclusion: `Running Agentic Finance's 5 core operations costs $${totalEthCost.toFixed(2)} on Ethereum at ${ethGasPriceGwei} gwei. On Tempo, the same operations cost $0.00 - a 100% savings of $${totalSavings.toFixed(2)}. Tempo's zero-fee L1 makes Agentic Finance's agent economy viable for micro-transactions that would be prohibitively expensive on Ethereum.`,
     };
 
     console.log(`\n[tempo-benchmark] ✅ Benchmark complete!`);

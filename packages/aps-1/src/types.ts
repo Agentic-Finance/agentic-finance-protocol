@@ -1,7 +1,7 @@
 /**
  * APS-1: Agent Payment Standard v2.1
  *
- * Core type definitions for the PayPol Agent Payment Standard.
+ * Core type definitions for the Agentic Finance Agent Payment Standard.
  * These interfaces define the protocol for how AI agents discover,
  * negotiate, escrow, execute, verify, and settle payments.
  *
@@ -319,8 +319,8 @@ export interface APS1Settlement {
  * Implement this to wire APS-1 to any smart contract or payment system.
  *
  * Reference implementations:
- * - NexusV2EscrowProvider (PayPol NexusV2 contract)
- * - StreamV1EscrowProvider (PayPol StreamV1 contract)
+ * - NexusV2EscrowProvider (Agentic Finance NexusV2 contract)
+ * - StreamV1EscrowProvider (Agentic Finance StreamV1 contract)
  */
 export interface APS1EscrowProvider {
   /** Human-readable provider name */
@@ -405,7 +405,7 @@ export interface APS1EscrowStatus {
  * Abstract interface for AI execution verification.
  * Implement this to wire APS-1 to any proof registry.
  *
- * Reference: PayPol AIProofRegistry on Tempo L1
+ * Reference: Agentic Finance AIProofRegistry on Tempo L1
  */
 export interface APS1ProofProvider {
   /** Provider name */
@@ -713,7 +713,7 @@ export const APS1_DEFAULT_TOKENS: APS1TokenConfig[] = [
   { symbol: 'ThetaUSD', address: '0x20c0000000000000000000000000000000000003', decimals: 6 },
 ];
 
-/** PayPol smart contract addresses on Tempo L1 */
+/** Agentic Finance smart contract addresses on Tempo L1 */
 export const APS1_CONTRACTS = {
   NexusV2:         '0x6A467Cd4156093bB528e448C04366586a1052Fab',
   ShieldVaultV2:   '0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055',

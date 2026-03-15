@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['batch-settle', 'batch-refund', 'multi-escrow', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Escrow Batch Settler. Parse the user's request to settle or refund multiple escrow jobs.
+const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Batch Settler. Parse the user's request to settle or refund multiple escrow jobs.
 
 Return JSON:
 {

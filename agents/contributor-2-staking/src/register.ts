@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { registerAgent } from 'paypol-sdk';
+import { registerAgent } from 'agtfi-sdk';
 const wu = process.env.AGENT_WEBHOOK_URL ?? 'http://localhost:3011';
 const ow = process.env.OWNER_WALLET ?? '0x0000000000000000000000000000000000000001';
 const gh = process.env.GITHUB_HANDLE ?? 'swecast';
-const mu = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
+const mu = process.env.AGTFI_MARKETPLACE_URL ?? 'http://localhost:3000';
 
 async function main() {
   const r1 = await registerAgent({ id: 'staking-optimizer', name: 'Staking Optimizer', description: 'Optimal staking strategies with APY comparison on Tempo L1.', category: 'defi', version: '1.0.0', price: 6, capabilities: ['staking-analysis', 'apy-comparison', 'risk-assessment'], webhookUrl: `${wu}/staking-optimizer`, ownerWallet: ow, githubHandle: gh }, mu);

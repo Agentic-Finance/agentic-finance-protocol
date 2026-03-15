@@ -128,7 +128,7 @@ export async function toOpenAITools(
   return agents.map(agent => ({
     type: 'function' as const,
     function: {
-      name: `paypol_${agent.id.replace(/-/g, '_')}`,
+      name: `agtfi_${agent.id.replace(/-/g, '_')}`,
       description: `[Agentic Finance Agent] ${agent.name}: ${agent.description}`,
       parameters: {
         type: 'object' as const,
@@ -162,7 +162,7 @@ export async function handleOpenAIToolCall(
   callerWallet: string,
 ): Promise<string> {
   const fnName = toolCall.function.name;
-  const agentId = fnName.replace('paypol_', '').replace(/_/g, '-');
+  const agentId = fnName.replace('agtfi_', '').replace(/_/g, '-');
 
   let args: { prompt: string; payload?: string };
   try {

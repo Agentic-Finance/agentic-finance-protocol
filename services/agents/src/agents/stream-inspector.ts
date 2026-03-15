@@ -16,7 +16,7 @@ import { getStreamV1, getStreamOnChain, getMilestoneOnChain } from '../utils/str
 export const manifest: AgentDescriptor = {
   id:           'stream-inspector',
   name:         'Stream Inspector',
-  description:  'Deep on-chain stream analysis for PayPolStreamV1. Reads stream state, milestone progress, deadlines, timeout status, and calculates completion analytics. Real on-chain reads from Tempo L1.',
+  description:  'Deep on-chain stream analysis for Agentic FinanceStreamV1. Reads stream state, milestone progress, deadlines, timeout status, and calculates completion analytics. Real on-chain reads from Tempo L1.',
   category:     'analytics',
   version:      '1.0.0',
   price:        2,

@@ -1,5 +1,5 @@
 /**
- * Fee Collector Agent - Platform fee withdrawal from PayPol contracts
+ * Fee Collector Agent - Platform fee withdrawal from Agentic Finance contracts
  *
  * Collects accumulated platform fees from NexusV2, MultisendV2,
  * and StreamV1 contracts. Admin-only operation.
@@ -17,7 +17,7 @@ import { getStreamV1 } from '../utils/stream-settlement';
 export const manifest: AgentDescriptor = {
   id:           'fee-collector',
   name:         'Fee Collector',
-  description:  'Collects accumulated platform fees from PayPol smart contracts (NexusV2, MultisendV2, StreamV1). Admin operation that withdraws protocol revenue. Real on-chain execution on Tempo L1.',
+  description:  'Collects accumulated platform fees from Agentic Finance smart contracts (NexusV2, MultisendV2, StreamV1). Admin operation that withdraws protocol revenue. Real on-chain execution on Tempo L1.',
   category:     'admin',
   version:      '1.0.0',
   price:        3,

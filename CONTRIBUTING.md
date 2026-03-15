@@ -105,7 +105,7 @@ Create a `.env` file from `.env.example`. Key variables:
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `RPC_URL` | Yes | Tempo L1 RPC (`https://rpc.moderato.tempo.xyz`) |
-| `DATABASE_URL` | Yes | SQLite path (default: `file:./paypol_saas.db`) |
+| `DATABASE_URL` | Yes | SQLite path (default: `file:./agtfi_saas.db`) |
 | `DAEMON_PRIVATE_KEY` | For agents | Wallet key for on-chain operations |
 | `ANTHROPIC_API_KEY` | For AI features | Powers AI agent discovery |
 

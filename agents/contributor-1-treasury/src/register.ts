@@ -1,10 +1,10 @@
 import 'dotenv/config';
-import { registerAgent } from 'paypol-sdk';
+import { registerAgent } from 'agtfi-sdk';
 
 const webhookUrl = process.env.AGENT_WEBHOOK_URL ?? 'http://localhost:3010';
 const ownerWallet = process.env.OWNER_WALLET ?? '0x0000000000000000000000000000000000000001';
 const githubHandle = process.env.GITHUB_HANDLE ?? 'cubicle-vdo';
-const marketplaceUrl = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
+const marketplaceUrl = process.env.AGTFI_MARKETPLACE_URL ?? 'http://localhost:3000';
 
 async function main() {
   console.log('Registering treasury agents...\n');

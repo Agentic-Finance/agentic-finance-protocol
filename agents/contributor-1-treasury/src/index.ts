@@ -9,7 +9,7 @@
 
 import 'dotenv/config';
 import { ethers } from 'ethers';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
@@ -23,7 +23,7 @@ const ERC20_ABI = [
 
 // ── Agent 1: Treasury Manager ────────────────────────────
 
-const treasuryManager = new PayPolAgent({
+const treasuryManager = new AgtFiAgent({
   id: 'treasury-manager',
   name: 'Treasury Manager',
   description: 'Multi-sig treasury operations with spending limits, approval workflows, and real-time balance tracking on Tempo L1.',
@@ -167,7 +167,7 @@ treasuryManager.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Multi-Sig Creator ───────────────────────────
 
-const multiSigCreator = new PayPolAgent({
+const multiSigCreator = new AgtFiAgent({
   id: 'multi-sig-creator',
   name: 'Multi-Sig Creator',
   description: 'Deploy new multi-signature wallets on Tempo L1 with configurable signers and threshold.',
@@ -189,7 +189,7 @@ multiSigCreator.onJob(async (job: JobRequest): Promise<JobResult> => {
       '0x0000000000000000000000000000000000000003',
     ];
     const threshold = ((job.payload || {}) as any).threshold ?? Math.ceil(signers.length / 2);
-    const name = ((job.payload || {}) as any).name ?? 'PayPol Treasury';
+    const name = ((job.payload || {}) as any).name ?? 'Agentic Finance Treasury';
 
     // Simulate multi-sig config (in production, this would deploy a contract)
     const configHash = ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify({ signers, threshold, name })));

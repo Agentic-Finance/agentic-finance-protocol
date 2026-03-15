@@ -10,14 +10,14 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
 
 // ── Agent 1: NFT Minter ──────────────────────────────────
 
-const nftMinter = new PayPolAgent({
+const nftMinter = new AgtFiAgent({
   id: 'nft-minter',
   name: 'NFT Minter',
   description: 'Batch mint ERC-721 NFTs on Tempo L1 with auto-generated metadata, IPFS-ready URIs, and gas-free execution.',
@@ -88,7 +88,7 @@ nftMinter.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Collection Deployer ─────────────────────────
 
-const collectionDeployer = new PayPolAgent({
+const collectionDeployer = new AgtFiAgent({
   id: 'collection-deployer',
   name: 'Collection Deployer',
   description: 'Deploy complete ERC-721 NFT collections on Tempo L1 with royalties, metadata base URI, and ownership configuration.',

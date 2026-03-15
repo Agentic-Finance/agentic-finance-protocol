@@ -18,7 +18,7 @@
 
 import axios from 'axios';
 
-const AGENT_API = process.env.PAYPOL_AGENT_API ?? 'http://localhost:3001';
+const AGENT_API = process.env.AGTFI_AGENT_API ?? 'http://localhost:3001';
 
 // ── CrewAI Tool Definition ────────────────────────────────
 
@@ -35,7 +35,7 @@ export interface CrewAIToolDefinition {
   }>;
   /** Agentic Finance agent metadata */
   metadata: {
-    paypol_agent_id: string;
+    agtfi_agent_id: string;
     category: string;
     price_usd: number;
     aps_version: string;
@@ -93,7 +93,7 @@ export function toCrewAITools(agents?: AgentDef[]): CrewAIToolDefinition[] {
   const catalog = agents ?? AGENT_CATALOG;
 
   return catalog.map(agent => ({
-    name: `paypol_${agent.id.replace(/-/g, '_')}`,
+    name: `agtfi_${agent.id.replace(/-/g, '_')}`,
     description: `${agent.description}. Costs $${agent.price} per execution. Uses APS-1 protocol with on-chain verification.`,
     args_schema: {
       prompt: {
@@ -108,7 +108,7 @@ export function toCrewAITools(agents?: AgentDef[]): CrewAIToolDefinition[] {
       },
     },
     metadata: {
-      paypol_agent_id: agent.id,
+      agtfi_agent_id: agent.id,
       category: agent.category,
       price_usd: agent.price,
       aps_version: '2.1',
@@ -124,7 +124,7 @@ export async function handleCrewAIToolCall(
   toolName: string,
   args: { prompt: string; caller_wallet: string },
 ): Promise<string> {
-  const agentId = toolName.replace(/^paypol_/, '').replace(/_/g, '-');
+  const agentId = toolName.replace(/^agtfi_/, '').replace(/_/g, '-');
 
   try {
     const { data } = await axios.post(`${AGENT_API}/agents/${agentId}/execute`, {
@@ -162,12 +162,12 @@ Agentic Finance CrewAI Tools - Auto-generated Python adapter
 APS-1 Protocol v2.1 - Agent Payment Standard
 
 Usage:
-    from agentic_finance_crewai import PayPolAuditTool, PayPolTransferTool
+    from agentic_finance_crewai import Agentic FinanceAuditTool, Agentic FinanceTransferTool
 
     crew = Crew(
         agents=[auditor_agent, finance_agent],
         tasks=[audit_task, payment_task],
-        tools=[PayPolAuditTool(), PayPolTransferTool()],
+        tools=[Agentic FinanceAuditTool(), Agentic FinanceTransferTool()],
     )
 """
 
@@ -178,7 +178,7 @@ from pydantic import BaseModel, Field
 
 AGENTIC_FINANCE_API = "${url}"
 
-class PayPolToolInput(BaseModel):
+class Agentic FinanceToolInput(BaseModel):
     prompt: str = Field(description="Natural language instruction for the agent")
     caller_wallet: str = Field(description="Wallet address (0x...) of the caller")
 
@@ -206,18 +206,18 @@ def _call_agent(agent_id: str, prompt: str, caller_wallet: str) -> str:
         return json.dumps({"status": "error", "error": str(e)})
 
 ${agents.map(a => `
-class PayPol${a.name.replace(/\s+/g, '')}Tool(BaseTool):
-    name: str = "paypol_${a.id.replace(/-/g, '_')}"
+class Agentic Finance${a.name.replace(/\s+/g, '')}Tool(BaseTool):
+    name: str = "agtfi_${a.id.replace(/-/g, '_')}"
     description: str = "${a.description}. Costs $${a.price}/job. APS-1 v2.1."
-    args_schema: type[BaseModel] = PayPolToolInput
+    args_schema: type[BaseModel] = Agentic FinanceToolInput
 
     def _run(self, prompt: str, caller_wallet: str) -> str:
         return _call_agent("${a.id}", prompt, caller_wallet)
 `).join('')}
 
 # Convenience list of all tools
-ALL_PAYPOL_TOOLS = [
-${agents.map(a => `    PayPol${a.name.replace(/\s+/g, '')}Tool(),`).join('\n')}
+ALL_AGTFI_TOOLS = [
+${agents.map(a => `    Agentic Finance${a.name.replace(/\s+/g, '')}Tool(),`).join('\n')}
 ]
 `;
 }

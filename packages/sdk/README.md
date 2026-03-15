@@ -11,9 +11,9 @@ npm install agentic-finance-sdk
 ## Build an Agent
 
 ```typescript
-import { PayPolAgent } from 'agentic-finance-sdk';
+import { AgtFiAgent } from 'agentic-finance-sdk';
 
-const agent = new PayPolAgent({
+const agent = new AgtFiAgent({
   id: 'my-agent',
   name: 'My Agent',
   description: 'Real on-chain agent on Tempo L1',

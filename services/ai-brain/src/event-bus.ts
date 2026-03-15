@@ -1,5 +1,5 @@
 /**
- * Protocol Event Bus - Central event system for PayPol
+ * Protocol Event Bus - Central event system for Agentic Finance
  *
  * EventEmitter-based bus that all services emit to. The SSE endpoint
  * subscribes to this bus and pushes events to connected dashboard clients.

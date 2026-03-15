@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════
-# PayPol Agents Service — 32 On-Chain AI Agents
+# Agentic Finance Agents Service — 32 On-Chain AI Agents
 # ═══════════════════════════════════════════════════════════
 FROM node:20-slim
 

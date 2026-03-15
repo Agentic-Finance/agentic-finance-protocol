@@ -1,4 +1,4 @@
-# PayPol Protocol - Slither Static Analysis Report
+# Agentic Finance - Slither Static Analysis Report
 
 **Date:** February 25, 2026
 **Tool:** Slither v0.11.4 (Trail of Bits)
@@ -22,7 +22,7 @@
 
 - **28 of 31 High findings** are false positives in auto-generated ZK verifier contracts (`PlonkVerifier.sol`, `PlonkVerifierV2.sol`). These use assembly `return` statements which is the intended pattern for PLONK SNARK verification. Slither flags these as `incorrect-return` but they are correct behavior.
 - **3 real High findings** are unchecked ERC-20 transfer return values in `SecurityDepositVault.sol`. Mitigable with OpenZeppelin `SafeERC20`.
-- **No critical vulnerabilities** that could lead to fund loss in the core escrow contract (`PayPolNexusV2.sol`).
+- **No critical vulnerabilities** that could lead to fund loss in the core escrow contract (`AgtFiNexusV2.sol`).
 - **No reentrancy vulnerabilities** in contracts handling user funds (`NexusV2`, `ShieldVaultV2`, `MultisendV2`).
 
 ---
@@ -31,19 +31,19 @@
 
 | # | Contract | Functions | Features | SLOC |
 |---|----------|-----------|----------|------|
-| 1 | PayPolNexusV2 | 32 | Token interaction | ~350 |
-| 2 | PayPolShieldVaultV2 | 8 | Token interaction | ~120 |
-| 3 | PayPolMultisendVaultV2 | 12 | Token interaction | ~180 |
+| 1 | AgtFiNexusV2 | 32 | Token interaction | ~350 |
+| 2 | AgtFiShieldVaultV2 | 8 | Token interaction | ~120 |
+| 3 | Agentic FinanceMultisendVaultV2 | 12 | Token interaction | ~180 |
 | 4 | PlonkVerifierV2 | 23 | Assembly (ZK) | ~750 |
 | 5 | AIProofRegistry | 7 | - | ~180 |
-| 6 | PayPolStreamV1 | 30 | Token interaction | ~350 |
+| 6 | Agentic FinanceStreamV1 | 30 | Token interaction | ~350 |
 | 7 | ReputationRegistry | 12 | Complex code | ~200 |
 | 8 | SecurityDepositVault | 13 | Token interaction | ~180 |
 | 9 | PlonkVerifier | 23 | Assembly (ZK) | ~700 |
 | - | AgentRegistry | 27 | Send/Receive ETH | ~200 |
 | - | AgentWallet | 8 | Send/Receive ETH | ~110 |
-| - | PayPolMultisendVault (V1) | 13 | - | ~150 |
-| - | PayPolShieldVault (V1) | 3 | Token interaction | ~50 |
+| - | Agentic FinanceMultisendVault (V1) | 13 | - | ~150 |
+| - | AgtFiShieldVault (V1) | 3 | Token interaction | ~50 |
 | - | SimpleERC20 | 4 | ERC20 | ~30 |
 | - | MockUltraVerifier | 1 | - | ~10 |
 
@@ -116,14 +116,14 @@ require(commitments[commitmentHash].commitBlock == 0, "Already committed");
 
 **Status:** Acknowledged - intentional pattern, no fix needed.
 
-> **Note (M-02):** PayPolStreamV1 now uses SafeERC20 for all token operations. Combined with the existing `nonReentrant` modifier, reentrancy risk is fully mitigated.
+> **Note (M-02):** Agentic FinanceStreamV1 now uses SafeERC20 for all token operations. Combined with the existing `nonReentrant` modifier, reentrancy risk is fully mitigated.
 
 ---
 
-### M-02: Potential Reentrancy in PayPolStreamV1
+### M-02: Potential Reentrancy in Agentic FinanceStreamV1
 **Detector:** `reentrancy-no-eth`
 **Severity:** Medium
-**Contract:** `PayPolStreamV1.sol`
+**Contract:** `Agentic FinanceStreamV1.sol`
 
 **Description:**
 The `approveMilestone()` function performs an external ERC-20 transfer before updating all state:
@@ -177,9 +177,9 @@ The following core contracts have **no real high or medium severity issues**:
 
 | Contract | Status |
 |----------|--------|
-| **PayPolNexusV2** (Escrow) | Clean |
-| **PayPolShieldVaultV2** (ZK Privacy) | Clean |
-| **PayPolMultisendVaultV2** (Batch Pay) | Clean |
+| **AgtFiNexusV2** (Escrow) | Clean |
+| **AgtFiShieldVaultV2** (ZK Privacy) | Clean |
+| **Agentic FinanceMultisendVaultV2** (Batch Pay) | Clean |
 | **ReputationRegistry** | Clean |
 | **AIProofRegistry** | 1 Medium (intentional pattern) |
 
@@ -189,7 +189,7 @@ The following core contracts have **no real high or medium severity issues**:
 
 ### Must Fix (Before Mainnet)
 1. ~~**SecurityDepositVault**: Use `SafeERC20` for all token transfers~~ ✅ Fixed
-2. ~~**PayPolStreamV1**: Add `ReentrancyGuard` or reorder state updates before external calls~~ ✅ Fixed (SafeERC20 + existing ReentrancyGuard)
+2. ~~**Agentic FinanceStreamV1**: Add `ReentrancyGuard` or reorder state updates before external calls~~ ✅ Fixed (SafeERC20 + existing ReentrancyGuard)
 3. **All contracts**: Add zero-address checks in constructors
 
 ### Should Fix (Best Practice)
@@ -223,5 +223,5 @@ For a comprehensive security review before mainnet deployment, we recommend enga
 
 ---
 
-*Report generated for PayPol Protocol - Tempo Moderato Testnet*
-*PayPol Foundation, February 2026*
+*Report generated for Agentic Finance - Tempo Moderato Testnet*
+*Agentic Finance Foundation, February 2026*

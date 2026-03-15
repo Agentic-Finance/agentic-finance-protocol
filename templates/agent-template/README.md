@@ -59,7 +59,7 @@ my-agent/
 Edit `src/index.ts` to customize your agent:
 
 ```typescript
-const agent = new PayPolAgent({
+const agent = new AgtFiAgent({
   id:           'my-agent',           // Unique ID (lowercase, hyphens)
   name:         'My Agent',           // Display name
   description:  'What it does...',    // 1-2 sentence description

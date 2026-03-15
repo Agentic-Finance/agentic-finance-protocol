@@ -77,12 +77,12 @@ Agentic Finance is the **global payment infrastructure for autonomous AI agents*
                              |     Tempo L1 (Chain 42431)         |
                              |     EVM - <1s Finality              |
                              |                                     |
-                             |  PayPolNexusV2          Escrow      |
-                             |  PayPolShieldVaultV2    ZK Privacy  |
-                             |  PayPolMultisendV2      Batch Pay   |
+                             |  Agentic FinanceNexusV2          Escrow      |
+                             |  Agentic FinanceShieldVaultV2    ZK Privacy  |
+                             |  Agentic FinanceMultisendV2      Batch Pay   |
                              |  PlonkVerifierV2        ZK Proofs   |
                              |  AIProofRegistry        AI Verify   |
-                             |  PayPolStreamV1         Streaming   |
+                             |  Agentic FinanceStreamV1         Streaming   |
                              |  ReputationRegistry     Reputation  |
                              |  SecurityDepositVault   Deposits    |
                              +-------------------------------------+
@@ -98,12 +98,12 @@ All contracts are **source-verified** via Sourcify on the [Tempo Explorer](https
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| **PayPolNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
-| **PayPolShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with nullifier-based anti-double-spend. |
-| **PayPolMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX. |
+| **Agentic FinanceNexusV2** | [`0x6A467Cd...`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Full-lifecycle escrow: creation, execution, dispute, settlement, rating. Platform fee 5%. |
+| **Agentic FinanceShieldVaultV2** | [`0x3B4b479...`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payroll vault with nullifier-based anti-double-spend. |
+| **Agentic FinanceMultisendV2** | [`0x25f4d3f...`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Gas-optimized batch payments. Up to 100 recipients per TX. |
 | **PlonkVerifierV2** | [`0x9FB90e9...`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | On-chain PLONK proof verifier from snarkJS trusted setup. |
 | **AIProofRegistry** | [`0x8fDB8E8...`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | AI proof commitment & verification. Pre-hash, post-verify, slashing. |
-| **PayPolStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
+| **Agentic FinanceStreamV1** | [`0x4fE37c4...`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based streaming escrow with timeout protection. |
 | **ReputationRegistry** | [`0x9332c1B...`](https://explore.tempo.xyz/address/0x9332c1B2bb94C96DA2D729423f345c76dB3494D0?tab=contract) | On-chain reputation scoring. Aggregates job completions, disputes, and peer reviews. |
 | **SecurityDepositVault** | [`0x8C1d4da...`](https://explore.tempo.xyz/address/0x8C1d4da4034FFEB5E3809aa017785cB70B081A80?tab=contract) | Tiered deposit system with fee discounts, 30-day lock, 10% slashing, insurance pool. |
 | **SimpleERC20** | - | Test stablecoin (AlphaUSD) for development. |
@@ -325,7 +325,7 @@ agentic-finance/
 |   |   +-- foundry.toml            # Compiler: 0.8.20, optimizer: 200
 |   |
 |   +-- circuits/                   # Circom 2.0 ZK circuits
-|   |   +-- paypol_shield_v2.circom # Privacy circuit (Poseidon + nullifier)
+|   |   +-- agtfi_shield_v2.circom # Privacy circuit (Poseidon + nullifier)
 |   |   +-- *.zkey                  # PLONK proving keys
 |   |
 |   +-- sdk/                        # TypeScript SDK

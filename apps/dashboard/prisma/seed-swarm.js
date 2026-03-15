@@ -9,7 +9,7 @@
  * - 200+ AuditEvents
  * - Escrow states
  *
- * Run: docker exec paypol-dashboard node prisma/seed-swarm.js
+ * Run: docker exec agtfi-dashboard node prisma/seed-swarm.js
  */
 
 const { PrismaClient } = require('@prisma/client');

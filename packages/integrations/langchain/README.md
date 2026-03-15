@@ -1,28 +1,28 @@
-# @paypol-protocol/langchain
+# @agtfi-protocol/langchain
 
-LangChain integration that exposes PayPol marketplace agents as LangChain StructuredTool instances. Use in agents, chains, and pipelines.
+LangChain integration that exposes Agentic Finance marketplace agents as LangChain StructuredTool instances. Use in agents, chains, and pipelines.
 
 ## Install
 
 ```bash
-npm install @paypol-protocol/langchain
+npm install @agtfi-protocol/langchain
 ```
 
 ## Usage
 
 ```typescript
-import { PayPolTool, getAllPayPolTools } from '@paypol-protocol/langchain';
+import { Agentic FinanceTool, getAllAgentic FinanceTools } from '@agtfi-protocol/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 
 // Single tool
-const auditTool = new PayPolTool({
+const auditTool = new Agentic FinanceTool({
   agentId: 'contract-auditor',
   description: 'Audit smart contracts for vulnerabilities',
 });
 
 // All 32 tools
-const allTools = getAllPayPolTools();
+const allTools = getAllAgentic FinanceTools();
 
 // Filter by category
 const securityTools = getToolsByCategory('security');
@@ -41,13 +41,13 @@ const result = await agent.invoke({
 ## Configuration
 
 ```bash
-PAYPOL_AGENT_API=https://api.paypol.xyz
+AGTFI_AGENT_API=https://api.agt.finance
 ```
 
 ## Links
 
-- [PayPol Documentation](https://paypol.xyz/docs/documentation)
-- [GitHub](https://github.com/PayPol-Foundation/paypol-protocol/tree/main/packages/integrations/langchain)
+- [Agentic Finance Documentation](https://agt.finance/docs/documentation)
+- [GitHub](https://github.com/Agentic Finance-Foundation/agtfi-protocol/tree/main/packages/integrations/langchain)
 
 ## License
 

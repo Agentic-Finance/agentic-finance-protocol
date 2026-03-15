@@ -1,7 +1,7 @@
 {
-  "name": "paypol-oracle-agents",
+  "name": "agtfi-oracle-agents",
   "version": "1.0.0",
-  "description": "Oracle deployment & price feed management agents for PayPol on Tempo L1",
+  "description": "Oracle deployment & price feed management agents for Agentic Finance on Tempo L1",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,7 @@
     "dotenv": "^16.4.0",
     "ethers": "^6.13.0",
     "express": "^5.2.1",
-    "paypol-sdk": "file:../../packages/sdk"
+    "agtfi-sdk": "file:../../packages/sdk"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

@@ -5,10 +5,10 @@
  * Works with LangChain, LangGraph, and any LangChain-compatible framework.
  *
  * Usage:
- *   import { toPayPolLangChainTools, handleLangChainToolCall } from 'agentic-finance-sdk/adapters';
+ *   import { toAgentic FinanceLangChainTools, handleLangChainToolCall } from 'agentic-finance-sdk/adapters';
  *
  *   // Get tools for LangChain agent
- *   const tools = toPayPolLangChainTools();
+ *   const tools = toAgentic FinanceLangChainTools();
  *
  *   // Use with LangChain ChatAgent
  *   const agent = new ChatAgent({ tools });
@@ -19,7 +19,7 @@
 
 import axios from 'axios';
 
-const AGENT_API = process.env.PAYPOL_AGENT_API ?? 'http://localhost:3001';
+const AGENT_API = process.env.AGTFI_AGENT_API ?? 'http://localhost:3001';
 
 // ── LangChain Tool Definition ──────────────────────────────
 
@@ -36,9 +36,9 @@ export interface LangChainToolDefinition {
     required: string[];
   };
   /** Agentic Finance agent ID mapped to this tool */
-  _paypol_agent_id: string;
+  _agtfi_agent_id: string;
   /** Agentic Finance agent category */
-  _paypol_category: string;
+  _agtfi_category: string;
 }
 
 // ── Agent Catalog (all 32 native + dynamic) ───────────────
@@ -141,13 +141,13 @@ const CORE_AGENTS: AgentDef[] = [
  * Convert Agentic Finance agents to LangChain-compatible tool definitions.
  * Returns tools that can be used with LangChain agents, ChatModels, or LangGraph.
  */
-export function toPayPolLangChainTools(
+export function toAgentic FinanceLangChainTools(
   agents?: AgentDef[],
 ): LangChainToolDefinition[] {
   const catalog = agents ?? CORE_AGENTS;
 
   return catalog.map(agent => ({
-    name: `paypol_${agent.id.replace(/-/g, '_')}`,
+    name: `agtfi_${agent.id.replace(/-/g, '_')}`,
     description: `[Agentic Finance ${agent.category}] ${agent.description}. Price: $${agent.price}/job. APS-1 compliant with on-chain execution.`,
     parameters: {
       type: 'object' as const,
@@ -161,8 +161,8 @@ export function toPayPolLangChainTools(
         .filter(([, def]) => def.required)
         .map(([key]) => key),
     },
-    _paypol_agent_id: agent.id,
-    _paypol_category: agent.category,
+    _agtfi_agent_id: agent.id,
+    _agtfi_category: agent.category,
   }));
 }
 
@@ -175,8 +175,8 @@ export async function handleLangChainToolCall(
   args: Record<string, string>,
   callerWallet?: string,
 ): Promise<{ success: boolean; result: unknown; agentId: string; executionTimeMs: number }> {
-  // Map tool name back to agent ID: paypol_token_transfer → token-transfer
-  const agentId = toolName.replace(/^paypol_/, '').replace(/_/g, '-');
+  // Map tool name back to agent ID: agtfi_token_transfer → token-transfer
+  const agentId = toolName.replace(/^agtfi_/, '').replace(/_/g, '-');
 
   const wallet = callerWallet ?? args.callerWallet ?? '0x0000000000000000000000000000000000000000';
 
@@ -209,16 +209,16 @@ export async function handleLangChainToolCall(
  * For use with LangChain's `StructuredTool` base class.
  *
  * Usage:
- *   const toolConfig = createPayPolStructuredToolConfig('escrow-manager');
+ *   const toolConfig = createAgentic FinanceStructuredToolConfig('escrow-manager');
  *   const tool = new StructuredTool(toolConfig);
  *   const result = await tool.call({ prompt: '...', callerWallet: '0x...' });
  */
-export function createPayPolStructuredToolConfig(agentId: string) {
+export function createAgentic FinanceStructuredToolConfig(agentId: string) {
   const agent = CORE_AGENTS.find(a => a.id === agentId);
   if (!agent) throw new Error(`Unknown agent: ${agentId}`);
 
   return {
-    name: `paypol_${agent.id.replace(/-/g, '_')}`,
+    name: `agtfi_${agent.id.replace(/-/g, '_')}`,
     description: agent.description,
     schema: {
       type: 'object' as const,
@@ -233,7 +233,7 @@ export function createPayPolStructuredToolConfig(agentId: string) {
         .map(([key]) => key),
     },
     func: async (args: Record<string, string>) => {
-      const result = await handleLangChainToolCall(`paypol_${agent.id.replace(/-/g, '_')}`, args);
+      const result = await handleLangChainToolCall(`agtfi_${agent.id.replace(/-/g, '_')}`, args);
       return JSON.stringify(result);
     },
   };

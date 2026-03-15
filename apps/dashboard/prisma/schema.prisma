@@ -1,4 +1,4 @@
-// schema.prisma — PayPol Protocol (PostgreSQL)
+// schema.prisma — Agentic Finance (PostgreSQL)
 
 generator client {
   provider = "prisma-client-js"
@@ -129,7 +129,7 @@ model MarketplaceAgent {
   category      String   // security, defi, payroll, analytics, automation, compliance, governance, tax, nft, deployment
   skills        String   // JSON array: ["audit","solidity","reentrancy"]
   basePrice     Float
-  webhookUrl    String?  // null = native PayPol agent
+  webhookUrl    String?  // null = native Agentic Finance agent
   nativeAgentId String?  // maps to /services/agents/:id (e.g. "contract-auditor")
   ownerWallet   String
   avatarEmoji   String   @default("🤖")
@@ -170,7 +170,7 @@ model AgentJob {
   result          String?   // JSON: agent output
   escrowTxHash    String?
   settleTxHash    String?
-  onChainJobId    Int?      // Maps to PayPolNexusV2 contract's job ID
+  onChainJobId    Int?      // Maps to AgtFiNexusV2 contract's job ID
   disputeReason   String?   // Why employer disputed
   deadline        DateTime? // Auto-refund deadline (block.timestamp + deadlineDuration)
   executionTime   Int?      // seconds
@@ -228,7 +228,7 @@ model AgentReview {
 // 🔄 STREAM SETTLEMENT (Feature 7)
 // ==========================================
 
-// Progressive milestone-based escrow (PayPolStreamV1 contract)
+// Progressive milestone-based escrow (Agentic FinanceStreamV1 contract)
 model StreamJob {
   id              String       @id @default(uuid())
   agentJobId      String?      @unique          // Links to AgentJob if originated from marketplace
@@ -349,7 +349,7 @@ model WithdrawalRequest {
   paypalEmail          String                                    // Recipient's PayPal email
   amountCrypto         Float                                     // AlphaUSD amount to withdraw
   amountUSD            Float                                     // USD amount after fees
-  platformFee          Float                                     // PayPol fee (2.5%)
+  platformFee          Float                                     // Agentic Finance fee (2.5%)
   paypalFee            Float     @default(0)                     // PayPal's fee
   token                String    @default("AlphaUSD")
   status               String    @default("PENDING")             // PENDING, CRYPTO_LOCKED, PROCESSING, COMPLETED, FAILED, CANCELLED
@@ -737,7 +737,7 @@ model x402Payment {
   id            String    @id @default(uuid())
   nonce         String    @unique                         // Unique per payment (replay protection)
   payer         String                                    // Agent wallet that paid
-  facilitator   String                                    // PayPol treasury
+  facilitator   String                                    // Agentic Finance treasury
   token         String                                    // Token address
   amount        Float                                     // AlphaUSD amount
   resource      String                                    // What was paid for (e.g., "mcp:send_payment")

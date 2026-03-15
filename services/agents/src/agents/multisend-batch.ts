@@ -25,7 +25,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['batch-transfer', 'multisend', 'gas-efficient', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Multisend Batch agent for MultisendVaultV2 on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Multisend Batch agent for MultisendVaultV2 on Tempo blockchain.
 Parse the user's batch payment request into a list of recipients.
 
 Return JSON:

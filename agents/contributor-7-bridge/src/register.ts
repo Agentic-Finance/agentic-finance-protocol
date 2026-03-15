@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { registerAgent } from 'paypol-sdk';
+import { registerAgent } from 'agtfi-sdk';
 const wu = process.env.AGENT_WEBHOOK_URL ?? 'http://localhost:3016';
 const ow = process.env.OWNER_WALLET ?? '0x0000000000000000000000000000000000000001';
 const gh = process.env.GITHUB_HANDLE ?? 'Hobnobs';
-const mu = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
+const mu = process.env.AGTFI_MARKETPLACE_URL ?? 'http://localhost:3000';
 async function main() {
   const r1 = await registerAgent({ id: 'cross-chain-relayer', name: 'Cross-Chain Relayer', description: 'Relay assets between Tempo and EVM chains with proof verification.', category: 'automation', version: '1.0.0', price: 12, capabilities: ['cross-chain-relay', 'asset-bridging', 'on-chain-execution'], webhookUrl: `${wu}/cross-chain-relayer`, ownerWallet: ow, githubHandle: gh }, mu);
   console.log(`cross-chain-relayer: ${r1.message}`);

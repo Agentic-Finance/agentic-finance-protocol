@@ -13,7 +13,7 @@
  *  - Reduced indexing delays (1000ms → 200ms)
  *  - Deduplicated Poseidon hash computations
  *
- * Circuit: Circom V2 (paypol_shield_v2) with PLONK proofs via snarkjs
+ * Circuit: Circom V2 (agtfi_shield_v2) with PLONK proofs via snarkjs
  * Hashing: Poseidon (circomlibjs) — BN254 field compatible
  */
 
@@ -39,9 +39,9 @@ dotenv.config();
 // AGENTIC FINANCE DAEMON CONFIGURATION
 // ==========================================
 const RPC_URL = process.env.RPC_URL || "https://rpc.moderato.tempo.xyz";
-const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
-const PAYPOL_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
-const PAYPOL_NEXUS_V2_ADDRESS = process.env.NEXUS_V2_ADDRESS || "0x6A467Cd4156093bB528e448C04366586a1052Fab";
+const AGTFI_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
+const AGTFI_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
+const AGTFI_NEXUS_V2_ADDRESS = process.env.NEXUS_V2_ADDRESS || "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS || "0x20c0000000000000000000000000000000000001";
 const REPUTATION_REGISTRY_ADDRESS = process.env.REPUTATION_REGISTRY_ADDRESS || "0x9332c1B2bb94C96DA2D729423f345c76dB3494D0";
 const TOKEN_DECIMALS = 6;
@@ -122,7 +122,7 @@ async function verifyTxOnChain(txHash: string, label: string): Promise<void> {
     throw new Error(`${label} receipt not found after 10s: ${txHash}`);
 }
 
-class PayPolDaemon {
+class AgtFiDaemon {
     private provider: ethers.JsonRpcProvider;
     private wallet: ethers.Wallet;
     private shieldContractV1: ethers.Contract;
@@ -145,9 +145,9 @@ class PayPolDaemon {
     constructor() {
         this.provider = new ethers.JsonRpcProvider(RPC_URL);
         this.wallet = new ethers.Wallet(PRIVATE_KEY, this.provider);
-        this.shieldContractV1 = new ethers.Contract(PAYPOL_SHIELD_ADDRESS, SHIELD_ABI_V1, this.wallet);
-        this.shieldContractV2 = new ethers.Contract(PAYPOL_SHIELD_V2_ADDRESS, SHIELD_ABI_V2, this.wallet);
-        this.nexusV2Contract = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, this.wallet);
+        this.shieldContractV1 = new ethers.Contract(AGTFI_SHIELD_ADDRESS, SHIELD_ABI_V1, this.wallet);
+        this.shieldContractV2 = new ethers.Contract(AGTFI_SHIELD_V2_ADDRESS, SHIELD_ABI_V2, this.wallet);
+        this.nexusV2Contract = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, this.wallet);
         this.prisma = new PrismaClient();
 
         // Resolve circuit paths — try Docker path first, then dev path
@@ -155,22 +155,22 @@ class PayPolDaemon {
         const devCircuitsBase = path.join(__dirname, "..", "..", "packages", "circuits");
 
         // V2 circuits
-        if (fs.existsSync(path.join(dockerCircuits, "paypol_shield_v2.wasm"))) {
-            this.v2WasmPath = path.join(dockerCircuits, "paypol_shield_v2.wasm");
-            this.v2ZkeyPath = path.join(dockerCircuits, "paypol_shield_v2_final.zkey");
-        } else if (fs.existsSync(path.join(devCircuitsBase, "paypol_shield_v2_js", "paypol_shield_v2.wasm"))) {
-            this.v2WasmPath = path.join(devCircuitsBase, "paypol_shield_v2_js", "paypol_shield_v2.wasm");
-            this.v2ZkeyPath = path.join(devCircuitsBase, "paypol_shield_v2_final.zkey");
+        if (fs.existsSync(path.join(dockerCircuits, "agtfi_shield_v2.wasm"))) {
+            this.v2WasmPath = path.join(dockerCircuits, "agtfi_shield_v2.wasm");
+            this.v2ZkeyPath = path.join(dockerCircuits, "agtfi_shield_v2_final.zkey");
+        } else if (fs.existsSync(path.join(devCircuitsBase, "agtfi_shield_v2_js", "agtfi_shield_v2.wasm"))) {
+            this.v2WasmPath = path.join(devCircuitsBase, "agtfi_shield_v2_js", "agtfi_shield_v2.wasm");
+            this.v2ZkeyPath = path.join(devCircuitsBase, "agtfi_shield_v2_final.zkey");
         }
         this.hasV2Circuit = fs.existsSync(this.v2WasmPath) && fs.existsSync(this.v2ZkeyPath);
 
         // V1 circuits (legacy fallback)
-        if (fs.existsSync(path.join(dockerCircuits, "paypol_shield.wasm"))) {
-            this.v1WasmPath = path.join(dockerCircuits, "paypol_shield.wasm");
-            this.v1ZkeyPath = path.join(dockerCircuits, "paypol_shield_final.zkey");
-        } else if (fs.existsSync(path.join(devCircuitsBase, "paypol_shield_js", "paypol_shield.wasm"))) {
-            this.v1WasmPath = path.join(devCircuitsBase, "paypol_shield_js", "paypol_shield.wasm");
-            this.v1ZkeyPath = path.join(devCircuitsBase, "paypol_shield_final.zkey");
+        if (fs.existsSync(path.join(dockerCircuits, "agtfi_shield.wasm"))) {
+            this.v1WasmPath = path.join(dockerCircuits, "agtfi_shield.wasm");
+            this.v1ZkeyPath = path.join(dockerCircuits, "agtfi_shield_final.zkey");
+        } else if (fs.existsSync(path.join(devCircuitsBase, "agtfi_shield_js", "agtfi_shield.wasm"))) {
+            this.v1WasmPath = path.join(devCircuitsBase, "agtfi_shield_js", "agtfi_shield.wasm");
+            this.v1ZkeyPath = path.join(devCircuitsBase, "agtfi_shield_final.zkey");
         }
         this.hasV1Circuit = fs.existsSync(this.v1WasmPath) && fs.existsSync(this.v1ZkeyPath);
     }
@@ -207,8 +207,8 @@ class PayPolDaemon {
         console.log(`[DAEMON] 🟢 Master Daemon initialized. Wallet: ${this.wallet.address}`);
         console.log(`[DAEMON] 🛡️ V2 Circuit: ${this.hasV2Circuit ? 'AVAILABLE' : 'NOT FOUND'} (${this.v2WasmPath || 'N/A'})`);
         console.log(`[DAEMON] 🛡️ V1 Circuit: ${this.hasV1Circuit ? 'AVAILABLE' : 'NOT FOUND'} (${this.v1WasmPath || 'N/A'})`);
-        console.log(`[DAEMON] 📡 ShieldVaultV2: ${PAYPOL_SHIELD_V2_ADDRESS}`);
-        console.log(`[DAEMON] 📡 NexusV2: ${PAYPOL_NEXUS_V2_ADDRESS}`);
+        console.log(`[DAEMON] 📡 ShieldVaultV2: ${AGTFI_SHIELD_V2_ADDRESS}`);
+        console.log(`[DAEMON] 📡 NexusV2: ${AGTFI_NEXUS_V2_ADDRESS}`);
         console.log(`[DAEMON] ⚡ Parallel proofs: ${MAX_PARALLEL_PROOFS} | Index delay: ${INDEX_DELAY_MS}ms`);
         console.log(`[DAEMON] ⚡ Conditional Rule Engine: ENABLED (60s evaluation cycle)`);
 
@@ -446,7 +446,7 @@ class PayPolDaemon {
         const erc20 = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, this.wallet);
 
         let nonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
-        const approveTx = await erc20.approve(PAYPOL_SHIELD_V2_ADDRESS, scaledAmount, {
+        const approveTx = await erc20.approve(AGTFI_SHIELD_V2_ADDRESS, scaledAmount, {
             nonce, gasLimit: 800_000, type: 0
         });
         try { await approveTx.wait(1); } catch (e: any) {
@@ -1080,7 +1080,7 @@ class PayPolDaemon {
             if (isNaN(targetTvl)) return false;
 
             const erc20 = new ethers.Contract(TOKEN_ADDRESS, ERC20_ABI, this.provider);
-            const rawBalance: bigint = await erc20.balanceOf(PAYPOL_SHIELD_V2_ADDRESS);
+            const rawBalance: bigint = await erc20.balanceOf(AGTFI_SHIELD_V2_ADDRESS);
             const tvl = parseFloat(ethers.formatUnits(rawBalance, TOKEN_DECIMALS));
 
             return this.compareValues(tvl, cond.operator, targetTvl);
@@ -1293,5 +1293,5 @@ class PayPolDaemon {
     }
 }
 
-const daemon = new PayPolDaemon();
+const daemon = new AgtFiDaemon();
 daemon.start().catch(console.error);

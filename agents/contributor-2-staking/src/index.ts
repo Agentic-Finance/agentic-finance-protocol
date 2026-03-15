@@ -10,14 +10,14 @@
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import express from 'express';
-import { PayPolAgent, JobRequest, JobResult } from 'paypol-sdk';
+import { AgtFiAgent, JobRequest, JobResult } from 'agtfi-sdk';
 
 const RPC_URL = process.env.TEMPO_RPC_URL ?? 'https://rpc.moderato.tempo.xyz';
 const ALPHA_USD = '0x20c0000000000000000000000000000000000001';
 
 // ── Agent 1: Staking Optimizer ───────────────────────────
 
-const stakingOptimizer = new PayPolAgent({
+const stakingOptimizer = new AgtFiAgent({
   id: 'staking-optimizer',
   name: 'Staking Optimizer',
   description: 'Analyzes staking opportunities across Tempo validators and recommends optimal allocation strategies based on APY, risk, and lock-up periods.',
@@ -112,7 +112,7 @@ stakingOptimizer.onJob(async (job: JobRequest): Promise<JobResult> => {
 
 // ── Agent 2: Validator Monitor ───────────────────────────
 
-const validatorMonitor = new PayPolAgent({
+const validatorMonitor = new AgtFiAgent({
   id: 'validator-monitor',
   name: 'Validator Monitor',
   description: 'Real-time monitoring of Tempo L1 validators including uptime, missed blocks, rewards tracking, and slashing risk alerts.',

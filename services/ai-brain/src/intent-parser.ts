@@ -53,7 +53,7 @@ const AGENT_CAPABILITIES: Record<string, string[]> = {
 
 // ── System Prompt ────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are PayPol's AI Intent Parser. Analyze the user's natural language prompt and extract structured intent.
+const SYSTEM_PROMPT = `You are Agentic Finance's AI Intent Parser. Analyze the user's natural language prompt and extract structured intent.
 
 Available agents and their capabilities:
 ${Object.entries(AGENT_CAPABILITIES).map(([id, caps]) => `- ${id}: ${caps.join(', ')}`).join('\n')}

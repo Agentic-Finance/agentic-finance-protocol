@@ -14,7 +14,7 @@
 import axios from 'axios';
 import { AgentRegistrationPayload, AgentRegistrationResponse } from './types';
 
-const DEFAULT_MARKETPLACE_URL = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
+const DEFAULT_MARKETPLACE_URL = process.env.AGTFI_MARKETPLACE_URL ?? 'http://localhost:3000';
 
 /**
  * Register a community agent on the Agentic Finance marketplace.

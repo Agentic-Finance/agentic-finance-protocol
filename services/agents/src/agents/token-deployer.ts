@@ -91,7 +91,7 @@ export const handler: AgentHandler = async (job) => {
       };
     }
 
-    const tokenName    = design.name     || 'PayPol Token';
+    const tokenName    = design.name     || 'Agentic Finance Token';
     const tokenSymbol  = design.symbol   || 'PPT';
     const tokenDecimals = design.decimals ?? 18;
     const totalSupply  = design.totalSupply || '1000000';

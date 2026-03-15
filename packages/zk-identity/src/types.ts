@@ -111,7 +111,7 @@ export type ZKComplianceFramework =
 // ── ZK Identity Proof ────────────────────────────────────
 
 /**
- * Proves an agent is a verified member of the PayPol network
+ * Proves an agent is a verified member of the Agentic Finance network
  * without revealing its wallet address or identity.
  *
  * Allows:

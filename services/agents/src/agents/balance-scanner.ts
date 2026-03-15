@@ -1,7 +1,7 @@
 /**
  * Balance Scanner Agent - On-chain portfolio analysis
  *
- * Scans wallet balances across all PayPol-supported tokens,
+ * Scans wallet balances across all Agentic Finance-supported tokens,
  * checks contract allowances, and provides a comprehensive
  * on-chain portfolio overview. Reads from Tempo L1.
  */
@@ -18,7 +18,7 @@ import { getStreamV1 } from '../utils/stream-settlement';
 export const manifest: AgentDescriptor = {
   id:           'balance-scanner',
   name:         'Balance Scanner',
-  description:  'Comprehensive on-chain portfolio scanner. Reads wallet balances across all PayPol tokens (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), checks contract states, and provides portfolio analytics. Reads real data from Tempo L1.',
+  description:  'Comprehensive on-chain portfolio scanner. Reads wallet balances across all Agentic Finance tokens (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), checks contract states, and provides portfolio analytics. Reads real data from Tempo L1.',
   category:     'analytics',
   version:      '1.0.0',
   price:        2,

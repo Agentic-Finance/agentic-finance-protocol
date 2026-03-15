@@ -85,7 +85,7 @@ async function seed() {
   // ── 2. Create Workspace ─────────────────────────────────
   const workspace = await prisma.workspace.upsert({
     where: { adminWallet: ADMIN_WALLET },
-    create: { name: 'PayPol Demo Vault', adminWallet: ADMIN_WALLET, type: 'corporate' },
+    create: { name: 'Agentic Finance Demo Vault', adminWallet: ADMIN_WALLET, type: 'corporate' },
     update: {},
   });
   console.log(`[seed-demo] Workspace: ${workspace.name} (${workspace.id})`);

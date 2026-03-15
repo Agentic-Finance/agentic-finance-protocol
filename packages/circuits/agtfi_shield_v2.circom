@@ -3,7 +3,7 @@ pragma circom 2.0.0;
 include "node_modules/circomlib/circuits/poseidon.circom";
 
 /**
- * PayPolShield V2 — Nullifier Pattern (Anti-Double-Spend)
+ * AgtFiShield V2 — Nullifier Pattern (Anti-Double-Spend)
  *
  * Upgrades from V1:
  *   - Adds nullifier to prevent replay attacks / double spending
@@ -29,7 +29,7 @@ include "node_modules/circomlib/circuits/poseidon.circom";
  *   - nullifierHash is unique per payment → contract rejects reuse
  *   - Amount is never revealed on-chain
  */
-template PayPolShieldV2() {
+template AgtFiShieldV2() {
     // === Public Inputs (exposed on-chain) ===
     signal input commitment;        // Binds all private data
     signal input nullifierHash;     // Prevents double-spend
@@ -58,4 +58,4 @@ template PayPolShieldV2() {
 }
 
 // Public signals: [commitment, nullifierHash, recipient]
-component main {public [commitment, nullifierHash, recipient]} = PayPolShieldV2();
+component main {public [commitment, nullifierHash, recipient]} = AgtFiShieldV2();

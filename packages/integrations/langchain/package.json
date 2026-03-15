@@ -1,7 +1,7 @@
 {
-  "name": "@paypol-protocol/langchain",
+  "name": "@agtfi-protocol/langchain",
   "version": "1.0.1",
-  "description": "LangChain integration - exposes PayPol marketplace agents as LangChain StructuredTool instances.",
+  "description": "LangChain integration - exposes Agentic Finance marketplace agents as LangChain StructuredTool instances.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
@@ -14,11 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol"
   },
-  "homepage": "https://paypol.xyz",
+  "homepage": "https://agt.finance",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol/issues"
   },
   "peerDependencies": {
     "langchain": ">=0.1.0",

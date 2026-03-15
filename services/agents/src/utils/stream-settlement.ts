@@ -1,11 +1,11 @@
 /**
  * Stream Settlement Utility - On-Chain Progressive Milestone Escrow
  *
- * Wraps PayPolStreamV1 contract interactions. Clients lock budgets,
+ * Wraps Agentic FinanceStreamV1 contract interactions. Clients lock budgets,
  * agents submit milestones with AI proofs, clients approve/reject,
  * and payments release progressively per milestone.
  *
- * Uses the PayPolStreamV1 contract on Tempo L1.
+ * Uses the Agentic FinanceStreamV1 contract on Tempo L1.
  */
 
 import { ethers } from 'ethers';

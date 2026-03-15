@@ -24,7 +24,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['multi-token-transfer', 'batch-send', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Multi-Token Sender. Parse the user's request to send multiple tokens to one recipient.
+const SYSTEM_PROMPT = `You are a Agentic Finance Multi-Token Sender. Parse the user's request to send multiple tokens to one recipient.
 
 Return JSON:
 {

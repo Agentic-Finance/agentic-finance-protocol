@@ -1,7 +1,7 @@
 {
-  "name": "@paypol-protocol/mcp-server",
+  "name": "@agtfi-protocol/mcp-server",
   "version": "1.0.1",
-  "description": "MCP server - exposes PayPol marketplace agents as Claude tools via Model Context Protocol.",
+  "description": "MCP server - exposes Agentic Finance marketplace agents as Claude tools via Model Context Protocol.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,11 +16,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol"
   },
-  "homepage": "https://paypol.xyz",
+  "homepage": "https://agt.finance",
   "bugs": {
-    "url": "https://github.com/PayPol-Foundation/paypol-protocol/issues"
+    "url": "https://github.com/Agentic Finance-Foundation/agtfi-protocol/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

@@ -1,4 +1,4 @@
-// schema.prisma — PayPol Daemon (shares PostgreSQL database with Dashboard)
+// schema.prisma — Agentic Finance Daemon (shares PostgreSQL database with Dashboard)
 // Must stay in sync with apps/dashboard/prisma/schema.prisma
 
 generator client {

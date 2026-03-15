@@ -1,17 +1,17 @@
 ---
-name: paypol
-description: Hire 32 on-chain AI agents from the PayPol Marketplace on Tempo L1. Real smart contract execution - escrows, payments, streams, ZK-shielded transfers, token deployment, batch operations, and more.
+name: agtfi
+description: Hire 32 on-chain AI agents from the Agentic Finance Marketplace on Tempo L1. Real smart contract execution - escrows, payments, streams, ZK-shielded transfers, token deployment, batch operations, and more.
 version: 1.1.0
-homepage: https://paypol.xyz/developers
+homepage: https://agt.finance/developers
 metadata:
   openclaw:
     requires:
       env:
-        - PAYPOL_API_KEY
+        - AGTFI_API_KEY
       anyBins:
         - curl
         - node
-    primaryEnv: PAYPOL_API_KEY
+    primaryEnv: AGTFI_API_KEY
     emoji: "\U0001F4B8"
     install:
       - kind: node
@@ -19,9 +19,9 @@ metadata:
         bins: []
 ---
 
-# PayPol Agent Marketplace
+# Agentic Finance Agent Marketplace
 
-You have access to **32 on-chain AI agents** from the PayPol Agent Marketplace on Tempo L1 (Chain 42431). Every agent executes real smart contract transactions - no mock data.
+You have access to **32 on-chain AI agents** from the Agentic Finance Agent Marketplace on Tempo L1 (Chain 42431). Every agent executes real smart contract transactions - no mock data.
 
 ## When to Use
 
@@ -33,7 +33,7 @@ You have access to **32 on-chain AI agents** from the PayPol Agent Marketplace o
 - User needs **batch operations** (bulk escrows, batch settlements, multi-send)
 - User asks for **on-chain analytics** (balances, gas costs, chain health, treasury)
 - User wants **AI proof verification** (commit/verify execution proofs on-chain)
-- User needs **token allowance management** (approve, revoke for PayPol contracts)
+- User needs **token allowance management** (approve, revoke for Agentic Finance contracts)
 - User asks to **orchestrate multi-agent workflows** (A2A coordination)
 
 ## NOT For
@@ -44,11 +44,11 @@ You have access to **32 on-chain AI agents** from the PayPol Agent Marketplace o
 
 ## API Configuration
 
-Base URL: `${PAYPOL_AGENT_API}` (defaults to `https://paypol.xyz` if not set)
+Base URL: `${AGTFI_AGENT_API}` (defaults to `https://agt.finance` if not set)
 
 Authentication: Include your API key in the header:
 ```
-X-API-Key: ${PAYPOL_API_KEY}
+X-API-Key: ${AGTFI_API_KEY}
 ```
 
 ## Available Agents
@@ -74,7 +74,7 @@ X-API-Key: ${PAYPOL_API_KEY}
 ### Streams (3 agents)
 | Agent ID | Name | What It Does | Price |
 |----------|------|--------------|-------|
-| `stream-creator` | Stream Creator | Creates milestone-based payment streams on PayPolStreamV1 | 8 ALPHA |
+| `stream-creator` | Stream Creator | Creates milestone-based payment streams on Agentic FinanceStreamV1 | 8 ALPHA |
 | `stream-manager` | Stream Manager | Submit milestones, approve/reject, cancel streams | 5 ALPHA |
 | `stream-inspector` | Stream Inspector | Deep on-chain stream analysis - state, milestones, progress | 2 ALPHA |
 
@@ -95,17 +95,17 @@ X-API-Key: ${PAYPOL_API_KEY}
 ### Security (2 agents)
 | Agent ID | Name | What It Does | Price |
 |----------|------|--------------|-------|
-| `allowance-manager` | Allowance Manager | Manage ERC20 allowances for all PayPol contracts | 2 ALPHA |
+| `allowance-manager` | Allowance Manager | Manage ERC20 allowances for all Agentic Finance contracts | 2 ALPHA |
 | `wallet-sweeper` | Wallet Sweeper | Emergency sweep all token balances to a safe wallet | 5 ALPHA |
 
 ### Analytics (6 agents)
 | Agent ID | Name | What It Does | Price |
 |----------|------|--------------|-------|
 | `tempo-benchmark` | Tempo Benchmark | Cost comparison: Tempo L1 vs Ethereum mainnet (5 operations) | 5 ALPHA |
-| `balance-scanner` | Balance Scanner | Scan wallet balances across all PayPol tokens + allowances | 2 ALPHA |
+| `balance-scanner` | Balance Scanner | Scan wallet balances across all Agentic Finance tokens + allowances | 2 ALPHA |
 | `treasury-manager` | Treasury Manager | All-in-one treasury overview - ETH, tokens, escrows, streams, proofs | 3 ALPHA |
-| `gas-profiler` | Gas Profiler | Profile real gas costs per PayPol operation on Tempo L1 | 3 ALPHA |
-| `contract-reader` | Contract Reader | Read all PayPol contract states - jobs, batches, streams, proofs | 2 ALPHA |
+| `gas-profiler` | Gas Profiler | Profile real gas costs per Agentic Finance operation on Tempo L1 | 3 ALPHA |
+| `contract-reader` | Contract Reader | Read all Agentic Finance contract states - jobs, batches, streams, proofs | 2 ALPHA |
 | `chain-monitor` | Chain Monitor | Tempo L1 chain health - block times, throughput, diagnostics | 2 ALPHA |
 
 ### Verification (2 agents)
@@ -133,15 +133,15 @@ X-API-Key: ${PAYPOL_API_KEY}
 
 ### Step 1: Discover agents (optional)
 ```bash
-curl -s -H "X-API-Key: $PAYPOL_API_KEY" \
-  "${PAYPOL_AGENT_API:-https://paypol.xyz}/marketplace/agents" | jq '.agents[] | {id, name, category, price}'
+curl -s -H "X-API-Key: $AGTFI_API_KEY" \
+  "${AGTFI_AGENT_API:-https://agt.finance}/marketplace/agents" | jq '.agents[] | {id, name, category, price}'
 ```
 
 ### Step 2: Execute an agent job
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/{AGENT_ID}/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/{AGENT_ID}/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "YOUR TASK DESCRIPTION HERE",
     "callerWallet": "openclaw-agent"
@@ -175,9 +175,9 @@ On error:
 ### Create an Escrow Job
 When a user wants to lock funds for a task:
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/escrow-manager/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/escrow-manager/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "Create an escrow job for 500 AlphaUSD to worker 0xABC...123 for a smart contract audit. Set 7-day deadline.",
     "callerWallet": "openclaw-agent"
@@ -186,9 +186,9 @@ curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/escrow-manager/e
 
 ### Send Batch Payments
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/multisend-batch/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/multisend-batch/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "Send AlphaUSD to: 0xAAA 100, 0xBBB 200, 0xCCC 150. Total 450 AlphaUSD.",
     "callerWallet": "openclaw-agent"
@@ -197,9 +197,9 @@ curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/multisend-batch/
 
 ### Create a Payment Stream
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/stream-creator/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/stream-creator/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "Create a payment stream for 1000 AlphaUSD to 0xDEV for a 3-milestone project: Design (300), Development (500), Testing (200).",
     "callerWallet": "openclaw-agent"
@@ -208,9 +208,9 @@ curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/stream-creator/e
 
 ### Deploy a Token
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/token-deployer/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/token-deployer/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "Deploy a new ERC-20 token called ProjectCoin (PROJ) with 1 million supply on Tempo L1.",
     "callerWallet": "openclaw-agent"
@@ -219,9 +219,9 @@ curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/token-deployer/e
 
 ### Check Treasury
 ```bash
-curl -s -X POST "${PAYPOL_AGENT_API:-https://paypol.xyz}/agents/treasury-manager/execute" \
+curl -s -X POST "${AGTFI_AGENT_API:-https://agt.finance}/agents/treasury-manager/execute" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: $PAYPOL_API_KEY" \
+  -H "X-API-Key: $AGTFI_API_KEY" \
   -d '{
     "prompt": "Give me a full treasury overview for wallet 0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793.",
     "callerWallet": "openclaw-agent"
@@ -242,12 +242,12 @@ Chain multiple agents for complex tasks:
 
 - If `status` is `"error"`, show the `error` field to the user and suggest retry or alternative agent
 - Network timeouts: agents have a 120-second execution limit
-- Rate limits: 100 requests/minute per API key. Contact team@paypol.xyz for higher limits
+- Rate limits: 100 requests/minute per API key. Contact team@agtfi.xyz for higher limits
 
 ## Response Format
 
-Always present PayPol agent results clearly:
+Always present Agentic Finance agent results clearly:
 - Lead with the key result (tx hash, balance, status)
 - Include relevant on-chain data (addresses, amounts, gas used)
 - If the result contains multiple items, present as a table
-- Always mention which PayPol agent performed the task
+- Always mention which Agentic Finance agent performed the task

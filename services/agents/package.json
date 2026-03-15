@@ -1,7 +1,7 @@
 {
-  "name": "paypol-agents",
+  "name": "agtfi-agents",
   "version": "1.0.0",
-  "description": "Native PayPol AI agents — contract auditor, yield optimizer, payroll planner, gas predictor.",
+  "description": "Native Agentic Finance AI agents — contract auditor, yield optimizer, payroll planner, gas predictor.",
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",

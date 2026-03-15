@@ -1,4 +1,4 @@
-# PAYPOL: CHIẾN LƯỢC KIẾM TIỀN ĐỘNG CƠ KÉP
+# AGTFI: CHIẾN LƯỢC KIẾM TIỀN ĐỘNG CƠ KÉP
 ## Tài liệu Nội bộ — Phiên bản 2.0
 
 > Cập nhật: 01/03/2026
@@ -8,7 +8,7 @@
 
 ## ĐỊNH VỊ
 
-PayPol không chỉ là một công cụ thanh toán — PayPol là **hạ tầng tài chính cho nền Kinh tế AI** sắp tới. Chúng ta vận hành một **Mô hình Kinh doanh Động cơ Kép có khả năng mở rộng cao** (Dual-Engine Business Model), đồng thời tích hợp lớp cầu nối Fiat giúp loại bỏ rào cản gia nhập cho người dùng truyền thống.
+Agentic Finance không chỉ là một công cụ thanh toán — Agentic Finance là **hạ tầng tài chính cho nền Kinh tế AI** sắp tới. Chúng ta vận hành một **Mô hình Kinh doanh Động cơ Kép có khả năng mở rộng cao** (Dual-Engine Business Model), đồng thời tích hợp lớp cầu nối Fiat giúp loại bỏ rào cản gia nhập cho người dùng truyền thống.
 
 ---
 
@@ -37,7 +37,7 @@ PayPol không chỉ là một công cụ thanh toán — PayPol là **hạ tần
 | Cơ chế | Phí cố định **0.2%** trên tổng số tiền giải ngân |
 | Phí tối đa | **$5.00** mỗi đợt (batch) |
 | Áp dụng cho | Bảng lương, airdrop, thanh toán nhà cung cấp |
-| Smart Contract | `PayPolMultisendVaultV2` (`0x25f4d3f1...`) |
+| Smart Contract | `Agentic FinanceMultisendVaultV2` (`0x25f4d3f1...`) |
 
 **Giá trị cho khách hàng:**
 - Công ty tiết kiệm hàng giờ làm thủ công so với gửi từng giao dịch riêng lẻ
@@ -65,7 +65,7 @@ Freelancer trả 3 cộng sự, tổng $500:
 | Cơ chế | Phí bổ sung **0.5%** khi bật tính năng "Phantom Shield" |
 | Phí tối đa | **$10.00** mỗi đợt |
 | Công nghệ | ZK-SNARK PLONK + Poseidon Commitment |
-| Smart Contract | `PayPolShieldVaultV2` (`0x3B4b4797...`) |
+| Smart Contract | `AgtFiShieldVaultV2` (`0x3B4b4797...`) |
 | Verifier | `PlonkVerifierV2` (`0x9FB90e9F...`) |
 
 **Giá trị cho khách hàng:**
@@ -78,13 +78,13 @@ Freelancer trả 3 cộng sự, tổng $500:
 DAO trả lương ban giám đốc $50,000 với Phantom Shield:
 ├── Phí giao thức cơ bản: $5.00 (max)
 ├── Phí Phantom Shield: 0.5% × $50,000 = $250 → max $10.00
-├── Tổng phí PayPol: $5.00 + $10.00 = $15.00
+├── Tổng phí Agentic Finance: $5.00 + $10.00 = $15.00
 └── DAO tiết kiệm: Không bị lộ thông tin lương trên explorer
 
 Startup trả 5 dev $3,000 với Shield:
 ├── Phí giao thức: 0.2% × $3,000 = $6.00 → max $5.00
 ├── Phí Shield: 0.5% × $3,000 = $15.00 → max $10.00
-├── Tổng phí PayPol: $5.00 + $10.00 = $15.00
+├── Tổng phí Agentic Finance: $5.00 + $10.00 = $15.00
 └── Mỗi dev nhận tiền riêng tư — không ai biết ai được bao nhiêu
 ```
 
@@ -108,7 +108,7 @@ Startup trả 5 dev $3,000 với Shield:
 <a id="engine-2"></a>
 ## ENGINE 2: SÀN GIAO DỊCH NEURAL AGENT (Nền tảng Tăng trưởng Cao)
 
-> Đây là mô hình "App Store" có khả năng mở rộng. Bằng cách mở nền tảng cho các nhà phát triển AI bên thứ ba, PayPol thu được giá trị từ nền kinh tế lực lượng lao động AI đang bùng nổ mà **không cần tự xây dựng mọi agent**.
+> Đây là mô hình "App Store" có khả năng mở rộng. Bằng cách mở nền tảng cho các nhà phát triển AI bên thứ ba, Agentic Finance thu được giá trị từ nền kinh tế lực lượng lao động AI đang bùng nổ mà **không cần tự xây dựng mọi agent**.
 
 ### 2.1 Phí Hoa hồng Sàn giao dịch (Marketplace Take-Rate)
 
@@ -117,38 +117,38 @@ Startup trả 5 dev $3,000 với Shield:
 | Phí nền tảng | 8% (800 bps on-chain) | **5% (500 bps)** |
 | Áp dụng khi | Job được settlement thành công | Không đổi |
 | Phí tối đa cho phép | 30% (3000 bps — on-chain cap) | Không đổi |
-| Smart Contract | `PayPolNexusV2` (`0x6A467Cd4...`) | Gọi `setPlatformFee(500)` |
-| Milestone Contract | `PayPolStreamV1` (`0x4fE37c46...`) | Gọi `setPlatformFee(500)` |
+| Smart Contract | `AgtFiNexusV2` (`0x6A467Cd4...`) | Gọi `setPlatformFee(500)` |
+| Milestone Contract | `Agentic FinanceStreamV1` (`0x4fE37c46...`) | Gọi `setPlatformFee(500)` |
 
 **Giá trị cho nhà phát triển:**
-- Developer sẵn sàng trả phí vì PayPol cung cấp cho họ **khách hàng doanh nghiệp sẵn sàng mua** và **thanh toán đảm bảo** qua smart contract Escrow
+- Developer sẵn sàng trả phí vì Agentic Finance cung cấp cho họ **khách hàng doanh nghiệp sẵn sàng mua** và **thanh toán đảm bảo** qua smart contract Escrow
 - Không cần marketing riêng — agent hiển thị trên OmniTerminal
 - Payment bảo đảm bởi on-chain escrow — không sợ bị quỵt
 
 **So sánh cạnh tranh:**
 ```
-PayPol (đề xuất):     5% platform fee
+Agentic Finance (đề xuất):     5% platform fee
 Fiverr:               5.5% phí người mua + 20% phí người bán = 25.5% tổng
 Upwork:               10% phí freelancer
 Apple App Store:      30% commission
 Google Play:          15-30% commission
 ```
 
-→ PayPol **rẻ hơn đáng kể** so với các nền tảng marketplace khác, tạo lợi thế cạnh tranh mạnh mẽ cho AI agent creator.
+→ Agentic Finance **rẻ hơn đáng kể** so với các nền tảng marketplace khác, tạo lợi thế cạnh tranh mạnh mẽ cho AI agent creator.
 
 **Ví dụ tính phí:**
 ```
 AI Agent "CodeReview Pro" hoàn thành job $200:
 ├── Platform fee: 5% × $200 = $10.00
 ├── Agent nhận: $200 - $10 = $190.00
-└── PayPol thu: $10.00
+└── Agentic Finance thu: $10.00
 
 AI Agent "DataAnalyzer" hoàn thành streaming job $1,000 (4 milestones):
-├── Milestone 1 ($250): Agent nhận $237.50, PayPol thu $12.50
-├── Milestone 2 ($250): Agent nhận $237.50, PayPol thu $12.50
-├── Milestone 3 ($250): Agent nhận $237.50, PayPol thu $12.50
-├── Milestone 4 ($250): Agent nhận $237.50, PayPol thu $12.50
-└── Tổng PayPol thu: $50.00
+├── Milestone 1 ($250): Agent nhận $237.50, Agentic Finance thu $12.50
+├── Milestone 2 ($250): Agent nhận $237.50, Agentic Finance thu $12.50
+├── Milestone 3 ($250): Agent nhận $237.50, Agentic Finance thu $12.50
+├── Milestone 4 ($250): Agent nhận $237.50, Agentic Finance thu $12.50
+└── Tổng Agentic Finance thu: $50.00
 ```
 
 ### 2.2 Giảm phí qua Security Deposit (Staking)
@@ -188,7 +188,7 @@ Smart Contract: `SecurityDepositVault` (`0x8C1d4da4...`)
 |---|---|
 | Phí phạt | **3%** (300 bps) áp dụng cho bên **thua** trong tranh chấp |
 | Phạt tối đa | **$10** (10e18 token units) |
-| Smart Contract | `PayPolNexusV2` — function `settleJob()` và `refundJob()` |
+| Smart Contract | `AgtFiNexusV2` — function `settleJob()` và `refundJob()` |
 
 **Kịch bản 1 — Công ty gian lận:**
 ```
@@ -196,7 +196,7 @@ Agent hoàn thành job $500, công ty từ chối thanh toán vô lý.
 ├── Judge xem xét bằng chứng → phán quyết Agent thắng
 ├── Tiền escrow $500 → giải phóng cho Agent
 ├── Công ty bị phạt: 3% × $500 = $15.00
-├── PayPol thu: $15.00 (phí phạt)
+├── Agentic Finance thu: $15.00 (phí phạt)
 └── Kết quả: Agent được trả đủ, công ty mất thêm $15
 ```
 
@@ -206,14 +206,14 @@ Agent nhận job $500 nhưng giao kết quả kém chất lượng.
 ├── Công ty dispute → Judge phán quyết Công ty thắng
 ├── Tiền escrow $500 → hoàn lại Công ty
 ├── Agent bị phạt: 3% từ Security Deposit (nếu có)
-├── PayPol thu: Phần phạt + phí nền tảng đã trừ
+├── Agentic Finance thu: Phần phạt + phí nền tảng đã trừ
 └── Kết quả: Công ty được hoàn tiền, Agent bị giảm uy tín
 ```
 
 **Giá trị:**
 - Phí phạt **nghiêm túc ngăn chặn spam** và tranh chấp vô căn cứ
 - Cả hai bên đều cân nhắc kỹ trước khi dispute → giảm tải cho hệ thống
-- Phí phạt trang trải chi phí vận hành của Đội Trọng tài PayPol
+- Phí phạt trang trải chi phí vận hành của Đội Trọng tài Agentic Finance
 - Hệ thống rating on-chain (`ReputationRegistry`) ghi nhận kết quả → ảnh hưởng điểm uy tín
 
 ### 3.2 Bảo hiểm từ Insurance Pool
@@ -230,7 +230,7 @@ Dòng tiền Insurance Pool:
 <a id="engine-4"></a>
 ## ENGINE 4: CẦU NỐI FIAT-TO-CRYPTO (Đầu vào Thanh khoản)
 
-> Xóa bỏ rào cản gia nhập cho người dùng truyền thống. Bất kỳ ai có thẻ tín dụng đều có thể sử dụng AI agent và dịch vụ trên PayPol mà **không cần sở hữu crypto trước**.
+> Xóa bỏ rào cản gia nhập cho người dùng truyền thống. Bất kỳ ai có thẻ tín dụng đều có thể sử dụng AI agent và dịch vụ trên Agentic Finance mà **không cần sở hữu crypto trước**.
 
 ### 4.1 Phí Xử lý Thẻ (Card Processing Fee)
 
@@ -246,10 +246,10 @@ Dòng tiền Insurance Pool:
 **Tại sao 5% + $1.00 thay vì 8% flat?**
 ```
 Vấn đề với 8% flat:
-├── Giao dịch $3:   charge $3.24, Paddle fee $0.66, PayPol lỗ -$0.42
-├── Giao dịch $10:  charge $10.80, Paddle fee $1.04, PayPol lãi -$0.24
-├── Giao dịch $12:  charge $12.96, Paddle fee $1.15, PayPol hòa vốn
-└── Breakeven: ~$12 — dưới mức này PayPol LỖ mỗi giao dịch!
+├── Giao dịch $3:   charge $3.24, Paddle fee $0.66, Agentic Finance lỗ -$0.42
+├── Giao dịch $10:  charge $10.80, Paddle fee $1.04, Agentic Finance lãi -$0.24
+├── Giao dịch $12:  charge $12.96, Paddle fee $1.15, Agentic Finance hòa vốn
+└── Breakeven: ~$12 — dưới mức này Agentic Finance LỖ mỗi giao dịch!
 
 Giải pháp 5% + $1.00:
 ├── Giao dịch $5 (min):  charge $6.25, Paddle fee $0.81, lãi +$0.44 ✅
@@ -275,10 +275,10 @@ USER (Thẻ Visa/Mastercard)
 PADDLE (Bộ xử lý Thanh toán)
   │
   ├─ Paddle giữ: ~5% + $0.50
-  ├─ PayPol nhận: phần còn lại (fiat)
+  ├─ Agentic Finance nhận: phần còn lại (fiat)
   │
   ▼
-PAYPOL TREASURY (Ví On-chain: 0x33F7e5da...)
+AGTFI TREASURY (Ví On-chain: 0x33F7e5da...)
   │
   ├─ Shield TẮT → chuyển AlphaUSD trực tiếp cho user
   ├─ Shield BẬT → deposit vào ShieldVaultV2 (Poseidon commitment)
@@ -400,9 +400,9 @@ TỔNG Phase 2:                               ~$10,000/tháng
 
 **Tại sao giảm Card fee ở Phase 3?**
 ```
-Phase 1-2: Paddle sandbox rate = ~5% + $0.50 → PayPol charge 5% + $1
+Phase 1-2: Paddle sandbox rate = ~5% + $0.50 → Agentic Finance charge 5% + $1
 Phase 3:   Volume > $1M/tháng → đàm phán Paddle production rate ~3% + $0.30
-           → PayPol có thể giảm charge xuống 3% + $0.50 mà vẫn lãi
+           → Agentic Finance có thể giảm charge xuống 3% + $0.50 mà vẫn lãi
            → Phí thấp hơn → nhiều user hơn → volume cao hơn → vòng tròn tích cực
 ```
 
@@ -578,7 +578,7 @@ TỔNG/năm        ~$13,200         ~$120,000        ~$1,416,000
 
 ---
 
-*Tài liệu nội bộ PayPol Protocol.*
+*Tài liệu nội bộ Agentic Finance.*
 *Được chuẩn bị cho đội ngũ sáng lập và nhà đầu tư chiến lược.*
 *Mọi số liệu là ước tính dựa trên Paddle sandbox rate hiện tại.*
 *Rate production Paddle có thể khác sau khi đàm phán volume.*

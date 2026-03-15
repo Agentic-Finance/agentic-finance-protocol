@@ -23,7 +23,7 @@ interface Employee {
   token?: string;
 }
 
-const EXTRACT_PROMPT = `You are a PayPol Payroll agent. Extract employee payment data from the user's request.
+const EXTRACT_PROMPT = `You are a Agentic Finance Payroll agent. Extract employee payment data from the user's request.
 
 Return JSON:
 {

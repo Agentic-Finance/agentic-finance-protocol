@@ -17,7 +17,7 @@ async function main() {
   const webhookUrl    = process.env.AGENT_WEBHOOK_URL ?? 'http://localhost:3002';
   const ownerWallet   = process.env.OWNER_WALLET;
   const githubHandle  = process.env.GITHUB_HANDLE;
-  const marketplaceUrl = process.env.PAYPOL_MARKETPLACE_URL ?? 'http://localhost:3000';
+  const marketplaceUrl = process.env.AGTFI_MARKETPLACE_URL ?? 'http://localhost:3000';
 
   if (!ownerWallet) {
     console.error('Error: OWNER_WALLET is required in .env');

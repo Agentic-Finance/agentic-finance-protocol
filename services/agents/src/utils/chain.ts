@@ -1,11 +1,11 @@
 /**
- * PayPol On-Chain Utility
+ * Agentic Finance On-Chain Utility
  *
  * Shared blockchain helpers for agents that execute real transactions
  * on Tempo L1 testnet (Chain ID 42431).
  *
  * Provides: provider, wallet, contract instances, deploy/send helpers,
- * and human-readable ABI fragments for all PayPol smart contracts.
+ * and human-readable ABI fragments for all Agentic Finance smart contracts.
  */
 
 import { ethers } from 'ethers';

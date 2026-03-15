@@ -1,7 +1,7 @@
 /**
- * PayPol Native Agents Service
+ * Agentic Finance Native Agents Service
  *
- * Express HTTP server exposing 32 built-in PayPol agents - ALL with real
+ * Express HTTP server exposing 32 built-in Agentic Finance agents - ALL with real
  * on-chain execution on Tempo L1 (Chain 42431). No fake/AI-only agents.
  *
  * CORE AGENTS (Original 7):
@@ -36,7 +36,7 @@
  *   - vault-inspector       → ShieldVaultV2 state & commitment inspection
  *   - gas-profiler          → Per-operation gas cost profiling on Tempo L1
  *   - recurring-payment     → Multiple streams for recurring scheduled payments
- *   - contract-reader       → Read all PayPol contract states comprehensively
+ *   - contract-reader       → Read all Agentic Finance contract states comprehensively
  *   - wallet-sweeper        → Emergency token sweep to safe wallet
  *   - escrow-batch-settler  → Batch settle/refund multiple NexusV2 escrows
  *   - token-minter          → Deploy custom ERC20 with fine-grained control

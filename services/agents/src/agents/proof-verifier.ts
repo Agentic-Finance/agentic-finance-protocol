@@ -23,7 +23,7 @@ export const manifest: AgentDescriptor = {
   capabilities: ['proof-commit', 'proof-verify', 'ai-accountability', 'on-chain-execution'],
 };
 
-const SYSTEM_PROMPT = `You are a PayPol Proof Verifier agent for AIProofRegistry on Tempo blockchain.
+const SYSTEM_PROMPT = `You are a Agentic Finance Proof Verifier agent for AIProofRegistry on Tempo blockchain.
 Parse the user's proof request.
 
 Return JSON:

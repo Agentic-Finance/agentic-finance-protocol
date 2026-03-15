@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════
-# PayPol Daemon — ZK Shield & A2A Escrow Processor
+# Agentic Finance Daemon — ZK Shield & A2A Escrow Processor
 # ═══════════════════════════════════════════════════════════
 FROM node:20-slim
 
@@ -22,10 +22,10 @@ RUN npx prisma generate
 
 # Copy ZK circuit artifacts (V1 + V2)
 RUN mkdir -p circuits
-COPY packages/circuits/paypol_shield_v2_js/paypol_shield_v2.wasm ./circuits/
-COPY packages/circuits/paypol_shield_v2_final.zkey ./circuits/
-COPY packages/circuits/paypol_shield_js/paypol_shield.wasm ./circuits/
-COPY packages/circuits/paypol_shield_final.zkey ./circuits/
+COPY packages/circuits/agtfi_shield_v2_js/agtfi_shield_v2.wasm ./circuits/
+COPY packages/circuits/agtfi_shield_v2_final.zkey ./circuits/
+COPY packages/circuits/agtfi_shield_js/agtfi_shield.wasm ./circuits/
+COPY packages/circuits/agtfi_shield_final.zkey ./circuits/
 
 # Copy daemon source
 COPY services/daemon/daemon.ts ./

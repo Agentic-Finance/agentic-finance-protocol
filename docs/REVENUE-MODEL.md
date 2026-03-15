@@ -1,4 +1,4 @@
-# PayPol Protocol — Revenue Model v2.1
+# Agentic Finance — Revenue Model v2.1
 
 > Last updated: 2026-03-03
 > Status: Active
@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary
 
-PayPol Protocol generates revenue from 4 main sources:
+Agentic Finance generates revenue from 4 main sources:
 1. **Fiat Card Payment** — processing fee on card-to-crypto conversion
 2. **Shield ZK Privacy** — fee for zero-knowledge private transactions
 3. **Agent Marketplace** — platform fee on AI agent job escrows
@@ -28,7 +28,7 @@ and the proposed changes for sustainable growth.
 | Fixed fee | $1.00 | Covers payment processor fixed costs |
 | Min transaction | $5 | Prevents losses on tiny transactions |
 | Max transaction | $10,000 | |
-| Paddle fee (cost) | ~5% + $0.50 | Deducted from PayPol's revenue |
+| Paddle fee (cost) | ~5% + $0.50 | Deducted from Agentic Finance's revenue |
 
 ### 2.2 Shield ZK Privacy
 
@@ -80,36 +80,36 @@ Gold ($1000 deposit):  2.0% (5.0 - 3.0%)
 Example A: User buys 5 AlphaUSD (minimum)
   Card charge:     5.00 × 1.05 + $1.00 = $6.25
   Paddle fee:      5% × $6.25 + $0.50 = -$0.81
-  PayPol receives: $6.25 - $0.81 = $5.44
-  PayPol sends:    5.00 AlphaUSD
+  Agentic Finance receives: $6.25 - $0.81 = $5.44
+  Agentic Finance sends:    5.00 AlphaUSD
   Net profit:      $5.44 - $5.00 = +$0.44 (7.0% margin)
 
 Example B: User buys 10 AlphaUSD
   Card charge:     10 × 1.05 + $1.00 = $11.50
   Paddle fee:      5% × $11.50 + $0.50 = -$1.08
-  PayPol receives: $11.50 - $1.08 = $10.42
-  PayPol sends:    10 AlphaUSD
+  Agentic Finance receives: $11.50 - $1.08 = $10.42
+  Agentic Finance sends:    10 AlphaUSD
   Net profit:      $10.42 - $10.00 = +$0.42 (3.6% margin)
 
 Example C: User buys 50 AlphaUSD
   Card charge:     50 × 1.05 + $1.00 = $53.50
   Paddle fee:      5% × $53.50 + $0.50 = -$3.18
-  PayPol receives: $53.50 - $3.18 = $50.32
-  PayPol sends:    50 AlphaUSD
+  Agentic Finance receives: $53.50 - $3.18 = $50.32
+  Agentic Finance sends:    50 AlphaUSD
   Net profit:      $50.32 - $50.00 = +$0.32 (0.6% margin)
 
 Example D: User buys 100 AlphaUSD
   Card charge:     100 × 1.05 + $1.00 = $106.00
   Paddle fee:      5% × $106.00 + $0.50 = -$5.80
-  PayPol receives: $106.00 - $5.80 = $100.20
-  PayPol sends:    100 AlphaUSD
+  Agentic Finance receives: $106.00 - $5.80 = $100.20
+  Agentic Finance sends:    100 AlphaUSD
   Net profit:      $100.20 - $100.00 = +$0.20 (0.2% margin)
 
 Example E: User buys 500 AlphaUSD
   Card charge:     500 × 1.05 + $1.00 = $526.00
   Paddle fee:      5% × $526.00 + $0.50 = -$26.80
-  PayPol receives: $526.00 - $26.80 = $499.20
-  PayPol sends:    500 AlphaUSD
+  Agentic Finance receives: $526.00 - $26.80 = $499.20
+  Agentic Finance sends:    500 AlphaUSD
   Net profit:      $499.20 - $500.00 = -$0.80 (LOSS!)
 ```
 
@@ -221,7 +221,7 @@ Free payroll builds enterprise adoption. Revenue comes later.
 
 | Platform | Card Fee | Marketplace Fee | Min Txn |
 |---|---|---|---|
-| **PayPol (proposed)** | **5% + $1** | **5%** | **$5** |
+| **Agentic Finance (proposed)** | **5% + $1** | **5%** | **$5** |
 | Moonpay | 4.5% | N/A | $30 |
 | Transak | 5% | N/A | $15 |
 | Ramp Network | 2.5% | N/A | $5 |
@@ -229,7 +229,7 @@ Free payroll builds enterprise adoption. Revenue comes later.
 | Upwork | N/A | 10% | $5 |
 | OpenAI API | N/A | Per-token pricing | $5 |
 
-PayPol's 5% + $1 is competitive with major fiat on-ramps.
+Agentic Finance's 5% + $1 is competitive with major fiat on-ramps.
 The 5% agent fee is significantly lower than Fiverr/Upwork, creating
 a strong value proposition for AI agent creators.
 
@@ -306,12 +306,12 @@ PADDLE (Payment Processor)
   ├─ Paddle keeps: ~5% + $0.50
   │
   ▼
-PAYPOL TREASURY (Fiat Account)
+AGTFI TREASURY (Fiat Account)
   │
   ├─ Receives: totalCharge - paddleFee
   │
   ▼
-PAYPOL TREASURY (On-chain Wallet: 0x33F7e5...)
+AGTFI TREASURY (On-chain Wallet: 0x33F7e5...)
   │
   ├─ Sends: {amount} AlphaUSD
   │   ├─ Shield OFF → direct transfer to user wallet
@@ -327,11 +327,11 @@ USER WALLET
   ▼
 AGENT ESCROW (NexusV2 / StreamV1)
   │
-  ├─ On settlement: 5% platform fee → PayPol treasury
+  ├─ On settlement: 5% platform fee → Agentic Finance treasury
   │                  95% → Agent wallet
   │
   ▼
-PAYPOL REVENUE
+AGTFI REVENUE
   ├─ Card processing margin: ~0.2–7% per transaction
   ├─ Shield ZK fee: 0.5% (max $10)
   ├─ Agent platform fee: 5% of escrow
@@ -340,6 +340,6 @@ PAYPOL REVENUE
 
 ---
 
-*Document prepared for PayPol Protocol internal review.*
+*Document prepared for Agentic Finance internal review.*
 *All figures are estimates based on current Paddle sandbox rates.*
 *Production Paddle rates may differ after volume negotiations.*

@@ -99,7 +99,7 @@ export default function VerifyPage() {
       <nav className="sticky top-0 z-50 bg-[#0F1724]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="/" className="flex items-center group">
-            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={140} height={36} className="h-7 w-auto object-contain" priority />
+            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={202} height={28} className="h-7 w-auto object-contain" priority />
           </a>
           <div className="flex items-center gap-4">
             <a href="/protocol" className="text-xs text-slate-400 hover:text-white transition-colors">Protocol</a>

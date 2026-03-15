@@ -329,7 +329,7 @@ export default function PayPolAdminPage() {
                         </button>
                     ) : (
                         <div className="flex items-center gap-3 w-full">
-                            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={120} height={30} className="h-8 w-auto object-contain" />
+                            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={231} height={32} className="h-8 w-auto object-contain" />
                             <div className="ml-auto flex items-center gap-2">
                                 <span className="text-[9px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Admin</span>
                                 <button onClick={() => setSidebarCollapsed(true)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-white">

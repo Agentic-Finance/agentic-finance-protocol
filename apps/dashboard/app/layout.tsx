@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy", "agt.finance"],
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
     ],
     apple: "/apple-touch-icon.png",
   },

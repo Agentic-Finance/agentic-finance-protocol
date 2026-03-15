@@ -32,7 +32,7 @@ export default function GatewayScreen(props: GatewayProps) {
 
                 <div className="relative z-10 w-full max-w-2xl px-4 sm:px-8">
                     <div className="text-center mb-8 sm:mb-10">
-                        <Image src="/logos/dark-stacked.png" alt="Agentic Finance" width={192} height={48} className="h-12 w-auto object-contain mx-auto mb-6 drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" priority />
+                        <Image src="/logos/dark-stacked.png" alt="Agentic Finance" width={152} height={48} className="h-12 w-auto object-contain mx-auto mb-6 drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" priority />
                         <h1 className="text-3xl font-bold text-white mb-3">Agentic Finance Gateway</h1>
                         <p className="text-slate-400 text-sm">Welcome to Agentic Finance. Please select your operational protocol.</p>
                     </div>
@@ -161,7 +161,7 @@ export default function GatewayScreen(props: GatewayProps) {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
                 <div className="relative z-10 text-center w-full px-4 sm:px-8">
                     <div className="flex justify-center items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
-                        <Image src="/logos/dark-stacked.png" alt="Agentic Finance" width={448} height={112} className="h-20 md:h-28 w-auto object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.4)] mx-auto" priority />
+                        <Image src="/logos/dark-stacked.png" alt="Agentic Finance" width={380} height={120} className="h-20 md:h-28 w-auto object-contain drop-shadow-[0_0_50px_rgba(255,255,255,0.4)] mx-auto" priority />
                     </div>
                     <p className="text-indigo-100/90 text-sm md:text-2xl font-bold tracking-[0.15em] uppercase mb-16 animate-in slide-in-from-bottom-6 duration-1000 w-full md:whitespace-nowrap mx-auto leading-normal drop-shadow-lg text-center">
                         The Financial OS for the Agentic Economy.

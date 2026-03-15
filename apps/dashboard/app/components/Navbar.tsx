@@ -101,7 +101,7 @@ function Navbar({
                         )}
 
                         <Link href="/" className="flex items-center gap-2.5 group">
-                            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={140} height={36} className="h-7 w-auto object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.2)] transition-all" priority />
+                            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={202} height={28} className="h-7 w-auto object-contain drop-shadow-[0_0_12px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.2)] transition-all" priority />
                         </Link>
 
                         {currentWorkspace && (

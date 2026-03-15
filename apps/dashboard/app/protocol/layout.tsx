@@ -15,6 +15,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Agentic Finance — APS-1 Agent Payment Standard',
         description: '9 verified contracts, ZK-SNARK privacy, AI proof registry, and A2A escrow on Tempo L1.',
+        creator: '@agentic_finance',
     },
 };
 

@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Agentic Finance Dashboard</strong> &mdash; The full-stack web application powering <a href="https://agt.finance">agt.finance</a><br/>
+  <strong>PayPol Dashboard</strong> &mdash; The full-stack web application powering <a href="https://paypol.xyz">paypol.xyz</a><br/>
   Next.js 16 &bull; React 19 &bull; Prisma + PostgreSQL &bull; ZK Proofs &bull; AI Agent Marketplace
 </p>
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-The Agentic Finance Dashboard is the primary interface for Agentic Finance. It provides:
+The PayPol Dashboard is the primary interface for the PayPol Protocol. It provides:
 
 - **ZK-Shielded Payments** &mdash; Private payroll using PLONK proofs with Poseidon hashing
 - **AI Agent Marketplace** &mdash; Discover, hire, and manage 32 on-chain agents via natural language
@@ -252,11 +252,11 @@ npm run dev
 ### Docker (recommended)
 
 ```bash
-docker build -t agtfi-dashboard .
+docker build -t paypol-dashboard .
 docker run -p 3000:3000 \
   -e DATABASE_URL="postgresql://..." \
   -e OPENAI_API_KEY="sk-..." \
-  agtfi-dashboard
+  paypol-dashboard
 ```
 
 The Dockerfile uses a **3-stage build**:
@@ -319,9 +319,9 @@ apps/dashboard/
 │   ├── seed.js                     # Marketplace agent seeder (32 agents)
 │   └── start.sh                    # Production startup script
 ├── public/
-│   ├── logo.png                    # Agentic Finance logo
+│   ├── logo.png                    # PayPol logo
 │   └── grid.svg                    # Background grid pattern
-├── Dockerfile                      # 3-stage production build (agtfi-dashboard)
+├── Dockerfile                      # 3-stage production build
 ├── next.config.ts                  # Standalone output, WASM support
 ├── package.json                    # Dependencies
 └── tsconfig.json                   # TypeScript config
@@ -362,4 +362,4 @@ apps/dashboard/
 
 ## License
 
-MIT &copy; Agentic Finance
+MIT &copy; PayPol Foundation

@@ -19,7 +19,7 @@ import {
     BookOpenIcon,
     WrenchScrewdriverIcon,
     ChevronRightIcon,
-} from '@/app/components/icons';
+} from '@heroicons/react/24/outline';
 
 // ══════════════════════════════════════════════════════
 // TYPES
@@ -70,17 +70,17 @@ const TEMPLATES = [
         desc: 'Install as a skill - any OpenClaw agent instantly gets 32 Agentic Finance on-chain agents',
         framework: 'SKILL.md',
         color: 'amber',
-        install: 'openclaw install paypol',
+        install: 'openclaw install agentic-finance',
         github: '#',
         code: `# Install from ClawHub:
-openclaw install paypol
+openclaw install agentic-finance
 
 # Or add to your workspace:
-mkdir -p skills/paypol && cd skills/paypol
+mkdir -p skills/agentic-finance && cd skills/agentic-finance
 
 # SKILL.md - frontmatter + instructions
 ---
-name: paypol
+name: agentic-finance
 description: Hire 32 on-chain AI agents on Tempo L1 -
   escrows, payments, streams, ZK-shielded transfers,
   token deployment, batch ops, and more.
@@ -88,9 +88,9 @@ version: 1.1.0
 metadata:
   openclaw:
     requires:
-      env: [PAYPOL_API_KEY]
+      env: [AGT_API_KEY]
       anyBins: [curl, node]
-    primaryEnv: PAYPOL_API_KEY
+    primaryEnv: AGT_API_KEY
     emoji: "\\U0001F4B8"
 ---
 
@@ -101,7 +101,7 @@ metadata:
 
 # Usage: hire any agent via:
 curl -X POST https://agt.finance/agents/{id}/execute \\
-  -H "X-API-Key: $PAYPOL_API_KEY" \\
+  -H "X-API-Key: $AGT_API_KEY" \\
   -d '{"prompt": "...", "callerWallet": "openclaw-agent"}'`,
     },
     {
@@ -110,9 +110,9 @@ curl -X POST https://agt.finance/agents/{id}/execute \\
         desc: 'TypeScript agent using Agentic Finance SDK with real on-chain execution',
         framework: 'TypeScript',
         color: 'indigo',
-        install: 'npm install agentic-finance-sdk',
+        install: 'npm install @agentic-finance/sdk',
         github: '#',
-        code: `import { AgentClient } from 'agentic-finance-sdk';
+        code: `import { AgentClient } from '@agentic-finance/sdk';
 
 const agent = new AgentClient({
   id: 'my-agent',
@@ -147,11 +147,11 @@ agent.listen(3020);`,
         color: 'purple',
         install: 'npm install @agentic-finance/eliza-plugin',
         github: '#',
-        code: `import { paypolPlugin } from '@agentic-finance/eliza-plugin';
+        code: `import { agenticFinancePlugin } from '@agentic-finance/eliza-plugin';
 
 // Register Agentic Finance plugin with your Eliza agent
 const agent = new AgentRuntime({
-  plugins: [paypolPlugin],
+  plugins: [agenticFinancePlugin],
   // ... your other config
 });
 
@@ -181,11 +181,11 @@ const agent = new AgentRuntime({
         color: 'teal',
         install: 'npm install @agentic-finance/langchain',
         github: '#',
-        code: `import { PayPolTool } from '@agentic-finance/langchain';
+        code: `import { AgentTool } from '@agentic-finance/langchain';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 
-const auditTool = new PayPolTool({
+const auditTool = new AgentTool({
   agentId: 'contract-auditor',
   description: 'Audit smart contracts for vulnerabilities',
 });
@@ -205,12 +205,12 @@ const result = await agent.invoke({
         desc: 'Python wrapper for CrewAI multi-agent orchestration',
         framework: 'Python',
         color: 'sky',
-        install: 'pip install paypol-crewai',
+        install: 'pip install agentic-finance-crewai',
         github: '#',
-        code: `from paypol_crewai import PayPolTool
+        code: `from agentic_finance_crewai import AgentTool
 from crewai import Agent, Task, Crew
 
-audit_tool = PayPolTool(
+audit_tool = AgentTool(
     agent_id="contract-auditor",
     description="Audit smart contracts"
 )
@@ -224,62 +224,22 @@ agent = Agent(
 crew = Crew(agents=[agent], tasks=[...])
 result = crew.kickoff()`,
     },
-    {
-        name: 'MCP Server',
-        icon: '🔌',
-        desc: 'JSON-RPC 2.0 payment tools for any AI model via Model Context Protocol',
-        framework: 'JSON-RPC',
-        color: 'rose',
-        install: 'curl https://agt.finance/api/mcp',
-        github: '#',
-        code: `// MCP Server exposes 10 payment tools via JSON-RPC 2.0
-// Any MCP-compatible AI model can use these tools
-
-// 1. Discover available tools
-const discovery = await fetch('https://agt.finance/api/mcp');
-// Returns: { tools: [...10 tools], capabilities: {...} }
-
-// 2. Call a tool via JSON-RPC
-const response = await fetch('https://agt.finance/api/mcp', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    jsonrpc: '2.0',
-    id: 1,
-    method: 'tools/call',
-    params: {
-      name: 'send_payment',
-      arguments: {
-        to: '0x742d35Cc6634C0532925a...',
-        amount: '100',
-        memo: 'Payment for data analysis'
-      }
-    }
-  })
-});
-
-// Available tools:
-// send_payment, create_escrow, check_balance,
-// list_agents, hire_agent, create_stream,
-// shield_payment, multisend, get_tvl,
-// get_agent_reputation`,
-    },
 ];
 
 const QUICK_START_STEPS = [
     {
         step: 1,
         title: 'Install the SDK',
-        code: `npm install agentic-finance-sdk
+        code: `npm install @agentic-finance/sdk
 # or start from scratch:
 mkdir my-agent && cd my-agent && npm init -y
-npm install agentic-finance-sdk ethers`,
+npm install @agentic-finance/sdk ethers`,
         icon: CommandLineIcon,
     },
     {
         step: 2,
         title: 'Define your Agent',
-        code: `import { AgentClient } from 'agentic-finance-sdk';
+        code: `import { AgentClient } from '@agentic-finance/sdk';
 
 const agent = new AgentClient({
   id: 'my-cool-agent',
@@ -483,8 +443,8 @@ export default function DevelopersPage() {
                             <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Earn Crypto.</span>
                         </h1>
                         <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">
-                            Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">95–98%</span> of every job via NexusV2 escrow. Access 22 API endpoints across 7 protocol standards.
-                            <span className="text-slate-500"> MCP Server · x402 · Stealth · Verifiable AI · PayFi · ZK · A2A · APS-1.</span>
+                            Build AI agents with real on-chain execution on Tempo L1. Self-register via SDK, earn <span className="text-emerald-400 font-bold">95%</span> of every job via NexusV2 escrow.
+                            <span className="text-slate-500"> Verifiable AI Proofs. A2A agent hiring. ZK-private payments.</span>
                         </p>
 
                         {/* Stats */}
@@ -620,20 +580,20 @@ export default function DevelopersPage() {
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">Integration Ecosystem</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">7 framework adapters — any AI agent can hire Agentic Finance agents</p>
+                            <p className="text-sm text-slate-500 mt-0.5">Any AI agent framework can hire Agentic Finance agents</p>
                         </div>
                     </div>
 
                     {/* Integrations grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
-                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'agentic-finance-sdk', npm: 'https://www.npmjs.com/package/agentic-finance-sdk' },
-                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'agentic-finance-sdk', npm: 'https://www.npmjs.com/package/agentic-finance-sdk' },
+                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: '@agentic-finance/sdk', npm: 'https://www.npmjs.com/package/@agentic-finance/sdk' },
+                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: '@agentic-finance/sdk', npm: 'https://www.npmjs.com/package/@agentic-finance/sdk' },
                             { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@agentic-finance/langchain', npm: 'https://www.npmjs.com/package/@agentic-finance/langchain' },
-                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'paypol-crewai', npm: '' },
+                            { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'agentic-finance-crewai', npm: '' },
                             { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@agentic-finance/eliza-plugin', npm: 'https://www.npmjs.com/package/@agentic-finance/eliza-plugin' },
                             { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@agentic-finance/mcp-server', npm: 'https://www.npmjs.com/package/@agentic-finance/mcp-server' },
-                            { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install paypol', npm: 'https://clawhub.ai/skills/paypol' },
+                            { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install agentic-finance', npm: 'https://clawhub.ai/skills/agentic-finance' },
                         ].map((int) => (
                             <a key={int.name} href={int.npm || undefined} target={int.npm ? '_blank' : undefined} rel={int.npm ? 'noopener noreferrer' : undefined} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-${int.color}-500/20 hover:bg-white/[0.03] transition-all text-center ${int.npm ? 'cursor-pointer' : ''}`}>
                                 <span className="text-2xl">{int.icon}</span>
@@ -690,32 +650,27 @@ export default function DevelopersPage() {
 
                 {/* ═══ PROTOCOL FEATURES ═══ */}
                 <section className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-10">
-                    <h2 className="text-2xl font-black mb-2 text-center">Protocol Stack</h2>
-                    <p className="text-slate-500 text-sm mb-8 text-center">9 verified contracts · 7 protocol standards · 22 API endpoints · 32+ agents · all live on Tempo L1</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <h2 className="text-2xl font-black mb-2 text-center">Protocol Features</h2>
+                    <p className="text-slate-500 text-sm mb-8 text-center">12 production features — 9 verified contracts — all live on Tempo L1</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
-                            { title: 'MCP Payment Server', desc: '10 JSON-RPC 2.0 tools — send_payment, create_escrow, check_balance, hire_agent, shield_payment, multisend, create_stream, list_agents, get_tvl, get_agent_reputation. Any MCP-compatible AI model.', icon: '🔌', color: 'indigo', api: '/api/mcp' },
-                            { title: 'x402 Micropayments', desc: 'HTTP 402 pay-per-use. Agent signs EIP-191 message, retries with X-PAYMENT header. Per-tool pricing: 0.001–0.15 AUSD. Nonce replay protection, 5-min timestamp expiry.', icon: '💳', color: 'orange', api: '/api/x402' },
-                            { title: 'Stealth Addresses', desc: 'ERC-5564 unlinkable payments. ECDH key derivation + Poseidon view tags for O(1) scanning. Actions: register, generate, send, scan. Privacy-preserving agent payments.', icon: '🕵️', color: 'purple', api: '/api/stealth' },
-                            { title: 'Verifiable AI Engine', desc: 'Model registry with keccak256 fingerprints. Commit/verify protocol: commit plan hash before execution, verify result hash after. Integrity scoring (0–100) with 5 tiers.', icon: '🧠', color: 'cyan', api: '/api/verifiable-ai' },
-                            { title: 'PayFi Credit Layer', desc: 'AI-native lending. 5 factors → credit score (0–850). Tiers: Starter ($50/12%/7d) to Elite ($25K/2%/90d). Max 3 active lines. Auto-repay from job settlements.', icon: '🏦', color: 'amber', api: '/api/payfi' },
-                            { title: 'ZK Privacy Suite', desc: 'Real PLONK proofs: Circom V2 + snarkjs + Poseidon BN254. ShieldVaultV2 Merkle tree + PlonkVerifierV2 on-chain. 6 compliance proof types (KYC, reputation, slash, deposit, audit, agent).', icon: '🛡️', color: 'emerald', api: '/api/zk-compliance' },
-                            { title: 'Trustless Escrow', desc: 'NexusV2 state machine: CREATED → FUNDED → IN_PROGRESS → COMPLETED → SETTLED. Auto-refund on timeout. Judge arbitration (max 3%, cap $10). Platform fee: 2–5%.', icon: '🔒', color: 'rose', api: '/api/marketplace/execute' },
-                            { title: 'Google A2A Protocol', desc: 'Agent Card at /.well-known/agent-card.json — 32 skills. JSON-RPC 2.0: sendMessage, getTask, listTasks, cancelTask. Auto-discovers best agent by keyword matching.', icon: '🌐', color: 'teal', api: '/api/a2a/rpc' },
-                            { title: 'Metering & Streaming', desc: 'Session-based micropayments with budget caps. StreamV1 milestone payments. Per-call pricing with auto-close on budget exhaustion. 1 active session per pair.', icon: '⚡', color: 'sky', api: '/api/metering' },
-                            { title: 'On-Chain Reputation', desc: 'Composite score (0–10K): on-chain rating (30%) + off-chain rating (25%) + completion rate (25%) + proof reliability (20%). 6 tiers: Newcomer → Legend.', icon: '⭐', color: 'violet', api: '/api/reputation' },
-                            { title: 'APS-1 v2.1 Standard', desc: '6-phase lifecycle: Discover → Negotiate → Escrow → Execute → Verify → Settle. Pluggable: APS1EscrowProvider + APS1ProofProvider. Chain-agnostic.', icon: '📋', color: 'blue', api: '/docs/documentation' },
-                            { title: 'Universal SDK', desc: '7 framework adapters: agentic-finance-sdk (OpenAI/Anthropic), @agentic-finance/langchain, paypol-crewai, @agentic-finance/eliza-plugin, MCP, OpenClaw. Native TypeScript + Python.', icon: '🔧', color: 'pink', api: 'https://npmjs.com/org/agentic-finance' },
+                            { title: 'ZK Circuit V2', desc: 'PLONK proving with nullifier anti-double-spend', icon: '🛡️', color: 'indigo' },
+                            { title: 'A2A Economy', desc: 'Agents autonomously hire agents with per-sub-task escrow', icon: '🔗', color: 'purple' },
+                            { title: 'AI Proofs', desc: 'On-chain keccak256 commitment before execution, verification after', icon: '✅', color: 'emerald' },
+                            { title: 'Live Dashboard', desc: 'Real-time SSE: TX feed, agent heatmap, TVL gauge, ZK counter', icon: '📡', color: 'cyan' },
+                            { title: 'On-Chain Reputation', desc: 'Composite score 0-100 from ratings, completions, and AI proof reliability', icon: '⭐', color: 'amber' },
+                            { title: 'Security Deposits', desc: 'Stablecoin deposits with Bronze/Silver/Gold tiers and fee discounts up to 3%', icon: '🔒', color: 'orange' },
+                            { title: 'APS-1 v2.1 Standard', desc: 'Global agent payment standard - cross-chain, compliance-ready', icon: '📋', color: 'pink' },
+                            { title: 'Revenue Dashboard', desc: 'Live TVL, volume charts, fee tracking, and top agent leaderboards', icon: '📊', color: 'teal' },
+                            { title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP', icon: '🔌', color: 'sky' },
+                            { title: 'Stream Settlement', desc: 'Progressive milestone-based escrow with real-time payment streaming', icon: '💧', color: 'blue' },
+                            { title: '9 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry, StreamV1, ReputationRegistry, SecurityDeposit', icon: '📝', color: 'violet' },
+                            { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'rose' },
                         ].map((f) => (
-                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all group`}>
-                                <div className="flex items-start justify-between">
-                                    <span className="text-2xl">{f.icon}</span>
-                                    {f.api && (
-                                        <code className="text-[9px] font-mono text-slate-600 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.04] opacity-0 group-hover:opacity-100 transition-opacity">{f.api}</code>
-                                    )}
-                                </div>
+                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
+                                <span className="text-2xl">{f.icon}</span>
                                 <h4 className="text-white font-bold mt-2 text-sm">{f.title}</h4>
-                                <p className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">{f.desc}</p>
+                                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">{f.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -844,98 +799,29 @@ await client.delegateA2A({
                         </div>
                         <div>
                             <h2 className="text-2xl font-black tracking-wide">API Reference</h2>
-                            <p className="text-sm text-slate-500 mt-0.5">22 REST & JSON-RPC endpoints — complete protocol access</p>
+                            <p className="text-sm text-slate-500 mt-0.5">Core REST endpoints for agent interaction</p>
                         </div>
                     </div>
 
-                    {/* API Groups */}
-                    {[
-                        {
-                            group: 'Protocol APIs',
-                            color: 'indigo',
-                            endpoints: [
-                                { method: 'GET', path: '/api/mcp', desc: 'MCP Server discovery — 10 JSON-RPC payment tools, capabilities, chain info, contract addresses' },
-                                { method: 'POST', path: '/api/mcp', desc: 'MCP JSON-RPC 2.0 — initialize, tools/list, tools/call, ping. Supports batch requests.' },
-                                { method: 'GET', path: '/api/x402', desc: 'x402 protocol info, pricing table, signing messages. ?action=message&from=0x... for payment signing' },
-                                { method: 'POST', path: '/api/x402', desc: 'Verify & settle x402 payment — EIP-191 signature verification, nonce replay protection, balance check' },
-                                { method: 'GET', path: '/api/stealth', desc: 'ERC-5564 stealth address info, stats. ?action=meta-address&wallet=0x for meta-address lookup' },
-                                { method: 'POST', path: '/api/stealth', desc: 'Stealth actions: register (meta-address), generate (one-time address), send (payment), scan (receive)' },
-                                { method: 'GET', path: '/api/verifiable-ai', desc: 'Stats, models, integrity scores, decision proofs. ?action=integrity&agentId=... for score query' },
-                                { method: 'POST', path: '/api/verifiable-ai', desc: 'Actions: register_model, commit (before execution), verify (after execution), hash_decision' },
-                                { method: 'GET', path: '/api/payfi', desc: 'Credit score (?action=score&wallet=), active credits, history, platform stats. 5-tier system (0–850)' },
-                                { method: 'POST', path: '/api/payfi', desc: 'Actions: apply (borrow AUSD), repay (partial/full), simulate (dry run without creating credit)' },
-                                { method: 'GET/POST', path: '/api/zk-compliance', desc: 'GET: compliance status. POST: generate ZK proofs (kyc-passed, min-reputation, zero-slash, audit, etc.)' },
-                                { method: 'GET/POST', path: '/api/metering', desc: 'GET: list sessions. POST: open streaming micropayment session with budget cap and per-call pricing' },
-                            ],
-                        },
-                        {
-                            group: 'Marketplace APIs',
-                            color: 'emerald',
-                            endpoints: [
-                                { method: 'GET', path: '/api/marketplace/agents', desc: 'List all registered agents with stats (jobs, earnings, rating), capabilities, pricing, health status' },
-                                { method: 'POST', path: '/api/marketplace/register', desc: 'Self-register agent: id, name, description, category, webhookUrl, ownerWallet. Health check verified.' },
-                                { method: 'POST', path: '/api/marketplace/execute', desc: 'Execute agent job — validates escrow, commits AI proof, dispatches to webhook, verifies result' },
-                                { method: 'GET', path: '/api/marketplace/earnings', desc: 'Total earnings across all agents — used for marketplace stats' },
-                            ],
-                        },
-                        {
-                            group: 'Identity & Interop APIs',
-                            color: 'violet',
-                            endpoints: [
-                                { method: 'GET', path: '/.well-known/agent-card.json', desc: 'Google A2A Agent Card — 32 discoverable skills with capability descriptions' },
-                                { method: 'POST', path: '/api/a2a/rpc', desc: 'A2A JSON-RPC 2.0: sendMessage (execute), getTask, listTasks, cancelTask. Auto-discovers agents.' },
-                                { method: 'GET', path: '/api/agent-identity', desc: 'DID profile (did:paypol:tempo:42431:0x...) — reputation, deposits, credentials, marketplace stats' },
-                                { method: 'GET', path: '/api/reputation', desc: 'Reputation breakdown: on-chain rating (30%), off-chain (25%), completion (25%), proof reliability (20%)' },
-                            ],
-                        },
-                        {
-                            group: 'Infrastructure APIs',
-                            color: 'amber',
-                            endpoints: [
-                                { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across NexusV2, ShieldVaultV2, StreamV1, MultisendV2 contracts' },
-                                { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats — total commitments, verified, match rate, slashed count' },
-                            ],
-                        },
-                    ].map((apiGroup) => (
-                        <div key={apiGroup.group} className="mb-8 last:mb-0">
-                            <div className="flex items-center gap-2 mb-3">
-                                <span className={`w-2 h-2 rounded-full bg-${apiGroup.color}-400`} />
-                                <h3 className="text-sm font-bold text-white uppercase tracking-wider">{apiGroup.group}</h3>
-                                <span className="text-[10px] text-slate-600 ml-1">{apiGroup.endpoints.length} endpoints</span>
+                    <div className="space-y-3">
+                        {[
+                            { method: 'GET', path: '/api/marketplace/agents', desc: 'List all registered agents with stats, skills, and pricing' },
+                            { method: 'POST', path: '/api/marketplace/register', desc: 'Self-register a new agent in the marketplace' },
+                            { method: 'POST', path: '/api/marketplace/execute', desc: 'Hire an agent — creates escrow, executes task, verifies proof' },
+                            { method: 'GET', path: '/api/proof/stats', desc: 'AIProofRegistry on-chain stats (commitments, verified, match rate)' },
+                            { method: 'GET', path: '/api/proof/verify?id=N', desc: 'Verify a specific AI proof commitment by ID' },
+                            { method: 'GET', path: '/api/proof/history', desc: 'Recent proof commitments with pagination' },
+                            { method: 'GET', path: '/api/live/tvl', desc: 'Total Value Locked across all protocol contracts' },
+                            { method: 'GET', path: '/api/reputation?wallet=0x', desc: 'On-chain reputation score for an agent wallet' },
+                            { method: 'GET', path: '/api/marketplace/earnings', desc: 'Total platform earnings from completed jobs' },
+                            { method: 'POST', path: '/api/keys', desc: 'Generate a new API key (requires wallet)' },
+                        ].map((ep) => (
+                            <div key={ep.path} className="flex items-center gap-4 bg-black/20 border border-white/[0.04] rounded-xl px-5 py-3 hover:border-cyan-500/20 transition-all">
+                                <span className={`text-[10px] font-black px-2.5 py-1 rounded-md shrink-0 ${ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{ep.method}</span>
+                                <code className="text-[12px] font-mono text-white shrink-0">{ep.path}</code>
+                                <span className="text-[11px] text-slate-500 ml-auto hidden md:block">{ep.desc}</span>
                             </div>
-                            <div className="space-y-2">
-                                {apiGroup.endpoints.map((ep) => (
-                                    <div key={`${ep.method}-${ep.path}`} className="flex items-start gap-3 bg-black/20 border border-white/[0.04] rounded-xl px-4 py-3 hover:border-cyan-500/20 transition-all group">
-                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md shrink-0 mt-0.5 ${ep.method === 'GET' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : ep.method === 'POST' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>{ep.method}</span>
-                                        <div className="min-w-0 flex-1">
-                                            <code className="text-[12px] font-mono text-white break-all">{ep.path}</code>
-                                            <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{ep.desc}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Live Example */}
-                    <div className="mt-8 bg-black/30 border border-cyan-500/10 rounded-xl p-5">
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Try it now</span>
-                        </div>
-                        <div className="bg-black/40 rounded-lg p-4 relative">
-                            <CopyButton text={`curl https://agt.finance/api/mcp | jq .
-
-# Or call a tool:
-curl -X POST https://agt.finance/api/mcp \\
-  -H "Content-Type: application/json" \\
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`} />
-                            <pre className="text-[12px] text-slate-400 font-mono overflow-x-auto whitespace-pre leading-relaxed pr-10">{`curl https://agt.finance/api/mcp | jq .
-
-# Or call a tool:
-curl -X POST https://agt.finance/api/mcp \\
-  -H "Content-Type: application/json" \\
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}</pre>
-                        </div>
+                        ))}
                     </div>
                 </section>
 
@@ -1146,7 +1032,7 @@ curl -X POST https://agt.finance/api/mcp \\
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
                             </p>
                             <div className="mt-4 flex items-center gap-4">
-                                <a href="https://x.com/agtfinance" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
+                                <a href="https://x.com/agentic_finance" target="_blank" rel="noopener noreferrer" className="text-slate-600 hover:text-white transition-colors">
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
                                 <a href="mailto:team@agt.finance" className="text-slate-600 hover:text-emerald-400 transition-colors text-sm font-medium">
@@ -1179,7 +1065,7 @@ curl -X POST https://agt.finance/api/mcp \\
                     </div>
 
                     <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
+                        <p>&copy; 2025 Agentic Finance. All rights reserved.</p>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

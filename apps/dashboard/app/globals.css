@@ -1,14 +1,34 @@
 @import "tailwindcss";
 
 /* ══════════════════════════════════════════════
-   PayPol Protocol — Design System Tokens
+   Agentic Finance — Design System Tokens v1.0
+   Brand: agt.finance | Token: AGT
    ══════════════════════════════════════════════ */
 :root {
-  /* Core palette */
-  --pp-bg-primary: #111B2E;
-  --pp-bg-secondary: #162035;
-  --pp-bg-card: #1A2640;
-  --pp-bg-elevated: #1F2D47;
+  /* ── Brand Colors ── */
+  --agt-pink:        #FF2D87;   /* Spectrum Pink — primary accent */
+  --agt-blue:        #1BBFEC;   /* Electric Blue — secondary accent */
+  --agt-mint:        #3EDDB9;   /* Mint Teal — tertiary accent */
+  --agt-orange:      #FF7D2C;   /* Sunrise Orange — warm accent */
+
+  /* ── Extended Palette ── */
+  --agt-pink-light:  #FF6EB3;
+  --agt-pink-dark:   #D0157A;
+  --agt-blue-light:  #6DD6F4;
+  --agt-blue-dark:   #0890B8;
+  --agt-mint-light:  #7EEBD3;
+  --agt-mint-dark:   #20A884;
+
+  /* ── Gradients ── */
+  --agt-grad-primary:  linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9);
+  --agt-grad-warm:     linear-gradient(135deg, #FF2D87, #FF7D2C);
+  --agt-grad-cool:     linear-gradient(135deg, #1BBFEC, #3EDDB9);
+
+  /* ── Background Surfaces ── */
+  --pp-bg-primary: #0A0A0F;    /* App background */
+  --pp-bg-secondary: #111118;
+  --pp-bg-card: #111118;       /* Card background */
+  --pp-bg-elevated: #1A1A24;   /* Elevated surface */
 
   /* Surface overlays */
   --pp-surface-1: rgba(255, 255, 255, 0.04);
@@ -16,48 +36,64 @@
   --pp-surface-3: rgba(255, 255, 255, 0.12);
 
   /* Borders */
-  --pp-border: rgba(255, 255, 255, 0.12);
-  --pp-border-hover: rgba(255, 255, 255, 0.20);
+  --pp-border: rgba(255, 255, 255, 0.08);
+  --pp-border-hover: rgba(255, 255, 255, 0.16);
+  --agt-border-pink: rgba(255, 45, 135, 0.3);
 
   /* Text */
-  --pp-text-primary: #F1F5F9;
-  --pp-text-secondary: #94A3B8;
-  --pp-text-muted: #64748B;
+  --pp-text-primary: #FFFFFF;
+  --pp-text-secondary: #C4C4D4;
+  --pp-text-muted: #6B6B8A;
 
-  /* Accent colors */
-  --pp-accent: #6366F1;
-  --pp-accent-hover: #818CF8;
-  --pp-success: #10B981;
-  --pp-warning: #F59E0B;
+  /* Accent colors — mapped to brand */
+  --pp-accent: #FF2D87;        /* Spectrum Pink as primary accent */
+  --pp-accent-hover: #FF6EB3;
+  --pp-success: #3EDDB9;       /* Mint Teal */
+  --pp-warning: #FF7D2C;       /* Sunrise Orange */
   --pp-danger: #EF4444;
-  --pp-info: #06B6D4;
+  --pp-info: #1BBFEC;          /* Electric Blue */
 
   /* Spacing scale */
-  --pp-radius-sm: 8px;
-  --pp-radius-md: 12px;
+  --pp-radius-sm: 6px;
+  --pp-radius-md: 10px;
   --pp-radius-lg: 16px;
-  --pp-radius-xl: 20px;
+  --pp-radius-xl: 24px;
+
+  /* ── Typography ── */
+  --agt-font-display: 'Bricolage Grotesque', var(--font-dm-sans), system-ui, sans-serif;
+  --agt-font-body:    var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  --agt-font-mono:    var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Enforce dark */
-  --background: #111B2E;
-  --foreground: #F1F5F9;
+  --background: #0A0A0F;
+  --foreground: #FFFFFF;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 /* Always dark — no light mode */
 body {
   background: var(--pp-bg-primary);
   color: var(--pp-text-primary);
-  font-family: var(--font-sans, 'Geist', system-ui, -apple-system, sans-serif);
+  font-family: var(--agt-font-body, 'DM Sans', system-ui, -apple-system, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Brand Utility Classes ── */
+.agt-text-gradient {
+  background: var(--agt-grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.agt-font-display { font-family: var(--agt-font-display); }
+.agt-font-mono    { font-family: var(--agt-font-mono); }
 
 /* ── Reusable Card Style ── */
 .pp-card {
@@ -72,7 +108,7 @@ body {
 
 /* ── Glass effect ── */
 .pp-glass {
-  background: rgba(17, 27, 46, 0.85);
+  background: rgba(10, 10, 15, 0.85);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
@@ -92,13 +128,13 @@ body {
 /* ── Scrollbars ── */
 .cyber-scroll-x::-webkit-scrollbar { height: 6px; }
 .cyber-scroll-x::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
-.cyber-scroll-x::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
-.cyber-scroll-x::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+.cyber-scroll-x::-webkit-scrollbar-thumb { background: rgba(255, 45, 135, 0.3); border-radius: 10px; }
+.cyber-scroll-x::-webkit-scrollbar-thumb:hover { background: rgba(255, 45, 135, 0.6); }
 
 .cyber-scroll-y::-webkit-scrollbar { width: 5px; }
 .cyber-scroll-y::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
-.cyber-scroll-y::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
-.cyber-scroll-y::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+.cyber-scroll-y::-webkit-scrollbar-thumb { background: rgba(255, 45, 135, 0.3); border-radius: 10px; }
+.cyber-scroll-y::-webkit-scrollbar-thumb:hover { background: rgba(255, 45, 135, 0.6); }
 
 /* ── Utilities ── */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -120,8 +156,8 @@ input[type=number] { -moz-appearance: textfield; }
 .animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; will-change: transform, opacity; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 45, 135, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 45, 135, 0.4); }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; will-change: box-shadow; }
 
@@ -147,8 +183,8 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @keyframes glowPulse {
-  0%, 100% { text-shadow: 0 0 10px rgba(99,102,241,0.3); }
-  50% { text-shadow: 0 0 25px rgba(99,102,241,0.6), 0 0 50px rgba(99,102,241,0.15); }
+  0%, 100% { text-shadow: 0 0 10px rgba(255,45,135,0.3); }
+  50% { text-shadow: 0 0 25px rgba(255,45,135,0.6), 0 0 50px rgba(255,45,135,0.15); }
 }
 
 @keyframes countUp {
@@ -162,14 +198,14 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 @keyframes pulse-border {
-  0%, 100% { border-color: rgba(239, 68, 68, 0.15); }
-  50% { border-color: rgba(239, 68, 68, 0.8); }
+  0%, 100% { border-color: rgba(245, 158, 11, 0.15); }
+  50% { border-color: rgba(245, 158, 11, 0.7); }
 }
-.animate-pulse-border { animation: pulse-border 1.2s ease-in-out infinite; }
+.animate-pulse-border { animation: pulse-border 1.5s ease-in-out infinite; }
 
 /* ── Firefox scrollbar support ── */
-.cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
-.cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.3) rgba(0, 0, 0, 0.2); }
+.cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(255, 45, 135, 0.3) rgba(0, 0, 0, 0.2); }
+.cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(255, 45, 135, 0.3) rgba(0, 0, 0, 0.2); }
 
 /* ── Focus indicators (accessibility) ── */
 *:focus-visible {

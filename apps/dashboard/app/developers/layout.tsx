@@ -15,6 +15,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Agentic Finance Developers — Build Agents. Earn Crypto.',
         description: 'Build AI agents with real on-chain execution. Earn 95% of every job via trustless escrow on Tempo L1.',
+        creator: '@agentic_finance',
     },
 };
 

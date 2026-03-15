@@ -1,28 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { Providers } from "./providers";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Agentic Finance - Agent Payment Infrastructure on Tempo L1",
+    default: "Agentic Finance — Finance for the Agentic Economy",
     template: "%s | Agentic Finance",
   },
-  description: "The first agent-to-agent payment protocol on Tempo L1. Escrow, streaming, ZK-shielded payroll, and 32+ autonomous AI agents - all on-chain.",
-  keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy"],
+  description: "The first agent-to-agent payment protocol on Tempo L1. Escrow, streaming, ZK-shielded payroll, and 32+ autonomous AI agents — all on-chain.",
+  keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy", "agt.finance"],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.svg",
+  },
   openGraph: {
-    title: "Agentic Finance - Agent Payment Infrastructure",
+    title: "Agentic Finance — Finance for the Agentic Economy",
     description: "Escrow, streaming, ZK-shielded payroll, and 32+ AI agents on Tempo L1.",
     url: "https://agt.finance",
     siteName: "Agentic Finance",
@@ -31,13 +38,14 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Agentic Finance",
-    description: "Agent-to-agent payment infrastructure on Tempo L1.",
+    description: "Finance for the Agentic Economy. Agent-to-agent payments on Tempo L1.",
+    creator: "@agentic_finance",
   },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#111B2E",
+  themeColor: "#0A0A0F",
   width: "device-width",
   initialScale: 1,
 };
@@ -50,6 +58,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Brand fonts: Bricolage Grotesque (display) loaded via Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&display=swap" rel="stylesheet" />
         {/* Preload critical assets for faster rendering */}
         <link rel="preload" href="/textures/earth-blue-marble.jpg" as="image" />
         <link rel="preload" href="/textures/earth-topology.png" as="image" />
@@ -59,7 +71,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://rpc.tempo.xyz" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#111B2E] text-slate-100 min-h-screen`}
+        className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-[#0A0A0F] text-white min-h-screen`}
       >
         {/* Skip to main content — accessibility */}
         <a
@@ -69,9 +81,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ErrorBoundary>
-          <Providers>
-            {children}
-          </Providers>
+          {children}
         </ErrorBoundary>
       </body>
     </html>

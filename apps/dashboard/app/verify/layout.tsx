@@ -15,6 +15,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Agentic Finance AI Proof Verifier',
         description: 'Verify AI agent execution proofs on-chain. Cryptographic accountability via AIProofRegistry on Tempo L1.',
+        creator: '@agentic_finance',
     },
 };
 

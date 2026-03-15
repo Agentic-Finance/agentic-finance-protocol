@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { DocumentArrowDownIcon, DocumentTextIcon, XMarkIcon } from '@/app/components/icons';
+import { DocumentArrowDownIcon, DocumentTextIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface CsvUploadModalProps {
     showCsvModal: boolean;
@@ -42,15 +42,15 @@ function CsvUploadModal({ showCsvModal, setShowCsvModal, dontShowCsvGuide, setDo
                 <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2">Download Sample File</p>
                 <div className="flex gap-3 mb-6">
                     <a
-                        href="/paypol-sample-ledger.xlsx"
-                        download="paypol-sample-ledger.xlsx"
+                        href="/agtfi-sample-ledger.xlsx"
+                        download="agtfi-sample-ledger.xlsx"
                         className="flex-1 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all"
                     >
                         <DocumentArrowDownIcon className="w-4 h-4" /> .XLSX
                     </a>
                     <a
-                        href="/paypol-sample-ledger.csv"
-                        download="paypol-sample-ledger.csv"
+                        href="/agtfi-sample-ledger.csv"
+                        download="agtfi-sample-ledger.csv"
                         className="flex-1 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all hover:border-white/20"
                     >
                         <DocumentArrowDownIcon className="w-4 h-4" /> .CSV

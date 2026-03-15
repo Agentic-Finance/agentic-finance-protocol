@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Community | Agentic Finance',
-    description: 'Insights, deep-dives, and updates from the Agentic Finance team.',
+    title: 'Community | PayPol Protocol',
+    description: 'Insights, deep-dives, and updates from the PayPol Protocol team.',
 };
 
 const POSTS = [
     {
         slug: 'ai-payroll-infrastructure',
         title: 'AI-Powered Payroll Infrastructure on Tempo L1',
-        subtitle: 'How Agentic Finance eliminates the gap between intent and execution for on-chain payments.',
+        subtitle: 'How PayPol eliminates the gap between intent and execution for on-chain payments.',
         date: 'March 9, 2026',
         readTime: '8 min read',
         tags: ['Infrastructure', 'AI', 'ZK Privacy'],
@@ -34,7 +34,7 @@ export default function CommunityPage() {
                         Blog & Insights
                     </h1>
                     <p className="text-slate-400 text-base max-w-lg mx-auto leading-relaxed">
-                        Deep-dives into the technology, architecture decisions, and vision behind Agentic Finance.
+                        Deep-dives into the technology, architecture decisions, and vision behind PayPol Protocol.
                     </p>
                 </div>
             </section>

@@ -17,7 +17,7 @@ import {
     PuzzlePieceIcon, TruckIcon, ArrowsRightLeftIcon,
     BookOpenIcon, ChatBubbleLeftRightIcon, ArrowTopRightOnSquareIcon,
     SignalIcon, CheckBadgeIcon, ScaleIcon, KeyIcon
-} from '@/app/components/icons';
+} from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
 export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }) {
@@ -79,7 +79,6 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
         } else {
             // Nexus A2A - Live demo with real marketplace agents
             let cancelled = false;
-            const controller = new AbortController();
             const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
             const runLiveDemo = async () => {
                 setOutputStep(1);
@@ -90,7 +89,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 setNexusLog(prev => [...prev, "> Querying Agent Marketplace on Tempo L1..."]);
 
                 try {
-                    const res = await fetch('/api/marketplace/agents', { signal: controller.signal });
+                    const res = await fetch('/api/marketplace/agents');
                     const data = await res.json();
                     if (cancelled) return;
                     const agents = (data.agents || []).filter((a: any) => a.isVerified);
@@ -105,8 +104,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         setAgentData({ devAddress: a1.ownerWallet, auditAddress: a2.ownerWallet });
                         await delay(400);
                         if (cancelled) return;
-                        setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} alphaUSD)`]);
-                        setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} alphaUSD)`]);
+                        setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} ALPHA)`]);
+                        setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} ALPHA)`]);
                     }
                     setOutputStep(2);
 
@@ -118,11 +117,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     if (cancelled) return;
                     const agent = agents[0];
                     setNexusLog(prev => [...prev, `> [CHAIN] \u2705 Job completed. Escrow settled.`]);
-                    setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} alphaUSD released to ${agent?.name || 'Agent'}`]);
+                    setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} ALPHA released to ${agent?.name || 'Agent'}`]);
                     setOutputStep(3);
                 } catch {
                     if (cancelled) return;
-                    // Fallback — use real ecosystem addresses
+                    // Fallback — use real Agentic Finance ecosystem addresses
                     setAgentData({ devAddress: '0x33F7E5da', auditAddress: '0x6A467Cd4' });
                     setNexusLog(prev => [...prev, `> Agents: Dev(0x33F7...) & Audit(0x6A46...)`]);
                     setOutputStep(2);
@@ -133,13 +132,13 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 }
             };
             runLiveDemo();
-            return () => { cancelled = true; controller.abort(); };
+            return () => { cancelled = true; };
         }
     }, [activeTab]);
 
     const prompts = [
         { title: "Private Payroll", command: "Pay @Tony 10 AlphaUSD, use ZK Shield and lock for 7 days.", icon: <ShieldCheckIcon className="w-5 h-5" />, color: '#10b981' },
-        { title: "Agentic Nexus (A2A)", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
+        { title: "Nexus A2A Escrow", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
         { title: "Smart Ledger", command: "Parse Q3_Engineering_Roster.csv and map to addresses.", icon: <DocumentTextIcon className="w-5 h-5" />, color: '#818cf8' },
         { title: "Conditional Payroll", command: "Pay marketing team 500 AlphaUSD monthly if TVL exceeds $10K.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899' },
         { title: "AI Proof Verification", command: "Verify Agent #7 execution proof. Check Poseidon hash against on-chain commitment.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308' },
@@ -329,7 +328,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
 
                         {/* COLUMN 2: Why Agentic Finance? */}
                         <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>The Answer Is Here.</h3></div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>Agentic Finance Is The Answer.</h3></div>
                             <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>Every AI agent needs a bank account. Every agent economy needs a central bank. Agentic Finance is <span style={{ color: '#fff', textDecoration: 'underline', textDecorationColor: '#10b981' }}>the settlement infrastructure</span> for this entire new economy.</p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                                 <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. Agentic Finance bridges this gap - every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
@@ -644,29 +643,31 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
                         </div>
                         <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            The Complete Stack.<br />
+                            14 Features.<br />
                             <span className="gradient-text">All Real. All On-Chain.</span>
                         </h2>
                         <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            9 verified contracts. 32+ agents. 7 protocol standards. MCP · x402 · Stealth · PayFi · ZK · A2A · APS-1.
+                            Every feature executes real transactions on Tempo L1. 9 source-verified smart contracts. 32 on-chain agents. Zero mocks.
                         </p>
                     </div>
 
-                    {/* Core Feature Grid */}
+                    {/* Phase 2 Feature Grid - 4x2 */}
                     <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
                         {[
-                            { icon: <CubeTransparentIcon style={{ width: '28px', height: '28px' }} />, title: 'Trustless Escrow', desc: 'NexusV2 locks funds until verified completion. Auto-refund on timeout. StreamV1 for milestone releases. MultisendV2 for batch payroll.', color: '#10b981', stat: '3 Contracts' },
-                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'Verifiable AI Engine', desc: 'Model registry with keccak256 fingerprints. Commit decision hash before execution, verify after. Integrity scoring (0–100) with auto-slashing.', color: '#f59e0b', stat: 'AIProofRegistry' },
-                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Privacy Suite', desc: 'PLONK proofs via Circom V2. ERC-5564 stealth addresses for unlinkable payments. ZK compliance — prove KYC without revealing data.', color: '#818cf8', stat: 'PLONK + Stealth' },
-                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'MCP Payment Server', desc: '10 JSON-RPC payment tools via Model Context Protocol. Any AI model — Claude, GPT, Gemini — can send payments, create escrow, hire agents.', color: '#22d3ee', stat: '10 RPC Tools' },
-                            { icon: <ScaleIcon style={{ width: '28px', height: '28px' }} />, title: 'x402 Micropayments', desc: 'HTTP 402 pay-per-use APIs with EIP-191 signature verification. Every agent is a monetizable endpoint. Replay protection built-in.', color: '#c084fc', stat: 'HTTP 402' },
-                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'PayFi Credit Layer', desc: 'AI agents borrow AlphaUSD based on payment history. Credit score (0–850), 5 tiers, 2–12% APR. Auto-repayment from job settlements.', color: '#f97316', stat: '5 Credit Tiers' },
-                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents hire agents autonomously. Task decomposition with per-sub-task escrow chains. Google A2A interoperability. DID identity system.', color: '#a855f7', stat: 'A2A + DID' },
-                            { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Universal SDK', desc: 'Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, OpenClaw. APS-1 v2.1 global standard. 3 lines to hire an agent.', color: '#0ea5e9', stat: '7+ Frameworks' },
-                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32+ Live Agents', desc: 'Escrow, streams, shield, payroll, audit, deploy, swap, bridge — all executing real transactions on Tempo L1 with on-chain verification.', color: '#ec4899', stat: '32 Native' },
-                            { icon: <BoltIcon style={{ width: '28px', height: '28px' }} />, title: 'Streaming & Metering', desc: 'Milestone-based payment streams. Per-inference metering sessions with budget caps. Automatic 402 on exhaustion. Sub-cent granularity.', color: '#14b8a6', stat: 'StreamV1' },
-                            { icon: <KeyIcon style={{ width: '28px', height: '28px' }} />, title: 'On-Chain Reputation', desc: 'Composite score (0–10K) from ratings, completions, proof reliability, and security deposits. Tiered labels with on-chain trust badges.', color: '#8b5cf6', stat: 'ReputationRegistry' },
-                            { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Infrastructure', desc: 'Real-time SSE dashboard, Cortex intelligence hub, Sentinel threat detection, revenue analytics. Everything operational in production.', color: '#06b6d4', stat: 'SSE Real-time' },
+                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Circuit V2', desc: 'PLONK proving system with Poseidon nullifier pattern. Anti-double-spend protection for private payments.', color: '#818cf8', stat: 'PLONK + Nullifier' },
+                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification, treasury, gas profiling - all with real Tempo L1 transactions.', color: '#22d3ee', stat: '32 Native' },
+                            { icon: <SparklesIcon style={{ width: '28px', height: '28px' }} />, title: 'AI Brain Orchestrator', desc: 'Claude-powered natural language parsing into deterministic NexusV2 escrow operations. Real AI, not mock.', color: '#c084fc', stat: 'Claude Sonnet' },
+                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents autonomously hire agents. Coordinator decomposes tasks, creates per-sub-task NexusV2 escrow chains.', color: '#a855f7', stat: '6 TXs/chain' },
+                            { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Dashboard', desc: 'Real-time SSE streaming: transaction feed, agent heatmap, ZK proof counter, TVL gauge, revenue ticker.', color: '#10b981', stat: 'SSE Real-time' },
+                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'Verifiable AI Proofs', desc: 'On-chain keccak256 commitment before execution. Verification after. Mismatch triggers slashing event.', color: '#f59e0b', stat: 'AIProofRegistry' },
+                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Tempo Benchmark', desc: '5 real operations comparing Tempo vs Ethereum costs. Proves 99%+ savings for Agentic Finance operations.', color: '#ec4899', stat: '99%+ Savings' },
+                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
+                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'Stream Settlement', desc: 'Progressive milestone-based escrow. Client approves each deliverable, payment releases incrementally. Real-time notifications.', color: '#06b6d4', stat: 'StreamV1' },
+                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'On-Chain Reputation', desc: 'Composite reputation score (0-100) from on-chain ratings, completion rate, and AI proof reliability. Tiered labels from Newcomer to Legend.', color: '#8b5cf6', stat: 'ReputationRegistry' },
+                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'Security Deposits', desc: 'Agents stake AlphaUSD to prove skin-in-the-game. Bronze/Silver/Gold tiers unlock fee discounts (up to 3%). Auto-slashing on proof mismatch.', color: '#f97316', stat: '4 Tiers' },
+                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Revenue Dashboard', desc: 'Live TVL tracking, fee accumulation, volume charts, and top agent leaderboards. Real-time protocol analytics with SSE updates.', color: '#14b8a6', stat: 'Live Analytics' },
+                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard - formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v2.1' },
+                            { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, Google A2A, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '7+ Adapters' },
                         ].map((f, i) => (
                             <div key={i} className="reveal-child" style={{ backgroundColor: '#1A2844', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
@@ -691,7 +692,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                 { name: 'StreamV1', addr: '0x4fE3...36C', color: '#06b6d4' },
                                 { name: 'ReputationRegistry', addr: '0x9332...4D0', color: '#8b5cf6' },
                                 { name: 'SecurityDeposit', addr: '0x0778...424E', color: '#f97316' },
-                                { name: 'PayPolNexus (V1)', addr: '0x4B7e...d11', color: '#94a3b8' },
+                                { name: 'NexusV1 (Legacy)', addr: '0x4B7e...d11', color: '#94a3b8' },
                             ].map((c) => (
                                 <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
                                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.color, flexShrink: 0 }} />
@@ -735,7 +736,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
                             <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
                             <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Framework Integrations</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire agents in 3 lines of code.</p>
+                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire Agentic Finance agents in 3 lines of code.</p>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                 {['OpenAI', 'Anthropic', 'LangChain', 'CrewAI', 'Eliza', 'MCP'].map((f) => (
                                     <span key={f} style={{ fontSize: '10px', fontWeight: 700, color: '#a5b4fc', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '9999px', padding: '3px 10px' }}>{f}</span>
@@ -777,7 +778,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                             <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '600', fontFamily: 'monospace', marginLeft: '8px' }}>my-agent.ts</span>
                         </div>
                         <pre style={{ padding: '20px 24px', margin: 0, fontSize: '0.78rem', lineHeight: 1.7, fontFamily: 'monospace', color: '#94a3b8', overflowX: 'auto' }}>
-{`import { `}<span style={{ color: '#10b981' }}>AgentClient</span>{` } from 'agentic-finance-sdk';
+{`import { `}<span style={{ color: '#10b981' }}>AgentClient</span>{` } from '@agentic-finance/sdk';
 
 const agent = new `}<span style={{ color: '#10b981' }}>AgentClient</span>{`({
   name: `}<span style={{ color: '#fbbf24' }}>'my-defi-bot'</span>{`,
@@ -841,10 +842,10 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                                 <img src="/logo.png" alt="Agentic Finance" style={{ height: '36px', width: 'auto' }} />
                             </a>
                             <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>
-                                The Financial OS for the AI Agent Economy. Trustless escrow, ZK privacy, AI-native credit, MCP payments — one protocol for every agent framework.
+                                The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
                             </p>
                             <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <a href="https://x.com/agtfinance" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
+                                <a href="https://x.com/agentic_finance" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                 </a>
                                 <a href="mailto:team@agt.finance" style={{ color: '#475569', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
@@ -877,7 +878,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                     </div>
 
                     <div style={{ paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: '#475569' }}>
-                        <p>&copy; 2026 Agentic Finance. All rights reserved.</p>
+                        <p>&copy; 2025 Agentic Finance. All rights reserved.</p>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', animation: 'pulse 2s infinite' }}></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

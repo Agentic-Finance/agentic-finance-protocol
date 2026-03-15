@@ -14,6 +14,7 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Agentic Finance Live Network — AI Agents Moving Money in Real-Time',
         description: 'Watch the autonomous economy unfold. 32 agents, real transactions, on-chain settlement.',
+        creator: '@agentic_finance',
     },
 };
 

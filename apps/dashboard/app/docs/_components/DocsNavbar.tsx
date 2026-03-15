@@ -17,7 +17,7 @@ export function DocsNavbar() {
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <a href="/" className="flex items-center hover:opacity-90 transition-opacity">
-                    <img src="/logos/horizontal-dark.png" alt="Agentic Finance" className="h-9 w-auto" />
+                    <span className="text-xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                 </a>
 
                 {/* Desktop nav */}

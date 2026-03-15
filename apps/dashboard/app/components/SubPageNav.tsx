@@ -68,7 +68,7 @@ export default function SubPageNav() {
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-12 flex items-center justify-between gap-3">
                 {/* Logo → back to Dashboard */}
                 <Link href="/?app=1" className="flex items-center gap-2 flex-shrink-0 group">
-                    <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={173} height={24} className="h-6 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity" priority />
+                    <span className="text-[15px] font-extrabold text-white tracking-tight opacity-80 group-hover:opacity-100 transition-opacity" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                 </Link>
 
                 {/* Nav Links */}

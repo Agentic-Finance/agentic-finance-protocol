@@ -53,7 +53,7 @@ export default function ProtocolPage() {
       <nav className="sticky top-0 z-50 bg-[#0F1724]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="/" className="flex items-center group">
-            <Image src="/logos/horizontal-dark.png" alt="Agentic Finance" width={202} height={28} className="h-7 w-auto object-contain" priority />
+            <span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
           </a>
           <div className="flex items-center gap-5">
             <a href="/developers" className="text-xs text-slate-400 hover:text-white transition-colors">Developers</a>

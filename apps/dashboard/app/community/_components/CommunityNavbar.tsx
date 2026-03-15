@@ -23,7 +23,7 @@ export function CommunityNavbar() {
             <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 {/* Logo */}
                 <a href="/" className="flex items-center hover:opacity-90 transition-opacity">
-                    <img src="/logos/horizontal-dark.svg" alt="Agentic Finance" className="h-8 w-auto" />
+                    <img src="/logos/horizontal-dark.png" alt="Agentic Finance" className="h-8 w-auto" />
                 </a>
 
                 {/* Desktop nav */}

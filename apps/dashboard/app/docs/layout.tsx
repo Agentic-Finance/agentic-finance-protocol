@@ -23,7 +23,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                         {/* Brand */}
                         <div>
                             <a href="/" className="flex items-center mb-3 hover:opacity-90 transition-opacity">
-                                <img src="/logos/horizontal-dark.svg" alt="Agentic Finance" className="h-9 w-auto" />
+                                <img src="/logos/horizontal-dark.png" alt="Agentic Finance" className="h-9 w-auto" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed">
                                 The Financial OS for the Agentic Economy. Built on Tempo, secured by ZK-SNARKs.

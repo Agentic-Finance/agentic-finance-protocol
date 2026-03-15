@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy", "agt.finance"],
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/svg+xml" },
     ],
-    apple: "/apple-touch-icon.svg",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Agentic Finance — Finance for the Agentic Economy",
@@ -65,7 +65,7 @@ export default function RootLayout({
         {/* Preload critical assets for faster rendering */}
         <link rel="preload" href="/textures/earth-blue-marble.jpg" as="image" />
         <link rel="preload" href="/textures/earth-topology.png" as="image" />
-        <link rel="preload" href="/logos/horizontal-dark.svg" as="image" />
+        <link rel="preload" href="/logos/horizontal-dark.png" as="image" />
         {/* DNS prefetch for external services */}
         <link rel="dns-prefetch" href="https://explore.tempo.xyz" />
         <link rel="dns-prefetch" href="https://rpc.tempo.xyz" />

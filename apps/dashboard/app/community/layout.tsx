@@ -25,7 +25,7 @@ export default function CommunityLayout({ children }: { children: React.ReactNod
                         {/* Brand */}
                         <div className="md:col-span-2">
                             <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
-                                <img src="/logos/horizontal-dark.svg" alt="Agentic Finance" className="h-9 w-auto" />
+                                <img src="/logos/horizontal-dark.png" alt="Agentic Finance" className="h-9 w-auto" />
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.

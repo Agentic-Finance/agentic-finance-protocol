@@ -101,7 +101,8 @@ function Navbar({
                         )}
 
                         <Link href="/" className="flex items-center gap-2 group">
-                            <span className="text-[17px] font-extrabold text-white tracking-tight drop-shadow-[0_0_12px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_18px_rgba(255,255,255,0.2)] transition-all" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                            <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" style={{ mixBlendMode: 'screen' }} priority />
+                            <span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                         </Link>
 
                         {currentWorkspace && (

@@ -99,7 +99,7 @@ export default function VerifyPage() {
       <nav className="sticky top-0 z-50 bg-[#0F1724]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="/" className="flex items-center group">
-            <span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+            <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" style={{ mixBlendMode: "screen" }} priority /><span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
           </a>
           <div className="flex items-center gap-4">
             <a href="/protocol" className="text-xs text-slate-400 hover:text-white transition-colors">Protocol</a>

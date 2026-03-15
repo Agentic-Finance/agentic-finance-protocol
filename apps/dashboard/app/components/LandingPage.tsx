@@ -163,7 +163,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* NAVBAR */}
             <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(11, 17, 32, 0.95)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.10)' : 'none', backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none', transition: 'all 0.3s ease' }}>
                 <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <Image src="/logo.png" alt="" width={36} height={36} style={{ marginRight: '8px' }} priority />
+                    <Image src="/logo-v2.png" alt="" width={36} height={36} style={{ marginRight: '8px' }} priority />
                     <span style={{ fontSize: '22px', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                 </div>
                 <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '32px', padding: '12px 40px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
@@ -840,7 +840,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                         {/* Brand */}
                         <div style={{ gridColumn: 'span 2' }}>
                             <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                                <img src="/logo.png" alt="" style={{ height: '32px', width: '32px', objectFit: 'contain' }} />
+                                <img src="/logo-v2.png" alt="" style={{ height: '32px', width: '32px', objectFit: 'contain' }} />
                                 <span style={{ fontSize: '24px', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             </a>
                             <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>

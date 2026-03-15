@@ -101,7 +101,7 @@ function Navbar({
                         )}
 
                         <Link href="/" className="flex items-center gap-2 group">
-                            <Image src="/logo.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" priority />
+                            <Image src="/logo-v2.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" priority />
                             <span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                         </Link>
 

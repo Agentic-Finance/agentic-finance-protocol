@@ -409,7 +409,7 @@ export default function DevelopersPage() {
             <nav className="sticky top-0 z-50 bg-[#111B2E]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
-                        <Image src="/logo.png" alt="" width={32} height={32} className="h-8 w-8 object-contain" priority /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                        <Image src="/logo-v2.png" alt="" width={32} height={32} className="h-8 w-8 object-contain" priority /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                         <span className="text-xs font-mono text-slate-500 border border-white/5 px-2 py-0.5 rounded-md">developers</span>
                     </a>
                     <div className="flex items-center gap-4">
@@ -1026,7 +1026,7 @@ await client.delegateA2A({
                         {/* Brand */}
                         <div className="md:col-span-2">
                             <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
-                                <img src="/logo.png" alt="" style={{ height: "36px", width: "36px", objectFit: "contain" }} /><span className="text-xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                                <img src="/logo-v2.png" alt="" style={{ height: "36px", width: "36px", objectFit: "contain" }} /><span className="text-xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.

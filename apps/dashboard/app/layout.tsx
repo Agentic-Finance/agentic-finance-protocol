@@ -65,7 +65,7 @@ export default function RootLayout({
         {/* Preload critical assets for faster rendering */}
         <link rel="preload" href="/textures/earth-blue-marble.jpg" as="image" />
         <link rel="preload" href="/textures/earth-topology.png" as="image" />
-        <link rel="preload" href="/logo.png" as="image" />
+        <link rel="preload" href="/logos/horizontal-dark.svg" as="image" />
         {/* DNS prefetch for external services */}
         <link rel="dns-prefetch" href="https://explore.tempo.xyz" />
         <link rel="dns-prefetch" href="https://rpc.tempo.xyz" />

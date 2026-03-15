@@ -56,7 +56,7 @@ function Boardroom(props: BoardroomProps) {
                         </h2>
                         <p className={`text-sm mt-2 md:ml-14 ${isAgentMode ? 'text-fuchsia-400/80' : 'text-amber-400/80'}`}>
                             {isAgentMode 
-                                ? "Funds will be securely locked in PayPol Escrow until the agent completes the task." 
+                                ? "Funds will be securely locked in Agentic Finance Escrow until the agent completes the task." 
                                 : "Multi-Sig Validation Required. Awaiting cryptographic signature."}
                         </p>
                     </div>

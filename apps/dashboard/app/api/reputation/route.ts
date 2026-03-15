@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import prisma from '../../lib/prisma';
 import {
   RPC_URL,
-  PAYPOL_NEXUS_V2_ADDRESS,
+  AGTFI_NEXUS_V2_ADDRESS,
   NEXUS_V2_ABI,
   AI_PROOF_REGISTRY_ADDRESS,
   AI_PROOF_REGISTRY_ABI,
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       // On-chain NexusV2 worker rating
       (async () => {
         try {
-          const nexus = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, provider);
+          const nexus = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, provider);
           const rating = await nexus.getWorkerRating(wallet);
           return Number(rating);
         } catch { return 0; }

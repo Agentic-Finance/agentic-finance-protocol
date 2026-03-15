@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ShieldCheckIcon, CheckBadgeIcon, XCircleIcon, LinkIcon, PaperClipIcon, ScaleIcon, ExclamationTriangleIcon, ArrowUturnLeftIcon, DocumentCheckIcon, ClockIcon } from '@/app/components/icons';
-import { PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI } from '@/app/lib/constants';
+import { AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI } from '@/app/lib/constants';
 
 interface EscrowPayload {
     id: string;
@@ -21,12 +21,12 @@ interface EscrowPayload {
     agentJobId: string | null;
 }
 
-export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddress }: { isPaypolArbitrator?: boolean; walletAddress?: string | null }) {
+export default function JudgeDashboard({ isAgtfiArbitrator = false, walletAddress }: { isAgtfiArbitrator?: boolean; walletAddress?: string | null }) {
     const [escrows, setEscrows] = useState<EscrowPayload[]>([]);
 
     // SMART TABS: Default tab depends on role
     const [activeTab, setActiveTab] = useState<string>('default');
-    const currentTab = activeTab === 'default' ? (isPaypolArbitrator ? 'pending' : 'active') : activeTab;
+    const currentTab = activeTab === 'default' ? (isAgtfiArbitrator ? 'pending' : 'active') : activeTab;
 
     const [processingId, setProcessingId] = useState<string | null>(null);
     const [disputingId, setDisputingId] = useState<string | null>(null);
@@ -74,7 +74,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                 const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
                 const checksummedAddress = accounts[0] ? ethers.getAddress(accounts[0]) : undefined;
                 const signer = await provider.getSigner(checksummedAddress);
-                const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
+                const nexusV2 = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
 
                 if (action === 'release') {
                     // Judge settles - pay agent (minus 5% fee + 3% arbitration penalty if disputed)
@@ -227,16 +227,16 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                             <span className="p-2 bg-teal-500/10 text-teal-400 rounded-xl shadow-[0_0_15px_rgba(20,184,166,0.2)]">
                                 <ShieldCheckIcon className="w-6 h-6" />
                             </span>
-                            {isPaypolArbitrator ? 'Agentic Finance Arbitration Node' : 'Escrow Node'}
+                            {isAgtfiArbitrator ? 'Agentic Finance Arbitration Node' : 'Escrow Node'}
                         </h2>
                         <p className="text-sm text-teal-400/80 mt-2 ml-14">
-                            {isPaypolArbitrator ? 'Resolve disputes and issue final verdicts on-chain.' : 'Manage payments and track dispute results.'}
+                            {isAgtfiArbitrator ? 'Resolve disputes and issue final verdicts on-chain.' : 'Manage payments and track dispute results.'}
                         </p>
                     </div>
 
                     {/* UNIFIED TABS FOR EVERYONE (Different Labels) */}
                     <div className="flex items-center gap-2 mt-4 md:mt-0 bg-black/40 p-1.5 rounded-xl border border-white/5">
-                        {isPaypolArbitrator ? (
+                        {isAgtfiArbitrator ? (
                             <>
                                 <button onClick={() => setActiveTab('pending')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${currentTab === 'pending' ? 'bg-teal-500/20 text-teal-400 border border-teal-500/30' : 'text-slate-400 hover:text-white'}`}>
                                     Pending Review {pendingCount > 0 && <span className="bg-teal-500 text-slate-900 px-2 py-0.5 rounded-full text-[10px]">{pendingCount}</span>}
@@ -270,7 +270,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
 
                             // Determine Border Color based on status
                             let borderClass = 'border-teal-500/30';
-                            if (isDisputed) borderClass = isPaypolArbitrator ? 'border-amber-500/40' : 'border-amber-500/30';
+                            if (isDisputed) borderClass = isAgtfiArbitrator ? 'border-amber-500/40' : 'border-amber-500/30';
                             if (isResolved) borderClass = 'border-slate-500/30 opacity-75';
                             if (timedOut && !isResolved) borderClass = 'border-orange-500/40';
 
@@ -382,7 +382,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
                                     )
 
                                     /* 2. TIMEOUT STATE: Employer can claim refund */
-                                    : timedOut && !isPaypolArbitrator ? (
+                                    : timedOut && !isAgtfiArbitrator ? (
                                         <button
                                             onClick={() => handleAction(escrow.id, 'timeout')}
                                             disabled={processingId === escrow.id}
@@ -394,7 +394,7 @@ export default function JudgeDashboard({ isPaypolArbitrator = false, walletAddre
 
                                     /* 3. DISPUTED STATE: ARBITRATOR GETS DECISION BUTTONS, USER GETS "WAITING" */
                                     : isDisputed ? (
-                                        isPaypolArbitrator ? (
+                                        isAgtfiArbitrator ? (
                                             <div className="flex gap-4">
                                                 <button
                                                     onClick={() => handleAction(escrow.id, 'refund')}

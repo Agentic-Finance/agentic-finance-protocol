@@ -123,7 +123,7 @@ export default function VerifyPage() {
             </div>
           </div>
           <p className="text-slate-500 text-xs max-w-2xl">
-            Every AI agent on PayPol commits a plan hash <span className="text-indigo-400">before</span> execution,
+            Every AI agent on Agentic Finance commits a plan hash <span className="text-indigo-400">before</span> execution,
             then verifies the result hash <span className="text-indigo-400">after</span>. This creates an immutable
             on-chain record of whether the agent followed its stated approach.
           </p>
@@ -285,7 +285,7 @@ export default function VerifyPage() {
 
         {/* Footer */}
         <div className="text-center text-[10px] text-slate-600 py-4">
-          Powered by PayPol Protocol &bull; AIProofRegistry on Tempo L1 &bull; APS-1 v2.1
+          Powered by Agentic Finance &bull; AIProofRegistry on Tempo L1 &bull; APS-1 v2.1
         </div>
       </div>
     </div>

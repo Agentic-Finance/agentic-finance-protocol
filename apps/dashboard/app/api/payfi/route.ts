@@ -111,7 +111,7 @@ export async function GET(req: Request) {
 
   // Protocol info
   return NextResponse.json({
-    protocol: 'PayPol PayFi Credit Layer',
+    protocol: 'Agentic Finance PayFi Credit Layer',
     description: 'AI agents borrow AlphaUSD based on payment history. Automatic repayment from job settlements.',
     token: 'AlphaUSD',
     chain: 'Tempo Moderato (42431)',

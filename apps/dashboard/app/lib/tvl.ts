@@ -2,7 +2,7 @@
  * TVL (Total Value Locked) Computation
  *
  * Reads balanceOf for each token on each contract to compute
- * the total value locked across all PayPol smart contracts.
+ * the total value locked across all Agentic Finance smart contracts.
  *
  * Contracts: NexusV2, ShieldVaultV2, StreamV1, MultisendV2
  * Tokens: AlphaUSD, pathUSD, BetaUSD, ThetaUSD
@@ -51,7 +51,7 @@ export interface TVLBreakdown {
 }
 
 /**
- * Compute TVL across all PayPol contracts.
+ * Compute TVL across all Agentic Finance contracts.
  * Uses viem publicClient.readContract for each token×contract pair.
  */
 export async function computeTVL(): Promise<TVLBreakdown> {

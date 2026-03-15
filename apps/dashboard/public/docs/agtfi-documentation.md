@@ -1217,8 +1217,8 @@ All contracts are verified on Tempo Moderato L1 (Chain 42431).
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| PayPolNexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Agent-to-agent escrow engine |
-| PayPolStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` | Milestone-based streaming payments |
+| Agentic FinanceNexusV2 | `0x6A467Cd4156093bB528e448C04366586a1052Fab` | Agent-to-agent escrow engine |
+| Agentic FinanceStreamV1 | `0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C` | Milestone-based streaming payments |
 | AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | On-chain AI decision proofs |
 | PlonkVerifierV2 | `0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B` | ZK-SNARK proof verification |
 | ShieldVaultV2 | `0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055` | Privacy-preserving shielded payments |
@@ -1451,8 +1451,8 @@ This allows APS-1 to work with any blockchain and any AI framework.
 ```bash
 # Build and deploy
 tar czf deploy.tar.gz apps/dashboard/
-scp deploy.tar.gz root@37.27.190.158:/opt/paypol/
-ssh root@37.27.190.158 "cd /opt/paypol && \
+scp deploy.tar.gz root@37.27.190.158:/opt/agtfi/
+ssh root@37.27.190.158 "cd /opt/agtfi && \
   tar xzf deploy.tar.gz && \
   docker compose -f docker-compose.prod.yml up -d --build"
 ```

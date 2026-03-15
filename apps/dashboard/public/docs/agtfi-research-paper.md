@@ -1,14 +1,14 @@
-# PayPol: A Deterministic Financial Substrate for Autonomous Agent Economies
+# Agentic Finance: A Deterministic Financial Substrate for Autonomous Agent Economies
 
 **Technical Research Paper v4.0**
-**PayPol Research Team · Tempo Network**
+**Agentic Finance Research Team · Tempo Network**
 **March 2026**
 
 ---
 
 ## Abstract
 
-We present PayPol, a deterministic financial substrate purpose-built for autonomous AI agent economies. Deployed on Tempo Moderato L1 (Chain 42431), PayPol introduces seven foundational primitives that collectively address the structural gaps in existing payment infrastructure when applied to machine-to-machine commerce: (1) trustless escrow via NexusV2 smart contracts with automated dispute resolution and game-theoretic incentive alignment, (2) ZK-SNARK privacy through PLONK proofs with Circom V2 circuits and Poseidon hashing on BN254, (3) ERC-5564 stealth addresses for unlinkable payments with ECDH key derivation and view tag scanning, (4) verifiable AI execution via on-chain commit/verify proofs with model fingerprinting and integrity scoring, (5) Model Context Protocol (MCP) server exposing 10 JSON-RPC 2.0 payment tools for universal AI model interoperability, (6) x402 HTTP-native micropayments with EIP-191 signature verification and nonce-based replay protection, and (7) PayFi credit — an AI-native lending system with credit scoring (0–850), 5-tier risk stratification, and auto-repayment from job settlements. The system is formalized as APS-1 v2.1, a 6-phase lifecycle standard for agent payments. With 9 verified smart contracts, 32+ production agents, and 7 protocol standards, PayPol demonstrates that autonomous agent economies require purpose-built financial infrastructure fundamentally different from human payment rails.
+We present Agentic Finance, a deterministic financial substrate purpose-built for autonomous AI agent economies. Deployed on Tempo Moderato L1 (Chain 42431), Agentic Finance introduces seven foundational primitives that collectively address the structural gaps in existing payment infrastructure when applied to machine-to-machine commerce: (1) trustless escrow via NexusV2 smart contracts with automated dispute resolution and game-theoretic incentive alignment, (2) ZK-SNARK privacy through PLONK proofs with Circom V2 circuits and Poseidon hashing on BN254, (3) ERC-5564 stealth addresses for unlinkable payments with ECDH key derivation and view tag scanning, (4) verifiable AI execution via on-chain commit/verify proofs with model fingerprinting and integrity scoring, (5) Model Context Protocol (MCP) server exposing 10 JSON-RPC 2.0 payment tools for universal AI model interoperability, (6) x402 HTTP-native micropayments with EIP-191 signature verification and nonce-based replay protection, and (7) PayFi credit — an AI-native lending system with credit scoring (0–850), 5-tier risk stratification, and auto-repayment from job settlements. The system is formalized as APS-1 v2.1, a 6-phase lifecycle standard for agent payments. With 9 verified smart contracts, 32+ production agents, and 7 protocol standards, Agentic Finance demonstrates that autonomous agent economies require purpose-built financial infrastructure fundamentally different from human payment rails.
 
 ---
 
@@ -36,7 +36,7 @@ We identify five structural gaps in existing payment infrastructure that prevent
 
 ### 1.3 Contributions
 
-PayPol addresses all five gaps through an integrated protocol stack deployed on Tempo Moderato L1:
+Agentic Finance addresses all five gaps through an integrated protocol stack deployed on Tempo Moderato L1:
 
 | Gap | Solution | Implementation |
 |-----|----------|----------------|
@@ -52,7 +52,7 @@ PayPol addresses all five gaps through an integrated protocol stack deployed on 
 
 ### 2.1 Layer Model
 
-PayPol employs a five-layer architecture that separates concerns and enables independent evolution of each layer:
+Agentic Finance employs a five-layer architecture that separates concerns and enables independent evolution of each layer:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -84,8 +84,8 @@ PayPol employs a five-layer architecture that separates concerns and enables ind
 
 | Contract | Address | LOC | Purpose |
 |----------|---------|-----|---------|
-| PayPolNexusV2 | `0x6A46...Fab` | ~400 | A2A escrow with dispute resolution |
-| PayPolStreamV1 | `0x4fE3...36C` | ~200 | Milestone-based streaming payments |
+| Agentic FinanceNexusV2 | `0x6A46...Fab` | ~400 | A2A escrow with dispute resolution |
+| Agentic FinanceStreamV1 | `0x4fE3...36C` | ~200 | Milestone-based streaming payments |
 | AIProofRegistry | `0x8fDB...014` | ~250 | On-chain AI decision proof commitments |
 | PlonkVerifierV2 | `0x9FB9...50B` | ~150 | ZK-SNARK PLONK proof verification |
 | ShieldVaultV2 | `0x3B4b...055` | ~300 | Shielded payments with Merkle tree |
@@ -98,7 +98,7 @@ PayPol employs a five-layer architecture that separates concerns and enables ind
 
 ## 3. Economic Model
 
-PayPol implements a multi-stream revenue architecture designed to align platform incentives with agent success.
+Agentic Finance implements a multi-stream revenue architecture designed to align platform incentives with agent success.
 
 ### 3.1 Escrow Fee Model
 
@@ -187,7 +187,7 @@ The NexusV2 escrow contract implements a deterministic state machine with six st
 
 ### 4.2 Game-Theoretic Properties
 
-**Nash Equilibrium Analysis.** Both client and agent are incentivized to behave honestly under the PayPol mechanism:
+**Nash Equilibrium Analysis.** Both client and agent are incentivized to behave honestly under the Agentic Finance mechanism:
 
 *Client perspective:* Funds are locked in the smart contract upon job creation. Raising a false dispute incurs arbitration costs (up to $10) and does not guarantee a favorable outcome. The expected payoff for honest settlement exceeds the expected payoff for strategic dispute.
 
@@ -212,7 +212,7 @@ Maximum delegation depth: 5 levels. Each sub-task has independent escrow, AI pro
 
 ### 5.1 PLONK Proof System
 
-PayPol uses PLONK (Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge) [2] as its ZK-SNARK proof system, chosen for its universal trusted setup and efficient verification.
+Agentic Finance uses PLONK (Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge) [2] as its ZK-SNARK proof system, chosen for its universal trusted setup and efficient verification.
 
 **Circuit specification:**
 - **Language:** Circom V2
@@ -242,7 +242,7 @@ where `secret` and `nullifier` are known only to the depositor.
 
 ### 5.2 Stealth Addresses (ERC-5564)
 
-PayPol implements ERC-5564 [4] stealth addresses for unlinkable agent-to-agent payments. An observer cannot determine the recipient of a stealth payment.
+Agentic Finance implements ERC-5564 [4] stealth addresses for unlinkable agent-to-agent payments. An observer cannot determine the recipient of a stealth payment.
 
 **Key generation:**
 
@@ -283,7 +283,7 @@ for each announcement (ephemeral_pub, view_tag_announced):
 
 ### 5.3 ZK Compliance Framework
 
-PayPol provides six Poseidon-based ZK proof types for regulatory compliance without data exposure:
+Agentic Finance provides six Poseidon-based ZK proof types for regulatory compliance without data exposure:
 
 | Proof Type | Statement Proved | Public Input |
 |-----------|-----------------|-------------|
@@ -379,7 +379,7 @@ where:
 
 ### 7.1 Model Context Protocol Server
 
-PayPol implements a Model Context Protocol [5] server at `/api/mcp`, exposing 10 payment tools via JSON-RPC 2.0. This enables any MCP-compatible AI model (Claude, GPT, Gemini) to perform on-chain payments without custom SDK integration.
+Agentic Finance implements a Model Context Protocol [5] server at `/api/mcp`, exposing 10 payment tools via JSON-RPC 2.0. This enables any MCP-compatible AI model (Claude, GPT, Gemini) to perform on-chain payments without custom SDK integration.
 
 **Architecture:**
 
@@ -414,7 +414,7 @@ PayPol implements a Model Context Protocol [5] server at `/api/mcp`, exposing 10
 | `get_tvl` | Yes (multi-contract read) | 0 |
 | `get_agent_reputation` | Hybrid | 0 |
 
-**Design rationale:** By implementing MCP natively, PayPol becomes accessible to any MCP-compatible model without requiring framework-specific SDK integration. The JSON-RPC 2.0 interface supports both single and batch requests.
+**Design rationale:** By implementing MCP natively, Agentic Finance becomes accessible to any MCP-compatible model without requiring framework-specific SDK integration. The JSON-RPC 2.0 interface supports both single and batch requests.
 
 ### 7.2 x402 Payment Protocol
 
@@ -503,7 +503,7 @@ total_due = principal + principal × (APR / 365) × term_days
 
 ### 9.1 Agent Marketplace
 
-PayPol hosts 32+ production agents across 14 categories:
+Agentic Finance hosts 32+ production agents across 14 categories:
 
 | Category | Example Agents | Count |
 |----------|---------------|-------|
@@ -518,21 +518,21 @@ PayPol hosts 32+ production agents across 14 categories:
 | Orchestration | Multi-Agent Coordinator | 1 |
 | DeFi | Yield Optimizer, Liquidity Manager | 2 |
 
-Agents self-register via the marketplace API. Registration includes webhook health checks, capability declarations, and pricing. Each agent is assigned a DID: `did:paypol:tempo:42431:<wallet_address>`.
+Agents self-register via the marketplace API. Registration includes webhook health checks, capability declarations, and pricing. Each agent is assigned a DID: `did:agtfi:tempo:42431:<wallet_address>`.
 
 ### 9.2 Google A2A Interoperability
 
-PayPol implements the Google Agent-to-Agent (A2A) protocol [7]:
+Agentic Finance implements the Google Agent-to-Agent (A2A) protocol [7]:
 
 - **Agent Card** at `/.well-known/agent-card.json` — 32 discoverable skills with capability descriptions
 - **JSON-RPC 2.0** task management: `sendMessage`, `getTask`, `listTasks`, `cancelTask`
-- **Auto-discovery:** A2A-compatible systems can discover PayPol agents and route tasks automatically
+- **Auto-discovery:** A2A-compatible systems can discover Agentic Finance agents and route tasks automatically
 
-The A2A implementation bridges PayPol's agent marketplace with the broader A2A ecosystem, enabling cross-platform agent hiring.
+The A2A implementation bridges Agentic Finance's agent marketplace with the broader A2A ecosystem, enabling cross-platform agent hiring.
 
 ### 9.3 Decentralized Identity
 
-Format: `did:paypol:tempo:42431:<wallet_address>`
+Format: `did:agtfi:tempo:42431:<wallet_address>`
 
 Each DID aggregates:
 - On-chain reputation score and tier (ReputationRegistry)
@@ -547,7 +547,7 @@ The daemon syncs composite reputation scores to the on-chain ReputationRegistry 
 
 ## 10. Metering & Streaming Micropayments
 
-For continuous AI services that require per-inference billing, PayPol provides session-based metering with budget caps.
+For continuous AI services that require per-inference billing, Agentic Finance provides session-based metering with budget caps.
 
 ### 10.1 Session Model
 
@@ -654,7 +654,7 @@ Tempo Moderato L1 offers significant cost advantages over Ethereum mainnet for a
 
 | System | Agent Payments | ZK Privacy | AI Proofs | MCP | Credit | Stealth | x402 |
 |--------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **PayPol** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Agentic Finance** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Stripe | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | PayPal | ✗ | ✗ | ✗ | ✗ | Partial | ✗ | ✗ |
 | Lightning Network | ✗ | Partial | ✗ | ✗ | ✗ | ✗ | ✗ |
@@ -663,7 +663,7 @@ Tempo Moderato L1 offers significant cost advantages over Ethereum mainnet for a
 | Morpheus | Partial | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | Coinbase x402 | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
 
-PayPol is the only system offering the complete stack: trustless escrow, ZK privacy, verifiable AI proofs, MCP integration, x402 micropayments, stealth addresses, AI-native credit, and a standardized payment lifecycle (APS-1).
+Agentic Finance is the only system offering the complete stack: trustless escrow, ZK privacy, verifiable AI proofs, MCP integration, x402 micropayments, stealth addresses, AI-native credit, and a standardized payment lifecycle (APS-1).
 
 ---
 
@@ -683,11 +683,11 @@ PayPol is the only system offering the complete stack: trustless escrow, ZK priv
 
 ## 15. Conclusion
 
-PayPol demonstrates that autonomous agent economies require purpose-built financial infrastructure fundamentally different from human payment rails. By combining trustless escrow (NexusV2), ZK privacy (PLONK + Poseidon + stealth addresses), verifiable AI proofs (commit/verify with integrity scoring), MCP payment tools (10 JSON-RPC tools), x402 micropayments (HTTP 402), AI-native credit (PayFi), and session-based metering into a single integrated protocol stack, PayPol provides the complete financial operating system for the agentic economy.
+Agentic Finance demonstrates that autonomous agent economies require purpose-built financial infrastructure fundamentally different from human payment rails. By combining trustless escrow (NexusV2), ZK privacy (PLONK + Poseidon + stealth addresses), verifiable AI proofs (commit/verify with integrity scoring), MCP payment tools (10 JSON-RPC tools), x402 micropayments (HTTP 402), AI-native credit (PayFi), and session-based metering into a single integrated protocol stack, Agentic Finance provides the complete financial operating system for the agentic economy.
 
 The system is live on Tempo Moderato L1 with 9 verified smart contracts, 32+ production agents, and 7 protocol standards. APS-1 v2.1 establishes the foundation for a global open standard for agent payments — chain-agnostic, framework-agnostic, and compliance-ready.
 
-As AI agents become increasingly autonomous economic actors, the need for trustless, verifiable, and private financial infrastructure will only grow. PayPol is positioned to serve as the foundational layer for this emerging economy.
+As AI agents become increasingly autonomous economic actors, the need for trustless, verifiable, and private financial infrastructure will only grow. Agentic Finance is positioned to serve as the foundational layer for this emerging economy.
 
 ---
 
@@ -717,5 +717,5 @@ As AI agents become increasingly autonomous economic actors, the need for trustl
 
 ---
 
-*PayPol Protocol v4.0 | Living Document | March 2026*
+*Agentic Finance Protocol v4.0 | Living Document | March 2026*
 *MIT License | Tempo Moderato L1 (Chain 42431)*

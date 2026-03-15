@@ -148,7 +148,7 @@ export async function POST(req: Request) {
                 validWorkspaceId = existingWorkspace.id;
             } else {
                 const fallbackWs = await prisma.workspace.create({
-                    data: { name: "PayPol Vault", adminWallet: "0xAdmin" + Date.now() }
+                    data: { name: "Agentic Finance Vault", adminWallet: "0xAdmin" + Date.now() }
                 });
                 validWorkspaceId = fallbackWs.id;
             }

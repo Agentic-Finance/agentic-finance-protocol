@@ -90,7 +90,7 @@ function timeAgo(dateStr: string): string {
 // ──────────────────────────────────────────────────────
 // Main Admin Page
 // ──────────────────────────────────────────────────────
-export default function PayPolAdminPage() {
+export default function AgtFiAdminPage() {
     const [activeSection, setActiveSection] = useState<NavSection>('overview');
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -759,7 +759,7 @@ export default function PayPolAdminPage() {
                     {/* ─── ARBITRATION ─── */}
                     {activeSection === 'arbitration' && (
                         <div className="animate-in fade-in duration-300">
-                            <JudgeDashboard isPaypolArbitrator={true} />
+                            <JudgeDashboard isAgtfiArbitrator={true} />
                         </div>
                     )}
 
@@ -923,7 +923,7 @@ export default function PayPolAdminPage() {
                                 </h3>
                                 <div className="space-y-2 font-mono text-xs">
                                     {[
-                                        { method: 'POST', path: '/api/ai-parse', desc: 'Natural language → PayPol intents' },
+                                        { method: 'POST', path: '/api/ai-parse', desc: 'Natural language → Agentic Finance intents' },
                                         { method: 'POST', path: '/api/invoice-parse', desc: 'Invoice → Payment extraction' },
                                         { method: 'GET', path: '/api/employees', desc: 'Boardroom transaction queue' },
                                         { method: 'POST', path: '/api/employees', desc: 'Submit payroll to Boardroom' },

@@ -45,7 +45,7 @@ function ComparisonChart() {
     const data = [
         { label: 'Traditional Wire', value: 85, color: 'bg-slate-600', sub: '3-5 days, $25-50 fees' },
         { label: 'Crypto (Manual)', value: 55, color: 'bg-amber-500/60', sub: '~1 min, copy-paste wallets' },
-        { label: 'PayPol (NLP)', value: 8, color: 'bg-emerald-500', sub: '~10 sec, natural language' },
+        { label: 'Agentic Finance (NLP)', value: 8, color: 'bg-emerald-500', sub: '~10 sec, natural language' },
     ];
 
     return (
@@ -83,7 +83,7 @@ function ArchitectureDiagram() {
     return (
         <div className="relative">
             <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-5 text-center">
-                PayPol Execution Pipeline
+                Agentic Finance Execution Pipeline
             </h4>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-2">
                 {[
@@ -119,12 +119,12 @@ function ArchitectureDiagram() {
 
 function PrivacyTable() {
     const rows = [
-        { feature: 'Salary amounts visible on-chain', traditional: true, paypol: false },
-        { feature: 'Sender-recipient link exposed', traditional: true, paypol: false },
-        { feature: 'Payment frequency trackable', traditional: true, paypol: false },
-        { feature: 'Cryptographic proof of payment', traditional: false, paypol: true },
-        { feature: 'Nullifier anti-replay protection', traditional: false, paypol: true },
-        { feature: 'Selective disclosure to auditors', traditional: false, paypol: true },
+        { feature: 'Salary amounts visible on-chain', traditional: true, agtfi: false },
+        { feature: 'Sender-recipient link exposed', traditional: true, agtfi: false },
+        { feature: 'Payment frequency trackable', traditional: true, agtfi: false },
+        { feature: 'Cryptographic proof of payment', traditional: false, agtfi: true },
+        { feature: 'Nullifier anti-replay protection', traditional: false, agtfi: true },
+        { feature: 'Selective disclosure to auditors', traditional: false, agtfi: true },
     ];
 
     return (
@@ -134,7 +134,7 @@ function PrivacyTable() {
                     <tr className="border-b border-white/[0.06]">
                         <th className="text-[10px] font-black uppercase tracking-widest text-slate-500 py-3 pr-4">Feature</th>
                         <th className="text-[10px] font-black uppercase tracking-widest text-slate-500 py-3 px-4 text-center">Standard ERC20</th>
-                        <th className="text-[10px] font-black uppercase tracking-widest text-indigo-400 py-3 px-4 text-center">PayPol Shield</th>
+                        <th className="text-[10px] font-black uppercase tracking-widest text-indigo-400 py-3 px-4 text-center">Agentic Shield</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,7 +149,7 @@ function PrivacyTable() {
                                 )}
                             </td>
                             <td className="text-center py-3 px-4">
-                                {row.paypol ? (
+                                {row.agtfi ? (
                                     <span className="text-emerald-400 text-sm">&#10003;</span>
                                 ) : (
                                     <span className="text-emerald-400 text-sm">&#10003;</span>
@@ -223,7 +223,7 @@ export default function BlogPost() {
                 </p>
 
                 <div className="flex items-center gap-4 text-xs text-slate-500">
-                    <span>PayPol Team</span>
+                    <span>Agentic Finance Team</span>
                     <span className="w-1 h-1 rounded-full bg-slate-600" />
                     <span>March 9, 2026</span>
                     <span className="w-1 h-1 rounded-full bg-slate-600" />
@@ -250,7 +250,7 @@ export default function BlogPost() {
                     For DAOs with 50+ contributors across 12 countries, this is a <span className="text-white font-semibold">weekly tax on productivity</span>. For AI agent networks that need to settle payments autonomously, it&rsquo;s a complete non-starter.
                 </p>
                 <p className="text-slate-300 leading-relaxed">
-                    PayPol was built to solve this at the infrastructure level. Not another payroll &ldquo;app&rdquo; &mdash; a <span className="text-white font-semibold">programmable payment layer</span> where the distance between what you want and what happens on-chain is exactly one sentence.
+                    Agentic Finance was built to solve this at the infrastructure level. Not another payroll &ldquo;app&rdquo; &mdash; a <span className="text-white font-semibold">programmable payment layer</span> where the distance between what you want and what happens on-chain is exactly one sentence.
                 </p>
             </section>
 
@@ -267,7 +267,7 @@ export default function BlogPost() {
                     Every existing crypto payroll tool starts with a form: Name, Wallet, Amount, Token, Note. Multiply by 50 employees and you have a spreadsheet problem disguised as a &ldquo;product.&rdquo;
                 </p>
                 <p className="text-slate-300 leading-relaxed mb-4">
-                    PayPol&rsquo;s OmniTerminal replaces this with a single input field. Type in <span className="text-white font-semibold">any language</span>:
+                    Agentic Finance&rsquo;s OmniTerminal replaces this with a single input field. Type in <span className="text-white font-semibold">any language</span>:
                 </p>
 
                 {/* Command examples */}
@@ -300,7 +300,7 @@ export default function BlogPost() {
                 <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-xl p-5">
                     <h4 className="text-emerald-400 font-bold text-sm mb-2">What this means for teams</h4>
                     <p className="text-slate-300 text-sm leading-relaxed">
-                        A 50-person payroll batch that takes 30 minutes with traditional tools completes in <span className="text-white font-semibold">under 10 seconds</span> with PayPol. Upload a CSV, drag-and-drop an Excel file, or just type a sentence. The system handles name resolution, wallet validation, amount parsing, and batch optimization automatically.
+                        A 50-person payroll batch that takes 30 minutes with traditional tools completes in <span className="text-white font-semibold">under 10 seconds</span> with Agentic Finance. Upload a CSV, drag-and-drop an Excel file, or just type a sentence. The system handles name resolution, wallet validation, amount parsing, and batch optimization automatically.
                     </p>
                 </div>
             </section>
@@ -315,7 +315,7 @@ export default function BlogPost() {
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-4">
-                    Most crypto payroll is treated as a one-off event. But 90% of real-world payroll is recurring. PayPol introduces a <span className="text-white font-semibold">daemon-based conditional engine</span> that monitors on-chain and off-chain conditions in real-time and auto-triggers payments when rules are met.
+                    Most crypto payroll is treated as a one-off event. But 90% of real-world payroll is recurring. Agentic Finance introduces a <span className="text-white font-semibold">daemon-based conditional engine</span> that monitors on-chain and off-chain conditions in real-time and auto-triggers payments when rules are met.
                 </p>
 
                 {/* Condition Types */}
@@ -384,7 +384,7 @@ export default function BlogPost() {
                     On most EVM chains, payroll is fully transparent. Every employee&rsquo;s wallet, salary amount, and payment frequency is visible to anyone with a block explorer. For competitive businesses, this is a <span className="text-white font-semibold">critical vulnerability</span> &mdash; competitors can reverse-engineer your team structure, burn rate, and compensation strategy.
                 </p>
                 <p className="text-slate-300 leading-relaxed mb-6">
-                    PayPol&rsquo;s Shield mode wraps every transaction in a <span className="text-white font-semibold">real ZK-SNARK PLONK proof</span>. Not simulated. Not mocked. Production-grade Circom V2 circuits with snarkjs and on-chain verification through PlonkVerifier V2.
+                    Agentic Finance&rsquo;s Shield mode wraps every transaction in a <span className="text-white font-semibold">real ZK-SNARK PLONK proof</span>. Not simulated. Not mocked. Production-grade Circom V2 circuits with snarkjs and on-chain verification through PlonkVerifier V2.
                 </p>
 
                 {/* ZK Architecture */}
@@ -439,7 +439,7 @@ export default function BlogPost() {
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-4">
-                    PayPol isn&rsquo;t just a payroll tool &mdash; it&rsquo;s infrastructure for the <span className="text-white font-semibold">AI agent economy</span>. The A2A (Agent-to-Agent) Marketplace lets you describe a task in natural language, discover the best agent through AI matching, negotiate price automatically, and pay through on-chain escrow &mdash; all within the same terminal.
+                    Agentic Finance isn&rsquo;t just a payroll tool &mdash; it&rsquo;s infrastructure for the <span className="text-white font-semibold">AI agent economy</span>. The A2A (Agent-to-Agent) Marketplace lets you describe a task in natural language, discover the best agent through AI matching, negotiate price automatically, and pay through on-chain escrow &mdash; all within the same terminal.
                 </p>
 
                 {/* Agent stats grid */}
@@ -477,7 +477,7 @@ export default function BlogPost() {
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-6">
-                    PayPol is built exclusively on Tempo (Chain 42431) for specific technical advantages that no other L1 currently offers for payment infrastructure:
+                    Agentic Finance is built exclusively on Tempo (Chain 42431) for specific technical advantages that no other L1 currently offers for payment infrastructure:
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
@@ -524,7 +524,7 @@ export default function BlogPost() {
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-6">
-                    PayPol is live. Connect a wallet, type a command, and deploy your first payroll in under a minute.
+                    Agentic Finance is live. Connect a wallet, type a command, and deploy your first payroll in under a minute.
                 </p>
 
                 <div className="space-y-3 mb-8">
@@ -551,7 +551,7 @@ export default function BlogPost() {
                         href="/"
                         className="inline-flex items-center gap-2 px-8 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold text-sm rounded-xl transition-all shadow-[0_0_25px_rgba(16,185,129,0.25)]"
                     >
-                        Launch PayPol
+                        Launch Agentic Finance
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
@@ -565,7 +565,7 @@ export default function BlogPost() {
             {/* ── Closing ──────────────────────────── */}
             <section className="text-center mb-8">
                 <p className="text-slate-400 text-sm leading-relaxed max-w-lg mx-auto mb-6">
-                    PayPol is open infrastructure for programmable payments. 9 verified contracts. {stats ? stats.totalAgents : 32} production agents. Real ZK proofs. Built on Tempo L1.
+                    Agentic Finance is open infrastructure for programmable payments. 9 verified contracts. {stats ? stats.totalAgents : 32} production agents. Real ZK proofs. Built on Tempo L1.
                 </p>
                 <p className="text-slate-500 text-sm mb-2">
                     Questions, partnerships, or integrations:

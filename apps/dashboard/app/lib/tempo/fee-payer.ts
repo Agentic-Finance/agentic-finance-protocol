@@ -5,7 +5,7 @@
  *   - Sender signs tx type 0x76 (TempoTransaction)
  *   - Fee payer (daemon) co-signs with type 0x78
  *
- * PayPol daemon acts as fee payer for all agent transactions,
+ * Agentic Finance daemon acts as fee payer for all agent transactions,
  * so agents don't need to hold native tokens for gas.
  *
  * Note: Gas is free on Tempo testnet, but this ensures mainnet readiness

@@ -3,7 +3,7 @@
  *
  * Implements the Agent2Agent (A2A) open protocol specification.
  * Provides Agent Card generation, JSON-RPC 2.0 message handling,
- * task lifecycle management, and PayPol agent mapping.
+ * task lifecycle management, and Agentic Finance agent mapping.
  *
  * Spec: https://a2a-protocol.org/latest/specification/
  */
@@ -28,9 +28,9 @@ export interface A2AAgentCard {
   defaultInputModes: string[];
   defaultOutputModes: string[];
   skills: A2AAgentSkill[];
-  /** PayPol extension: on-chain verification */
+  /** Agentic Finance extension: on-chain verification */
   extensions?: {
-    paypol?: {
+    agtfi?: {
       chainId: number;
       network: string;
       contracts: Record<string, string>;
@@ -82,8 +82,8 @@ export interface A2ATask {
   messages?: A2AMessage[];
   artifacts?: A2AArtifact[];
   metadata?: Record<string, unknown>;
-  /** PayPol extension: link to on-chain job */
-  _paypol?: {
+  /** Agentic Finance extension: link to on-chain job */
+  _agtfi?: {
     jobId?: string;
     agentId?: string;
     a2aChainId?: string;
@@ -167,7 +167,7 @@ export const A2A_ERRORS = {
   AUTH_REQUIRED:        { code: -32010, message: 'Authentication required' },
 } as const;
 
-// ── PayPol Agent → A2A Skill Mapper ────────────────────────
+// ── Agentic Finance Agent → A2A Skill Mapper ────────────────────────
 
 /** Category → tag mapping for A2A skill discovery */
 const CATEGORY_TAGS: Record<string, string[]> = {
@@ -183,7 +183,7 @@ const CATEGORY_TAGS: Record<string, string[]> = {
 };
 
 /**
- * Convert a PayPol agent manifest to an A2A AgentSkill.
+ * Convert an Agentic Finance agent manifest to an A2A AgentSkill.
  * Maps native capabilities → A2A tags + examples.
  */
 export function agentToA2ASkill(agent: {
@@ -234,9 +234,9 @@ function generateExamples(agentId: string, capabilities: string[]): string[] {
     'multi-token-batch':    ['Batch multi-token payments to multiple recipients'],
     'proof-auditor':        ['Audit AIProofRegistry statistics'],
     'vault-inspector':      ['Inspect ShieldVault commitment status'],
-    'gas-profiler':         ['Profile gas costs for all PayPol operations'],
+    'gas-profiler':         ['Profile gas costs for all Agentic Finance operations'],
     'recurring-payment':    ['Set up weekly recurring payment of 100 AlphaUSD'],
-    'contract-reader':      ['Read all PayPol contract states'],
+    'contract-reader':      ['Read all Agentic Finance contract states'],
     'wallet-sweeper':       ['Sweep all tokens to safe wallet 0x...'],
     'escrow-batch-settler': ['Batch settle jobs #1, #2, #3'],
     'chain-monitor':        ['Check Tempo L1 chain health and block info'],

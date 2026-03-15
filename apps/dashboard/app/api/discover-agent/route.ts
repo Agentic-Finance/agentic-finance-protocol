@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 
 // ============================================================================
-// [PAYPOL IN-HOUSE AGENCY] - Dynamic Pricing Engine
+// [AGENTIC FINANCE IN-HOUSE AGENCY] - Dynamic Pricing Engine
 // ============================================================================
 
-const PAYPOL_ELITE_AGENTS = [
-    { id: "frontend", name: "PayPol UI/UX Wizard", wallet: "0x7a58c09460A3d42c385a8Efb7A0d4c6d05f3B9e4", reputation: 5.0 },
-    { id: "data", name: "PayPol Data Scraper", wallet: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", reputation: 5.0 },
-    { id: "contract", name: "PayPol Smart Auditor", wallet: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1", reputation: 5.0 },
-    { id: "general", name: "PayPol General Swarm", wallet: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65", reputation: 4.8 }
+const AGTFI_ELITE_AGENTS = [
+    { id: "frontend", name: "AgtFi UI/UX Wizard", wallet: "0x7a58c09460A3d42c385a8Efb7A0d4c6d05f3B9e4", reputation: 5.0 },
+    { id: "data", name: "AgtFi Data Scraper", wallet: "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC", reputation: 5.0 },
+    { id: "contract", name: "AgtFi Smart Auditor", wallet: "0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1", reputation: 5.0 },
+    { id: "general", name: "AgtFi General Swarm", wallet: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65", reputation: 4.8 }
 ];
 
 // Anti-spam threshold to ensure API costs are covered
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
         // This ensures massive profit margins while leaving room for the UI matrix to "negotiate" down.
         const dynamicBaseRate = maxBudget * 0.80;
 
-        // 4. DISCOVERY: Pick the matching PayPol Agent and assign the dynamic rate
-        const baseAgent = PAYPOL_ELITE_AGENTS.find(a => a.id === requiredSkill) || PAYPOL_ELITE_AGENTS[3];
+        // 4. DISCOVERY: Pick the matching Agentic Finance Agent and assign the dynamic rate
+        const baseAgent = AGTFI_ELITE_AGENTS.find(a => a.id === requiredSkill) || AGTFI_ELITE_AGENTS[3];
         
         const matchedAgent = {
             ...baseAgent,
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
             wallet: matchedAgent.wallet,
             name: `🤖 ${matchedAgent.name}`,
             baseRate: matchedAgent.baseRate, // Sends the dynamically calculated 80% price
-            source: "PayPol Elite Swarm (Dynamic Pricing)"
+            source: "Agentic Finance Elite Swarm (Dynamic Pricing)"
         });
 
     } catch (error: any) {

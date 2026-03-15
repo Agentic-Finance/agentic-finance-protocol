@@ -1,20 +1,20 @@
 // ==========================================
 // SMART CONTRACT CONSTANTS
 // ==========================================
-export const PAYPOL_NEXUS_ADDRESS = "0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c";
-export const PAYPOL_MULTISEND_ADDRESS = "0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69";
+export const AGTFI_NEXUS_ADDRESS = "0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c";
+export const AGTFI_MULTISEND_ADDRESS = "0xc0e6F06EfD5A9d40b1018B0ba396A925aBC4cF69";
 // V2 Multisend - Multi-token, batch registry, per-transfer events
-export const PAYPOL_MULTISEND_V2_ADDRESS = "0x25f4d3f12C579002681a52821F3a6251c46D4575";
-export const PAYPOL_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
+export const AGTFI_MULTISEND_V2_ADDRESS = "0x25f4d3f12C579002681a52821F3a6251c46D4575";
+export const AGTFI_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
 
 // V2 Shield Vault - Nullifier Anti-Double-Spend (ZK-SNARK PLONK)
 // Deployed & verified on Tempo Moderato (chain 42431)
-export const PAYPOL_SHIELD_V2_ADDRESS = "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
+export const AGTFI_SHIELD_V2_ADDRESS = "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
 export const PLONK_VERIFIER_V2_ADDRESS = "0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B";
 
 // V2 Escrow Contract - full lifecycle (dispute, refund, timeout, settlement)
 // Deployed & verified on Tempo Moderato (chain 42431)
-export const PAYPOL_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052Fab";
+export const AGTFI_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 
 // AI Proof Registry - Verifiable on-chain AI commitments
 // Deployed & verified on Tempo Moderato (chain 42431)
@@ -154,7 +154,7 @@ export const SECURITY_DEPOSIT_ABI = [
 
 // Platform Treasury Wallet (controlled by DAEMON_PRIVATE_KEY)
 // Receives payroll ZK deposits — daemon handles ShieldVaultV2 lifecycle
-export const PAYPOL_TREASURY_WALLET = "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793";
+export const AGTFI_TREASURY_WALLET = "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793";
 
 export const RPC_URL = "https://rpc.moderato.tempo.xyz";
 

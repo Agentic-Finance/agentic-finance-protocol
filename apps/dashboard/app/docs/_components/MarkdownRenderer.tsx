@@ -60,7 +60,7 @@ function HeadingAnchor({ id, level, children }: { id: string; level: number; chi
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     return (
-        <div className="prose-paypol" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+        <div className="prose-agtfi" style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{

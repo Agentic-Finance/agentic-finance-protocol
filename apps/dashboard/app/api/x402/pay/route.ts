@@ -6,7 +6,7 @@
  * With payment (X-Payment header): verifies payment and executes task.
  *
  * Body: {
- *   agentId: string,       // Which PayPol agent to use
+ *   agentId: string,       // Which Agentic Finance agent to use
  *   prompt: string,        // Task description
  *   callerWallet?: string  // Caller's wallet
  * }

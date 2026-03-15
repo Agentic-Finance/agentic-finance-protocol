@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Revenue Dashboard',
-  description: 'Live revenue metrics, TVL, volume, and fee tracking for the PayPol Protocol.',
+  description: 'Live revenue metrics, TVL, volume, and fee tracking for Agentic Finance.',
 };
 
 export default function RevenuePage() {

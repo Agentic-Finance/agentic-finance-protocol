@@ -111,7 +111,7 @@ export default function CinematicMode({ agents, arcs, stats, auditEvents, onExit
                     <span className="text-xs font-black uppercase tracking-widest text-emerald-400">LIVE</span>
                 </div>
                 <h1 className="text-2xl font-black text-white/90 tracking-tight" style={{ animation: 'glowPulse 4s ease-in-out infinite' }}>
-                    PayPol War Room
+                    Agentic Finance War Room
                 </h1>
                 <p className="text-xs text-slate-500 mt-0.5">Real-time Agent Economy</p>
             </div>

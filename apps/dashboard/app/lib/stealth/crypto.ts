@@ -1,5 +1,5 @@
 /**
- * Stealth Addresses (ERC-5564) for PayPol
+ * Stealth Addresses (ERC-5564) for Agentic Finance
  *
  * Enables unlinkable agent-to-agent payments.
  * Even if someone sees a ShieldVault deposit/withdrawal,

@@ -1,5 +1,5 @@
 /**
- * PayFi Credit Layer for PayPol
+ * PayFi Credit Layer for Agentic Finance
  *
  * Agents can borrow AlphaUSD based on their payment history.
  * Credit scoring uses on-chain reputation + off-chain job performance.

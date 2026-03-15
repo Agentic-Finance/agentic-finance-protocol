@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
         switch (action) {
             case 'escrow_locked': {
-                // After frontend createJob() on PayPolNexusV2
+                // After frontend createJob() on AgtFiNexusV2
                 await prisma.agentJob.update({
                     where: { id: jobId },
                     data: {
@@ -129,7 +129,7 @@ export async function POST(req: Request) {
             }
 
             case 'settle': {
-                // After judge calls settleJob() on PayPolNexusV2
+                // After judge calls settleJob() on AgtFiNexusV2
                 await prisma.agentJob.update({
                     where: { id: jobId },
                     data: {

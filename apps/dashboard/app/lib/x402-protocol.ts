@@ -4,12 +4,12 @@
  * HTTP 402 Payment Required — enables AI agents to auto-pay for services.
  *
  * Flow:
- * 1. Agent calls PayPol API without payment → receives 402 with payment requirements
+ * 1. Agent calls Agentic Finance API without payment → receives 402 with payment requirements
  * 2. Agent creates payment proof (signed message with payment details)
  * 3. Agent retries with X-Payment header containing the proof
- * 4. PayPol verifies payment, executes request, records usage
+ * 4. Agentic Finance verifies payment, executes request, records usage
  *
- * Compatible with Coinbase x402 standard with PayPol extensions.
+ * Compatible with Coinbase x402 standard with Agentic Finance extensions.
  */
 
 import { ethers } from 'ethers';
@@ -28,7 +28,7 @@ export interface X402PaymentRequirement {
   tokenSymbol: string;
   /** Amount required (in token decimals) */
   amount: string;
-  /** Recipient wallet (PayPol treasury) */
+  /** Recipient wallet (Agentic Finance treasury) */
   recipient: string;
   /** What the payment is for */
   description: string;

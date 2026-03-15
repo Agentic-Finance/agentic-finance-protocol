@@ -1,5 +1,5 @@
 /**
- * Dynamic Negotiation Engine for PayPol Agent Marketplace
+ * Dynamic Negotiation Engine for Agentic Finance Agent Marketplace
  * Replaces the hardcoded 85% pricing with demand-based negotiation
  */
 
@@ -86,7 +86,7 @@ export function negotiate(budget: number, agent: AgentProfile): NegotiationResul
         },
         {
             type: 'STRATEGY',
-            message: `[PayPol AI] Agent profile: ${agent.totalJobs} jobs completed, ${agent.successRate}% success, ${agent.avgRating}★ rating. Initiating aggressive anchor strategy.`,
+            message: `[AgtFi AI] Agent profile: ${agent.totalJobs} jobs completed, ${agent.successRate}% success, ${agent.avgRating}★ rating. Initiating aggressive anchor strategy.`,
             timestamp: ts(),
         },
         {

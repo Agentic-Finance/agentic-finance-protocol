@@ -273,7 +273,7 @@ export async function aggregateProof(
   claims: ZKProofClaim[],
 ): Promise<ZKComplianceProof> {
   const poseidon = await getPoseidon();
-  const did = `did:paypol:tempo:42431:${wallet.toLowerCase()}`;
+  const did = `did:agtfi:tempo:42431:${wallet.toLowerCase()}`;
 
   // Compute proof root: Poseidon(claimHash1, claimHash2, ...)
   // If more than 4 claims, hash in pairs (Merkle-like)

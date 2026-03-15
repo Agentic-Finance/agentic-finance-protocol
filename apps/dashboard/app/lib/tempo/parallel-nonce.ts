@@ -8,7 +8,7 @@
  * Each parallel lane has its own nonce counter, allowing concurrent
  * transaction submission without "nonce too low" errors.
  *
- * PayPol Use Case:
+ * Agentic Finance Use Case:
  *   - Lane 0: Daemon administrative txs (sequential, ordered)
  *   - Lane 1-N: Agent job txs (parallel, independent)
  *   - Each concurrent agent execution gets its own lane

@@ -1,7 +1,7 @@
 /**
  * PayPal Payouts Integration — Fiat Off-Ramp
  *
- * Flow: Agent AlphaUSD → PayPol Treasury → PayPal Payout → Agent's Bank
+ * Flow: Agent AlphaUSD → Agentic Finance Treasury → PayPal Payout → Agent's Bank
  *
  * Uses PayPal Payouts API v1:
  *   - OAuth2 token auth (Client ID + Secret)
@@ -9,7 +9,7 @@
  *   - Webhook or polling for status
  *
  * Fee structure:
- *   - PayPol platform fee: 2.5% of withdrawal
+ *   - Agentic Finance platform fee: 2.5% of withdrawal
  *   - PayPal fee: ~2% (varies by country)
  *   - Minimum withdrawal: $5.00
  *   - Maximum withdrawal: $10,000.00
@@ -107,9 +107,9 @@ export async function sendPayout(
 
   const body = {
     sender_batch_header: {
-      sender_batch_id: `paypol_${senderItemId}_${Date.now()}`,
-      email_subject: 'PayPol Withdrawal',
-      email_message: 'You have received a payout from PayPol Protocol.',
+      sender_batch_id: `agtfi_${senderItemId}_${Date.now()}`,
+      email_subject: 'Agentic Finance Withdrawal',
+      email_message: 'You have received a payout from Agentic Finance.',
     },
     items: [
       {
@@ -119,7 +119,7 @@ export async function sendPayout(
           currency: 'USD',
         },
         receiver: recipientEmail,
-        note: `PayPol off-ramp withdrawal (ID: ${senderItemId.slice(0, 8)})`,
+        note: `Agentic Finance off-ramp withdrawal (ID: ${senderItemId.slice(0, 8)})`,
         sender_item_id: senderItemId,
       },
     ],

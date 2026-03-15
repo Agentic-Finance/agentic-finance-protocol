@@ -1,5 +1,5 @@
 /**
- * Structured Logger for PayPol Protocol
+ * Structured Logger for Agentic Finance
  *
  * Replaces raw console.log/error with structured JSON logging.
  * - Consistent format: { timestamp, level, label, message, ...meta }

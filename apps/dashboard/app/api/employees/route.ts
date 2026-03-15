@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         let defaultWorkspace = await prisma.workspace.findFirst();
         if (!defaultWorkspace) {
             defaultWorkspace = await prisma.workspace.create({
-                data: { name: "PayPol Default Hub", adminWallet: "0x000" }
+                data: { name: "Agentic Finance Hub", adminWallet: "0x000" }
             });
         }
 

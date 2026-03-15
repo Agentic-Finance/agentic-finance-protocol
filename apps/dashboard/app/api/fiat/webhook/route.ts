@@ -160,7 +160,7 @@ export async function POST(req: NextRequest) {
               let workspace = await prisma.workspace.findFirst();
               if (!workspace) {
                 workspace = await prisma.workspace.create({
-                  data: { name: 'PayPol Vault', adminWallet: '0xFiatShield' },
+                  data: { name: 'Agentic Finance Vault', adminWallet: '0xFiatShield' },
                 });
               }
               await prisma.timeVaultPayload.create({

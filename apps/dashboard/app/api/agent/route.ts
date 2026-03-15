@@ -4,7 +4,7 @@ import prisma from "@/app/lib/prisma";
 const RPC_URL = "https://rpc.moderato.tempo.xyz";
 
 const MULTISEND_ADDRESS = "0xFE02aCc9BcA9218bcEae3f3E4755ea544E3aeb60"; 
-const PAYPOL_NEXUS_ADDRESS = "0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c"; 
+const AGTFI_NEXUS_ADDRESS = "0xc608cd2EAbfcb0734927433b7A3a7d7b43990F2c"; 
 const ALPHA_USD_ADDRESS = process.env.ALPHA_USD_ADDRESS || "0x1234567890abcdef1234567890abcdef12345678"; 
 
 const ALPHA_USD_DECIMALS = 6; 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
             const nexusAbi = [
                 "function createJob(address _worker, address _judge, address _token, uint256 _amount) external"
             ];
-            const nexusContract = new ethers.Contract(PAYPOL_NEXUS_ADDRESS, nexusAbi, masterDaemonWallet);
+            const nexusContract = new ethers.Contract(AGTFI_NEXUS_ADDRESS, nexusAbi, masterDaemonWallet);
 
             for (const p of payloads) {
                 const amountInWei = ethers.parseUnits(p.amount.toString(), ALPHA_USD_DECIMALS);

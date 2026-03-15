@@ -10,7 +10,7 @@
  *   - Cheaper: no intermediate contract overhead
  *   - Native: protocol-level guarantee
  *
- * Use cases in PayPol:
+ * Use cases in Agentic Finance:
  *   - Payroll: approve + transfer N recipients = 1 tx
  *   - Settlement: escrow release + proof registration + fee = 1 tx
  *   - Agent setup: deposit + register + approve = 1 tx
@@ -23,7 +23,7 @@ import {
 } from 'viem';
 import { publicClient, getDaemonAccount, getDaemonWalletClient } from './clients';
 import {
-  PAYPOL_MULTISEND_V2_ADDRESS,
+  AGTFI_MULTISEND_V2_ADDRESS,
   AI_PROOF_REGISTRY_ADDRESS,
   STREAM_V1_ADDRESS,
 } from '../constants';
@@ -220,7 +220,7 @@ export async function executeBatchViaMultisend(
 
   const txHash = await walletClient.sendTransaction({
     account,
-    to: PAYPOL_MULTISEND_V2_ADDRESS as Address,
+    to: AGTFI_MULTISEND_V2_ADDRESS as Address,
     data: encodeFunctionData({
       abi: parseAbi([
         'function executeMultiTokenBatch(address token, address[] calldata recipients, uint256[] calldata amounts, bytes32 batchId) external',

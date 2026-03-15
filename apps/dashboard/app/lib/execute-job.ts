@@ -309,7 +309,7 @@ export async function executeJob(jobId: string): Promise<ExecuteJobResult> {
         // ═══════════════════════════════════════════════════════════
         try {
             if (job.agent.nativeAgentId) {
-                // ════ Native PayPol Agent (Claude-powered) ════
+                // ════ Native Agentic Finance Agent (Claude-powered) ════
                 console.log(`[Execute] Calling agent service: ${AGENT_SERVICE_URL}/agents/${job.agent.nativeAgentId}/execute`);
 
                 const controller = new AbortController();

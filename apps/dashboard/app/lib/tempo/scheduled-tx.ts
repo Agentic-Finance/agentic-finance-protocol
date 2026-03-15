@@ -5,7 +5,7 @@
  * fields for time-windowed execution. Transactions are only valid within
  * the specified window.
  *
- * PayPol Use Cases:
+ * Agentic Finance Use Cases:
  *   - Recurring payroll disbursement (monthly schedule)
  *   - Time-locked escrow releases (dispute window expiry)
  *   - Scheduled agent budget top-ups

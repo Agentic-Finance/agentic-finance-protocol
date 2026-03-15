@@ -1,5 +1,5 @@
 /**
- * Formatting Utilities for PayPol Protocol
+ * Formatting Utilities for Agentic Finance
  *
  * Consistent number/amount formatting across the entire app.
  * Replaces inconsistent .toFixed(2), .toFixed(3), .toFixed(6) calls.

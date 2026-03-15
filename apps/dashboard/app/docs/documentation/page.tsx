@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default function DocumentationPage() {
-    const filePath = path.join(process.cwd(), 'public', 'docs', 'paypol-documentation.md');
+    const filePath = path.join(process.cwd(), 'public', 'docs', 'agtfi-documentation.md');
     const content = fs.readFileSync(filePath, 'utf-8');
 
     return (

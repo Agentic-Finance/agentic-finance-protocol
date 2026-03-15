@@ -140,7 +140,7 @@ export async function POST(req: Request) {
             // Detect user's input language server-side for reliable reasoning output
             const detectedLang = detectLanguage(prompt);
 
-            const systemPrompt = `You are PayPol's Agent Router - an AI that matches user tasks to the best available agents.
+            const systemPrompt = `You are Agentic Finance's Agent Router - an AI that matches user tasks to the best available agents.
 The user may write in ANY language. Understand the intent regardless of language.
 
 CRITICAL: The "reasoning" field MUST be written in ${detectedLang}. Do NOT use any other language for reasoning.

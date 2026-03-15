@@ -1,5 +1,5 @@
 /**
- * Verifiable AI Engine for PayPol
+ * Verifiable AI Engine for Agentic Finance
  *
  * Proves that AI agent decisions are correct via:
  * 1. Model Registry — hash agent model weights/code on-chain

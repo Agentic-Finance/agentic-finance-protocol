@@ -354,7 +354,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       wallet: w,
-      did: `did:paypol:tempo:42431:${w}`,
+      did: `did:agtfi:tempo:42431:${w}`,
       complianceStatus: {
         reputationScore: repScore,
         reputationTier: repTier,

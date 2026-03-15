@@ -564,7 +564,7 @@ export async function decomposeTask(
                 rating: a.avgRating,
             }));
 
-            const systemPrompt = `You are PayPol's A2A Task Planner. Decompose user tasks into MINIMAL sub-tasks using ONLY directly relevant agents.
+            const systemPrompt = `You are Agentic Finance's A2A Task Planner. Decompose user tasks into MINIMAL sub-tasks using ONLY directly relevant agents.
 
 CRITICAL RULES — Follow strictly:
 1. ONLY select agents whose skills DIRECTLY match the user's request. Do NOT add agents "just in case."

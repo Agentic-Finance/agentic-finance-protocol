@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 
-import { PAYPOL_NEXUS_ADDRESS, PAYPOL_MULTISEND_ADDRESS, PAYPOL_SHIELD_ADDRESS, PAYPOL_SHIELD_V2_ADDRESS, PAYPOL_NEXUS_V2_ADDRESS, PAYPOL_TREASURY_WALLET, NEXUS_ABI, NEXUS_V2_ABI, SHIELD_V2_ABI, ERC20_ABI, RPC_URL, SUPPORTED_TOKENS } from './lib/constants';
+import { AGTFI_NEXUS_ADDRESS, AGTFI_MULTISEND_ADDRESS, AGTFI_SHIELD_ADDRESS, AGTFI_SHIELD_V2_ADDRESS, AGTFI_NEXUS_V2_ADDRESS, AGTFI_TREASURY_WALLET, NEXUS_ABI, NEXUS_V2_ABI, SHIELD_V2_ABI, ERC20_ABI, RPC_URL, SUPPORTED_TOKENS } from './lib/constants';
 
 // Direct imports for critical above-the-fold components
 import Navbar from './components/Navbar';
@@ -91,8 +91,8 @@ export default function Dashboard() {
             if (detail?.jobId) setChatTargetJobId(detail.jobId);
             setIsChatOpen(true);
         };
-        window.addEventListener('paypol:openChat', handleOpenChat);
-        return () => window.removeEventListener('paypol:openChat', handleOpenChat);
+        window.addEventListener('agtfi:openChat', handleOpenChat);
+        return () => window.removeEventListener('agtfi:openChat', handleOpenChat);
     }, []);
 
     // Listen for notification clicks to scroll to a specific section
@@ -104,8 +104,8 @@ export default function Dashboard() {
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
-        window.addEventListener('paypol:scrollToSection', handleScrollTo);
-        return () => window.removeEventListener('paypol:scrollToSection', handleScrollTo);
+        window.addEventListener('agtfi:scrollToSection', handleScrollTo);
+        return () => window.removeEventListener('agtfi:scrollToSection', handleScrollTo);
     }, []);
 
     const [currentWorkspace, setCurrentWorkspace] = useState<{ name: string, type: string, admin_wallet: string, id: string } | null | undefined>(undefined);
@@ -157,7 +157,7 @@ export default function Dashboard() {
     // ==========================================
     // WALLET & SESSION FUNCTIONS
     // ==========================================
-    const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = PAYPOL_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
+    const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = AGTFI_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
 
     // ==========================================
     // POLLING ENGINE (extracted to hook — Promise.allSettled, visibility-aware)
@@ -284,7 +284,7 @@ export default function Dashboard() {
         prevLocalEscrowRef.current = currentIds;
     }, [localEscrow, history]);
 
-    const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); if (data.workspace.daemonStatus) setAgentStatus(data.workspace.daemonStatus); localStorage.removeItem('paypol_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('paypol_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); if (joinData.workspace.daemonStatus) setAgentStatus(joinData.workspace.daemonStatus); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('paypol_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
+    const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); if (data.workspace.daemonStatus) setAgentStatus(data.workspace.daemonStatus); localStorage.removeItem('agtfi_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('agtfi_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); if (joinData.workspace.daemonStatus) setAgentStatus(joinData.workspace.daemonStatus); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('agtfi_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
     const ensureTempoNetwork = useCallback(async () => {
         const TEMPO_CHAIN_ID = '0xa5bf'; // 42431
         const TEMPO_CHAIN_CONFIG = {
@@ -329,9 +329,9 @@ export default function Dashboard() {
         }
     }, [showToast, ensureTempoNetwork]);
     const disconnectWallet = useCallback(() => { setWalletAddress(null); setCurrentWorkspace(undefined); setUserBalance("0.00"); setShowLanding(true); showToast('success', 'Session disconnected.'); }, [showToast]);
-    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `PAYPOL GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { setCurrentWorkspace(data.workspace); showToast('success', 'Smart Vault deployed successfully.'); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
-    const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('paypol_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
-    const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? PAYPOL_SHIELD_ADDRESS : PAYPOL_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
+    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `AGENTIC FINANCE GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { setCurrentWorkspace(data.workspace); showToast('success', 'Smart Vault deployed successfully.'); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
+    const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('agtfi_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
+    const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? AGTFI_SHIELD_ADDRESS : AGTFI_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
     const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; const prevState = agentStatus; setAgentStatus(newState); /* optimistic */ try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { setAgentStatus(prevState); /* rollback */ showToast('error', 'Failed to update daemon status.'); } } catch { setAgentStatus(prevState); /* rollback */ showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast, setAgentStatus]);
 
     // ==========================================
@@ -361,7 +361,7 @@ export default function Dashboard() {
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `PayPol_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.setAttribute("download", `AgtFi_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -404,7 +404,7 @@ export default function Dashboard() {
             const amountInUnits = ethers.parseUnits(totalRequiredAmount.toFixed(tokenDecimals), tokenDecimals);
             // Shield deposits now go through ShieldVaultV2.deposit() directly (handled in the shield branch below)
             // Public transfers go to MultisendVault as before
-            const targetVault = PAYPOL_MULTISEND_ADDRESS;
+            const targetVault = AGTFI_MULTISEND_ADDRESS;
 
             let activeTxHash = "";
 
@@ -413,12 +413,12 @@ export default function Dashboard() {
                 // Step 1: Approve NexusV2 contract to spend employer's ERC20 tokens
                 showToast('success', 'Step 1/2: Approving token spend...');
                 const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-                const approveTx = await tokenContract.approve(PAYPOL_NEXUS_V2_ADDRESS, amountInUnits);
+                const approveTx = await tokenContract.approve(AGTFI_NEXUS_V2_ADDRESS, amountInUnits);
                 await approveTx.wait();
 
                 // Step 2: Create escrow job on NexusV2 (48h deadline = 172800 seconds)
                 showToast('success', 'Step 2/2: Locking funds in Escrow Vault...');
-                const nexusV2 = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
+                const nexusV2 = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, signer);
                 const rawRecipient = awaitingTxs[0].wallet_address || awaitingTxs[0].address || awaitingTxs[0].recipientWallet || awaitingTxs[0].wallet;
                 // Validate address format - REJECT invalid addresses instead of silently sending to ZeroAddress
                 if (!rawRecipient || !/^0x[a-fA-F0-9]{40}$/.test(rawRecipient)) {
@@ -507,7 +507,7 @@ export default function Dashboard() {
                 // Step 2: Approve ShieldVaultV2 to spend total amount (1 MetaMask popup)
                 showToast('success', 'Step 1: Approving token spend for Shield Vault...');
                 const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-                const approveTx = await tokenContract.approve(PAYPOL_SHIELD_V2_ADDRESS, amountInUnits, { gasLimit: 800_000 });
+                const approveTx = await tokenContract.approve(AGTFI_SHIELD_V2_ADDRESS, amountInUnits, { gasLimit: 800_000 });
                 try { await approveTx.wait(); } catch (e: any) {
                     // Tempo TIP-20 parse error — check if TX actually succeeded
                     if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
@@ -521,7 +521,7 @@ export default function Dashboard() {
                     const zk = zkCommitments[i];
                     showToast('success', `Step 2: Shield Deposit (${i + 1}/${zkCommitments.length})...`);
                     const empAmount = ethers.parseUnits(Number(zk.amount).toFixed(tokenDecimals), tokenDecimals);
-                    const shieldVault = new ethers.Contract(PAYPOL_SHIELD_V2_ADDRESS, SHIELD_V2_ABI, signer);
+                    const shieldVault = new ethers.Contract(AGTFI_SHIELD_V2_ADDRESS, SHIELD_V2_ABI, signer);
                     const depositTx = await shieldVault.deposit(zk.commitment, empAmount, { gasLimit: 1_500_000 });
                     depositTxHashes.push(depositTx.hash);
                     try { await depositTx.wait(); } catch (e: any) {
@@ -565,7 +565,7 @@ export default function Dashboard() {
                 // ═══ Public Transfer (No Shield) ═══
                 showToast('success', `Depositing ${totalRequiredAmount} AlphaUSD to Vault...`);
                 const tokenContract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-                const txResponse = await tokenContract.transfer(PAYPOL_MULTISEND_ADDRESS, amountInUnits, { gasLimit: 800_000 });
+                const txResponse = await tokenContract.transfer(AGTFI_MULTISEND_ADDRESS, amountInUnits, { gasLimit: 800_000 });
                 activeTxHash = txResponse.hash;
                 try { await txResponse.wait(); } catch (e: any) {
                     if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {

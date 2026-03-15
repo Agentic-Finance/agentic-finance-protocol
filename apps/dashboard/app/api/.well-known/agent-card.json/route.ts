@@ -84,7 +84,7 @@ function buildAgentCard(): A2AAgentCard {
     defaultOutputModes: ['application/json'],
     skills: AGENT_MANIFESTS.map(agentToA2ASkill),
     extensions: {
-      paypol: {
+      agtfi: {
         chainId: 42431,
         network: 'Tempo Moderato Testnet',
         contracts: {

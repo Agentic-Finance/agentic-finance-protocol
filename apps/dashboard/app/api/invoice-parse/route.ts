@@ -17,7 +17,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'No content provided.' }, { status: 400 });
         }
 
-        const systemPrompt = `You are the "PayPol Invoice Analyst", an AI that extracts payment data from invoices.
+        const systemPrompt = `You are the "Agentic Finance Invoice Analyst", an AI that extracts payment data from invoices.
 
 Your job is to parse invoice content and extract line items for a Web3 payroll/payment system.
 

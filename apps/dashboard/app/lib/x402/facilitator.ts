@@ -1,5 +1,5 @@
 /**
- * x402 Payment Facilitator for PayPol
+ * x402 Payment Facilitator for Agentic Finance
  *
  * Implements the x402 protocol (HTTP 402 Payment Required)
  * enabling AI agents to pay for API access with AlphaUSD micropayments.
@@ -16,7 +16,7 @@
 
 import { publicClient, getDaemonWalletClient } from '@/app/lib/tempo/clients';
 import { ERC20_VIEM_ABI } from '@/app/lib/tempo/contracts';
-import { SUPPORTED_TOKENS, PAYPOL_TREASURY_WALLET } from '@/app/lib/constants';
+import { SUPPORTED_TOKENS, AGTFI_TREASURY_WALLET } from '@/app/lib/constants';
 import {
   verifyMessage,
   formatUnits,
@@ -34,7 +34,7 @@ import prisma from '@/app/lib/prisma';
 export const X402_VERSION = '1';
 export const X402_NETWORK = 'tempo-42431';
 export const X402_TOKEN = SUPPORTED_TOKENS[0]; // AlphaUSD
-export const X402_FACILITATOR_ADDRESS = PAYPOL_TREASURY_WALLET;
+export const X402_FACILITATOR_ADDRESS = AGTFI_TREASURY_WALLET;
 
 // ────────────────────────────────────────────
 // Payment Requirement (402 Response Headers)
@@ -82,7 +82,7 @@ export interface PaymentPayload {
   version: string;
   network: string;
   from: string; // Agent wallet address
-  to: string; // Facilitator address (PayPol treasury)
+  to: string; // Facilitator address (Agentic Finance treasury)
   token: string;
   amount: string;
   nonce: string; // Unique per payment

@@ -9,7 +9,7 @@ const ShowcaseView = dynamic(() => import('../components/warroom/ShowcaseView'),
             <div className="text-center">
                 <div className="w-24 h-24 rounded-full border-2 border-indigo-500/20 border-t-indigo-500 animate-spin mx-auto mb-4" />
                 <div className="text-sm text-slate-500 uppercase tracking-widest font-bold">Initializing...</div>
-                <div className="text-[10px] text-slate-600 mt-1">PayPol Live Network</div>
+                <div className="text-[10px] text-slate-600 mt-1">Agentic Finance Live Network</div>
             </div>
         </div>
     ),

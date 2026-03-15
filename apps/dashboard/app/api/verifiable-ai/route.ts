@@ -133,7 +133,7 @@ export async function GET(req: Request) {
 
   // Protocol info
   return NextResponse.json({
-    protocol: 'PayPol Verifiable AI',
+    protocol: 'Agentic Finance Verifiable AI',
     description: 'Cryptographic proofs that AI agents make correct decisions. Model hashes + decision commitments verified on-chain.',
     contract: '0x8fDB8E871c9eaF2955009566F41490Bbb128a014',
     chain: 'Tempo Moderato (42431)',

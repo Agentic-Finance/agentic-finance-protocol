@@ -14,9 +14,9 @@
 import { ethers } from 'ethers';
 import crypto from 'crypto';
 import {
-  PAYPOL_TREASURY_WALLET,
-  PAYPOL_NEXUS_V2_ADDRESS,
-  PAYPOL_SHIELD_V2_ADDRESS,
+  AGTFI_TREASURY_WALLET,
+  AGTFI_NEXUS_V2_ADDRESS,
+  AGTFI_SHIELD_V2_ADDRESS,
   RPC_URL,
   SUPPORTED_TOKENS,
 } from '@/app/lib/constants';
@@ -28,7 +28,7 @@ const alphaUSD = SUPPORTED_TOKENS.find(t => t.symbol === 'AlphaUSD')!;
 
 export const FIAT_CONFIG = {
   /** Platform treasury wallet (holds stablecoin reserve) */
-  treasuryWallet: PAYPOL_TREASURY_WALLET,
+  treasuryWallet: AGTFI_TREASURY_WALLET,
   /** Default stablecoin */
   defaultToken: alphaUSD.symbol,
   /** Token address */
@@ -50,13 +50,13 @@ export const FIAT_CONFIG = {
    * Example with 5% + $1.00:
    *   User wants 100 AlphaUSD → charged $106 (100 × 1.05 + $1)
    *   Paddle fee: 5% × $106 + $0.50 = $5.80
-   *   PayPol receives: $106 - $5.80 = $100.20
-   *   PayPol sends: 100 AlphaUSD (cost = $100 at 1:1 peg)
+   *   Agentic Finance receives: $106 - $5.80 = $100.20
+   *   Agentic Finance sends: 100 AlphaUSD (cost = $100 at 1:1 peg)
    *   Net profit: $0.20 per $100 transaction
    *
    *   User wants 5 AlphaUSD (min) → charged $6.25 (5 × 1.05 + $1)
    *   Paddle fee: 5% × $6.25 + $0.50 = $0.81
-   *   PayPol receives: $6.25 - $0.81 = $5.44
+   *   Agentic Finance receives: $6.25 - $0.81 = $5.44
    *   Net profit: $0.44 — never negative at min $5!
    */
   platformMarkupPercent: 5,
@@ -71,7 +71,7 @@ export const FIAT_CONFIG = {
   /** Chain ID */
   chainId: 42431,
   /** NexusV2 contract */
-  nexusV2Address: PAYPOL_NEXUS_V2_ADDRESS,
+  nexusV2Address: AGTFI_NEXUS_V2_ADDRESS,
   /** Paddle API base URL */
   paddleApiUrl: process.env.PADDLE_ENVIRONMENT === 'production'
     ? 'https://api.paddle.com'
@@ -382,7 +382,7 @@ export async function depositToShieldVault(
   const erc20Interface = new ethers.Interface([
     'function approve(address spender, uint256 amount) returns (bool)',
   ]);
-  const approveData = erc20Interface.encodeFunctionData('approve', [PAYPOL_SHIELD_V2_ADDRESS, amountScaled]);
+  const approveData = erc20Interface.encodeFunctionData('approve', [AGTFI_SHIELD_V2_ADDRESS, amountScaled]);
 
   const approveTx = await wallet.sendTransaction({
     to: FIAT_CONFIG.tokenAddress,
@@ -421,7 +421,7 @@ export async function depositToShieldVault(
   ]);
 
   const depositTx = await wallet.sendTransaction({
-    to: PAYPOL_SHIELD_V2_ADDRESS,
+    to: AGTFI_SHIELD_V2_ADDRESS,
     data: depositData,
     type: 0,
     // deposit() calls TIP-20 transferFrom() internally (~300k+ gas)

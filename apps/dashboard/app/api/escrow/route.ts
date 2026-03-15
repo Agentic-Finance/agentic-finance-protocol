@@ -46,7 +46,7 @@ export async function GET() {
 
             return {
                 id: item.id,
-                name: item.name || 'PayPol Neural Agent',
+                name: item.name || 'AgtFi Neural Agent',
                 recipientAddress: item.recipientWallet || '',
                 amount: item.amount?.toString() || '0',
                 token: item.token || 'AlphaUSD',
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
             return apiSuccess({ message: 'Transaction disputed successfully.' });
         }
 
-        // Action: PayPol Arbitrator rules in favor of the Agent (Pay the Agent)
+        // Action: Agentic Finance Arbitrator rules in favor of the Agent (Pay the Agent)
         if (action === 'release') {
             await prisma.timeVaultPayload.update({
                 where: { id: String(id) },
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
             return apiSuccess({ message: 'Funds released to Agent.' });
         }
 
-        // Action: PayPol Arbitrator rules in favor of the Company (Return funds to Company)
+        // Action: Agentic Finance Arbitrator rules in favor of the Company (Return funds to Company)
         if (action === 'refund') {
             await prisma.timeVaultPayload.update({
                 where: { id: String(id) },

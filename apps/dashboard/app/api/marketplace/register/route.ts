@@ -3,7 +3,7 @@
  *
  * POST /api/marketplace/register
  *
- * Called by the PayPol SDK's registerAgent() function.
+ * Called by the Agentic Finance SDK's registerAgent() function.
  * Validates the agent's webhook, creates a MarketplaceAgent record,
  * and returns the marketplace ID for tracking.
  */
@@ -151,7 +151,7 @@ export async function POST(req: Request) {
       wallet: ownerWallet,
       type: 'agent:registered',
       title: 'Agent Registered',
-      message: `${name} is now live on PayPol Marketplace`,
+      message: `${name} is now live on Agentic Finance Marketplace`,
     }).catch(() => {});
 
     return NextResponse.json({

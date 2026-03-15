@@ -6,9 +6,9 @@
 import { getContract, type GetContractReturnType } from 'viem';
 import { publicClient, getDaemonWalletClient } from './clients';
 import {
-  PAYPOL_NEXUS_V2_ADDRESS,
-  PAYPOL_SHIELD_V2_ADDRESS,
-  PAYPOL_MULTISEND_V2_ADDRESS,
+  AGTFI_NEXUS_V2_ADDRESS,
+  AGTFI_SHIELD_V2_ADDRESS,
+  AGTFI_MULTISEND_V2_ADDRESS,
   AI_PROOF_REGISTRY_ADDRESS,
   STREAM_V1_ADDRESS,
   REPUTATION_REGISTRY_ADDRESS,
@@ -80,7 +80,7 @@ export const ERC20_VIEM_ABI = [
 
 export function getNexusV2Read() {
   return getContract({
-    address: PAYPOL_NEXUS_V2_ADDRESS as `0x${string}`,
+    address: AGTFI_NEXUS_V2_ADDRESS as `0x${string}`,
     abi: NEXUS_V2_VIEM_ABI,
     client: publicClient,
   });
@@ -88,7 +88,7 @@ export function getNexusV2Read() {
 
 export function getShieldV2Read() {
   return getContract({
-    address: PAYPOL_SHIELD_V2_ADDRESS as `0x${string}`,
+    address: AGTFI_SHIELD_V2_ADDRESS as `0x${string}`,
     abi: SHIELD_V2_VIEM_ABI,
     client: publicClient,
   });
@@ -96,7 +96,7 @@ export function getShieldV2Read() {
 
 export function getMultisendV2Read() {
   return getContract({
-    address: PAYPOL_MULTISEND_V2_ADDRESS as `0x${string}`,
+    address: AGTFI_MULTISEND_V2_ADDRESS as `0x${string}`,
     abi: MULTISEND_V2_VIEM_ABI,
     client: publicClient,
   });
@@ -126,7 +126,7 @@ export function getNexusV2Write() {
   const walletClient = getDaemonWalletClient();
   if (!walletClient) throw new Error('Daemon wallet not configured');
   return getContract({
-    address: PAYPOL_NEXUS_V2_ADDRESS as `0x${string}`,
+    address: AGTFI_NEXUS_V2_ADDRESS as `0x${string}`,
     abi: NEXUS_V2_VIEM_ABI,
     client: { public: publicClient, wallet: walletClient },
   });
@@ -156,7 +156,7 @@ export function getMultisendV2Write() {
   const walletClient = getDaemonWalletClient();
   if (!walletClient) throw new Error('Daemon wallet not configured');
   return getContract({
-    address: PAYPOL_MULTISEND_V2_ADDRESS as `0x${string}`,
+    address: AGTFI_MULTISEND_V2_ADDRESS as `0x${string}`,
     abi: MULTISEND_V2_VIEM_ABI,
     client: { public: publicClient, wallet: walletClient },
   });

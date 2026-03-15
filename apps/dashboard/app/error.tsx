@@ -10,7 +10,7 @@ export default function Error({
     reset: () => void;
 }) {
     useEffect(() => {
-        console.error('[PayPol Error Boundary]:', error);
+        console.error('[AgtFi Error Boundary]:', error);
     }, [error]);
 
     return (

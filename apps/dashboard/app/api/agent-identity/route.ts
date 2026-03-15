@@ -7,7 +7,7 @@
  * Combines on-chain data (ReputationRegistry, SecurityDeposit, NexusV2)
  * with off-chain marketplace data to create a verifiable agent identity.
  *
- * DID Format: did:paypol:tempo:42431:<wallet-address>
+ * DID Format: did:agtfi:tempo:42431:<wallet-address>
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -15,7 +15,7 @@ import { ethers } from 'ethers';
 import prisma from '@/app/lib/prisma';
 import {
   RPC_URL,
-  PAYPOL_NEXUS_V2_ADDRESS,
+  AGTFI_NEXUS_V2_ADDRESS,
   NEXUS_V2_ABI,
   AI_PROOF_REGISTRY_ADDRESS,
   AI_PROOF_REGISTRY_ABI,
@@ -113,7 +113,7 @@ export async function GET(req: NextRequest) {
       // NexusV2 on-chain rating
       (async () => {
         try {
-          const nexus = new ethers.Contract(PAYPOL_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, provider);
+          const nexus = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, provider);
           return Number(await nexus.getWorkerRating(w));
         } catch { return 0; }
       })(),
@@ -167,7 +167,7 @@ export async function GET(req: NextRequest) {
 
     // ── Build DID Document ──────────────────────────────────
 
-    const did = `did:paypol:tempo:42431:${w}`;
+    const did = `did:agtfi:tempo:42431:${w}`;
     const agentNames = agents.map(a => a.name);
     const agentSkills = agents.flatMap(a => {
       try { return JSON.parse(a.skills); } catch { return []; }
@@ -280,7 +280,7 @@ export async function GET(req: NextRequest) {
       contracts: {
         ReputationRegistry: REPUTATION_REGISTRY_ADDRESS,
         SecurityDeposit: SECURITY_DEPOSIT_ADDRESS,
-        NexusV2: PAYPOL_NEXUS_V2_ADDRESS,
+        NexusV2: AGTFI_NEXUS_V2_ADDRESS,
         AIProofRegistry: AI_PROOF_REGISTRY_ADDRESS,
       },
     }, {

@@ -9,8 +9,8 @@
  *   - listTasks       → List tasks with filters
  *   - cancelTask      → Cancel a running task
  *
- * External AI agents communicate with PayPol through this
- * standard A2A interface. Maps A2A messages to PayPol jobs.
+ * External AI agents communicate with Agentic Finance through this
+ * standard A2A interface. Maps A2A messages to Agentic Finance jobs.
  *
  * Spec: https://a2a-protocol.org/latest/specification/
  */
@@ -228,7 +228,7 @@ async function executeAgentTask(
       ],
     });
 
-    task._paypol = {
+    task._agtfi = {
       jobId: result.jobId,
       agentId: result.agentId,
     };

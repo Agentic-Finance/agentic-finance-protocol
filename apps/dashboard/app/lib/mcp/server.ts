@@ -1,7 +1,7 @@
 /**
- * PayPol MCP Server — Model Context Protocol
- * Exposes PayPol payment capabilities as MCP tools
- * Any AI agent (Claude, GPT, Gemini) can use PayPol as a payment tool
+ * Agentic Finance MCP Server — Model Context Protocol
+ * Exposes Agentic Finance payment capabilities as MCP tools
+ * Any AI agent (Claude, GPT, Gemini) can use Agentic Finance as a payment tool
  *
  * MCP Spec: https://modelcontextprotocol.io
  * Protocol version: 2025-03-26
@@ -18,12 +18,12 @@ import {
   MULTISEND_V2_VIEM_ABI,
 } from '@/app/lib/tempo/contracts';
 import {
-  PAYPOL_NEXUS_V2_ADDRESS,
+  AGTFI_NEXUS_V2_ADDRESS,
   STREAM_V1_ADDRESS,
-  PAYPOL_SHIELD_V2_ADDRESS,
-  PAYPOL_MULTISEND_V2_ADDRESS,
+  AGTFI_SHIELD_V2_ADDRESS,
+  AGTFI_MULTISEND_V2_ADDRESS,
   SUPPORTED_TOKENS,
-  PAYPOL_TREASURY_WALLET,
+  AGTFI_TREASURY_WALLET,
 } from '@/app/lib/constants';
 import { formatUnits, parseUnits, keccak256, encodePacked, type Address } from 'viem';
 
@@ -41,7 +41,7 @@ function getWriteClient() {
 // ────────────────────────────────────────────
 
 export const MCP_PROTOCOL_VERSION = '2025-03-26';
-export const SERVER_NAME = 'paypol-mcp';
+export const SERVER_NAME = 'agtfi-mcp';
 export const SERVER_VERSION = '1.0.0';
 
 // ────────────────────────────────────────────
@@ -104,7 +104,7 @@ export const MCP_TOOLS: MCPTool[] = [
   {
     name: 'list_agents',
     description:
-      'List available AI agents in the PayPol marketplace. Filter by category, rating, or verification status.',
+      'List available AI agents in the Agentic Finance marketplace. Filter by category, rating, or verification status.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -122,7 +122,7 @@ export const MCP_TOOLS: MCPTool[] = [
   {
     name: 'hire_agent',
     description:
-      'Hire an AI agent from the PayPol marketplace to perform a task. Creates an escrow-backed job with the agent, including negotiation and execution.',
+      'Hire an AI agent from the Agentic Finance marketplace to perform a task. Creates an escrow-backed job with the agent, including negotiation and execution.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -199,7 +199,7 @@ export const MCP_TOOLS: MCPTool[] = [
   {
     name: 'get_tvl',
     description:
-      'Get the Total Value Locked (TVL) across all PayPol smart contracts on Tempo L1.',
+      'Get the Total Value Locked (TVL) across all Agentic Finance smart contracts on Tempo L1.',
     inputSchema: {
       type: 'object',
       properties: {},
@@ -209,7 +209,7 @@ export const MCP_TOOLS: MCPTool[] = [
   {
     name: 'get_agent_reputation',
     description:
-      'Get the on-chain reputation score and tier for an AI agent on PayPol.',
+      'Get the on-chain reputation score and tier for an AI agent on Agentic Finance.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -293,7 +293,7 @@ async function handleSendPayment(args: Record<string, any>) {
         text: JSON.stringify({
           success: true,
           txHash,
-          from: PAYPOL_TREASURY_WALLET,
+          from: AGTFI_TREASURY_WALLET,
           to,
           amount,
           token: 'AlphaUSD',
@@ -320,19 +320,19 @@ async function handleCreateEscrow(args: Record<string, any>) {
     address: tokenAddress,
     abi: ERC20_VIEM_ABI,
     functionName: 'approve',
-    args: [PAYPOL_NEXUS_V2_ADDRESS as Address, parsedAmount],
+    args: [AGTFI_NEXUS_V2_ADDRESS as Address, parsedAmount],
     account,
     chain: tempoModerato,
   });
 
   // Create job on NexusV2
   const txHash = await walletClient.writeContract({
-    address: PAYPOL_NEXUS_V2_ADDRESS as Address,
+    address: AGTFI_NEXUS_V2_ADDRESS as Address,
     abi: NEXUS_V2_VIEM_ABI,
     functionName: 'createJob',
     args: [
       worker as Address,
-      PAYPOL_TREASURY_WALLET as Address, // judge = daemon
+      AGTFI_TREASURY_WALLET as Address, // judge = daemon
       tokenAddress,
       parsedAmount,
       deadlineSeconds,
@@ -352,7 +352,7 @@ async function handleCreateEscrow(args: Record<string, any>) {
           amount,
           deadline_hours,
           description: description || null,
-          contract: PAYPOL_NEXUS_V2_ADDRESS,
+          contract: AGTFI_NEXUS_V2_ADDRESS,
         }),
       },
     ],
@@ -586,14 +586,14 @@ async function handleMultisend(args: Record<string, any>) {
     address: tokenAddress,
     abi: ERC20_VIEM_ABI,
     functionName: 'approve',
-    args: [PAYPOL_MULTISEND_V2_ADDRESS as Address, parseUnits(String(totalAmount), 6)],
+    args: [AGTFI_MULTISEND_V2_ADDRESS as Address, parseUnits(String(totalAmount), 6)],
     account,
     chain: tempoModerato,
   });
 
   // Deposit to MultisendV2
   await walletClient.writeContract({
-    address: PAYPOL_MULTISEND_V2_ADDRESS as Address,
+    address: AGTFI_MULTISEND_V2_ADDRESS as Address,
     abi: MULTISEND_V2_VIEM_ABI,
     functionName: 'depositFunds',
     args: [parseUnits(String(totalAmount), 6)],
@@ -603,7 +603,7 @@ async function handleMultisend(args: Record<string, any>) {
 
   // Execute batch
   const txHash = await walletClient.writeContract({
-    address: PAYPOL_MULTISEND_V2_ADDRESS as Address,
+    address: AGTFI_MULTISEND_V2_ADDRESS as Address,
     abi: MULTISEND_V2_VIEM_ABI,
     functionName: 'executePublicBatch',
     args: [recipients, amounts, batchId],
@@ -631,10 +631,10 @@ async function handleMultisend(args: Record<string, any>) {
 async function handleGetTVL() {
   const tokenAddress = SUPPORTED_TOKENS[0].address as Address;
   const contracts = [
-    { name: 'NexusV2 (Escrow)', address: PAYPOL_NEXUS_V2_ADDRESS },
-    { name: 'ShieldVaultV2 (Privacy)', address: PAYPOL_SHIELD_V2_ADDRESS },
+    { name: 'NexusV2 (Escrow)', address: AGTFI_NEXUS_V2_ADDRESS },
+    { name: 'ShieldVaultV2 (Privacy)', address: AGTFI_SHIELD_V2_ADDRESS },
     { name: 'StreamV1 (Milestones)', address: STREAM_V1_ADDRESS },
-    { name: 'MultisendV2 (Batch)', address: PAYPOL_MULTISEND_V2_ADDRESS },
+    { name: 'MultisendV2 (Batch)', address: AGTFI_MULTISEND_V2_ADDRESS },
   ];
 
   const balances = await Promise.all(

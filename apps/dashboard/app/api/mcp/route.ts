@@ -1,11 +1,11 @@
 /**
- * PayPol MCP API Endpoint
+ * Agentic Finance MCP API Endpoint
  *
  * POST /api/mcp — JSON-RPC endpoint for MCP tool calls
  * GET  /api/mcp — MCP server discovery (returns capabilities)
  *
  * This endpoint allows any MCP-compatible AI agent to discover
- * and use PayPol's payment tools via the Model Context Protocol.
+ * and use Agentic Finance's payment tools via the Model Context Protocol.
  */
 
 import { NextResponse } from 'next/server';
@@ -28,7 +28,7 @@ export async function GET() {
     version: SERVER_VERSION,
     protocolVersion: MCP_PROTOCOL_VERSION,
     description:
-      'PayPol Protocol — Agent-to-agent payment infrastructure on Tempo L1. Send payments, create escrow, hire AI agents, stream payments, and more.',
+      'Agentic Finance — Agent-to-agent payment infrastructure on Tempo L1. Send payments, create escrow, hire AI agents, stream payments, and more.',
     capabilities: {
       tools: { listChanged: false },
     },

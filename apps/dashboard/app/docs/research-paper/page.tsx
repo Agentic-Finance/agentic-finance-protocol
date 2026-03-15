@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default function ResearchPaperPage() {
-    const filePath = path.join(process.cwd(), 'public', 'docs', 'paypol-research-paper.md');
+    const filePath = path.join(process.cwd(), 'public', 'docs', 'agtfi-research-paper.md');
     const content = fs.readFileSync(filePath, 'utf-8');
 
     return (

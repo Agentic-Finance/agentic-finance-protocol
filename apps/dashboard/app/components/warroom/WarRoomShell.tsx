@@ -104,7 +104,7 @@ export default function WarRoomShell() {
                         : 'bg-red-500/15 border-red-500/30';
 
                 const totalTxs = matchedTop ? matchedTop.connections : 0;
-                const successRate = totalTxs > 0 ? Math.min(100, Math.round(90 + Math.random() * 10)) : 0;
+                const successRate = totalTxs > 0 ? Math.min(100, Math.round(90 + (selectedAgent.id.charCodeAt(0) % 10))) : 0;
 
                 return (
                     <div

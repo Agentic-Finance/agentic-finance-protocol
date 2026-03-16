@@ -65,6 +65,7 @@ export default function SwarmStreamsTab() {
     const fetchSwarms = useCallback(async () => {
         try {
             const res = await fetch('/api/swarm/stream');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.success) setSwarms(data.swarms);
         } catch (err) {

@@ -33,7 +33,7 @@ export default function GatewayScreen(props: GatewayProps) {
                 <div className="relative z-10 w-full max-w-2xl px-4 sm:px-8">
                     <div className="text-center mb-8 sm:mb-10">
                         <div className="flex items-center justify-center gap-3 mb-6">
-                            <Image src="/logo-v2.png" alt="" width={48} height={48} className="h-12 w-12 object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" priority />
+                            <Image src="/logo-v2.png" alt="Agentic Finance" width={48} height={48} className="h-12 w-12 object-contain drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" priority />
                             <span className="text-3xl font-extrabold text-white tracking-tight drop-shadow-[0_0_25px_rgba(255,255,255,0.2)]" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                         </div>
                         <h1 className="text-3xl font-bold text-white mb-3">Agentic Finance Gateway</h1>
@@ -164,7 +164,7 @@ export default function GatewayScreen(props: GatewayProps) {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
                 <div className="relative z-10 text-center w-full px-4 sm:px-8">
                     <div className="flex flex-col items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
-                        <Image src="/logo-v2.png" alt="" width={120} height={120} className="h-24 md:h-32 w-auto object-contain mb-6 drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" priority />
+                        <Image src="/logo-v2.png" alt="Agentic Finance" width={120} height={120} className="h-24 md:h-32 w-auto object-contain mb-6 drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" priority />
                         <span className="text-5xl md:text-7xl font-extrabold text-white tracking-tight drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                     </div>
                     <p className="text-indigo-100/90 text-sm md:text-2xl font-bold tracking-[0.15em] uppercase mb-16 animate-in slide-in-from-bottom-6 duration-1000 w-full md:whitespace-nowrap mx-auto leading-normal drop-shadow-lg text-center">

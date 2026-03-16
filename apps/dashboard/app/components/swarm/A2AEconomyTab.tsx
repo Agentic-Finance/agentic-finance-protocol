@@ -38,8 +38,8 @@ export default function A2AEconomyTab() {
                 fetch('/api/a2a/economy'),
                 fetch('/api/a2a/transfer?limit=20'),
             ]);
-            const ecoData = await ecoRes.json();
-            const txData = await txRes.json();
+            const ecoData = ecoRes.ok ? await ecoRes.json() : { success: false };
+            const txData = txRes.ok ? await txRes.json() : { success: false };
             if (ecoData.success) setEconomy(ecoData);
             if (txData.success) setTransfers(txData.transfers);
         } catch (err) {

@@ -21,10 +21,11 @@ const EVENT_ICONS: Record<string, string> = {
 
 function AnimatedNumber({ value, prefix = '' }: { value: number; prefix?: string }) {
     const [display, setDisplay] = useState(0);
+    const displayRef = useRef(0);
     const frameRef = useRef<number>(0);
 
     useEffect(() => {
-        const start = display;
+        const start = displayRef.current;
         const diff = value - start;
         if (diff === 0) return;
         const duration = 1500;
@@ -34,7 +35,9 @@ function AnimatedNumber({ value, prefix = '' }: { value: number; prefix?: string
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-            setDisplay(Math.round(start + diff * eased));
+            const current = Math.round(start + diff * eased);
+            displayRef.current = current;
+            setDisplay(current);
             if (progress < 1) frameRef.current = requestAnimationFrame(animate);
         };
         frameRef.current = requestAnimationFrame(animate);

@@ -46,6 +46,15 @@ const viewTabs: { id: ViewTab; label: string; icon: string }[] = [
 
 export default function CortexPage() {
   const [activeView, setActiveView] = useState<ViewTab>('feed');
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+
+  // Try to get wallet from localStorage (set by OmniTerminal or other wallet flows)
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem('connectedWallet') || localStorage.getItem('walletAddress');
+      if (saved) setWalletAddress(saved);
+    } catch {}
+  }, []);
 
   return (
     <div className="min-h-screen text-white" style={{ background: 'linear-gradient(180deg, #0a0a12 0%, #0d0d1a 50%, #0a0a12 100%)' }}>
@@ -90,7 +99,7 @@ export default function CortexPage() {
 
       {/* Tab content */}
       {activeView === 'feed' && <LiveDashboard />}
-      {activeView === 'shield' && <ShieldPanel />}
+      {activeView === 'shield' && <ShieldPanel walletAddress={walletAddress} />}
       {activeView === 'revenue' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <RevenueDashboard />
@@ -98,7 +107,7 @@ export default function CortexPage() {
       )}
       {activeView === 'wallets' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <EmbeddedWallets />
+          <EmbeddedWallets walletAddress={walletAddress} />
         </div>
       )}
     </div>

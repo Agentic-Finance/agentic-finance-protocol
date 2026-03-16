@@ -49,6 +49,7 @@ export default function RevenueDashboard() {
   const [yieldData, setYieldData] = useState<YieldData | null>(null);
   const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('7d');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [chartMounted, setChartMounted] = useState(false);
 
   useEffect(() => {
@@ -73,12 +74,14 @@ export default function RevenueDashboard() {
   async function fetchData() {
     try {
       const res = await fetch('/api/revenue');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json && json.tvl && json.fees && !json.error) {
         setData(json);
+        setError(null);
       }
-    } catch {
-      // Silent fail, keep existing data
+    } catch (err: any) {
+      if (!data) setError(err?.message || 'Failed to load revenue data');
     } finally {
       setLoading(false);
     }
@@ -87,24 +90,26 @@ export default function RevenueDashboard() {
   async function fetchYields() {
     try {
       const res = await fetch('/api/escrow/yields');
+      if (!res.ok) return;
       const json = await res.json();
       if (json && json.positions && Array.isArray(json.positions)) {
         setYieldData(json);
       }
-    } catch {
-      // Silent fail
+    } catch (err) {
+      console.warn('Failed to fetch yield data:', err);
     }
   }
 
   async function fetchChart() {
     try {
       const res = await fetch(`/api/revenue/chart?period=${period}`);
+      if (!res.ok) return;
       const json = await res.json();
       if (json && json.labels && Array.isArray(json.labels)) {
         setChart(json);
       }
-    } catch {
-      // Silent fail
+    } catch (err) {
+      console.warn('Failed to fetch chart data:', err);
     }
   }
 
@@ -124,6 +129,19 @@ export default function RevenueDashboard() {
           <div className="pp-skeleton h-5 w-48 mb-6 rounded" />
           <div className="pp-skeleton h-40 w-full rounded" />
         </div>
+      </div>
+    );
+  }
+
+  if (error && !data) {
+    return (
+      <div className="pp-card p-8 text-center">
+        <div className="text-rose-400 text-sm font-semibold mb-2">Failed to load revenue data</div>
+        <p className="text-slate-500 text-xs mb-4">{error}</p>
+        <button onClick={() => { setLoading(true); setError(null); fetchData(); fetchYields(); fetchChart(); }}
+          className="px-4 py-2 bg-indigo-500/20 text-indigo-400 text-xs font-bold rounded-xl hover:bg-indigo-500/30 transition-all">
+          Retry
+        </button>
       </div>
     );
   }

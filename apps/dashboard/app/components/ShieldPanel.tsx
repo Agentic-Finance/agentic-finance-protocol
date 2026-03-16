@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   TrendingUp, Activity, ShieldCheck, Cpu,
   BrainCircuit, Globe, Zap, Users, Factory,
@@ -63,7 +63,7 @@ function ZKFlowDiagram() {
       {/* Mobile: vertical flow */}
       <div className="flex sm:hidden flex-col gap-3">
         {steps.map((step, i) => (
-          <div key={i} className="flex items-center gap-3">
+          <div key={i} className="relative flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg flex items-center justify-center text-base border shrink-0"
               style={{ borderColor: `${step.color}40`, background: `${step.color}12` }}>
               {step.icon}
@@ -91,6 +91,7 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
   const [result, setResult] = useState<{ success: boolean; txHash?: string; depositTxHash?: string; payoutTxHash?: string; error?: string; status?: string } | null>(null);
   const [stats, setStats] = useState<any>(null);
   const [statsError, setStatsError] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -110,16 +111,30 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
     return () => { clearInterval(interval); document.removeEventListener('visibilitychange', handleVisibility); };
   }, []);
 
+  const handleCancel = () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
+    setIsLoading(false);
+    setResult({ success: false, error: "Cancelled by user." });
+  };
+
   const handlePayout = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setResult(null);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const signal = controller.signal;
 
     try {
       const commitRes = await fetch("/api/shield", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Wallet-Address": walletAddress || "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793" },
         body: JSON.stringify({ action: "generate_commitment", amount, recipient }),
+        signal,
       });
       const commitData = await commitRes.json();
       if (!commitData.success) {
@@ -131,6 +146,7 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Wallet-Address": walletAddress || "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793" },
         body: JSON.stringify({ salary: amount, recipientWallet: recipient, shieldEnabled: true }),
+        signal,
       });
       const vaultData = await vaultRes.json();
       if (!vaultData.success) {
@@ -147,9 +163,11 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
       setResult({ success: true, status: "PENDING", txHash: "Waiting for daemon..." });
 
       for (let i = 0; i < 30; i++) {
+        if (signal.aborted) return;
         await new Promise((r) => setTimeout(r, 3000));
+        if (signal.aborted) return;
         try {
-          const pollRes = await fetch(`/api/shield/vault?id=${vaultId}`);
+          const pollRes = await fetch(`/api/shield/vault?id=${vaultId}`, { signal });
           const pollData = await pollRes.json();
           if (pollData.success && pollData.vault) {
             const vault = pollData.vault;
@@ -167,13 +185,17 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
             }
             setResult({ success: true, status: vault.status, txHash: `Processing... (${vault.status})` });
           }
-        } catch {}
+        } catch (err: any) {
+          if (err?.name === 'AbortError') return;
+        }
       }
 
       setResult({ success: true, status: "PENDING", txHash: `Vault created (${vaultId.slice(0, 8)}...). Daemon is processing.` });
-    } catch {
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return;
       setResult({ success: false, error: "Connection to ZK-Node failed." });
     } finally {
+      abortRef.current = null;
       setIsLoading(false);
     }
   };
@@ -295,6 +317,15 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
                   </span>
                 ) : "Execute Shielded Payout"}
               </button>
+              {isLoading && (
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="w-full py-2.5 text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-xl transition-all uppercase tracking-widest"
+                >
+                  Cancel
+                </button>
+              )}
             </form>
 
             {/* Result */}

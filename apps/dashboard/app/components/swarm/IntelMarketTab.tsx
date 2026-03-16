@@ -93,7 +93,7 @@ export default function IntelMarketTab() {
                         filter === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                     }`}
                 >
-                    All ({submissions.length})
+                    All ({categories.reduce((sum, c) => sum + c.count, 0)})
                 </button>
                 {['security', 'defi', 'market', 'governance'].map((cat) => {
                     const stat = categories.find(c => c.name === cat);

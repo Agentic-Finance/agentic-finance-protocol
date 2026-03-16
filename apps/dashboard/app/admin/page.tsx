@@ -123,9 +123,10 @@ export default function AgtFiAdminPage() {
         setIsLoadingRules(true);
         try {
             const res = await fetch('/api/conditional-payroll');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.success) setRules(data.rules || []);
-        } catch { /* silent */ }
+        } catch { /* silent — rules panel shows empty state */ }
         setIsLoadingRules(false);
     }, []);
 
@@ -133,6 +134,7 @@ export default function AgtFiAdminPage() {
         setIsLoadingTx(true);
         try {
             const res = await fetch('/api/employees');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.success) {
                 const all = [...(data.pending || []), ...(data.vaulted || [])];
@@ -161,22 +163,25 @@ export default function AgtFiAdminPage() {
     const fetchEscrows = useCallback(async () => {
         try {
             const res = await fetch('/api/escrow');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.success) setEscrowCount(data.escrows?.length || 0);
-        } catch { /* silent */ }
+        } catch { /* silent — overview shows 0 */ }
     }, []);
 
     const fetchWorkspaces = useCallback(async () => {
         try {
             const res = await fetch('/api/workspace');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.workspace) setWorkspaces([data.workspace]);
-        } catch { /* silent */ }
+        } catch { /* silent — workspace panel shows empty state */ }
     }, []);
 
     const fetchAgentStats = useCallback(async () => {
         try {
             const res = await fetch('/api/marketplace/agents');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             if (data.agents) {
                 setAgentStats({
@@ -235,6 +240,7 @@ export default function AgtFiAdminPage() {
         // 3. Daemon health — check conditional rules last triggered time
         try {
             const res = await fetch('/api/conditional-payroll');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             const activeRules = (data.rules || []).filter((r: any) => r.status === 'Watching');
             const lastTriggered = (data.rules || [])
@@ -275,14 +281,23 @@ export default function AgtFiAdminPage() {
 
     // ── Rule Actions ──
     const handleRuleAction = async (id: string, action: 'pause' | 'resume' | 'trigger' | 'delete') => {
-        if (action === 'delete') {
-            await fetch(`/api/conditional-payroll?id=${id}`, { method: 'DELETE' });
-        } else {
-            await fetch('/api/conditional-payroll', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, action }),
-            });
+        try {
+            let res: Response;
+            if (action === 'delete') {
+                res = await fetch(`/api/conditional-payroll?id=${id}`, { method: 'DELETE' });
+            } else {
+                res = await fetch('/api/conditional-payroll', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, action }),
+                });
+            }
+            if (!res.ok) {
+                const data = await res.json().catch(() => null);
+                console.error(`Rule ${action} failed:`, data?.error || res.status);
+            }
+        } catch (err) {
+            console.error(`Rule ${action} failed:`, err);
         }
         fetchRules();
     };
@@ -329,7 +344,7 @@ export default function AgtFiAdminPage() {
                         </button>
                     ) : (
                         <div className="flex items-center gap-3 w-full">
-                            <Image src="/logo-v2.png" alt="" width={32} height={32} className="h-8 w-8 object-contain" /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                            <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="h-8 w-8 object-contain" /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             <div className="ml-auto flex items-center gap-2">
                                 <span className="text-[9px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Admin</span>
                                 <button onClick={() => setSidebarCollapsed(true)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-white">
@@ -602,8 +617,8 @@ export default function AgtFiAdminPage() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {workspaces.map((ws, idx) => (
-                                                    <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
+                                                {workspaces.map((ws) => (
+                                                    <tr key={ws.id} className="hover:bg-white/[0.02] transition-colors">
                                                         <td className="py-3 px-3 font-medium text-white">{ws.name}</td>
                                                         <td className="py-3 px-3">
                                                             <span className="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-md">

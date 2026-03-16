@@ -4,7 +4,10 @@ import { notify } from "@/app/lib/notify";
 import { requireWalletAuth } from "@/app/lib/api-auth";
 import { writeLimiter, getClientId } from "@/app/lib/rate-limit";
 
-export async function GET() {
+export async function GET(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+
     try {
         // 🌟 ISOLATE A2A TRANSACTIONS ONLY 🌟
         // This query explicitly filters out Mass Disbursal/Payroll transactions
@@ -17,7 +20,8 @@ export async function GET() {
                     { note: { contains: 'A2A' } }
                 ]
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { createdAt: 'desc' },
+            take: 200,
         });
 
         // Also fetch matching AgentJob records for on-chain data
@@ -25,7 +29,8 @@ export async function GET() {
             where: {
                 status: { in: ['ESCROW_LOCKED', 'EXECUTING', 'COMPLETED', 'DISPUTED', 'SETTLED', 'REFUNDED'] }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { createdAt: 'desc' },
+            take: 200,
         });
 
         // Build a lookup map: escrowTxHash → AgentJob (for joining data)

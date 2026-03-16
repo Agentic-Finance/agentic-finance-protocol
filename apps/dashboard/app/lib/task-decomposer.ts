@@ -619,7 +619,7 @@ Respond ONLY with valid JSON:
             const resultText = completion.choices[0].message.content;
             if (resultText) {
                 const parsed = JSON.parse(resultText);
-                reasoning = parsed.reasoning || 'AI-planned decomposition.';
+                reasoning = typeof parsed.reasoning === 'string' ? parsed.reasoning : (parsed.reasoning ? JSON.stringify(parsed.reasoning) : 'AI-planned decomposition.');
 
                 if (parsed.steps && Array.isArray(parsed.steps)) {
                     // Deduplicate by category — keep highest budget per category

@@ -94,9 +94,7 @@ export default function AgentNodes({ agents, quality, selectedAgentId, onSelectA
                 onClick={handleClick}
             >
                 <sphereGeometry args={[1, sphereSegments, sphereSegments]} />
-                <meshStandardMaterial
-                    emissive="#10b981"
-                    emissiveIntensity={0.8}
+                <meshBasicMaterial
                     toneMapped={false}
                 />
             </instancedMesh>

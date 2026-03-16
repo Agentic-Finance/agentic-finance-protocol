@@ -55,6 +55,9 @@ export default function AuditTimelineTab() {
     const [filterType, setFilterType] = useState<string>('all');
     const [filterSeverity, setFilterSeverity] = useState<string>('all');
     const [page, setPage] = useState(0);
+
+    // Reset page to 0 when filters change
+    useEffect(() => { setPage(0); }, [filterType, filterSeverity]);
     const pageSize = 50;
 
     const fetchData = useCallback(async () => {
@@ -112,7 +115,7 @@ export default function AuditTimelineTab() {
                             style={{
                                 background: cfg.bg,
                                 color: cfg.color,
-                                ...(isActive ? { ringColor: cfg.color } : {}),
+                                ...(isActive ? { outline: `1px solid ${cfg.color}`, outlineOffset: '-1px' } : {}),
                             }}
                         >
                             <div className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />

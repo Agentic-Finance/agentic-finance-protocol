@@ -33,9 +33,16 @@ export async function GET(request: Request) {
       return apiError('Missing ?id=<commitmentId>', 400);
     }
 
-    const commitmentId = parseInt(idParam, 10);
-    if (isNaN(commitmentId) || commitmentId < 0) {
-      return apiError('Invalid commitment ID', 400);
+    // Support both numeric IDs (converted to bytes32) and raw bytes32 hashes
+    let commitmentId: string;
+    if (idParam.startsWith('0x') && idParam.length === 66) {
+      commitmentId = idParam;
+    } else {
+      const numId = parseInt(idParam, 10);
+      if (isNaN(numId) || numId < 0) {
+        return apiError('Invalid commitment ID — provide a number or bytes32 hash', 400);
+      }
+      commitmentId = ethers.zeroPadValue(ethers.toBeHex(numId), 32);
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -43,14 +50,14 @@ export async function GET(request: Request) {
 
     const commitment = await registry.getCommitment(commitmentId);
 
-    const committer = commitment[0];
-    const planHash = commitment[1];
-    const resultHash = commitment[2];
-    const nexusJobId = Number(commitment[3]);
-    const verified = commitment[4];
-    const matched = commitment[5];
-    const slashed = commitment[6];
-    const timestamp = Number(commitment[7]);
+    const committer = String(commitment[0]);
+    const planHash = String(commitment[1]);
+    const resultHash = String(commitment[2]);
+    const nexusJobId = Number(commitment[3] ?? 0);
+    const verified = Boolean(commitment[4] ?? false);
+    const matched = Boolean(commitment[5] ?? false);
+    const slashed = Boolean(commitment[6] ?? false);
+    const timestamp = Number(commitment[7] ?? 0);
 
     // Determine status
     let status: string;
@@ -60,7 +67,7 @@ export async function GET(request: Request) {
     else status = 'pending';
 
     return apiSuccess({
-      commitmentId,
+      commitmentId: String(commitmentId),
       committer,
       planHash,
       resultHash: verified ? resultHash : null,

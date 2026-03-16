@@ -35,7 +35,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
         try {
             const res = await fetch('/api/stream/milestone', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...(walletAddress ? { 'X-Wallet-Address': walletAddress } : {}) },
                 body: JSON.stringify({ action: 'submit', streamJobId: stream.id, milestoneIndex }),
             });
             const data = await res.json();
@@ -49,7 +49,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
         try {
             const res = await fetch('/api/stream/milestone', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...(walletAddress ? { 'X-Wallet-Address': walletAddress } : {}) },
                 body: JSON.stringify({ action: 'approve', streamJobId: stream.id, milestoneIndex }),
             });
             const data = await res.json();
@@ -63,7 +63,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
         try {
             const res = await fetch('/api/stream/milestone', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', ...(walletAddress ? { 'X-Wallet-Address': walletAddress } : {}) },
                 body: JSON.stringify({ action: 'reject', streamJobId: stream.id, milestoneIndex, rejectReason: rejectReasons[milestoneIndex] || '' }),
             });
             const data = await res.json();

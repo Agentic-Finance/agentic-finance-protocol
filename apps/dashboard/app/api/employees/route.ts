@@ -8,9 +8,12 @@ export const dynamic = 'force-dynamic';
 // GET: Fetch pending and vaulted payloads
 // ==========================================
 export async function GET(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+
     try {
         const payloads = await prisma.timeVaultPayload.findMany({
-            where: { status: { in: ['Draft', 'PENDING', 'PROCESSING', 'Vaulted', 'Completed', 'Failed'] } },
+            where: { status: { in: ['Draft', 'PENDING', 'PROCESSING', 'Vaulted', 'COMPLETED', 'FAILED'] } },
             orderBy: { createdAt: 'desc' },
             take: 200,
         });
@@ -48,6 +51,11 @@ export async function GET(req: Request) {
 // POST: Queue payload into the Boardroom
 // ==========================================
 export async function POST(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+    const rateCheck = payrollLimiter.check(getClientId(req));
+    if (!rateCheck.success) return apiError('Rate limit exceeded', 429);
+
     try {
         const payload = await req.json();
         console.log("📥 [API] Incoming Payload:", JSON.stringify(payload, null, 2));
@@ -62,6 +70,11 @@ export async function POST(req: Request) {
 
         // 🌟 SAFETY FIX: Normalize payload to an array to prevent .map() undefined errors
         const intentsArray = Array.isArray(payload) ? payload : (payload.intents || [payload]);
+
+        // 🛡️ Batch size limit to prevent DoS
+        if (intentsArray.length > 100) {
+            return apiError('Max 100 intents per batch', 400);
+        }
 
         // 🛡️ Validate all wallet addresses before creating any payloads
         const isValidAddress = (addr: string) => /^0x[a-fA-F0-9]{40}$/.test(addr);
@@ -119,6 +132,7 @@ export async function PUT(req: Request) {
                 const drafts = await prisma.timeVaultPayload.findMany({
                     where: { status: "Draft" },
                     orderBy: { createdAt: 'asc' },
+                    take: 500,
                 });
 
                 for (const draft of drafts) {
@@ -207,6 +221,9 @@ export async function PUT(req: Request) {
 // DELETE: Remove individual payload
 // ==========================================
 export async function DELETE(req: Request) {
+    const auth = requireWalletAuth(req);
+    if (!auth.valid) return auth.response!;
+
     try {
         const { id } = await req.json();
         if (!id) return apiError("Missing payload ID", 400);

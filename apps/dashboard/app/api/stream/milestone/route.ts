@@ -24,6 +24,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(req: Request) {
     try {
+        const callerWallet = req.headers.get('X-Wallet-Address')?.toLowerCase();
         const body = await req.json();
         const { action, streamJobId, milestoneIndex } = body;
 
@@ -43,6 +44,16 @@ export async function POST(req: Request) {
 
         if (stream.status !== 'ACTIVE') {
             return apiError('Stream is not active', 400);
+        }
+
+        // Authorization: submit = agent only, approve/reject = client only
+        if (callerWallet) {
+            if (action === 'submit' && callerWallet !== stream.agentWallet) {
+                return apiError('Only the assigned agent can submit milestones', 403);
+            }
+            if ((action === 'approve' || action === 'reject') && callerWallet !== stream.clientWallet) {
+                return apiError('Only the stream client can approve or reject milestones', 403);
+            }
         }
 
         const milestone = stream.milestones.find(m => m.index === milestoneIndex);

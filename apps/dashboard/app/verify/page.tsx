@@ -51,6 +51,7 @@ export default function VerifyPage() {
   const [searchId, setSearchId] = useState('');
   const [searchResult, setSearchResult] = useState<ProofEntry | null>(null);
   const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -79,13 +80,18 @@ export default function VerifyPage() {
     if (!searchId.trim()) return;
     setSearching(true);
     setSearchResult(null);
+    setSearchError(null);
     try {
       const res = await fetch(`/api/proof/verify?id=${searchId.trim()}`);
       if (res.ok) {
         setSearchResult(await res.json());
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setSearchError(errData.error || `Verification failed (HTTP ${res.status})`);
       }
     } catch (err) {
       console.error('Search failed:', err);
+      setSearchError('Network error — could not reach verification API');
     }
     setSearching(false);
   }
@@ -99,7 +105,7 @@ export default function VerifyPage() {
       <nav className="sticky top-0 z-50 bg-[#0F1724]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <a href="/" className="flex items-center group">
-            <Image src="/logo-v2.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" priority /><span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+            <Image src="/logo-v2.png" alt="Agentic Finance" width={28} height={28} className="h-7 w-7 object-contain" priority /><span className="text-[17px] font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
           </a>
           <div className="flex items-center gap-4">
             <a href="/protocol" className="text-xs text-slate-400 hover:text-white transition-colors">Protocol</a>
@@ -164,6 +170,12 @@ export default function VerifyPage() {
               {searching ? <ArrowPathIcon className="w-5 h-5 animate-spin" /> : 'Verify'}
             </button>
           </form>
+
+          {searchError && (
+            <div className="mt-4 bg-rose-500/10 border border-rose-500/30 rounded-xl p-4">
+              <p className="text-rose-400 text-sm">{searchError}</p>
+            </div>
+          )}
 
           {searchResult && (
             <div className="mt-4 bg-black/30 border border-white/5 rounded-xl p-4 space-y-3">

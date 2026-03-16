@@ -13,6 +13,7 @@ import {
     ArrowTopRightOnSquareIcon,
     SparklesIcon,
     ShieldCheckIcon,
+    XCircleIcon,
     BoltIcon,
     HomeIcon,
     CommandLineIcon,
@@ -409,7 +410,7 @@ export default function DevelopersPage() {
             <nav className="sticky top-0 z-50 bg-[#111B2E]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <a href="/" className="flex items-center gap-3 group">
-                        <Image src="/logo-v2.png" alt="" width={32} height={32} className="h-8 w-8 object-contain" priority /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                        <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="h-8 w-8 object-contain" priority /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                         <span className="text-xs font-mono text-slate-500 border border-white/5 px-2 py-0.5 rounded-md">developers</span>
                     </a>
                     <div className="flex items-center gap-4">
@@ -450,12 +451,12 @@ export default function DevelopersPage() {
                         {/* Stats */}
                         <div className="flex flex-wrap justify-center gap-6 mt-8">
                             {[
-                                { value: stats.totalAgents, label: 'Agents Live', icon: CpuChipIcon, color: 'indigo' },
-                                { value: stats.totalJobs.toLocaleString(), label: 'Jobs Completed', icon: BoltIcon, color: 'emerald' },
-                                { value: `$${(stats.totalEarnings / 1000).toFixed(0)}K+`, label: 'Paid to Devs', icon: CurrencyDollarIcon, color: 'amber' },
+                                { value: stats.totalAgents, label: 'Agents Live', icon: CpuChipIcon, iconClass: 'text-indigo-400' },
+                                { value: stats.totalJobs.toLocaleString(), label: 'Jobs Completed', icon: BoltIcon, iconClass: 'text-emerald-400' },
+                                { value: stats.totalEarnings >= 1000 ? `$${(stats.totalEarnings / 1000).toFixed(0)}K+` : `$${Math.round(stats.totalEarnings)}`, label: 'Paid to Devs', icon: CurrencyDollarIcon, iconClass: 'text-amber-400' },
                             ].map((stat) => (
                                 <div key={stat.label} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl px-8 py-5 min-w-[180px]">
-                                    <stat.icon className={`w-5 h-5 text-${stat.color}-400 mb-2 mx-auto`} />
+                                    <stat.icon className={`w-5 h-5 ${stat.iconClass} mb-2 mx-auto`} />
                                     <div className="text-3xl font-black text-white">{stat.value}</div>
                                     <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">{stat.label}</div>
                                 </div>
@@ -534,7 +535,7 @@ export default function DevelopersPage() {
                                 onClick={() => setActiveTemplate(i)}
                                 className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
                                     i === activeTemplate
-                                        ? `bg-${t.color}-500/15 text-${t.color}-300 border border-${t.color}-500/30 shadow-[0_0_15px_rgba(99,102,241,0.1)]`
+                                        ? (t.color === 'amber' ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30' : t.color === 'indigo' ? 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30' : t.color === 'emerald' ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' : 'bg-violet-500/15 text-violet-300 border border-violet-500/30') + ' shadow-[0_0_15px_rgba(99,102,241,0.1)]'
                                         : 'bg-white/[0.02] text-slate-500 border border-white/[0.04] hover:text-slate-300 hover:border-white/[0.08]'
                                 }`}
                             >
@@ -595,7 +596,7 @@ export default function DevelopersPage() {
                             { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@agentic-finance/mcp-server', npm: 'https://www.npmjs.com/package/@agentic-finance/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install agentic-finance', npm: 'https://clawhub.ai/skills/agentic-finance' },
                         ].map((int) => (
-                            <a key={int.name} href={int.npm || undefined} target={int.npm ? '_blank' : undefined} rel={int.npm ? 'noopener noreferrer' : undefined} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-${int.color}-500/20 hover:bg-white/[0.03] transition-all text-center ${int.npm ? 'cursor-pointer' : ''}`}>
+                            <a key={int.name} href={int.npm || undefined} target={int.npm ? '_blank' : undefined} rel={int.npm ? 'noopener noreferrer' : undefined} className={`bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:border-indigo-500/20 hover:bg-white/[0.03] transition-all text-center ${int.npm ? 'cursor-pointer' : ''}`}>
                                 <span className="text-2xl">{int.icon}</span>
                                 <div className="text-sm font-bold text-white mt-2">{int.name}</div>
                                 <div className="text-[10px] text-slate-500 mt-1">{int.desc}</div>
@@ -667,7 +668,7 @@ export default function DevelopersPage() {
                             { title: '9 Verified Contracts', desc: 'NexusV2, ShieldV2, MultisendV2, PlonkVerifier, AIProofRegistry, StreamV1, ReputationRegistry, SecurityDeposit', icon: '📝', color: 'violet' },
                             { title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, transfer, batch, proof, vault, deploy, monitor', icon: '🤖', color: 'rose' },
                         ].map((f) => (
-                            <div key={f.title} className={`bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-${f.color}-500/20 transition-all`}>
+                            <div key={f.title} className="bg-black/20 border border-white/[0.04] rounded-xl p-5 hover:border-indigo-500/20 transition-all">
                                 <span className="text-2xl">{f.icon}</span>
                                 <h4 className="text-white font-bold mt-2 text-sm">{f.title}</h4>
                                 <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">{f.desc}</p>
@@ -990,7 +991,7 @@ await client.delegateA2A({
                         {/* Submit Result */}
                         {submitResult && (
                             <div className={`p-4 rounded-xl border ${submitResult.ok ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/5 border-rose-500/20 text-rose-400'} text-sm flex items-center gap-2`}>
-                                {submitResult.ok ? <CheckCircleIcon className="w-5 h-5" /> : <ShieldCheckIcon className="w-5 h-5" />}
+                                {submitResult.ok ? <CheckCircleIcon className="w-5 h-5" /> : <XCircleIcon className="w-5 h-5" />}
                                 {submitResult.msg}
                             </div>
                         )}
@@ -1026,7 +1027,7 @@ await client.delegateA2A({
                         {/* Brand */}
                         <div className="md:col-span-2">
                             <a href="/" className="flex items-center mb-4 hover:opacity-90 transition-opacity">
-                                <img src="/logo-v2.png" alt="" style={{ height: "36px", width: "36px", objectFit: "contain" }} /><span className="text-xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                                <img src="/logo-v2.png" alt="Agentic Finance" style={{ height: "36px", width: "36px", objectFit: "contain" }} /><span className="text-xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             </a>
                             <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
                                 The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
@@ -1065,7 +1066,7 @@ await client.delegateA2A({
                     </div>
 
                     <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-600">
-                        <p>&copy; 2025 Agentic Finance. All rights reserved.</p>
+                        <p>&copy; 2025–2026 Agentic Finance. All rights reserved.</p>
                         <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                             <span>Live on Tempo Moderato (Chain 42431)</span>

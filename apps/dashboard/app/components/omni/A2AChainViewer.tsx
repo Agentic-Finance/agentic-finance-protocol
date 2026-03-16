@@ -354,6 +354,32 @@ function A2AChainViewer({
 }: A2AChainViewerProps) {
     const [viewMode, setViewMode] = useState<'list' | 'graph'>('list');
 
+    // All hooks MUST be called before any conditional returns (Rules of Hooks)
+    const subTaskMap = useMemo(() => {
+        if (!chainStatus?.subTasks) return new Map<number, A2ASubTask>();
+        const map = new Map<number, A2ASubTask>();
+        chainStatus.subTasks.forEach(st => map.set(st.stepIndex, st));
+        return map;
+    }, [chainStatus?.subTasks]);
+
+    const totalExecTime = useMemo(() => {
+        if (!chainStatus?.subTasks) return 0;
+        return chainStatus.subTasks.reduce((sum, st) => sum + (st.executionTime || 0), 0);
+    }, [chainStatus?.subTasks]);
+
+    const verifiedCount = useMemo(() => {
+        if (!chainStatus?.subTasks) return 0;
+        return chainStatus.subTasks.filter(st => {
+            try {
+                if (st.result && typeof st.result === 'string') {
+                    const parsed = JSON.parse(st.result);
+                    return parsed?.proofMatched === true || parsed?.commitTxHash;
+                }
+            } catch {}
+            return false;
+        }).length;
+    }, [chainStatus?.subTasks]);
+
     // Show loading skeleton during task decomposition
     if (phase === 'decomposing') {
         return (
@@ -389,37 +415,12 @@ function A2AChainViewer({
     const steps = plan?.steps || [];
     const progress = chainStatus?.progress;
     const budget = chainStatus?.budget;
-    const subTaskMap = useMemo(() => {
-        if (!chainStatus?.subTasks) return new Map<number, A2ASubTask>();
-        const map = new Map<number, A2ASubTask>();
-        chainStatus.subTasks.forEach(st => map.set(st.stepIndex, st));
-        return map;
-    }, [chainStatus?.subTasks]);
 
     const isExecuting = phase === 'executing';
     const isCancelling = phase === 'cancelling';
     const isReviewing = phase === 'reviewing';
     const isTerminal = phase === 'completed' || phase === 'failed';
     const percentComplete = progress?.percentComplete ?? 0;
-
-    const totalExecTime = useMemo(() => {
-        if (!chainStatus?.subTasks) return 0;
-        return chainStatus.subTasks.reduce((sum, st) => sum + (st.executionTime || 0), 0);
-    }, [chainStatus?.subTasks]);
-
-    // Count verified steps
-    const verifiedCount = useMemo(() => {
-        if (!chainStatus?.subTasks) return 0;
-        return chainStatus.subTasks.filter(st => {
-            try {
-                if (st.result && typeof st.result === 'string') {
-                    const parsed = JSON.parse(st.result);
-                    return parsed?.proofMatched === true || parsed?.commitTxHash;
-                }
-            } catch {}
-            return false;
-        }).length;
-    }, [chainStatus?.subTasks]);
 
     return (
         <div className={`mt-4 bg-[#141926] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all ${
@@ -517,7 +518,7 @@ function A2AChainViewer({
                                     <SparklesIcon className="w-3.5 h-3.5 text-indigo-400" />
                                     <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400">AI Reasoning</span>
                                 </div>
-                                <p className="text-[12px] text-slate-400 leading-relaxed">{plan.reasoning}</p>
+                                <p className="text-[12px] text-slate-400 leading-relaxed">{typeof plan.reasoning === 'string' ? plan.reasoning : JSON.stringify(plan.reasoning)}</p>
                             </div>
                         )}
 

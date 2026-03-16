@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
           if (event.type === 'tx:escrow_created') sessionStats.totalEscrowCreated++;
           if (event.type === 'tx:escrow_settled') {
             sessionStats.totalEscrowSettled++;
-            sessionStats.totalFeesCollected += parseFloat(event.data.amount || '0') * 0.08;
+            sessionStats.totalFeesCollected += parseFloat(event.data.amount || '0') * 0.05;
           }
           if (event.type === 'agent:job_completed') sessionStats.totalAgentJobs++;
           if (event.type === 'agent:a2a_chain_completed') sessionStats.totalA2AChains++;

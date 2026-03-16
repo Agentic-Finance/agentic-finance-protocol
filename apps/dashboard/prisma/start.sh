@@ -1,5 +1,5 @@
 #!/bin/sh
-# PayPol Production Startup Script
+# Agentic Finance Production Startup Script
 # Waits for PostgreSQL, runs migrations, seeds agents, starts Next.js
 
 # Prisma CLI path (node_modules/.bin/ symlinks not available in standalone build)

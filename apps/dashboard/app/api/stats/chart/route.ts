@@ -24,27 +24,35 @@ export async function GET() {
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-        const records = await prisma.payoutRecord.findMany({
-            where: {
-                createdAt: {
-                    gte: sevenDaysAgo // Greater than or equal to 7 days ago
-                }
-            }
-        });
+        // Query all volume sources in parallel
+        const [payoutRecords, a2aTransfers, fiatPayments] = await Promise.all([
+            prisma.payoutRecord.findMany({
+                where: { createdAt: { gte: sevenDaysAgo } },
+                select: { amount: true, createdAt: true },
+            }),
+            prisma.a2ATransfer.findMany({
+                where: { createdAt: { gte: sevenDaysAgo }, status: 'CONFIRMED' },
+                select: { amount: true, createdAt: true },
+            }),
+            prisma.fiatPayment.findMany({
+                where: { createdAt: { gte: sevenDaysAgo }, status: { in: ['PAID', 'CRYPTO_SENT', 'SHIELD_DEPOSITED', 'ESCROWED'] } },
+                select: { amountUSD: true, createdAt: true },
+            }),
+        ]);
 
         // ==========================================
         // 3. INJECT PRODUCTION DATA INTO TIME-FRAME
-        // Aggregate total amount for transactions occurring on the same day
+        // Aggregate total amount from all sources for each day
         // ==========================================
-        records.forEach(record => {
-            const recordDate = new Date(record.createdAt).toLocaleDateString('en-US');
-            
-            // Match record date with the corresponding day in our 7-day frame
-            const dayIndex = last7Days.findIndex(day => day.fullDate === recordDate);
-            if (dayIndex !== -1) {
-                last7Days[dayIndex].volume += record.amount;
-            }
-        });
+        const addToDay = (date: Date, amount: number) => {
+            const dateStr = date.toLocaleDateString('en-US');
+            const dayIndex = last7Days.findIndex(day => day.fullDate === dateStr);
+            if (dayIndex !== -1) last7Days[dayIndex].volume += amount;
+        };
+
+        payoutRecords.forEach(r => addToDay(new Date(r.createdAt), r.amount));
+        a2aTransfers.forEach(r => addToDay(new Date(r.createdAt), r.amount));
+        fiatPayments.forEach(r => addToDay(new Date(r.createdAt), r.amountUSD));
 
         // ==========================================
         // 4. FORMAT OUTPUT

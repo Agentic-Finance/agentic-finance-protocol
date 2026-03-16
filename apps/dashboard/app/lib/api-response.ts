@@ -16,7 +16,11 @@ import { NextResponse } from 'next/server';
  * @example apiSuccess({ count: 5 }, 201)           → { success: true, count: 5 } with 201
  */
 export function apiSuccess<T extends Record<string, unknown>>(data: T, status = 200) {
-    return NextResponse.json({ success: true, ...data }, { status });
+    // Handle BigInt values from ethers.js / on-chain reads
+    const serialized = JSON.parse(JSON.stringify({ success: true, ...data }, (_key, value) =>
+        typeof value === 'bigint' ? Number(value) : value
+    ));
+    return NextResponse.json(serialized, { status });
 }
 
 /**

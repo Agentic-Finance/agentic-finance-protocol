@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, stream });
     } catch (error: any) {
         console.error('[api/stream] POST error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to create stream' }, { status: 500 });
     }
 }
 
@@ -115,6 +115,6 @@ export async function GET(req: Request) {
         return NextResponse.json({ success: true, streams });
     } catch (error: any) {
         console.error('[api/stream] GET error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to fetch streams' }, { status: 500 });
     }
 }

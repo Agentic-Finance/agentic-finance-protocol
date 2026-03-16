@@ -45,6 +45,7 @@ export default function SwarmTopology({ flowEdges, topAgents, agents, selectedAg
     const sizeRef = useRef({ w: 0, h: 0 });
     const mouseRef = useRef({ x: -999, y: -999 });
     const hoveredRef = useRef<number>(-1);
+    const [isHovering, setIsHovering] = useState(false);
     const dprRef = useRef(1);
 
     // ── Build force graph from data ──
@@ -227,7 +228,10 @@ export default function SwarmTopology({ flowEdges, topAgents, agents, selectedAg
             }
         }
 
-        hoveredRef.current = hovered;
+        if (hoveredRef.current !== hovered) {
+            hoveredRef.current = hovered;
+            setIsHovering(hovered >= 0);
+        }
         ctx.restore();
 
         animRef.current = requestAnimationFrame(draw);
@@ -293,7 +297,7 @@ export default function SwarmTopology({ flowEdges, topAgents, agents, selectedAg
                 <canvas
                     ref={canvasRef}
                     className="w-full h-full"
-                    style={{ cursor: hoveredRef.current >= 0 ? 'pointer' : 'default' }}
+                    style={{ cursor: isHovering ? 'pointer' : 'default' }}
                     onMouseMove={handleMouseMove}
                     onClick={handleClick}
                 />

@@ -560,6 +560,9 @@ export async function POST(req: Request) {
     if (!rootJob) {
       return apiError('Orchestrator job not found', 404);
     }
+    if (rootJob.clientWallet?.toLowerCase() !== auth.wallet?.toLowerCase()) {
+      return apiError('Unauthorized: you do not own this job', 403);
+    }
     if (rootJob.a2aChainId !== a2aChainId) {
       return apiError('Chain ID mismatch', 400);
     }

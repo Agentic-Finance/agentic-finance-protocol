@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     const status = searchParams.get('status');
     const minPrice = parseFloat(searchParams.get('minPrice') || '0');
     const maxPrice = parseFloat(searchParams.get('maxPrice') || '999999');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50') || 50, 200);
     const offset = parseInt(searchParams.get('offset') || '0');
     const sort = searchParams.get('sort') || 'newest'; // newest, price_asc, price_desc, quality
 

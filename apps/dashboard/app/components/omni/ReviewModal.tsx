@@ -20,12 +20,14 @@ function ReviewModal({ isOpen, agentName, jobId, agentId, walletAddress, onClose
     const [hoveredRating, setHoveredRating] = useState(0);
     const [comment, setComment] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     if (!isOpen) return null;
 
     const handleSubmit = async () => {
         if (rating === 0) return;
         setIsSubmitting(true);
+        setSubmitError(null);
         try {
             const res = await fetch('/api/marketplace/reviews', {
                 method: 'POST',
@@ -34,9 +36,13 @@ function ReviewModal({ isOpen, agentName, jobId, agentId, walletAddress, onClose
             });
             if (res.ok) {
                 onSubmitted();
+            } else {
+                const data = await res.json().catch(() => null);
+                setSubmitError(data?.error || `Failed to submit review (${res.status})`);
             }
         } catch (err) {
             console.error('Failed to submit review:', err);
+            setSubmitError('Network error — please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -87,6 +93,11 @@ function ReviewModal({ isOpen, agentName, jobId, agentId, walletAddress, onClose
                     className="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-sm text-slate-300 placeholder:text-slate-600 outline-none focus:border-indigo-500/50 resize-none transition-colors"
                     rows={3}
                 />
+
+                {/* Error */}
+                {submitError && (
+                    <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-2 mt-3">{submitError}</p>
+                )}
 
                 {/* Actions */}
                 <div className="flex gap-3 mt-5">

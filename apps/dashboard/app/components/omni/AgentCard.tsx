@@ -133,7 +133,7 @@ function AgentCard({ agent, rank, onHire, onShowDetail, isBrowseMode = false }: 
 
             {/* Row 4: Description */}
             <p className="text-[11px] text-slate-400/80 leading-relaxed mb-3 flex-1 line-clamp-2">
-                {isBrowseMode ? a.description : (agent.relevanceScore > 0 ? agent.reasoning : a.description)}
+                {isBrowseMode ? a.description : (agent.relevanceScore > 0 ? (typeof agent.reasoning === 'string' ? agent.reasoning : JSON.stringify(agent.reasoning)) : a.description)}
             </p>
 
             {/* Footer: Price + Actions */}

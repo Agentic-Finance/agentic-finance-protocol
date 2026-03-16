@@ -36,7 +36,7 @@ export default function WarRoomStatsBar({ stats }: Props) {
                                 <span className="text-xs">{def.icon}</span>
                                 <span className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">{def.label}</span>
                             </div>
-                            {value !== null ? (
+                            {value != null ? (
                                 <div className="text-lg sm:text-xl font-black tabular-nums" style={{ color: def.color }}>
                                     {def.format(value)}
                                 </div>

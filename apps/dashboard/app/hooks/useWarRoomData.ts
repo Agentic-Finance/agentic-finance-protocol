@@ -61,21 +61,21 @@ export function useWarRoomData(options?: UseWarRoomDataOptions): UseWarRoomDataR
         let economyData: any = {};
         let auditData: any = {};
 
-        if (statsResult.status === 'fulfilled') {
+        if (statsResult.status === 'fulfilled' && statsResult.value.ok) {
             try { statsData = await statsResult.value.json(); } catch (e) { console.error('WarRoom: failed to parse stats', e); }
-        } else {
+        } else if (statsResult.status === 'rejected') {
             console.error('WarRoom: stats fetch failed', statsResult.reason);
         }
 
-        if (economyResult.status === 'fulfilled') {
+        if (economyResult.status === 'fulfilled' && economyResult.value.ok) {
             try { economyData = await economyResult.value.json(); } catch (e) { console.error('WarRoom: failed to parse economy', e); }
-        } else {
+        } else if (economyResult.status === 'rejected') {
             console.error('WarRoom: economy fetch failed', economyResult.reason);
         }
 
-        if (auditResult.status === 'fulfilled') {
+        if (auditResult.status === 'fulfilled' && auditResult.value.ok) {
             try { auditData = await auditResult.value.json(); } catch (e) { console.error('WarRoom: failed to parse audit', e); }
-        } else {
+        } else if (auditResult.status === 'rejected') {
             console.error('WarRoom: audit fetch failed', auditResult.reason);
         }
 

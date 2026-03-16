@@ -56,11 +56,18 @@ export default function SubPageNav() {
         checkWallet();
 
         // Listen for account changes
-        if (typeof window !== 'undefined' && (window as any).ethereum) {
-            (window as any).ethereum.on?.('accountsChanged', (accs: string[]) => {
-                setWalletAddress(accs?.[0] || null);
-            });
+        const ethereum = typeof window !== 'undefined' ? (window as any).ethereum : null;
+        const handleAccountsChanged = (accs: string[]) => {
+            setWalletAddress(accs?.[0] || null);
+        };
+        if (ethereum) {
+            ethereum.on?.('accountsChanged', handleAccountsChanged);
         }
+        return () => {
+            if (ethereum) {
+                ethereum.removeListener?.('accountsChanged', handleAccountsChanged);
+            }
+        };
     }, []);
 
     return (
@@ -68,7 +75,7 @@ export default function SubPageNav() {
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-12 flex items-center justify-between gap-3">
                 {/* Logo → back to Dashboard */}
                 <Link href="/?app=1" className="flex items-center gap-2 flex-shrink-0 group">
-                    <Image src="/logo-v2.png" alt="" width={24} height={24} className="h-6 w-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity" priority /><span className="text-[15px] font-extrabold text-white tracking-tight opacity-80 group-hover:opacity-100 transition-opacity" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                    <Image src="/logo-v2.png" alt="Agentic Finance" width={24} height={24} className="h-6 w-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity" priority /><span className="text-[15px] font-extrabold text-white tracking-tight opacity-80 group-hover:opacity-100 transition-opacity" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                 </Link>
 
                 {/* Nav Links */}

@@ -91,6 +91,7 @@ async function seed() {
   console.log(`[seed] Clearing old data and seeding ${agents.length} real on-chain agents...`);
 
   // Delete dependent records first (foreign key constraints)
+  await prisma.judgeVerdict.deleteMany({});
   await prisma.agentReview.deleteMany({});
   await prisma.agentJob.deleteMany({});
   // Delete all existing agents (clean slate)

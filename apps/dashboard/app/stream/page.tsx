@@ -22,23 +22,28 @@ export default function StreamPage() {
     const [statusFilter, setStatusFilter] = useState<string>('ALL');
     const [cancelLoading, setCancelLoading] = useState(false);
 
-    // Auto-detect wallet from MetaMask
+    // Auto-detect wallet from MetaMask + listen for account changes
     useEffect(() => {
-        const checkWallet = async () => {
-            if (typeof window !== 'undefined' && (window as any).ethereum) {
-                try {
-                    const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
-                    if (accounts?.[0]) setWalletAddress(accounts[0]);
-                } catch (e) { /* silent */ }
-            }
+        const ethereum = typeof window !== 'undefined' ? (window as any).ethereum : null;
+        if (!ethereum) return;
+
+        const handleAccounts = (accounts: string[]) => {
+            setWalletAddress(accounts?.[0] || null);
         };
-        checkWallet();
+
+        ethereum.request({ method: 'eth_accounts' }).then(handleAccounts).catch(() => {});
+        ethereum.on('accountsChanged', handleAccounts);
+        return () => { ethereum.removeListener('accountsChanged', handleAccounts); };
     }, []);
 
     const fetchStreams = useCallback(async () => {
         setIsLoading(true);
         try {
             const params = new URLSearchParams();
+            if (walletAddress) {
+                params.set('wallet', walletAddress);
+                params.set('role', role);
+            }
             if (statusFilter !== 'ALL') params.set('status', statusFilter);
             const res = await fetch(`/api/stream?${params}`);
             const data = await res.json();
@@ -48,7 +53,7 @@ export default function StreamPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [statusFilter]);
+    }, [statusFilter, walletAddress, role]);
 
     useEffect(() => {
         fetchStreams();
@@ -71,7 +76,10 @@ export default function StreamPage() {
         try {
             const res = await fetch('/api/stream/cancel', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(walletAddress ? { 'X-Wallet-Address': walletAddress } : {}),
+                },
                 body: JSON.stringify({ streamJobId: selected.id }),
             });
             const data = await res.json();

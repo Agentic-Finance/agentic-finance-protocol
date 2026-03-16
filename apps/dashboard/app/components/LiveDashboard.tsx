@@ -73,7 +73,7 @@ function TxFeed({ events }: { events: ProtocolEvent[] }) {
                 </a>
               )}
             </div>
-            {event.data.amount && (
+            {event.data.amount && Number.isFinite(Number(event.data.amount)) && (
               <span className="text-emerald-400 font-mono text-[10px] whitespace-nowrap">
                 ${Number(event.data.amount).toFixed(2)}
               </span>
@@ -265,7 +265,7 @@ export default function LiveDashboard() {
 
       {/* Stats Bar */}
       <div className="max-w-[1400px] mx-auto mb-6">
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {[
             { label: 'Transactions', value: state.stats.totalTxs, color: 'text-blue-400' },
             { label: 'Agent Jobs', value: state.stats.totalAgentJobs, color: 'text-emerald-400' },
@@ -282,7 +282,7 @@ export default function LiveDashboard() {
       </div>
 
       {/* Main Grid */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-3 gap-4">
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Column 1: TX Feed (tall) */}
         <div className="row-span-2">
           <TxFeed events={state.txFeed} />

@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const hours = parseInt(searchParams.get('hours') || '720'); // default 30 days
+    const hours = Math.min(Math.max(parseInt(searchParams.get('hours') || '720') || 720, 1), 8760); // 1h to 1 year
     const since = new Date(Date.now() - hours * 60 * 60 * 1000);
 
     // Aggregate stats

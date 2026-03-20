@@ -73,15 +73,9 @@ function Navbar({
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const exportPrivateKey = async () => {
-        try {
-            // Dynamic import to avoid SSR issues
-            const { usePrivy } = await import('@privy-io/react-auth');
-            // Privy's exportWallet opens a modal for the user to export their embedded wallet key
-            window.dispatchEvent(new CustomEvent('privy-export-wallet'));
-        } catch {
-            alert('Private key export is only available for Privy embedded wallets. For external wallets (MetaMask, Rabby), export from the wallet app directly.');
-        }
+    const exportPrivateKey = () => {
+        // Dispatch event to page.tsx where Privy hooks are available
+        window.dispatchEvent(new CustomEvent('privy-export-wallet'));
     };
 
     return (

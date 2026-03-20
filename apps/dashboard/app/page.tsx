@@ -143,22 +143,27 @@ export default function Dashboard() {
             if (detail?.jobId) setChatTargetJobId(detail.jobId);
             setIsChatOpen(true);
         };
+        window.addEventListener('agtfi:openChat', handleOpenChat);
+        return () => {
+            window.removeEventListener('agtfi:openChat', handleOpenChat);
+        };
+    }, []);
+
+    // Privy export wallet — separate effect with correct dependencies
+    useEffect(() => {
         const handleExportWallet = () => {
             if (privyAuthenticated && privyExportWallet) {
-                privyExportWallet().catch(() => {
-                    alert('Private key export is only available for Privy embedded wallets. For external wallets, export from the wallet app directly.');
+                privyExportWallet().catch((err: any) => {
+                    console.warn('[Privy Export]', err);
+                    alert('Private key export failed. This feature is only available for Privy embedded wallets.');
                 });
             } else {
                 alert('Private key export is only available for Privy embedded wallets. For external wallets (MetaMask, Rabby), export from the wallet app directly.');
             }
         };
-        window.addEventListener('agtfi:openChat', handleOpenChat);
         window.addEventListener('privy-export-wallet', handleExportWallet);
-        return () => {
-            window.removeEventListener('agtfi:openChat', handleOpenChat);
-            window.removeEventListener('privy-export-wallet', handleExportWallet);
-        };
-    }, []);
+        return () => window.removeEventListener('privy-export-wallet', handleExportWallet);
+    }, [privyAuthenticated, privyExportWallet]);
 
     // Listen for notification clicks to scroll to a specific section
     useEffect(() => {

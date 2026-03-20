@@ -33,7 +33,7 @@ export interface StreamData {
     createdAt: string;
 }
 
-export const EXPLORER = 'https://explore.tempo.xyz';
+export const EXPLORER = 'https://explore.moderato.tempo.xyz';
 
 // ── Helpers ─────────────────────────────────────────────────────
 
@@ -206,8 +206,8 @@ export function StreamPipelineCard({ stream, index, onClick }: PipelineCardProps
             <div className="absolute -inset-[1px] rounded-[1.1rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{ background: `linear-gradient(135deg, ${accentColor}30, transparent 60%)` }} />
 
-            <div className="relative bg-[#111827] border border-white/[0.05] group-hover:border-white/[0.12] rounded-2xl transition-all overflow-hidden"
-                style={{ borderLeftWidth: '4px', borderLeftColor: accentColor }}>
+            <div className="relative border rounded-2xl transition-all overflow-hidden"
+                style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)', borderLeftWidth: '4px', borderLeftColor: accentColor }}>
 
                 <div className="p-5">
                     {/* Row 1: Agent Info + Budget */}

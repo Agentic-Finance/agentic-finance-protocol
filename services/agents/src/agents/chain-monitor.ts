@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['chain-health', 'block-monitor', 'activity-tracking', 'on-chain-read'],
+  capabilities: ['chain-monitoring', 'health-diagnostics', 'grafana-dashboards', 'pagerduty-integration', 'sla-reports', 'on-chain-execution'],
 };
 
 export const handler: AgentHandler = async (job) => {

@@ -19,7 +19,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
             {/* Ambient Background Glow */}
             <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-indigo-500/20 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
             
-            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[400px] sm:min-h-[500px]" style={{ background: 'radial-gradient(ellipse at top, rgba(21,27,39,0.97) 0%, rgba(21,27,39,0.95) 100%)' }}>
+            <div className="p-4 sm:p-8 flex flex-col border border-[var(--pp-border)] rounded-3xl relative z-10 shadow-inner overflow-hidden min-h-[400px] sm:min-h-[500px] stat-card-bg">
                 
                 {/* Header Section */}
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-center border-b border-white/10 pb-6 mb-6 gap-4">
@@ -119,7 +119,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                                                 <div className="col-span-3 flex justify-end">
                                                     {/* Use real on-chain tx hash for explorer link (not zkCommitment/Poseidon) */}
                                                     <a
-                                                        href={`https://explore.tempo.xyz/tx/${b.txHash || b.payoutTxHash || b.depositTxHash || tx.hash}`}
+                                                        href={`https://explore.moderato.tempo.xyz/tx/${b.txHash || b.payoutTxHash || b.depositTxHash || tx.hash}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className={`text-[10px] font-bold transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg border ${isShieldedBatch ? 'bg-fuchsia-500/10 text-fuchsia-400 hover:bg-fuchsia-500/20 border-fuchsia-500/30' : 'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-blue-500/30'}`}

@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'payments',
   version:      '1.0.0',
   price:        4,
-  capabilities: ['multi-token-transfer', 'batch-send', 'on-chain-execution'],
+  capabilities: ['multi-token-transfer', 'cross-token', 'currency-conversion', 'multi-currency-invoices', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Multi-Token Sender. Parse the user's request to send multiple tokens to one recipient.

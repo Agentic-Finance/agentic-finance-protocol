@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'admin',
   version:      '1.0.0',
   price:        3,
-  capabilities: ['withdraw-fees', 'revenue-collection', 'admin', 'on-chain-execution'],
+  capabilities: ['fee-collection', 'revenue-withdrawal', 'revenue-dashboard', 'tax-reports', 'bookkeeping-integration', 'on-chain-execution'],
 };
 
 export const handler: AgentHandler = async (job) => {

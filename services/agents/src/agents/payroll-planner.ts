@@ -13,7 +13,7 @@ export const manifest: AgentDescriptor = {
   category:     'payroll',
   version:      '2.0.0',
   price:        3,
-  capabilities: ['batch-optimization', 'on-chain-batch-transfer', 'gas-estimation', 'csv-parsing'],
+  capabilities: ['payroll', 'batch-payment', 'multisend', 'csv-import', 'tax-calculation', 'pay-stub-generation', 'on-chain-execution'],
 };
 
 interface Employee {

@@ -344,7 +344,7 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
                     {result.depositTxHash && (
                       <div className="flex items-center gap-2">
                         <span className="text-slate-500 shrink-0">Deposit:</span>
-                        <a href={`https://explore.tempo.xyz/tx/${result.depositTxHash}`} target="_blank" rel="noopener noreferrer"
+                        <a href={`https://explore.moderato.tempo.xyz/tx/${result.depositTxHash}`} target="_blank" rel="noopener noreferrer"
                           className="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 truncate">
                           {result.depositTxHash.slice(0, 14)}...{result.depositTxHash.slice(-6)}
                           <ExternalLink className="w-3 h-3 shrink-0" />
@@ -354,7 +354,7 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
                     {result.payoutTxHash && (
                       <div className="flex items-center gap-2">
                         <span className="text-slate-500 shrink-0">Payout:</span>
-                        <a href={`https://explore.tempo.xyz/tx/${result.payoutTxHash}`} target="_blank" rel="noopener noreferrer"
+                        <a href={`https://explore.moderato.tempo.xyz/tx/${result.payoutTxHash}`} target="_blank" rel="noopener noreferrer"
                           className="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 truncate">
                           {result.payoutTxHash.slice(0, 14)}...{result.payoutTxHash.slice(-6)}
                           <ExternalLink className="w-3 h-3 shrink-0" />

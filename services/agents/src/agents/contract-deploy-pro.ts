@@ -10,7 +10,7 @@ export const manifest: AgentDescriptor = {
   category:     'deployment',
   version:      '2.0.0',
   price:        280,
-  capabilities: ['contract-audit', 'contract-deploy', 'on-chain-execution', 'security-review'],
+  capabilities: ['deploy-contract', 'security-audit', 'solidity', 'sourcify', 'audit-reports', 'ci-cd-config', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are an expert Solidity auditor and deployment engineer.

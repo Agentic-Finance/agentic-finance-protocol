@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
-import { requireDaemonAuth } from '@/app/lib/api-auth';
+import { requireDaemonAuth, requireWalletAuth } from '@/app/lib/api-auth';
 
 // GET: Fetch daemon status for a workspace
 export async function GET(req: NextRequest) {
@@ -29,10 +29,15 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// PUT: Update daemon status (admin only)
+// PUT: Update daemon status (daemon secret OR admin wallet)
 export async function PUT(req: NextRequest) {
-    const auth = requireDaemonAuth(req);
-    if (!auth.valid) return auth.response!;
+    // Accept daemon secret auth (daemon→dashboard) OR wallet auth (admin UI)
+    const daemonAuth = requireDaemonAuth(req);
+    const walletAuth = requireWalletAuth(req);
+
+    if (!daemonAuth.valid && !walletAuth.valid) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     try {
         const body = await req.json();
@@ -55,6 +60,13 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ error: 'Workspace not found' }, { status: 404 });
         }
 
+        // If wallet auth, verify caller is the workspace admin
+        if (!daemonAuth.valid && walletAuth.valid) {
+            if (walletAuth.wallet?.toLowerCase() !== workspace.adminWallet.toLowerCase()) {
+                return NextResponse.json({ error: 'Only workspace admin can toggle daemon' }, { status: 403 });
+            }
+        }
+
         const updated = await prisma.workspace.update({
             where: { id: workspace.id },
             data: {
@@ -67,8 +79,8 @@ export async function PUT(req: NextRequest) {
             daemonStatus: updated.daemonStatus,
             daemonLastSeen: updated.daemonLastSeen,
         });
-    } catch (error) {
-        console.error('[daemon-status] PUT error:', error);
-        return NextResponse.json({ error: 'Failed to update daemon status' }, { status: 500 });
+    } catch (error: any) {
+        console.error('[daemon-status] PUT error:', error?.message || error);
+        return NextResponse.json({ error: 'Failed to update daemon status', detail: error?.message }, { status: 500 });
     }
 }

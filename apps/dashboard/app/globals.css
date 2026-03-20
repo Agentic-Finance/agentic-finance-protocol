@@ -24,26 +24,26 @@
   --agt-grad-warm:     linear-gradient(135deg, #FF2D87, #FF7D2C);
   --agt-grad-cool:     linear-gradient(135deg, #1BBFEC, #3EDDB9);
 
-  /* ── Background Surfaces ── */
-  --pp-bg-primary: #0A0A0F;    /* App background */
-  --pp-bg-secondary: #111118;
-  --pp-bg-card: #111118;       /* Card background */
-  --pp-bg-elevated: #1A1A24;   /* Elevated surface */
+  /* ── Background Surfaces (softer dark) ── */
+  --pp-bg-primary: #12141D;    /* App background — softer than pure black */
+  --pp-bg-secondary: #191C28;
+  --pp-bg-card: #191C28;       /* Card background */
+  --pp-bg-elevated: #1F2233;   /* Elevated surface */
 
   /* Surface overlays */
-  --pp-surface-1: rgba(255, 255, 255, 0.04);
+  --pp-surface-1: rgba(255, 255, 255, 0.05);
   --pp-surface-2: rgba(255, 255, 255, 0.08);
   --pp-surface-3: rgba(255, 255, 255, 0.12);
 
   /* Borders */
-  --pp-border: rgba(255, 255, 255, 0.08);
-  --pp-border-hover: rgba(255, 255, 255, 0.16);
+  --pp-border: rgba(255, 255, 255, 0.10);
+  --pp-border-hover: rgba(255, 255, 255, 0.18);
   --agt-border-pink: rgba(255, 45, 135, 0.3);
 
   /* Text */
-  --pp-text-primary: #FFFFFF;
-  --pp-text-secondary: #C4C4D4;
-  --pp-text-muted: #6B6B8A;
+  --pp-text-primary: #F1F5F9;
+  --pp-text-secondary: #CBD5E1;
+  --pp-text-muted: #7C8BA5;
 
   /* Accent colors — mapped to brand */
   --pp-accent: #FF2D87;        /* Spectrum Pink as primary accent */
@@ -64,10 +64,223 @@
   --agt-font-body:    var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
   --agt-font-mono:    var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Enforce dark */
-  --background: #0A0A0F;
-  --foreground: #FFFFFF;
+  /* Default: dark */
+  --background: #12141D;
+  --foreground: #F1F5F9;
 }
+
+/* ── Light Mode (clean, high contrast, strong borders) ── */
+html.light {
+  --pp-bg-primary: #F8FAFC;
+  --pp-bg-secondary: #FFFFFF;
+  --pp-bg-card: #FFFFFF;
+  --pp-bg-elevated: #F1F5F9;
+  --pp-surface-1: rgba(0, 0, 0, 0.05);
+  --pp-surface-2: rgba(0, 0, 0, 0.08);
+  --pp-surface-3: rgba(0, 0, 0, 0.12);
+  --pp-border: rgba(0, 0, 0, 0.18);
+  --pp-border-hover: rgba(0, 0, 0, 0.30);
+  --pp-text-primary: #0A0F1E;
+  --pp-text-secondary: #334155;
+  --pp-text-muted: #546478;
+  --pp-accent: #D6166B;
+  --pp-success: #0D9473;
+  --pp-warning: #C85A1F;
+  --pp-info: #0F7FA3;
+  --agt-pink: #D6166B;
+  --agt-blue: #0F7FA3;
+  --agt-mint: #0D9473;
+  --agt-orange: #C85A1F;
+  --background: #FAFBFC;
+  --foreground: #0F172A;
+}
+
+/* ═══ Light Mode Component Overrides ═══ */
+
+/* Body & global text */
+html.light body {
+  background: var(--pp-bg-primary) !important;
+  color: var(--pp-text-primary) !important;
+}
+
+/* All white text → dark text in light mode */
+html.light .text-white { color: var(--pp-text-primary) !important; }
+html.light .text-white\/80 { color: var(--pp-text-secondary) !important; }
+html.light .text-white\/70 { color: var(--pp-text-secondary) !important; }
+html.light .text-white\/60 { color: var(--pp-text-secondary) !important; }
+html.light .text-white\/50 { color: var(--pp-text-muted) !important; }
+html.light .text-white\/40 { color: #78859A !important; }
+html.light .text-white\/30 { color: #8896A8 !important; }
+html.light .text-white\/25 { color: #94A3B8 !important; }
+html.light .text-white\/20 { color: #94A3B8 !important; }
+html.light .text-white\/15 { color: #A0AEC0 !important; }
+
+/* Slate text adjustments */
+html.light .text-slate-400 { color: #6B7280 !important; }
+html.light .text-slate-500 { color: #64748B !important; }
+html.light .text-slate-600 { color: #475569 !important; }
+
+/* Background overrides — rgba(255,255,255,x) → rgba(0,0,0,x) */
+html.light [class*="bg-white\\/\\[0\\.0"] { background-color: rgba(0,0,0,0.03) !important; }
+html.light .bg-white\/\[0\.025\] { background-color: #FFFFFF !important; }
+html.light .bg-white\/\[0\.03\] { background-color: rgba(0,0,0,0.02) !important; }
+html.light .bg-white\/\[0\.04\] { background-color: rgba(0,0,0,0.03) !important; }
+html.light .bg-white\/\[0\.05\] { background-color: rgba(0,0,0,0.04) !important; }
+html.light .bg-white\/\[0\.06\] { background-color: rgba(0,0,0,0.04) !important; }
+html.light .bg-white\/\[0\.08\] { background-color: rgba(0,0,0,0.05) !important; }
+html.light .bg-white\/\[0\.10\] { background-color: rgba(0,0,0,0.06) !important; }
+
+/* Hover bg overrides */
+html.light .hover\:bg-white\/\[0\.02\]:hover { background-color: rgba(0,0,0,0.02) !important; }
+html.light .hover\:bg-white\/\[0\.03\]:hover { background-color: rgba(0,0,0,0.03) !important; }
+html.light .hover\:bg-white\/\[0\.04\]:hover { background-color: rgba(0,0,0,0.04) !important; }
+html.light .hover\:bg-white\/\[0\.05\]:hover { background-color: rgba(0,0,0,0.05) !important; }
+html.light .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(0,0,0,0.05) !important; }
+html.light .hover\:bg-white\/\[0\.08\]:hover { background-color: rgba(0,0,0,0.06) !important; }
+html.light .hover\:bg-white\/\[0\.10\]:hover { background-color: rgba(0,0,0,0.07) !important; }
+
+/* Border overrides — stronger borders for light mode */
+html.light .border-white\/\[0\.04\] { border-color: rgba(0,0,0,0.10) !important; }
+html.light .border-white\/\[0\.05\] { border-color: rgba(0,0,0,0.12) !important; }
+html.light .border-white\/\[0\.06\] { border-color: rgba(0,0,0,0.12) !important; }
+html.light .border-white\/\[0\.08\] { border-color: rgba(0,0,0,0.15) !important; }
+html.light .border-white\/\[0\.10\] { border-color: rgba(0,0,0,0.18) !important; }
+html.light .border-white\/5 { border-color: rgba(0,0,0,0.10) !important; }
+html.light .border-white\/10 { border-color: rgba(0,0,0,0.15) !important; }
+
+/* Black backgrounds → light gray */
+html.light .bg-black\/30 { background-color: rgba(0,0,0,0.04) !important; }
+html.light .bg-black\/40 { background-color: rgba(0,0,0,0.05) !important; }
+html.light .bg-black\/50 { background-color: rgba(0,0,0,0.06) !important; }
+html.light .bg-\[var\(--pp-bg-card\)\] { background-color: var(--pp-bg-card) !important; }
+html.light .bg-\[var\(--pp-bg-primary\)\] { background-color: var(--pp-bg-primary) !important; }
+
+/* ── Modal/Dialog hardcoded dark backgrounds → light mode ── */
+html.light .bg-\[\#151B27\] { background-color: #FFFFFF !important; }
+html.light .bg-\[\#0C1017\] { background-color: #FFFFFF !important; }
+html.light .bg-\[\#06080C\] { background-color: #F1F5F9 !important; }
+html.light .bg-\[\#0a0e1a\] { background-color: #FFFFFF !important; }
+html.light .bg-\[\#0a0e1a\]\/95 { background-color: rgba(255,255,255,0.95) !important; }
+html.light .bg-\[\#12141D\] { background-color: var(--pp-bg-primary) !important; }
+html.light .bg-\[\#191C28\] { background-color: var(--pp-bg-card) !important; }
+html.light .bg-\[\#1F2233\] { background-color: var(--pp-bg-elevated) !important; }
+
+/* Stat cards — TopStatsCards uses rounded-xl bg-white/[0.025] */
+html.light .rounded-xl.bg-white\/\[0\.025\] {
+  background: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04) !important;
+}
+html.light .rounded-xl.bg-white\/\[0\.025\]:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06) !important;
+}
+
+/* Navbar */
+html.light nav, html.light header {
+  background: rgba(255,255,255,0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(0,0,0,0.06) !important;
+}
+
+/* OmniTerminal input area */
+html.light .bg-transparent { background: transparent !important; }
+
+/* ═══ COMPREHENSIVE LIGHT MODE — catch ALL dark backgrounds ═══ */
+
+/* Any element with inline/computed dark bg */
+html.light .stat-card-bg,
+html.light [style*="rgba(255,255,255,0.0"],
+html.light [style*="rgba(17,17,24"],
+html.light [style*="rgba(10,10,15"],
+html.light [style*="#111118"],
+html.light [style*="#0A0A0F"] {
+  background: var(--pp-bg-card) !important;
+}
+
+/* agt-card in light mode */
+html.light .agt-card {
+  background: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+html.light .agt-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
+}
+
+/* All rounded cards/sections with dark inline styles */
+html.light [style*="background: rgba(255,255,255,0.02"] {
+  background: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+html.light [style*="background: rgba(255,255,255,0.025"] {
+  background: #FFFFFF !important;
+}
+html.light [style*="background: rgba(255,255,255,0.03"] {
+  background: rgba(0,0,0,0.02) !important;
+}
+html.light [style*="background: rgba(255,255,255,0.04"] {
+  background: rgba(0,0,0,0.03) !important;
+}
+
+/* Scrollbar */
+html.light ::-webkit-scrollbar-track { background: #F0F1F3; }
+html.light ::-webkit-scrollbar-thumb { background: #C0C0C8; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #A0A0A8; }
+
+/* Skeleton loading */
+html.light .pp-skeleton { background: linear-gradient(90deg, #E8E8EC, #F0F0F4, #E8E8EC) !important; }
+
+/* GatewayScreen */
+html.light .min-h-screen {
+  background: var(--pp-bg-primary) !important;
+}
+
+/* Fund button — invert for light mode */
+html.light .bg-white.text-black,
+html.light button.bg-white { background: #1A1A2E !important; color: #FFFFFF !important; }
+
+/* Radial gradient bg decorations — hide in light mode */
+html.light [class*="bg-\\[radial-gradient"] { background: transparent !important; }
+html.light [style*="radial-gradient"] { background: transparent !important; }
+
+/* Navbar */
+html.light nav, html.light header {
+  background: rgba(255,255,255,0.90) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(0,0,0,0.06) !important;
+}
+
+/* All rounded-2xl sections (OmniTerminal, Settled Batches, etc.) */
+html.light .rounded-2xl {
+  background-color: #FFFFFF !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+html.light .rounded-2xl .rounded-2xl {
+  background-color: rgba(0,0,0,0.02) !important;
+}
+
+/* OmniTerminal specific */
+html.light .rounded-xl {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Emerald/colored accents — slightly darker for light bg */
+html.light .text-emerald-400 { color: #059669 !important; }
+html.light .text-rose-400 { color: #E11D48 !important; }
+html.light .text-amber-400 { color: #D97706 !important; }
+html.light .text-cyan-400 { color: #0891B2 !important; }
+html.light .text-indigo-400 { color: #4F46E5 !important; }
+html.light .text-fuchsia-400 { color: #C026D3 !important; }
+
+/* Badge colors in light mode */
+html.light .bg-emerald-400\/10, html.light .bg-emerald-400\/15,
+html.light .bg-emerald-500\/10, html.light .bg-emerald-500\/15 {
+  background-color: rgba(5, 150, 105, 0.08) !important;
+}
+
+/* Animate pulse dot */
+html.light .bg-emerald-400 { background-color: #059669 !important; }
+html.light .bg-red-400 { background-color: #E11D48 !important; }
 
 @theme inline {
   --color-background: var(--background);
@@ -76,7 +289,9 @@
   --font-mono: var(--font-jetbrains-mono);
 }
 
-/* Always dark — no light mode */
+/* Legacy comment — both modes now supported */
+
+/* Dark and default mode */
 body {
   background: var(--pp-bg-primary);
   color: var(--pp-text-primary);
@@ -95,7 +310,49 @@ body {
 .agt-font-display { font-family: var(--agt-font-display); }
 .agt-font-mono    { font-family: var(--agt-font-mono); }
 
-/* ── Reusable Card Style ── */
+/* ── Typography Hierarchy ── */
+.agt-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pp-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.agt-value-lg {
+  font-size: clamp(1.25rem, 2vw, 1.875rem);
+  font-weight: 900;
+  color: var(--pp-text-primary);
+  font-family: var(--agt-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.agt-value-md {
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  font-weight: 700;
+  color: var(--pp-text-primary);
+  font-family: var(--agt-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.agt-subtitle {
+  font-size: 11px;
+  color: var(--pp-text-muted);
+}
+.agt-heading-page {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 900;
+  color: var(--pp-text-primary);
+  letter-spacing: -0.025em;
+}
+.agt-heading-section {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--pp-text-primary);
+}
+.agt-body-secondary {
+  font-size: 0.875rem;
+  color: var(--pp-text-secondary);
+}
+
+/* ── Card System ── */
 .pp-card {
   background: var(--pp-bg-card);
   border: 1px solid var(--pp-border);
@@ -104,6 +361,112 @@ body {
 }
 .pp-card:hover {
   border-color: var(--pp-border-hover);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
+}
+.pp-card-interactive {
+  background: var(--pp-bg-card);
+  border: 1px solid var(--pp-border);
+  border-radius: var(--pp-radius-lg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+.pp-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--pp-border-hover);
+}
+
+/* ── Unified Card (Linear-inspired: ultra clean, no borders) ── */
+.agt-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.agt-card:hover {
+  background: rgba(255,255,255,0.045);
+  border-color: rgba(255,255,255,0.10);
+}
+html.light .agt-card {
+  background: #FFFFFF;
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+html.light .agt-card:hover {
+  background: #FFFFFF;
+  border-color: rgba(0,0,0,0.12);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* ── Card Accent Variants (monochrome — no colored borders) ── */
+.agt-card-accent-pink,
+.agt-card-accent-blue,
+.agt-card-accent-mint,
+.agt-card-accent-orange,
+.agt-card-accent-danger {
+  /* Linear style: no colored borders, clean monochrome */
+}
+
+/* ── Icon Box (Linear-inspired: simple circle, subtle bg) ── */
+.agt-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.agt-icon-box-pink   { background: rgba(255,255,255,0.06); color: var(--agt-pink); }
+.agt-icon-box-blue   { background: rgba(255,255,255,0.06); color: var(--agt-blue); }
+.agt-icon-box-mint   { background: rgba(255,255,255,0.06); color: var(--agt-mint); }
+.agt-icon-box-orange { background: rgba(255,255,255,0.06); color: var(--agt-orange); }
+.agt-icon-box-danger { background: rgba(255,255,255,0.06); color: var(--pp-danger); }
+
+/* ── Badge (Linear-style: subtle, no borders) ── */
+.agt-badge {
+  font-size: 11px;
+  font-family: var(--agt-font-mono);
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.5);
+}
+.agt-badge-pink   { color: var(--agt-pink); background: rgba(255,45,135,0.10); }
+.agt-badge-blue   { color: var(--agt-blue); background: rgba(27,191,236,0.10); }
+.agt-badge-mint   { color: var(--agt-mint); background: rgba(62,221,185,0.10); }
+.agt-badge-orange { color: var(--agt-orange); background: rgba(255,125,44,0.10); }
+.agt-badge-danger { color: var(--pp-danger); background: rgba(239,68,68,0.10); }
+
+/* ── Table Row Hover ── */
+.pp-row-hover {
+  transition: background-color 0.15s ease;
+}
+.pp-row-hover:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ── Button Glow ── */
+.pp-btn-glow {
+  transition: all 0.2s ease;
+}
+.pp-btn-glow:hover {
+  box-shadow: 0 0 20px var(--card-glow-color, rgba(255, 45, 135, 0.2));
+}
+
+/* ── Sidebar background ── */
+.sidebar-bg {
+  background: rgba(10, 10, 15, 0.92);
+}
+
+/* ── Header background ── */
+.header-bg {
+  background: rgba(10, 10, 15, 0.85);
 }
 
 /* ── Glass effect ── */
@@ -157,7 +520,7 @@ input[type=number] { -moz-appearance: textfield; }
 
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 8px rgba(255, 45, 135, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(255, 45, 135, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; will-change: box-shadow; }
 
@@ -206,6 +569,18 @@ input[type=number] { -moz-appearance: textfield; }
 /* ── Firefox scrollbar support ── */
 .cyber-scroll-x { scrollbar-width: thin; scrollbar-color: rgba(255, 45, 135, 0.3) rgba(0, 0, 0, 0.2); }
 .cyber-scroll-y { scrollbar-width: thin; scrollbar-color: rgba(255, 45, 135, 0.3) rgba(0, 0, 0, 0.2); }
+
+/* stat-card-bg: deprecated — use .agt-card instead */
+.stat-card-bg {
+  background: var(--pp-bg-card);
+}
+
+/* ── Slide-in animation for mobile sidebar ── */
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in-left { animation: slideInLeft 0.25s ease-out forwards; }
 
 /* ── Focus indicators (accessibility) ── */
 *:focus-visible {

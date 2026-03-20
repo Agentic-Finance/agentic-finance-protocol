@@ -28,10 +28,7 @@ export const manifest: AgentDescriptor = {
   category:     'orchestration',
   version:      '1.0.0',
   price:        20,
-  capabilities: [
-    'task-decomposition', 'a2a-hiring', 'multi-agent-orchestration',
-    'on-chain-execution', 'escrow-management', 'conditional-branching',
-  ],
+  capabilities: ['a2a-coordination', 'multi-agent', 'task-decomposition', 'gantt-charts', 'project-management', 'slack-notifications', 'on-chain-execution'],
 };
 
 // ── Available agents the coordinator can hire ──

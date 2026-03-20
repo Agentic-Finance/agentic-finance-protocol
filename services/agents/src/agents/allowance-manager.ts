@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'security',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['check-allowance', 'approve-token', 'revoke-allowance', 'on-chain-execution'],
+  capabilities: ['approve-tokens', 'revoke-approval', 'security', 'risk-assessment', 'exposure-dashboard', 'on-chain-execution'],
 };
 
 const CONTRACT_NAMES: Record<string, string> = {

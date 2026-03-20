@@ -41,13 +41,18 @@ dotenv.config();
 const RPC_URL = process.env.RPC_URL || "https://rpc.moderato.tempo.xyz";
 const AGTFI_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1";
 const AGTFI_SHIELD_V2_ADDRESS = process.env.SHIELD_V2_ADDRESS || "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
+const BATCH_SHIELD_EXECUTOR_ADDRESS = process.env.BATCH_SHIELD_EXECUTOR_ADDRESS || "0xBc7dF45b15739c41c3223b1B794A73d793A65Ea2";
 const AGTFI_NEXUS_V2_ADDRESS = process.env.NEXUS_V2_ADDRESS || "0x6A467Cd4156093bB528e448C04366586a1052Fab";
 const TOKEN_ADDRESS = process.env.TOKEN_ADDRESS || "0x20c0000000000000000000000000000000000001";
 const REPUTATION_REGISTRY_ADDRESS = process.env.REPUTATION_REGISTRY_ADDRESS || "0x9332c1B2bb94C96DA2D729423f345c76dB3494D0";
 const TOKEN_DECIMALS = 6;
 
+// Dashboard API config — daemon heartbeat & status sync
+const DASHBOARD_URL = process.env.DASHBOARD_URL || "http://dashboard:3000";
+const DAEMON_API_SECRET = process.env.DAEMON_API_SECRET || "";
+
 // Parallel processing config
-const MAX_PARALLEL_PROOFS = 3;  // Max concurrent proof generations (Path A)
+const MAX_PARALLEL_PROOFS = 3;  // Max concurrent proof generations (Path A) — peak ~650MB within 2GB limit
 const INDEX_DELAY_MS = 200;     // Reduced from 1000ms — Tempo indexing is fast
 
 const PRIVATE_KEY = process.env.DAEMON_PRIVATE_KEY || process.env.BOT_PRIVATE_KEY || process.env.ADMIN_PRIVATE_KEY;
@@ -66,6 +71,13 @@ const SHIELD_ABI_V2 = [
     "function executeShieldedPayout(uint256[24] calldata proof, uint256[3] calldata pubSignals, uint256 exactAmount) external",
     "function isNullifierUsed(uint256 nullifierHash) external view returns (bool)",
     "function isCommitmentRegistered(uint256 commitment) external view returns (bool)"
+];
+
+// BatchShieldExecutor ABI — batches multiple ZK payouts into 1 TX
+const BATCH_EXECUTOR_ABI = [
+    "function batchExecuteShieldedPayout(uint256[24][] calldata proofs, uint256[3][] calldata pubSignals, uint256[] calldata amounts) external",
+    "function executeShieldedPayout(uint256[24] calldata proof, uint256[3] calldata pubSignals, uint256 exactAmount) external",
+    "function executePublicPayout(address recipient, uint256 amount) external",
 ];
 
 // ERC20 ABI for approve
@@ -127,12 +139,17 @@ class AgtFiDaemon {
     private wallet: ethers.Wallet;
     private shieldContractV1: ethers.Contract;
     private shieldContractV2: ethers.Contract;
+    private batchExecutor: ethers.Contract;
     private nexusV2Contract: ethers.Contract;
     private prisma: PrismaClient;
     private isRunning: boolean = false;
 
     // Poseidon singleton — loaded once at startup, reused forever
     private poseidon: any = null;
+
+    // Nonce mutex — serializes TX submissions to prevent "replacement transaction underpriced"
+    private nonceLock: Promise<void> = Promise.resolve();
+    private managedNonce: number = -1;
 
     // Circuit paths — resolved at startup
     private v2WasmPath: string = "";
@@ -147,6 +164,7 @@ class AgtFiDaemon {
         this.wallet = new ethers.Wallet(PRIVATE_KEY, this.provider);
         this.shieldContractV1 = new ethers.Contract(AGTFI_SHIELD_ADDRESS, SHIELD_ABI_V1, this.wallet);
         this.shieldContractV2 = new ethers.Contract(AGTFI_SHIELD_V2_ADDRESS, SHIELD_ABI_V2, this.wallet);
+        this.batchExecutor = new ethers.Contract(BATCH_SHIELD_EXECUTOR_ADDRESS, BATCH_EXECUTOR_ABI, this.wallet);
         this.nexusV2Contract = new ethers.Contract(AGTFI_NEXUS_V2_ADDRESS, NEXUS_V2_ABI, this.wallet);
         this.prisma = new PrismaClient();
 
@@ -176,6 +194,45 @@ class AgtFiDaemon {
     }
 
     /**
+     * Check if the daemon should be active by reading workspace daemonStatus.
+     * Returns true if any workspace has daemonStatus = ACTIVE.
+     */
+    private async isDaemonEnabled(): Promise<boolean> {
+        try {
+            const activeWorkspaces = await this.prisma.workspace.count({
+                where: { daemonStatus: 'ACTIVE' },
+            });
+            return activeWorkspaces > 0;
+        } catch (err) {
+            // If DB fails, default to processing (fail-open for reliability)
+            return true;
+        }
+    }
+
+    /**
+     * Send heartbeat to dashboard — updates daemonStatus & daemonLastSeen.
+     * Called every cycle to keep the dashboard aware the daemon is alive.
+     */
+    private async sendHeartbeat(status: 'ACTIVE' | 'PROCESSING' | 'OFFLINE'): Promise<void> {
+        if (!DAEMON_API_SECRET) return; // Skip if no secret configured
+        try {
+            await fetch(`${DASHBOARD_URL}/api/daemon-status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Daemon-Secret': DAEMON_API_SECRET,
+                },
+                body: JSON.stringify({
+                    wallet: this.wallet.address,
+                    status,
+                }),
+            });
+        } catch {
+            // Heartbeat failure is non-critical — don't block processing
+        }
+    }
+
+    /**
      * Get cached Poseidon instance. First call loads WASM (~200ms),
      * all subsequent calls return instantly (~0ms).
      */
@@ -201,6 +258,37 @@ class AgtFiDaemon {
         return { commitment, nullifierHash };
     }
 
+    /**
+     * Nonce-safe TX submission — serializes all on-chain TX sends through a mutex.
+     * Proof generation still runs in parallel; only the TX send is serialized.
+     */
+    private async sendTxWithNonce<T>(
+        sendFn: (nonce: number) => Promise<T>
+    ): Promise<T> {
+        // Chain onto the lock so only one TX sends at a time
+        const prev = this.nonceLock;
+        let resolve: () => void;
+        this.nonceLock = new Promise<void>(r => { resolve = r; });
+
+        await prev; // Wait for previous TX to finish sending
+
+        try {
+            // Get fresh nonce (or increment managed nonce)
+            if (this.managedNonce < 0) {
+                this.managedNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
+            }
+            const nonce = this.managedNonce;
+            this.managedNonce++;
+            return await sendFn(nonce);
+        } catch (err: any) {
+            // Reset managed nonce on failure so next TX re-fetches
+            this.managedNonce = -1;
+            throw err;
+        } finally {
+            resolve!();
+        }
+    }
+
     public async start() {
         if (this.isRunning) return;
         this.isRunning = true;
@@ -209,6 +297,7 @@ class AgtFiDaemon {
         console.log(`[DAEMON] 🛡️ V1 Circuit: ${this.hasV1Circuit ? 'AVAILABLE' : 'NOT FOUND'} (${this.v1WasmPath || 'N/A'})`);
         console.log(`[DAEMON] 📡 ShieldVaultV2: ${AGTFI_SHIELD_V2_ADDRESS}`);
         console.log(`[DAEMON] 📡 NexusV2: ${AGTFI_NEXUS_V2_ADDRESS}`);
+        console.log(`[DAEMON] 📡 BatchShieldExecutor: ${BATCH_SHIELD_EXECUTOR_ADDRESS}`);
         console.log(`[DAEMON] ⚡ Parallel proofs: ${MAX_PARALLEL_PROOFS} | Index delay: ${INDEX_DELAY_MS}ms`);
         console.log(`[DAEMON] ⚡ Conditional Rule Engine: ENABLED (60s evaluation cycle)`);
 
@@ -233,18 +322,43 @@ class AgtFiDaemon {
         let conditionalCycleCounter = 0;
         let orchCycleCounter = 0;
         let reputationCycleCounter = 0;
+        let heartbeatCounter = 0;
+        let autopilotCycleCounter = 0;
+        let balanceCheckCounter = 0;
+
+        // Send initial heartbeat — daemon is alive
+        await this.sendHeartbeat('ACTIVE');
 
         while (this.isRunning) {
             try {
+                // ═══ Heartbeat to Dashboard (every ~30s) ═══
+                heartbeatCounter++;
+                if (heartbeatCounter >= 6) {
+                    heartbeatCounter = 0;
+                    const enabled = await this.isDaemonEnabled();
+                    await this.sendHeartbeat(enabled ? 'ACTIVE' : 'OFFLINE');
+                }
+
+                // ═══ Check if daemon is enabled for any workspace ═══
+                const daemonEnabled = await this.isDaemonEnabled();
+                if (!daemonEnabled) {
+                    // Daemon paused — skip all processing but keep the loop alive
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                    continue;
+                }
+
                 // ═══ Shielded Payroll Processing (every 5s) ═══
+                // Also recover PROCESSING jobs that got stuck from a previous crash
                 const pendingJobs = await this.prisma.timeVaultPayload.findMany({
-                    where: { status: 'PENDING', isShielded: true },
-                    take: 10,
+                    where: { status: { in: ['PENDING', 'PROCESSING'] }, isShielded: true },
+                    take: 50,
                 });
 
                 if (pendingJobs.length > 0) {
-                    console.log(`[DAEMON] 📥 Found ${pendingJobs.length} PENDING shielded transactions!`);
+                    console.log(`[DAEMON] 📥 Found ${pendingJobs.length} PENDING/PROCESSING shielded transactions!`);
+                    await this.sendHeartbeat('PROCESSING');
                     await this.processShieldedBatch(pendingJobs);
+                    await this.sendHeartbeat('ACTIVE');
                 }
 
                 // ═══ A2A Escrow Processing (every ~30s) ═══
@@ -267,6 +381,20 @@ class AgtFiDaemon {
                 if (conditionalCycleCounter >= 12) {
                     conditionalCycleCounter = 0;
                     await this.processConditionalRules();
+                }
+
+                // ═══ Autopilot Schedule Evaluation (every ~60s) ═══
+                autopilotCycleCounter++;
+                if (autopilotCycleCounter >= 12) {
+                    autopilotCycleCounter = 0;
+                    await this.processAutopilotSchedules();
+                }
+
+                // ═══ Vault Balance Alert (every ~5 min) ═══
+                balanceCheckCounter++;
+                if (balanceCheckCounter >= 60) {
+                    balanceCheckCounter = 0;
+                    await this.checkVaultBalance();
                 }
 
                 // ═══ Orchestration Timeout Monitoring (every ~60s) ═══
@@ -320,27 +448,82 @@ class AgtFiDaemon {
             }
         }
 
-        // ═══ PATH A: Pre-deposited jobs — parallel proof generation ═══
+        // ═══ PATH A: Pre-deposited jobs — parallel proof generation → 1 batch TX ═══
         if (pathAJobs.length > 0) {
-            console.log(`[DAEMON] ⚡ Path A: ${pathAJobs.length} pre-deposited jobs (parallel proofs, max ${MAX_PARALLEL_PROOFS} concurrent)`);
+            console.log(`[DAEMON] ⚡ Path A: ${pathAJobs.length} pre-deposited jobs (parallel proofs → 1 batch TX via BatchShieldExecutor)`);
 
             // Mark all as PROCESSING
             await Promise.all(pathAJobs.map(({ job }) =>
                 this.prisma.timeVaultPayload.update({ where: { id: job.id }, data: { status: 'PROCESSING' } })
             ));
 
-            // Process in parallel batches
+            // Step 1: Generate all proofs in parallel (max MAX_PARALLEL_PROOFS concurrent)
+            interface ProofResult {
+                job: any;
+                storedSecrets: any;
+                proofArray: any[];
+                pubSignals: any[];
+                commitment: string;
+                scaledAmount: bigint;
+            }
+            const successfulProofs: ProofResult[] = [];
+
             for (let i = 0; i < pathAJobs.length; i += MAX_PARALLEL_PROOFS) {
                 const batch = pathAJobs.slice(i, i + MAX_PARALLEL_PROOFS);
                 const results = await Promise.allSettled(
-                    batch.map(({ job, storedSecrets }) => this.processPreDepositedPayout(job, storedSecrets))
+                    batch.map(async ({ job, storedSecrets }) => {
+                        const scaledAmount = ethers.parseUnits(job.amount.toString(), TOKEN_DECIMALS);
+                        const amountForCircuit = storedSecrets.amountScaled || scaledAmount.toString();
+                        console.log(`[DAEMON] 📦 Job ${job.id}: Generating proof (depositTx: ${storedSecrets.depositTxHash?.slice(0, 16)}...)`);
+
+                        const { proofArray, pubSignals, commitment } = await this.generateZKProofV2WithSecrets(
+                            job.recipientWallet, amountForCircuit, storedSecrets.secret!, storedSecrets.nullifier!
+                        );
+                        console.log(`[DAEMON] 🔐 Job ${job.id}: Proof ready. Commitment: ${commitment.slice(0, 20)}...`);
+                        return { job, storedSecrets, proofArray, pubSignals, commitment, scaledAmount } as ProofResult;
+                    })
                 );
 
                 for (let j = 0; j < results.length; j++) {
-                    if (results[j].status === 'rejected') {
+                    if (results[j].status === 'fulfilled') {
+                        successfulProofs.push((results[j] as PromiseFulfilledResult<ProofResult>).value);
+                    } else {
                         const failedJob = batch[j].job;
-                        console.error(`[DAEMON] ❌ Path A failed for Job ${failedJob.id}:`, (results[j] as PromiseRejectedResult).reason?.message);
+                        console.error(`[DAEMON] ❌ Proof generation failed for Job ${failedJob.id}:`, (results[j] as PromiseRejectedResult).reason?.message);
                         await this.prisma.timeVaultPayload.update({ where: { id: failedJob.id }, data: { status: 'FAILED' } });
+                    }
+                }
+            }
+
+            // Step 2: Submit all successful proofs in 1 batch TX
+            if (successfulProofs.length > 0) {
+                try {
+                    const batchTxHash = await this.submitBatchPayout(successfulProofs);
+
+                    // Step 3: Mark all jobs as COMPLETED with shared batch TX hash
+                    for (const proof of successfulProofs) {
+                        await this.prisma.timeVaultPayload.update({
+                            where: { id: proof.job.id },
+                            data: {
+                                status: 'COMPLETED',
+                                zkCommitment: proof.commitment,
+                                zkProof: JSON.stringify({
+                                    secret: proof.storedSecrets.secret,
+                                    nullifier: proof.storedSecrets.nullifier,
+                                    nullifierHash: proof.storedSecrets.nullifierHash,
+                                    depositTxHash: proof.storedSecrets.depositTxHash,
+                                    payoutTxHash: batchTxHash,
+                                    amountScaled: proof.storedSecrets.amountScaled,
+                                }),
+                            }
+                        });
+                    }
+                    console.log(`[DAEMON] ✅ Batch settled: ${successfulProofs.length} payouts in 1 TX: ${batchTxHash}`);
+                } catch (error: any) {
+                    console.error(`[DAEMON] ❌ Batch TX failed:`, error.reason || error.message);
+                    // Mark all as FAILED on batch TX failure
+                    for (const proof of successfulProofs) {
+                        await this.prisma.timeVaultPayload.update({ where: { id: proof.job.id }, data: { status: 'FAILED' } });
                     }
                 }
             }
@@ -361,61 +544,64 @@ class AgtFiDaemon {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // PATH A: Pre-deposited — generate proof + executeShieldedPayout
-    // Now uses cached Poseidon (no rebuild per job)
+    // PATH A: Batch TX submission via BatchShieldExecutor
+    // All proofs are pre-generated in parallel, then submitted in 1 TX
     // ═══════════════════════════════════════════════════════════
-    private async processPreDepositedPayout(
-        job: any,
-        storedSecrets: { secret?: string; nullifier?: string; nullifierHash?: string; depositTxHash?: string; amountScaled?: string },
-    ) {
-        const scaledAmount = ethers.parseUnits(job.amount.toString(), TOKEN_DECIMALS);
-        const amountForCircuit = storedSecrets.amountScaled || scaledAmount.toString();
+    private async submitBatchPayout(proofs: Array<{
+        job: any;
+        proofArray: any[];
+        pubSignals: any[];
+        commitment: string;
+        scaledAmount: bigint;
+        storedSecrets: any;
+    }>): Promise<string> {
+        if (proofs.length === 1) {
+            // Single job — use direct executeShieldedPayout (simpler, less gas)
+            const p = proofs[0];
+            console.log(`[DAEMON] 📤 Single payout via BatchShieldExecutor`);
+            const tx = await this.sendTxWithNonce(async (nonce) => {
+                return this.batchExecutor.executeShieldedPayout(
+                    p.proofArray, p.pubSignals, p.scaledAmount,
+                    { nonce, gasLimit: 3_000_000, type: 0 }
+                );
+            });
+            console.log(`[DAEMON] ⏳ TX sent: ${tx.hash}`);
+            try { await tx.wait(1); } catch (e: any) {
+                if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
+                    await verifyTxOnChain(tx.hash, 'executeShieldedPayout');
+                } else { throw e; }
+            }
+            return tx.hash;
+        }
 
-        console.log(`[DAEMON] 📦 Job ${job.id}: Using pre-stored secrets (depositTx: ${storedSecrets.depositTxHash?.slice(0, 16)}...)`);
+        // Multiple jobs — use batchExecuteShieldedPayout (N proofs → 1 TX)
+        console.log(`[DAEMON] 📤 Batch payout: ${proofs.length} proofs → 1 TX via BatchShieldExecutor`);
+        const allProofs = proofs.map(p => p.proofArray);
+        const allPubSignals = proofs.map(p => p.pubSignals);
+        const allAmounts = proofs.map(p => p.scaledAmount);
 
-        const { proofArray, pubSignals, commitment } = await this.generateZKProofV2WithSecrets(
-            job.recipientWallet,
-            amountForCircuit,
-            storedSecrets.secret!,
-            storedSecrets.nullifier!
-        );
+        // Estimate gas: ~3M per proof + overhead
+        const gasLimit = Math.min(proofs.length * 3_500_000 + 500_000, 30_000_000);
 
-        console.log(`[DAEMON] 🔐 Job ${job.id}: Proof generated. Commitment: ${commitment.slice(0, 20)}...`);
+        const tx = await this.sendTxWithNonce(async (nonce) => {
+            console.log(`[DAEMON] 📤 Batch TX with nonce ${nonce}, gasLimit ${gasLimit}`);
+            return this.batchExecutor.batchExecuteShieldedPayout(
+                allProofs, allPubSignals, allAmounts,
+                { nonce, gasLimit, type: 0 }
+            );
+        });
 
-        const currentNonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
-        const tx = await this.shieldContractV2.executeShieldedPayout(
-            proofArray, pubSignals, scaledAmount,
-            { nonce: currentNonce, gasLimit: 3_000_000, type: 0 }
-        );
-
-        console.log(`[DAEMON] ⏳ Job ${job.id}: TX sent: ${tx.hash}`);
-        try {
-            await tx.wait(1);
-        } catch (e: any) {
+        console.log(`[DAEMON] ⏳ Batch TX sent: ${tx.hash}`);
+        try { await tx.wait(1); } catch (e: any) {
             if (e?.code === 'BAD_DATA' || e?.message?.includes('invalid BigNumberish')) {
-                await verifyTxOnChain(tx.hash, 'executeShieldedPayout');
+                await verifyTxOnChain(tx.hash, 'batchExecuteShieldedPayout');
             } else { throw e; }
         }
 
-        console.log(`[DAEMON] ✅ Job ${job.id} settled on-chain via ZK proof!`);
-        console.log(`[DAEMON]    Deposit: ${storedSecrets.depositTxHash}`);
-        console.log(`[DAEMON]    Payout:  ${tx.hash}`);
-
-        await this.prisma.timeVaultPayload.update({
-            where: { id: job.id },
-            data: {
-                status: 'COMPLETED',
-                zkCommitment: commitment,
-                zkProof: JSON.stringify({
-                    secret: storedSecrets.secret,
-                    nullifier: storedSecrets.nullifier,
-                    nullifierHash: storedSecrets.nullifierHash,
-                    depositTxHash: storedSecrets.depositTxHash,
-                    payoutTxHash: tx.hash,
-                    amountScaled: storedSecrets.amountScaled,
-                }),
-            }
-        });
+        for (const p of proofs) {
+            console.log(`[DAEMON] ✅ Job ${p.job.id} settled in batch TX: ${tx.hash}`);
+        }
+        return tx.hash;
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -483,10 +669,10 @@ class AgtFiDaemon {
             nullifier
         );
 
-        // Step 5: Execute shielded payout
-        console.log(`[DAEMON] 🚀 Broadcasting executeShieldedPayout to Tempo L1...`);
+        // Step 5: Execute shielded payout via BatchShieldExecutor
+        console.log(`[DAEMON] 🚀 Broadcasting executeShieldedPayout via BatchShieldExecutor...`);
         nonce = await this.provider.getTransactionCount(this.wallet.address, "pending");
-        const payoutTx = await this.shieldContractV2.executeShieldedPayout(
+        const payoutTx = await this.batchExecutor.executeShieldedPayout(
             proofArray, pubSignals, scaledAmount,
             { nonce, gasLimit: 3_000_000, type: 0 }
         );
@@ -886,6 +1072,155 @@ class AgtFiDaemon {
 
         } catch (error: any) {
             console.error(`[DAEMON] [AutoJudge] Execution failed for job ${jobId}:`, error.reason || error.message);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ═══════════════════════════════════════════════════════════
+    // AUTOPILOT SCHEDULE ENGINE — Auto-trigger recurring payroll
+    // Evaluates AutopilotRule schedules and creates payloads
+    // when the schedule is due (Daily/Weekly/Monthly).
+    // ═══════════════════════════════════════════════════════════
+
+    private async processAutopilotSchedules() {
+        try {
+            const rules = await this.prisma.autopilotRule.findMany({
+                where: { status: 'Active', deletedAt: null },
+            });
+
+            if (rules.length === 0) return;
+
+            const now = new Date();
+            const currentDay = now.getDate();
+            const currentDayOfWeek = now.getDay(); // 0=Sun, 1=Mon
+            const currentHour = now.getHours();
+
+            for (const rule of rules) {
+                const lastTriggered = rule.lastTriggeredAt ? new Date(rule.lastTriggeredAt) : null;
+                const schedule = rule.schedule.toLowerCase();
+                let shouldTrigger = false;
+
+                if (schedule.includes('daily')) {
+                    // Daily: trigger once per day, after 9am
+                    if (currentHour >= 9) {
+                        if (!lastTriggered || (now.getTime() - lastTriggered.getTime()) > 20 * 60 * 60 * 1000) {
+                            shouldTrigger = true;
+                        }
+                    }
+                } else if (schedule.includes('weekly')) {
+                    // Weekly: trigger on Monday after 9am
+                    if (currentDayOfWeek === 1 && currentHour >= 9) {
+                        if (!lastTriggered || (now.getTime() - lastTriggered.getTime()) > 6 * 24 * 60 * 60 * 1000) {
+                            shouldTrigger = true;
+                        }
+                    }
+                } else if (schedule.includes('monthly')) {
+                    // Monthly (1st) or Monthly (15th)
+                    const targetDay = schedule.includes('15') ? 15 : 1;
+                    if (currentDay === targetDay && currentHour >= 9) {
+                        if (!lastTriggered || (now.getTime() - lastTriggered.getTime()) > 27 * 24 * 60 * 60 * 1000) {
+                            shouldTrigger = true;
+                        }
+                    }
+                }
+
+                if (shouldTrigger) {
+                    console.log(`[DAEMON] \u{1F501} Autopilot "${rule.name}" schedule due → triggering payout: ${rule.amount} ${rule.token} to ${rule.wallet_address}`);
+                    try {
+                        // Trigger via dashboard API (creates Draft payload in Boardroom)
+                        const res = await fetch(`${DASHBOARD_URL}/api/autopilot`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Daemon-Secret': DAEMON_API_SECRET,
+                            },
+                            body: JSON.stringify({ id: rule.id, action: 'trigger' }),
+                        });
+
+                        if (res.ok) {
+                            // Update lastTriggeredAt
+                            await this.prisma.autopilotRule.update({
+                                where: { id: rule.id },
+                                data: { lastTriggeredAt: now },
+                            });
+                            console.log(`[DAEMON] \u2705 Autopilot "${rule.name}" triggered successfully`);
+
+                            // Send notification
+                            try {
+                                await fetch(`${DASHBOARD_URL}/api/notifications`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        wallet: rule.wallet_address,
+                                        type: 'payroll:rule_triggered',
+                                        title: `Autopilot: ${rule.name}`,
+                                        message: `Recurring payout of ${rule.amount} ${rule.token} queued in Boardroom.`,
+                                    }),
+                                });
+                            } catch {}
+                        } else {
+                            console.error(`[DAEMON] \u274C Autopilot "${rule.name}" trigger failed: ${res.status}`);
+                        }
+                    } catch (err: any) {
+                        console.error(`[DAEMON] \u274C Autopilot trigger error:`, err.message);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('[DAEMON] \u{1F6A8} Autopilot schedule error:', error);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // VAULT BALANCE ALERT — Notify admin when balance is low
+    // ═══════════════════════════════════════════════════════════
+
+    private async checkVaultBalance() {
+        try {
+            const BALANCE_THRESHOLD = 100; // 100 αUSD
+            const res = await fetch(RPC_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0', id: Date.now(),
+                    method: 'eth_call',
+                    params: [{
+                        to: TOKEN_ADDRESS,
+                        data: `0x70a08231${AGTFI_SHIELD_V2_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0')}`,
+                    }, 'latest'],
+                }),
+            });
+            const json = await res.json();
+            if (!json.result || json.result === '0x') return;
+
+            const balance = parseInt(json.result, 16) / (10 ** TOKEN_DECIMALS);
+
+            if (balance < BALANCE_THRESHOLD) {
+                console.log(`[DAEMON] \u26A0\uFE0F Vault balance low: ${balance.toFixed(2)} ${TOKEN_ADDRESS} (threshold: ${BALANCE_THRESHOLD})`);
+
+                // Find admin wallet to notify
+                const workspace = await this.prisma.workspace.findFirst({
+                    where: { daemonStatus: 'ACTIVE' },
+                    select: { adminWallet: true },
+                });
+
+                if (workspace) {
+                    try {
+                        await fetch(`${DASHBOARD_URL}/api/notifications`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                wallet: workspace.adminWallet,
+                                type: 'system:alert',
+                                title: 'Low Vault Balance',
+                                message: `Shield Vault balance is ${balance.toFixed(2)} \u03B1USD (below ${BALANCE_THRESHOLD} threshold). Top up to continue processing payroll.`,
+                            }),
+                        });
+                    } catch {}
+                }
+            }
+        } catch (error) {
+            // Balance check is non-critical
         }
     }
 

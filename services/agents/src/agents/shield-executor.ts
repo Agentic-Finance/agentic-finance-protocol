@@ -15,7 +15,7 @@ export const manifest: AgentDescriptor = {
   category:     'privacy',
   version:      '1.0.0',
   price:        10,
-  capabilities: ['zk-proof-generation', 'shielded-payment', 'on-chain-execution', 'privacy'],
+  capabilities: ['zk-proof', 'plonk', 'poseidon', 'shielded-payment', 'data-encryption', 'gdpr-compliance', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a privacy payment specialist for Agentic Finance's ZK Shield system on Tempo blockchain.

@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'admin',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['treasury-overview', 'balance-scan', 'vault-audit', 'protocol-stats', 'on-chain-read'],
+  capabilities: ['treasury-overview', 'financial-health', 'treasury-reports', 'cash-flow-projections', 'erp-integration', 'on-chain-execution'],
 };
 
 const ALL_TOKENS = [

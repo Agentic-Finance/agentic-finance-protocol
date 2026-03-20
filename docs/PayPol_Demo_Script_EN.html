@@ -3,18 +3,19 @@
 <meta charset="UTF-8">
 <style>
   body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px 60px; line-height: 1.7; color: #1a1a1a; }
-  h1 { font-size: 28pt; color: #6366f1; text-align: center; margin-bottom: 5px; }
-  h2 { font-size: 18pt; color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 5px; margin-top: 35px; }
-  h3 { font-size: 14pt; color: #4f46e5; margin-top: 20px; }
+  h1 { font-size: 28pt; background: linear-gradient(135deg, #06b6d4, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 5px; }
+  h2 { font-size: 18pt; color: #06b6d4; border-bottom: 2px solid #06b6d4; padding-bottom: 5px; margin-top: 35px; }
+  h3 { font-size: 14pt; color: #0891b2; margin-top: 20px; }
   .subtitle { text-align: center; font-size: 12pt; color: #666; margin-bottom: 30px; }
-  .time { display: inline-block; background: #6366f1; color: white; padding: 2px 10px; border-radius: 12px; font-size: 10pt; font-weight: bold; }
-  .action { background: #f0f0ff; border-left: 4px solid #6366f1; padding: 8px 15px; margin: 10px 0; font-style: italic; color: #444; }
+  .time { display: inline-block; background: linear-gradient(135deg, #06b6d4, #6366f1); color: white; padding: 2px 10px; border-radius: 12px; font-size: 10pt; font-weight: bold; }
+  .action { background: #f0f9ff; border-left: 4px solid #06b6d4; padding: 8px 15px; margin: 10px 0; font-style: italic; color: #444; }
   .script { background: #fafafa; border-left: 4px solid #10b981; padding: 10px 15px; margin: 10px 0; font-size: 11pt; }
   .note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 8px 15px; margin: 10px 0; font-size: 10pt; }
   .tip { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px 15px; margin: 10px 0; }
   .storyboard { background: #f5f0ff; border-left: 4px solid #8b5cf6; padding: 8px 15px; margin: 10px 0; font-size: 10pt; }
+  .new-feature { background: #ecfdf5; border: 2px solid #06b6d4; border-radius: 8px; padding: 10px 15px; margin: 10px 0; }
   table { border-collapse: collapse; width: 100%; margin: 15px 0; }
-  th { background: #6366f1; color: white; padding: 10px 15px; text-align: left; }
+  th { background: linear-gradient(135deg, #06b6d4, #6366f1); color: white; padding: 10px 15px; text-align: left; }
   td { border: 1px solid #ddd; padding: 8px 15px; }
   tr:nth-child(even) { background: #f9f9f9; }
   .page-break { page-break-before: always; }
@@ -22,1126 +23,709 @@
 </head>
 <body>
 
-<h1>PAYPOL PROTOCOL</h1>
-<h1 style="font-size: 20pt; color: #333; margin-top: 0;">Video Demo Script &amp; Storyboard — English</h1>
+<h1>AGENTIC FINANCE</h1>
+<h1 style="font-size: 20pt; color: #333; -webkit-text-fill-color: #333; background: none;">Video Demo Script &amp; Storyboard &mdash; English</h1>
 <div class="subtitle">
-  Duration: 30-33 minutes | Format: Screen Recording + Voice-over<br>
-  Version: 3.2 | Date: March 10, 2026<br>
-  <i>Updated v3.2: Job History + FiatOffRamp + Agent Earnings, Live Chat with AI Agents, Smart Notification System (13 categories with section navigation), Auto-Judge AI 3-Layer Dispute Resolution</i>
+  Duration: 30&ndash;33 minutes | Format: Screen Recording + Voice-over<br>
+  Version: 4.0 | Date: March 17, 2026<br>
+  <i>v4.0: RainbowKit Wallet Connect, Agent Chat Interface, Portfolio Dashboard, Live Transaction Feed, Analytics Dashboard, Enhanced Agent Detail Pages, 13-Category Notifications, AES-256-GCM Encrypted Wallets</i>
 </div>
 
 <table>
   <tr><th>Section</th><th>Content</th><th>Timestamp</th><th>GIF Clip</th></tr>
-  <tr><td>0</td><td>Intro — Opening</td><td>0:00 - 1:00</td><td>clip-00-intro.gif</td></tr>
-  <tr><td>1</td><td>Overview — What is PayPol?</td><td>1:00 - 3:30</td><td>clip-01-overview.gif</td></tr>
-  <tr><td>2</td><td>Wallet Connection &amp; Workspace</td><td>3:30 - 5:00</td><td>clip-02-wallet.gif</td></tr>
-  <tr><td>3</td><td>OmniTerminal — Payroll, Boardroom, Daemon Queue, History</td><td>5:00 - 10:00</td><td>clip-03-terminal.gif</td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;3E: Job History, FiatOffRamp, Agent Earnings</td><td>9:00 - 10:00</td><td></td></tr>
-  <tr><td>4</td><td>Shield Mode — ZK-SNARK Privacy</td><td>10:00 - 12:00</td><td>clip-04-shield-mode.gif</td></tr>
-  <tr><td>5</td><td>Shield Dashboard — ZK Flow Diagram &amp; 10 Use Cases</td><td>12:00 - 14:30</td><td>clip-05-shield-dashboard.gif</td></tr>
-  <tr><td>6</td><td>A2A Marketplace — Agents Hiring Agents</td><td>14:30 - 19:30</td><td>clip-06-a2a.gif</td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6A: Exploring the Marketplace</td><td>14:30 - 15:30</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6B: Executing an A2A Deal</td><td>15:30 - 17:00</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6C: Credit Card Payment (Fiat On-Ramp)</td><td>17:00 - 18:00</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6D: Live Chat with AI Agent + Smart Notifications</td><td>18:00 - 19:30</td><td>clip-06d-chat.gif</td></tr>
-  <tr><td>7</td><td>AI Proof Verification</td><td>19:30 - 21:00</td><td>clip-07-verify.gif</td></tr>
-  <tr><td>8</td><td>Stream — Pipeline Cards &amp; Milestone Payments</td><td>21:00 - 23:00</td><td>clip-08-stream.gif</td></tr>
-  <tr><td>9</td><td>Cortex Intelligence Hub</td><td>23:00 - 24:30</td><td>clip-09-cortex.gif</td></tr>
-  <tr><td>10</td><td>Sentinel Command Center</td><td>24:30 - 26:00</td><td>clip-10-sentinel.gif</td></tr>
-  <tr><td>11</td><td>Swarm — 6 Stat Cards &amp; Compact Audit Trail</td><td>26:00 - 28:30</td><td>clip-11-swarm.gif</td></tr>
-  <tr><td>12</td><td>Embedded Wallets</td><td>28:30 - 29:30</td><td>clip-12-wallets.gif</td></tr>
-  <tr><td>13</td><td>Developer Experience &amp; SDK</td><td>29:30 - 31:00</td><td>clip-13-developer.gif</td></tr>
-  <tr><td>14</td><td>Admin, Auto-Judge AI &amp; Arbitration</td><td>31:00 - 32:30</td><td>clip-14-admin.gif</td></tr>
-  <tr><td>15</td><td>Closing</td><td>32:30 - 33:30</td><td>clip-15-closing.gif</td></tr>
+  <tr><td>0</td><td>Intro &mdash; Opening</td><td>0:00 &ndash; 1:00</td><td>clip-00-intro.gif</td></tr>
+  <tr><td>1</td><td>Overview &mdash; What is Agentic Finance?</td><td>1:00 &ndash; 3:30</td><td>clip-01-overview.gif</td></tr>
+  <tr><td>2</td><td>Landing Page + Wallet Connect [NEW v4.0]</td><td>3:30 &ndash; 5:00</td><td>clip-02-wallet.gif</td></tr>
+  <tr><td>3</td><td>Dashboard + OmniTerminal</td><td>5:00 &ndash; 10:00</td><td>clip-03-terminal.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3A: Payroll Mode</td><td>5:00 &ndash; 6:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3B: Boardroom</td><td>6:30 &ndash; 7:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3C: Daemon Queue</td><td>7:30 &ndash; 8:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3D: Shield Mode Toggle</td><td>8:30 &ndash; 9:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3E: Job History + FiatOffRamp</td><td>9:00 &ndash; 10:00</td><td></td></tr>
+  <tr><td>4</td><td>Shield Mode &mdash; ZK-SNARK Privacy</td><td>10:00 &ndash; 12:00</td><td>clip-04-shield.gif</td></tr>
+  <tr><td>5</td><td>Shield Dashboard &mdash; ZK Flow &amp; 10 Use Cases</td><td>12:00 &ndash; 14:30</td><td>clip-05-zkflow.gif</td></tr>
+  <tr><td>6</td><td>A2A Marketplace</td><td>14:30 &ndash; 19:30</td><td>clip-06-a2a.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6A: Browse 32 Agents</td><td>14:30 &ndash; 15:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6B: Agent Detail [NEW v4.0]</td><td>15:30 &ndash; 17:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6C: Deal + Fiat On-Ramp</td><td>17:00 &ndash; 19:30</td><td></td></tr>
+  <tr><td>7</td><td>AI Proof Verification</td><td>19:30 &ndash; 21:00</td><td>clip-07-verify.gif</td></tr>
+  <tr><td>8</td><td>Chat + Notifications [NEW v4.0]</td><td>21:00 &ndash; 23:00</td><td>clip-08-chat.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;8A: Agent Chat Interface</td><td>21:00 &ndash; 22:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;8B: Notification System</td><td>22:00 &ndash; 23:00</td><td></td></tr>
+  <tr><td>9</td><td>Stream &mdash; Pipeline &amp; Milestones</td><td>23:00 &ndash; 24:30</td><td>clip-09-stream.gif</td></tr>
+  <tr><td>10</td><td>Portfolio Dashboard [NEW v4.0]</td><td>24:30 &ndash; 26:00</td><td>clip-10-portfolio.gif</td></tr>
+  <tr><td>11</td><td>Live Transaction Feed [NEW v4.0]</td><td>26:00 &ndash; 27:30</td><td>clip-11-live.gif</td></tr>
+  <tr><td>12</td><td>Cortex + Sentinel + Swarm</td><td>27:30 &ndash; 29:30</td><td>clip-12-cortex.gif</td></tr>
+  <tr><td>13</td><td>Analytics + Wallets + Developer + Admin</td><td>29:30 &ndash; 32:00</td><td>clip-13-admin.gif</td></tr>
+  <tr><td>14</td><td>Closing</td><td>32:00 &ndash; 33:00</td><td>clip-14-closing.gif</td></tr>
 </table>
 
 <p><b>How to read this script:</b></p>
-<div class="action">Purple lines = On-screen actions and directions</div>
+<div class="action">Cyan lines = On-screen actions and directions</div>
 <div class="script">Green lines = Dialogue / voice-over script</div>
 <div class="note">Yellow lines = Production notes</div>
 <div class="storyboard">Violet lines = Storyboard / visual composition notes</div>
+<div class="new-feature">[NEW v4.0] = Features new in version 4.0</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">0:00 - 1:00</span> SECTION 0: OPENING</h2>
+<h2><span class="time">0:00 &ndash; 1:00</span> SECTION 0: OPENING</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Dark background (#111B2E). PayPol logo fades in center, then a subtle particle animation behind. After 3s, logo shrinks to top-left corner and dashboard slides in from right.
-<br>Camera: Full screen &rarr; dashboard reveal.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Dark background (#0A0A0F). Agentic Finance logo fades in center with cyan-to-indigo gradient glow. Particle animation behind. After 3s, logo shrinks to top-left, dashboard slides in from the right.<br>Camera: Full screen &rarr; logo reveal &rarr; dashboard transition.<br>Audio: Ambient synth pad, low volume.</div>
 
-<div class="action">Screen: PayPol logo animation or title card on dark background. Transition to dashboard after 3 seconds.</div>
+<div class="action">Screen: Agentic Finance logo animation on dark background (#0A0A0F). Particle effects. Transition to dashboard after 3 seconds.</div>
 
 <div class="script">
-Hey everyone, I'm [Your Name], the founder of PayPol Protocol.
+Hey everyone, I'm [Your Name], the founder of Agentic Finance.
 <br><br>
-Today I'm going to give you a full live demo of PayPol — a payment infrastructure built specifically for AI agents, running on the Tempo L1 blockchain.
+Today I'm going to give you a full live demo of Agentic Finance &mdash; agent-to-agent payment infrastructure built specifically for the AI economy, running on the Tempo L1 blockchain.
 <br><br>
 In the next 30 minutes, you'll see:
-<br>
-— AI agents autonomously hiring and paying each other, with zero human intervention
-<br>
-— ZK-SNARK cryptography protecting the privacy of every transaction
-<br>
-— A verification system that proves AI agents did exactly what they promised
-<br>
-— And all of this running LIVE on a real blockchain — not a mockup
+<br>&mdash; AI agents autonomously hiring and paying each other, with zero human intervention
+<br>&mdash; ZK-SNARK cryptography protecting the privacy of every transaction
+<br>&mdash; A verification system that proves AI agents did exactly what they promised
+<br>&mdash; Multi-wallet connection through RainbowKit
+<br>&mdash; A conversational chat interface to interact with agents on-chain
+<br>&mdash; And all of this running LIVE on a real blockchain &mdash; not a mockup
 <br><br>
 Let's dive in!
 </div>
 
-<div class="note">Note: Speak confidently, look at the camera. Maintain a moderate pace for natural delivery.</div>
+<div class="note">Note: Speak confidently, look at the camera. Moderate pace. The opening sets the tone for the entire demo.</div>
 
 <!-- ============================================== -->
-<h2><span class="time">1:00 - 3:30</span> SECTION 1: OVERVIEW — WHAT IS PAYPOL?</h2>
+<h2><span class="time">1:00 &ndash; 3:30</span> SECTION 1: OVERVIEW &mdash; WHAT IS AGENTIC FINANCE?</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /protocol page. Slow scroll showing hero section, then stop at competitive moats. Use zoom-in animation on each of the 5 moat cards as they're mentioned.
-<br>Camera: Full browser window, mouse visible for scroll guidance.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Navigate to agt.finance/protocol. Slow scroll through hero section, then stop at competitive moats. Zoom-in on each of the 5 moat cards as mentioned. Scroll to the 9-contract table.<br>Camera: Full browser, mouse visible for scroll guidance.</div>
 
-<div class="action">Screen: Navigate to paypol.xyz/protocol — scroll gently to the introduction area.</div>
+<div class="action">Navigate to agt.finance/protocol. Scroll slowly through the hero section.</div>
 
 <div class="script">
-PayPol solves a massive problem in the AI industry: AI agents are getting incredibly smart — they can work, create content, write code, analyze data — but there's no safe, automated way for them to pay each other.
+Let me start with a real-world example. Imagine a marketing AI agent needs a compliance audit before launching a campaign. Today, the company would find a firm, negotiate terms, sign contracts, wait days, then process payment manually. With Agentic Finance, the marketing agent autonomously discovers a compliance agent on our marketplace, negotiates terms through APS-1, locks payment into smart contract escrow, receives results, verifies with AI proofs, and releases payment &mdash; all within minutes, zero human involvement.
 <br><br>
-Think about it this way: you have a marketing AI agent. It needs to hire another AI agent to design a logo, one more to write content, and another to translate it into English.
-<br><br>
-So who holds the money? How do you know the agent actually finished the work? And what happens if it does a bad job?
-<br><br>
-PayPol solves all of that.
+That is the future we are building. Here is why Agentic Finance is uniquely positioned.
 </div>
 
-<div class="action">Scroll down to the "5 Things Only PayPol Can Do" section — Competitive Moats area.</div>
+<div class="action">Scroll to the 5 competitive moats section. Pause on each card.</div>
 
 <div class="script">
-PayPol has 5 core differentiators that no other platform offers:
+Five key differentiators:
 <br><br>
-<b>First — Agent-to-Agent Escrow.</b> When one AI agent hires another, the payment gets locked in a smart contract. The agent only receives the money after completing the task and getting verified. If there's a dispute, a Judge arbitrates directly on the blockchain.
+<b>First: Real ZK-SNARK Privacy.</b> Production Circom V2 circuits compiled to PLONK proofs with Poseidon hashing. Every shielded transaction generates a real zero-knowledge proof verified on-chain by PlonkVerifierV2 at 0x9FB9. Complete privacy &mdash; recipient, amount, and purpose all hidden, yet fully verifiable.
 <br><br>
-<b>Second — AI Execution Verification.</b> Before starting any work, the agent must commit its plan to the blockchain. After finishing, the result gets hashed and compared to the original plan. If they don't match, the agent's reputation score gets slashed.
+<b>Second: AI Execution Verification.</b> AIProofRegistry at 0x8fDB creates a cryptographic commitment before every task. After completion, the result hash is compared. Mismatch triggers reputation slash and automatic refund.
 <br><br>
-<b>Third — Zero-Knowledge Privacy.</b> We use real ZK-SNARKs — Circom V2, PLONK proofs, Poseidon hashing — to protect sensitive information. On the blockchain, nobody can see how much you paid or who you paid it to.
+<b>Third: Nine Verified Smart Contracts.</b> NexusV2 for escrow, ShieldVaultV2 for ZK privacy, PlonkVerifierV2 for proof verification, AIProofRegistry, StreamV1 for milestones, MultisendV2 for batch payroll, and AlphaUSD stablecoin. All on Tempo L1, chain 42431.
 <br><br>
-<b>Fourth — Universal SDK.</b> PayPol supports 7+ popular AI frameworks: OpenAI, Anthropic Claude, Google A2A, LangChain, CrewAI, Eliza, and OpenClaw. Any AI agent can integrate with PayPol.
+<b>Fourth: 32 Production AI Agents.</b> Eight categories: DeFi, Security, Analytics, Infrastructure, Research, Creative, Data, Compliance. Not placeholders &mdash; each has skills, pricing, ratings, and on-chain history.
 <br><br>
-<b>Fifth — APS-1 v2.1 Global Standard.</b> This is an open global standard — like HTTP for the web and ERC-20 for tokens, APS-1 v2.1 is the standard for payments between AI agents. It comes with cross-chain interoperability, a compliance framework, an RFC specification, OpenAPI docs, and an MIT License. Our goal: APS-1 becomes the universal payment protocol for all AI agents worldwide.
+<b>Fifth: APS-1 v2.1 Standard.</b> The Agent Payment Standard &mdash; a universal protocol for how agents discover, negotiate, escrow, execute, verify, and settle. The TCP/IP of agent payments. Any framework can plug in: OpenAI, Claude, LangChain, CrewAI, MCP, Eliza, OpenClaw.
 </div>
 
-<div class="action">Scroll down to the 9 Smart Contracts table.</div>
+<div class="action">Scroll to the 9-contract deployment table. Pause to let viewers read addresses.</div>
 
-<div class="script">
-And here you can see all 9 smart contracts deployed and verified on Tempo L1 — chain ID 42431. Everything is real code, real transactions — nothing here is simulated.
-</div>
+<div class="note">Note: Heavy information section. Speak clearly, 1-2 second pauses between each differentiator.</div>
 
 <!-- ============================================== -->
-<h2><span class="time">3:30 - 5:00</span> SECTION 2: WALLET CONNECTION &amp; WORKSPACE</h2>
+<div class="page-break"></div>
+<h2><span class="time">3:30 &ndash; 5:00</span> SECTION 2: LANDING PAGE + WALLET CONNECT [NEW v4.0]</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Show landing page with dark UI. Click "Connect Wallet" — MetaMask slides in from right. After approval, show workspace selector. Then dashboard loads with 4 stat cards animating in.
-<br>Camera: Focus on top-left wallet button, then MetaMask popup, then stat cards.
-</div>
+<div class="new-feature"><b>[NEW v4.0]</b> RainbowKit wallet connection replacing MetaMask-only. Supports MetaMask, Coinbase Wallet, WalletConnect, Rainbow, and more.</div>
 
-<div class="action">Screen: Navigate to paypol.xyz — Landing page. MetaMask not yet connected.</div>
+<div class="storyboard"><b>STORYBOARD:</b> Navigate to agt.finance/welcome. Landing page with hero, 3D globe, feature cards. Click "Connect Wallet" to trigger RainbowKit modal. Select MetaMask. Show connection. Dashboard loads via AuthGuard.<br>Camera: Full browser &rarr; zoom to RainbowKit modal &rarr; back to full browser.</div>
 
-<div class="script">
-OK, let me demo this live. Here's the PayPol homepage. The first step is to connect a MetaMask wallet.
-</div>
-
-<div class="action">Click "Connect Wallet" — MetaMask popup appears — approve the connection.</div>
+<div class="action">Navigate to agt.finance/welcome. The landing page loads with hero section and feature highlights.</div>
 
 <div class="script">
-PayPol runs on Tempo L1, chain ID 42431. One great thing about the testnet is that gas is completely free — so you don't need to worry about transaction costs at all.
+This is our landing page at agt.finance/welcome. Hero section with key metrics, 3D globe visualization, and feature cards. Dark theme with our signature cyan-to-indigo gradient.
+<br><br>
+First thing any user needs: connect their wallet. In v4.0 we upgraded to RainbowKit &mdash; the industry standard for multi-wallet connection.
 </div>
 
-<div class="action">Select or create a new Workspace.</div>
+<div class="action">Click "Connect Wallet". RainbowKit modal appears with wallet options.</div>
 
 <div class="script">
-Each workspace is an isolated environment. It can be a company, a DAO, or a personal project. Every workspace has its own employee list, transaction history, and custom configuration.
+Click "Connect Wallet" &mdash; RainbowKit modal supports MetaMask, Coinbase Wallet, WalletConnect, Rainbow. Users are not locked into any single provider.
+<br><br>
+I select MetaMask, approve the connection to Tempo L1 chain 42431, and we're connected. The ConnectButton shows my address and AlphaUSD balance. AuthGuard detected the wallet and redirected me to the dashboard automatically. No login, no password &mdash; just your wallet.
+<br><br>
+Important: gas on Tempo L1 is completely free. Zero gas fees for every transaction in this demo. The only costs are the 2-5% platform fees for agent services.
 </div>
 
-<div class="action">Enter the main Dashboard. Point to the 4 stat cards at the top.</div>
+<div class="action">Show ConnectButton in header with truncated address and balance. Page redirects to dashboard.</div>
+
+<div class="note">Pre-configure Tempo network in MetaMask: RPC https://rpc.moderato.tempo.game, Chain 42431, Symbol TEMPO.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">5:00 &ndash; 10:00</span> SECTION 3: DASHBOARD + OMNITERMINAL</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> Dashboard at agt.finance/?app=1. Sidebar nav, 4 stat cards top, OmniTerminal center with tabs: Payroll, Boardroom, Daemon Queue, Settled Batches, Job History. Walk through 3A-3E.<br>Camera: Full browser, zoom to OmniTerminal for specific features.</div>
+
+<div class="action">Dashboard loaded at agt.finance/?app=1. Show 4 stat cards: Treasury Balance, Active Escrows, Active Streams, Pending Verifications.</div>
 
 <div class="script">
-This is the main dashboard. At the top are the 4 key metrics:
-<br>
-— <b>Shielded Volume</b>: total value protected by ZK-SNARK proofs
-<br>
-— <b>Executions</b>: total number of transactions processed
-<br>
-— <b>Integrity</b>: the network's verification success rate
-<br>
-— <b>Velocity</b>: average transaction speed per day
+Welcome to the main dashboard. Four stat cards give real-time overview: Treasury Balance, Active Escrows from NexusV2, Active Streams from StreamV1, Pending Verifications from AIProofRegistry.
+<br><br>
+Center of the dashboard: the OmniTerminal &mdash; a natural-language interface to the blockchain. Type what you want in plain English, and the AI parses it into blockchain transactions.
+</div>
+
+<!-- 3A -->
+<h3>3A &mdash; Payroll Mode</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click Payroll tab. Type natural-language command. Show AI parsing. Preview recipients. Execute batch.<br>Camera: Zoom to OmniTerminal input, expand for parsed result.</div>
+
+<div class="action">Click "Payroll" tab. Type: "Pay Alice 500, Bob 300, Charlie 200 AlphaUSD for March development work".</div>
+
+<div class="script">
+Payroll &mdash; the most common operation. Type "Pay Alice 500, Bob 300, Charlie 200 AlphaUSD for March development work." The AI parses this, resolves names from the Boardroom directory, calculates total of 1,000 AlphaUSD, shows a preview.
+<br><br>
+You can also upload a CSV for larger batches &mdash; fifty or a hundred employees at once.
+</div>
+
+<div class="action">Click "Execute Batch". Transaction submitted to MultisendV2 (0x25f4). Success confirmation with tx hash.</div>
+
+<div class="script">
+Click "Execute Batch" &mdash; one single on-chain transaction pays all three recipients simultaneously through MultisendV2. Success confirmation with transaction hash and Block Explorer link.
+</div>
+
+<!-- 3B -->
+<h3>3B &mdash; Boardroom &mdash; Employee Management</h3>
+
+<div class="action">Click "Boardroom" tab. Show employee roster: Name, Address, Role, Salary.</div>
+
+<div class="script">
+Boardroom manages the team directory. Every employee or agent gets an entry with name, wallet address, role, monthly salary. This feeds directly into Payroll &mdash; type "pay Alice" and the system resolves her address from here.
+</div>
+
+<div class="action">Click "Add Employee". Fill: Name "David", Role "Security Auditor", Salary "1500 AlphaUSD". Save.</div>
+
+<!-- 3C -->
+<h3>3C &mdash; Daemon Queue</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click Daemon Queue tab. Show queue with status indicators: Pending (yellow), Processing (blue pulse), Completed (green), Failed (red).<br>Camera: Full OmniTerminal area.</div>
+
+<div class="action">Click "Daemon Queue". Show transaction queue with status indicators.</div>
+
+<div class="script">
+The Daemon Queue is the engine. Every transaction enters this queue. Our VPS daemon processes it every 5 seconds: picking up pending transactions, submitting to blockchain, updating status real-time.
+<br><br>
+Status indicators: yellow Pending, blue pulse Processing, green Completed, red Failed. Handles both public (MultisendV2) and shielded (ShieldVaultV2) transactions based on Shield Mode toggle.
+</div>
+
+<div class="note">Verify daemon is running before recording: ssh root@37.27.190.158 "docker ps | grep daemon".</div>
+
+<!-- 3D -->
+<h3>3D &mdash; Shield Mode Toggle</h3>
+
+<div class="action">Click Shield Mode toggle. UI shifts to purple theme.</div>
+
+<div class="script">
+Shield Mode toggle &mdash; one click, entire OmniTerminal switches to privacy mode. Purple theme indicates all transactions now route through ShieldVaultV2 with full ZK-SNARK protection. Every payment generates a real PLONK proof. We'll see exactly how in Section 4.
+</div>
+
+<!-- 3E -->
+<h3>3E &mdash; Job History, FiatOffRamp, Agent Earnings</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Cycle through Settled Batches, FiatOffRamp, Agent Earnings sidebar.<br>Camera: Full OmniTerminal.</div>
+
+<div class="action">Click "Settled Batches". Show completed batch history with expandable details.</div>
+
+<div class="script">
+Settled Batches &mdash; complete history of processed payroll. Each entry: date, total, recipients, tx hash. Click to expand individual payments with Block Explorer links.
+</div>
+
+<div class="action">Show FiatOffRamp section with PayPal withdrawal option.</div>
+
+<div class="script">
+FiatOffRamp &mdash; the bridge from crypto to traditional finance. Agents and employees convert AlphaUSD to fiat and withdraw to PayPal. Critical for adoption because not everyone holds crypto.
+</div>
+
+<div class="action">Show Agent Earnings sidebar &mdash; leaderboard of top-performing agents.</div>
+
+<div class="note">For the demo, show the FiatOffRamp interface but do not execute an actual withdrawal.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">10:00 &ndash; 12:00</span> SECTION 4: SHIELD MODE &mdash; ZK-SNARK PRIVACY</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> Navigate to /shield or use OmniTerminal in Shield mode. Walk through 4-step pipeline: Poseidon &rarr; Nullifier &rarr; PLONK &rarr; On-Chain Verify. Show loading animation during proof gen. Show success with tx hash.<br>Camera: Full browser, zoom to proof generation for dramatic effect.</div>
+
+<div class="action">Navigate to agt.finance/shield or toggle Shield Mode ON. Enter a shielded transaction.</div>
+
+<div class="script">
+Shield Mode uses real ZK-SNARK PLONK proofs &mdash; emphasis on "real." Most projects claiming ZK features use simulated proofs. We use production-grade cryptography.
+<br><br>
+Four-step cryptographic pipeline:
+<br><br>
+<b>Step 1: Poseidon Hashing.</b> Recipient, amount, and random secret fed into Poseidon &mdash; designed for ZK circuits, algebraically friendly, compact proofs. Our singleton Poseidon cache reduces proof time by 40% on repeated operations.
+<br><br>
+<b>Step 2: Nullifier Generation.</b> Unique nullifier prevents double-spending. Once submitted on-chain, it can never be reused. Reveals nothing about the original transaction.
+<br><br>
+<b>Step 3: PLONK Proof Generation.</b> Circom V2 circuit generates a PLONK proof using snarkjs &mdash; mathematical guarantee the transaction is valid without revealing underlying data. Takes 2-5 seconds.
+<br><br>
+<b>Step 4: On-Chain Verification.</b> Proof submitted to PlonkVerifierV2 (0x9FB9). Pass or fail, zero ambiguity. If pass, ShieldVaultV2 (0x3B4b) executes the transfer. Private, on-chain, cryptographically verified.
+</div>
+
+<div class="action">Show the proof generation loading animation. Let it play without speaking for dramatic effect.</div>
+
+<div class="note">The proof generation animation is a dramatic moment. Let it play silently. Resume with energy on success.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">12:00 &ndash; 14:30</span> SECTION 5: SHIELD DASHBOARD &mdash; ZK FLOW &amp; 10 USE CASES</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> Shield Dashboard: 4 gradient stat cards, ZK Flow Diagram (5-step pipeline with pulsing lines), 10 Use Cases grid, sticky execution form.<br>Camera: Full browser, slow scroll.</div>
+
+<div class="action">Show 4 stat cards: Total Shielded, Active Proofs, Verified Transactions, Privacy Score.</div>
+
+<div class="script">
+Shield Dashboard &mdash; bird's-eye view of all ZK activity. Total Shielded Value, Active Proofs, Verified Transactions, Privacy Score.
+</div>
+
+<div class="action">Scroll to ZK Flow Diagram. 5-step pipeline with animated gradient lines.</div>
+
+<div class="script">
+The ZK Flow Diagram &mdash; visual pipeline: Input Preparation, Poseidon Commitment, Circuit Compilation, PLONK Proof, On-Chain Verify. Animated gradient lines show data flow. Collapses to vertical on mobile.
+</div>
+
+<div class="action">Scroll to 10 Use Cases grid.</div>
+
+<div class="script">
+Ten real-world use cases: Private Payroll, Confidential Agent Deals, Anonymous Compliance, Medical AI Payments, Cross-Border Settlements, Competitive Intelligence, Whistleblower Rewards, Legal Escrow, Venture Funding, Insurance Claims. Each shows the problem, solution, and contracts involved.
+</div>
+
+<div class="action">Show the sticky 2-field execution form at bottom: Recipient + Amount.</div>
+
+<div class="script">
+Sticky execution form at bottom: recipient, amount, "Execute Shielded Transfer." Triggers the full 4-step ZK pipeline. Stays visible while scrolling.
 </div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">5:00 - 9:00</span> SECTION 3: OMNI TERMINAL</h2>
+<h2><span class="time">14:30 &ndash; 19:30</span> SECTION 6: A2A MARKETPLACE</h2>
 
-<h3><span class="time">5:00 - 7:00</span> 3A: Payroll Mode — Natural Language Payments</h3>
+<!-- 6A -->
+<h3>6A &mdash; Exploring the Marketplace (32 Agents)</h3>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Full-width OmniTerminal. Show typing animation in the input field. AI parsing result highlights recipient (blue), amount (green), note (gray). Then batch payroll with multiple employees appearing as cards.
-<br>Camera: Focus on terminal input → parsing result → batch cards.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/cortex. Grid of 32 agent cards. Category filters. Hover effects.<br>Camera: Full browser, then zoom to individual cards.</div>
 
-<div class="action">Screen: Click on OmniTerminal — "Payroll" tab.</div>
+<div class="action">Navigate to agt.finance/cortex. 32 agent cards in responsive grid.</div>
 
 <div class="script">
-This is the OmniTerminal — the heart of PayPol. It works like an AI assistant. You just type commands in natural language, and PayPol understands exactly what you want to do.
+A2A Marketplace &mdash; where AI agents hire other AI agents. 32 production agents in 8 categories: DeFi, Security, Analytics, Infrastructure, Research, Creative, Data, Compliance. Each card shows name, category, pricing, rating, reputation tier (Bronze through Diamond), and capabilities.
 </div>
 
-<div class="action">Type in terminal: "Pay 500 AlphaUSD to 0x1234...abcd for logo design work"</div>
+<div class="action">Click category filters: "DeFi" then "Security".</div>
 
 <div class="script">
-I just typed: "Pay 500 AlphaUSD to this address for logo design work." The Claude AI behind the scenes parses the command and automatically identifies the recipient, the amount, and the note.
+Filter by category. "DeFi" shows yield optimization, liquidity analysis, token swaps. "Security" shows contract auditing, vulnerability scanning, penetration testing. Multiple agents competing on quality, price, and reputation.
 </div>
 
-<div class="action">Show the parsing result — recipient, amount, note highlighted.</div>
+<!-- 6B -->
+<h3>6B &mdash; Agent Detail Page [NEW v4.0]</h3>
+
+<div class="new-feature"><b>[NEW v4.0]</b> Enhanced detail pages at /cortex/[agentId] with hero, stats, skills, reviews, and "Hire This Agent".</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click agent card &rarr; /cortex/[agentId]. Hero, 4 stat cards, skill badges, pricing, reviews, Hire button.<br>Camera: Full browser, slow scroll.</div>
+
+<div class="action">Click "NexusGuard" (Security). Detail page loads.</div>
 
 <div class="script">
-As you can see, it automatically extracted: the recipient's wallet address, the amount of 500 AlphaUSD, and the note "logo design work." If you've saved an employee list, you can just type a name — no need to remember addresses.
-</div>
-
-<div class="action">Type: "Pay March salaries for all employees"</div>
-
-<div class="script">
-Or even simpler — "Pay March salaries for all employees." PayPol pulls the employee list from the Boardroom and creates batch transactions through MultisendV2 — a single transaction for everyone.
-</div>
-
-<div class="action">Show the CSV upload button.</div>
-
-<div class="script">
-For larger teams, just upload a CSV file with names, wallet addresses, and amounts. PayPol will process hundreds of payments in a single transaction.
-</div>
-
-<h3><span class="time">7:00 - 8:00</span> 3B: The Boardroom — Employee Management</h3>
-
-<div class="action">Scroll down to "The Boardroom" — the employee list panel.</div>
-
-<div class="script">
-Right below the OmniTerminal is The Boardroom — where you manage your entire payee list.
+Each agent has a full profile in v4.0. Hero with avatar and category. Four stat cards: Jobs Completed, Success Rate, Average Rating, Total Earned.
 <br><br>
-Each employee shows: name, wallet address, amount, and current status — Awaiting Approval, Pending, or Paid. You can add employees manually or import from CSV.
+Skill badges: "Smart Contract Audit," "Vulnerability Scan," "Gas Optimization." Pricing table: basic audit 200 AlphaUSD, comprehensive review 800. Transparent, no hidden fees.
 <br><br>
-When you type "Pay all employees" in OmniTerminal, the system pulls the list from here and creates batch transactions automatically.
+Reviews from previous clients with star ratings. On-chain reputation &mdash; reviews linked to verified NexusV2 transactions. Cannot fake a review without having used the agent.
 </div>
 
-<div class="action">Click "Approve" on an employee — status changes from Awaiting to Pending.</div>
+<div class="action">Click "Hire This Agent" &mdash; opens OmniTerminal with agent pre-selected.</div>
+
+<!-- 6C -->
+<h3>6C &mdash; Deal Execution + Fiat On-Ramp</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> 3-step deal flow: Discover &rarr; Negotiate &rarr; Escrow Lock. Then Fiat On-Ramp via Paddle.<br>Camera: Full OmniTerminal, zoom to deal steps.</div>
+
+<div class="action">Type: "Hire NexusGuard for smart contract audit, budget 500 AlphaUSD". System initiates deal flow.</div>
 
 <div class="script">
-Once approved, the transaction moves to the Daemon Queue for processing. If Shield mode is enabled, the Daemon will automatically generate a ZK proof and submit it on-chain.
-</div>
-
-<h3><span class="time">8:00 - 9:00</span> 3C: Daemon Queue &amp; Settled Batches</h3>
-
-<div class="action">Scroll down to the "Daemon Queue" — showing pending transactions.</div>
-
-<div class="script">
-This is the Daemon Queue — the processing pipeline. Each entry shows the amount, transaction type (Shield or Public), and current status. The Daemon runs every 5 seconds, automatically picking up PENDING transactions and processing them.
+Three-step deal flow per APS-1 v2.1:
 <br><br>
-For Shield transactions, the Daemon: generates a ZK proof, deposits into ShieldVault, then executes the shielded payout. For Public transactions, it sends directly through MultisendV2.
+<b>Discover:</b> System confirms agent availability, checks reputation, verifies skills.
+<br><b>Negotiate:</b> Budget compared to pricing. If met, terms agreed. In fully autonomous mode, AI agents negotiate directly.
+<br><b>Escrow Lock:</b> 500 AlphaUSD locked into NexusV2 (0x6A46). On-chain, controlled by smart contract. Release requires mutual agreement, proof verification, or Auto-Judge.
 </div>
 
-<div class="action">Scroll down to "Settled Batches &amp; History" — showing completed transactions.</div>
+<div class="action">Show "Pay with Card" option. Paddle fiat on-ramp integration.</div>
 
 <div class="script">
-And here's the Settled Batches &amp; History — a complete ledger of all processed transactions. Each batch shows:
-<br>
-— Type: ZK-SHIELDED or PUBLIC L1
-<br>
-— Number of recipients and total value
-<br>
-— Completion timestamp
-<br>
-— And most importantly — a link to the Tempo Block Explorer to verify the transaction on-chain
+For non-crypto users: "Pay with Card" via Paddle. Credit card to AlphaUSD, minted directly into escrow. Paddle handles fiat, KYC, compliance. Removes the biggest barrier to entry.
+</div>
+
+<div class="action">Show Escrow Tracker: Locked &rarr; In Progress &rarr; Proof Submitted &rarr; Verified &rarr; Released.</div>
+
+<div class="script">
+Escrow Tracker shows the full lifecycle. Currently "In Progress." When agent completes, proof submitted to AIProofRegistry. If match, funds released automatically minus 2-5% platform fee.
+</div>
+
+<div class="note">Consider lower-third overlay: "Step 1 of 3: Discover", "Step 2 of 3: Negotiate", "Step 3 of 3: Escrow Lock".</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">19:30 &ndash; 21:00</span> SECTION 7: AI PROOF VERIFICATION</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/verify. 4 stat cards, commitment history table. Click to expand: plan hash vs result hash. Show Verified Match and explain Mismatch.<br>Camera: Full browser, zoom to expanded detail.</div>
+
+<div class="action">Navigate to agt.finance/verify. Stat cards and commitment history.</div>
+
+<div class="script">
+AI Proof Verification &mdash; the trust layer. Without this, you send money to agents and hope. With this, you have cryptographic proof.
 <br><br>
-Click "View ZK Proof" to see details: deposit transaction, payout transaction, and status of each recipient. Everything is a real on-chain transaction.
+Four stats: Total Commitments, Verified Matches, Pending, Mismatches. History table: Commitment ID, Agent, Task, Status, Timestamp. Search by ID, filter by agent or status.
 </div>
 
-<div class="action">Click on a batch — expand the breakdown detail.</div>
+<div class="action">Click a commitment. Show plan hash vs result hash side by side.</div>
 
 <div class="script">
-When expanded, you can see each recipient: name, wallet address, amount, and a direct link to the on-chain transaction. Every payment can be independently verified on the block explorer.
+Plan Hash committed before work began. Result Hash submitted after completion. If consistent: "Verified Match" in green. If not: "Mismatch" in red &mdash; triggers reputation slash on ReputationRegistry, escrow flagged for refund, incident logged in Audit Trail. Powerful incentive to deliver what was promised.
 </div>
 
-<h3><span class="time">9:00 - 10:00</span> 3E: Job History, FiatOffRamp &amp; Agent Earnings</h3>
+<div class="note">Have 3-5 commitments pre-loaded, including at least 1 "Verified Match" and 1 "Pending".</div>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Scroll down past the Boardroom to three new sections: Job History (table with job statuses), FiatOffRamp (PayPal withdrawal history), Agent Earnings (sidebar earnings chart). Each section gets 3-4 seconds of screen time.
-<br>Camera: Gentle scroll through each section, pausing briefly on each.
-</div>
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">21:00 &ndash; 23:00</span> SECTION 8: CHAT + NOTIFICATIONS [NEW v4.0]</h2>
 
-<div class="action">Scroll down to "Job History" — below the Settlement Receipt.</div>
+<!-- 8A -->
+<h3>8A &mdash; Agent Chat Interface [NEW v4.0]</h3>
+
+<div class="new-feature"><b>[NEW v4.0]</b> Chat at /chat &mdash; browse agents, select, converse, trigger on-chain transactions. Rich card responses.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> Two-panel: agent list left, chat right. Select agent, type, receive rich card with tx hash.<br>Camera: Full browser, zoom to chat when typing.</div>
+
+<div class="action">Navigate to agt.finance/chat. Two-panel layout loads.</div>
 
 <div class="script">
-Next up is Job History — a complete ledger of all marketplace jobs. Each row shows:
-<br>
-— The agent's name and emoji avatar
-<br>
-— Status: Matched, Escrowed, Executing, Completed, Settled, or Failed
-<br>
-— Execution time and a link to the Tempo explorer
-<br>
-— Click to expand and see the full prompt and result details
+Agent Chat &mdash; instead of command-line OmniTerminal, have a natural conversation. Left panel: 32 agents. Select one, right panel becomes chat window.
 </div>
 
-<div class="action">Scroll down to "Fiat Off-Ramp" — the withdrawal history section.</div>
+<div class="action">Select "DataForge" (Analytics). Type: "Analyze transaction volume for past 7 days, identify anomalies."</div>
 
 <div class="script">
-This is the FiatOffRamp — a feature that lets you withdraw crypto to real USD via PayPal. Each transaction shows:
-<br>
-— USD amount and corresponding crypto value
-<br>
-— Recipient PayPal address
-<br>
-— Fees and status: Pending, Processing, Completed, or Failed
-<br>
-This is the reverse bridge — from on-chain back to a real bank account.
+I select DataForge, type my request. The agent processes, queries on-chain data, returns a rich card with charts, data tables, key findings, and transaction hash. Conversational blockchain &mdash; chat naturally, blockchain operates behind the scenes.
 </div>
 
-<div class="action">Point to Agent Earnings in the right sidebar.</div>
+<!-- 8B -->
+<h3>8B &mdash; Notification System [NEW v4.0]</h3>
+
+<div class="new-feature"><b>[NEW v4.0]</b> 13-category notifications with bell indicator, dropdown preview, full page at /notifications.</div>
+
+<div class="action">Click notification bell in header. Dropdown with recent notifications.</div>
 
 <div class="script">
-And in the right sidebar, there's Agent Earnings — tracking each agent's income: total earnings, completed jobs, success rate, and average value per job. Developers can see exactly how much their agents are making.
+13 categories: escrow locks/releases, shield, stream milestones, proof verifications, agent hires/completions, system alerts, reputation changes, payments, disputes, admin actions. Click any notification to navigate to the relevant section.
 </div>
 
-<h3><span class="time">10:00 - 12:00</span> 3D: Shield Mode — ZK-SNARK Privacy</h3>
-
-<div class="action">Toggle Shield mode ON in the OmniTerminal.</div>
+<div class="action">Navigate to agt.finance/notifications. Full page with filters.</div>
 
 <div class="script">
-Now I'm turning on Shield mode — this is PayPol's highest-security feature, powered by ZK-SNARKs.
-</div>
-
-<div class="action">Type: "Pay 1000 AlphaUSD to 0xABCD... with ZK privacy"</div>
-
-<div class="script">
-With Shield enabled, the transaction is processed through the ShieldVaultV2 smart contract. Behind the scenes, the system performs four steps:
-<br><br>
-One — generates a Zero-Knowledge proof using Circom V2 and snarkjs.
-<br>
-Two — hashes the recipient address and amount using Poseidon hashing.
-<br>
-Three — creates a nullifier to prevent double-spending.
-<br>
-Four — submits the proof to PlonkVerifierV2 for on-chain verification.
-</div>
-
-<div class="action">Show loading animation — proof being generated.</div>
-
-<div class="script">
-The proof is being generated right now... This is a real ZK-SNARK PLONK proof, not a simulation. Our daemon has been optimized with a Poseidon singleton cache. The first proof takes about 3 seconds, but subsequent proofs take less than a second thanks to caching.
-</div>
-
-<div class="action">Show success — transaction hash appears.</div>
-
-<div class="script">
-Done! The transaction is now on the blockchain. And here's the key point: on-chain, nobody can tell who the recipient is or what the amount was. Only the sender and receiver know — exactly as designed.
+Full page with filters: All, Unread, Escrow, Shield, Stream, Agent, System. Mark as read, pagination. Never miss an important event.
 </div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">12:00 - 14:30</span> SECTION 5: SHIELD DASHBOARD — ZK FLOW DIAGRAM &amp; 10 USE CASES</h2>
+<h2><span class="time">23:00 &ndash; 24:30</span> SECTION 9: STREAM &mdash; PIPELINE &amp; MILESTONES</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /shield. Show 4 stat cards at top with gradient backgrounds. Then the ZK Flow Diagram — a 5-step horizontal pipeline (desktop) showing Sender &rarr; Poseidon Hash &rarr; PLONK Proof &rarr; On-Chain &rarr; Recipient. Each step has a colored icon (11x11px). Below: 2-column use-case grid on left, sticky execution form on right. The form has ONLY recipient + amount fields (no adminSecret).
-<br>Camera: Start at stat cards, pan down to ZK Flow Diagram (pause here 5s), then scroll to use cases + form.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/stream. Role toggle (Payer/Payee), 3 stat cards, pipeline card grid with milestone circles and gradient lines. Click card for detail with SVG progress ring.<br>Camera: Full browser, zoom to pipeline visuals.</div>
 
-<div class="action">Navigate to paypol.xyz/shield.</div>
+<div class="action">Navigate to agt.finance/stream. Role toggle, stat cards, pipeline cards.</div>
 
 <div class="script">
-This is the Shield Dashboard — the command center for the entire ZK privacy system. At the top are four real-time metric cards with gradient backgrounds: Shielded Volume, Executions, Integrity, and Velocity. Each one reads directly from the blockchain.
-</div>
-
-<div class="action">Point to the ZK Flow Diagram — the 5-step horizontal pipeline below the stat cards.</div>
-
-<div class="script">
-And here's something new — the ZK Flow Diagram. This is a visual pipeline showing exactly how a shielded transaction flows through the system, step by step:
+Stream &mdash; milestone-based payments via StreamV1 (0x4fE3). Instead of all-or-nothing escrow, break work into milestones with incremental payment.
 <br><br>
-<b>Step 1 — Sender:</b> The user initiates a private payment.
-<br>
-<b>Step 2 — Poseidon Hash:</b> The recipient address and amount are hashed using the Poseidon hash function — optimized for zero-knowledge circuits.
-<br>
-<b>Step 3 — PLONK Proof:</b> A ZK-SNARK proof is generated using the PLONK proving system — this proves the transaction is valid without revealing any details.
-<br>
-<b>Step 4 — On-Chain:</b> The proof is submitted and verified on Tempo L1.
-<br>
-<b>Step 5 — Recipient:</b> Funds are received — privately, securely, and verifiably.
+Role toggle: Payer view (funding work) vs Payee view (delivering work). Three stats: Active Streams, Total Streamed, Pending Milestones.
 <br><br>
-On mobile, this diagram switches to a vertical layout for better readability.
+Pipeline cards show counterparty, amount, progress, milestone indicators &mdash; green approved, yellow pending, gray upcoming.
 </div>
 
-<div class="action">Scroll down to the 10 use case cards — displayed in a 2-column grid on the left.</div>
+<div class="action">Click a stream card. SVG progress ring and milestone timeline.</div>
 
 <div class="script">
-We've designed 10 real-world applications for ZK privacy:
-<br><br>
-<b>Autonomous Freelancers</b> — AI freelancers receive payments without exposing personal information.
-<br>
-<b>Shielded Payroll</b> — pay employee salaries without anyone knowing each other's compensation.
-<br>
-<b>DAO Performance Grants</b> — distribute performance bonuses privately within a DAO.
-<br>
-<b>Supply Chain Settlement</b> — settle supply chain payments confidentially.
-<br>
-<b>Private Bug Bounties</b> — pay security researchers without revealing their identity.
-</div>
-
-<div class="action">Scroll down to the remaining 5 use cases.</div>
-
-<div class="script">
-And five more: A2A Micropayments for tiny transactions between agents, Shielded Royalties for intellectual property, Disaster Relief for humanitarian aid, Global Remittances for international transfers, and Autonomous VC for automated investment.
-</div>
-
-<div class="action">Point to the Shielded Execution form on the right side (sticky panel). Enter recipient and amount — only two fields needed.</div>
-
-<div class="script">
-Let me execute a Shield transaction right from this dashboard. The form is streamlined — just two fields: recipient address and amount. No extra secrets needed.
-</div>
-
-<div class="action">Click "Execute Shielded Payout" — show loading "Broadcasting ZK-Proof..." — then show deposit TX and payout TX links.</div>
-
-<div class="script">
-Enter the recipient address, the amount... and Execute. The system broadcasts the ZK proof to the blockchain... and it's done! You can see both the deposit transaction and the payout transaction — each with a direct link to the Tempo block explorer.
+Detail view: SVG progress ring with completion percentage. Milestone timeline with descriptions, amounts, statuses, action buttons. As payer: approve or reject. As payee: submit proof. On approval, AlphaUSD released instantly from StreamV1 to payee wallet.
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">14:30 - 19:30</span> SECTION 6: A2A MARKETPLACE</h2>
+<h2><span class="time">24:30 &ndash; 26:00</span> SECTION 10: PORTFOLIO DASHBOARD [NEW v4.0]</h2>
 
-<h3><span class="time">14:30 - 15:30</span> 6A: Exploring the Marketplace</h3>
+<div class="new-feature"><b>[NEW v4.0]</b> Portfolio at /portfolio: balances, escrows, streams, reputation, activity &mdash; all in one place.</div>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Switch to OmniTerminal A2A tab. Grid of agent cards with avatars, skills badges, pricing, star ratings, and security tier icons (Bronze/Silver/Gold shields). Hover animation reveals expanded details.
-<br>Camera: Wide view of grid → hover on individual agent cards.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/portfolio. 5 tabs: Balances, Escrows, Streams, Reputation, Activity.<br>Camera: Full browser, click through tabs.</div>
 
-<div class="action">Switch to OmniTerminal — "A2A Marketplace" tab.</div>
+<div class="action">Navigate to agt.finance/portfolio. 5 tabs with summary stats.</div>
 
 <div class="script">
-This is my favorite part — the Agent-to-Agent Marketplace. There are currently 32 AI agents running live on the blockchain. Each agent has its own specialization, pricing, and track record.
-</div>
-
-<div class="action">Show the agent list — hover over a few agents to reveal details.</div>
-
-<div class="script">
-Each agent displays:
-<br>
-— A name and short description
-<br>
-— Specialized skills: translation, code auditing, design, data analysis...
-<br>
-— Fixed pricing or negotiable rates
-<br>
-— Rating scores and number of completed jobs
-<br>
-— A security tier: Bronze, Silver, or Gold — based on their staked deposit
-</div>
-
-<h3><span class="time">15:30 - 17:00</span> 6B: Executing an A2A Deal</h3>
-
-<div class="action">Type in terminal: "Hire an agent to audit a smart contract, budget 200 AlphaUSD"</div>
-
-<div class="script">
-Let me hire an agent. I'll type: "Hire an agent to audit a smart contract with a budget of 200 AlphaUSD."
+Portfolio Dashboard &mdash; your financial command center. Five tabs:
 <br><br>
-PayPol will execute 3 automated steps following the APS-1 standard:
-</div>
-
-<div class="action">Show the Discover process.</div>
-
-<div class="script">
-<b>Step 1 — Discover:</b> The system searches for agents with matching skills. It returns a list of agents specializing in code auditing.
-</div>
-
-<div class="action">Show the Negotiate process.</div>
-
-<div class="script">
-<b>Step 2 — Negotiate:</b> The agent and client automatically negotiate the price. The agent proposes 180 AlphaUSD, and the client accepts.
-</div>
-
-<div class="action">Show the Escrow Lock process — on-chain transaction.</div>
-
-<div class="script">
-<b>Step 3 — Escrow Lock:</b> 180 AlphaUSD is locked into the NexusV2 smart contract. At this point, nobody can withdraw the funds — neither the agent nor the client. The money is only released when the job is completed and verified.
-</div>
-
-<div class="action">Open the Escrow Tracker — show the lifecycle.</div>
-
-<div class="script">
-Here's the Escrow Tracker. Every transaction follows a clear lifecycle:
-<br>
-CREATED — MATCHED — ESCROW LOCKED — EXECUTING — COMPLETED — SETTLED.
-<br><br>
-Each escrow has a countdown deadline. If the agent doesn't finish in time, the client gets an automatic refund. The platform fee is just 5% — the lowest in the market. And if there's a dispute, the Arbitration system handles it.
-</div>
-
-<h3><span class="time">17:00 - 18:00</span> 6C: Credit Card Payment — Fiat On-Ramp</h3>
-
-<div class="action">Screen: Open Fiat Checkout — click "Pay with Card" on an escrow.</div>
-
-<div class="script">
-One more crucial feature: you don't need to already own crypto to use PayPol. We've integrated Paddle — a Fiat-to-Crypto payment bridge.
-<br><br>
-When you select "Pay with Card", the system:
-<br>
-— <b>Step 1</b>: Shows a checkout form — enter your credit card details and email
-<br>
-— <b>Step 2</b>: Paddle processes the fiat payment (USD)
-<br>
-— <b>Step 3</b>: Automatically converts to AlphaUSD and deposits into the blockchain escrow
-</div>
-
-<div class="action">Show the payment process — Paddle checkout form.</div>
-
-<div class="script">
-Here's the Paddle checkout. It supports Visa, Mastercard, Apple Pay, and many other methods. After successful payment, AlphaUSD is minted and automatically locked into the NexusV2 escrow — all within seconds.
-<br><br>
-Users don't need to buy crypto first, don't need to understand blockchain — just a credit card is enough. This is the bridge between Web2 and Web3.
-</div>
-
-<div class="action">Show confirmation — transaction hash appears.</div>
-
-<div class="script">
-Done! Funds are now in escrow from a credit card. The agent can start working immediately — everything is automated and seamless.
-</div>
-
-<h3><span class="time">18:00 - 19:30</span> 6D: Live Chat with AI Agent &amp; Smart Notifications</h3>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Chat button pulsing in bottom-right corner. Click to open ChatPanel — slides in from right. Channel list on left shows agent chat channels. Message thread on right displays rich cards (transaction, escrow status). Then show NotificationBell — dropdown with categorized notifications. Click a notification — auto-scrolls to the FiatOffRamp section.
-<br>Camera: Chat button → ChatPanel opens → rich card messages → close panel → click notification bell → click notification → scroll to section.
-</div>
-
-<div class="action">Point to the circular Chat button in the bottom-right corner — pulsing with an unread badge.</div>
-
-<div class="script">
-When an agent starts working on your job, you can communicate with it directly through Live Chat. This chat button in the bottom-right corner pulses whenever there's a new message.
-</div>
-
-<div class="action">Click Chat button — ChatPanel slides in from the right.</div>
-
-<div class="script">
-This is the ChatPanel — a real-time messaging interface. On the left is the channel list — every time you hire an agent on the marketplace, the system automatically creates a dedicated chat channel. On the right is the message thread.
-</div>
-
-<div class="action">Point to rich card messages — Transaction Card, Agent Result Card.</div>
-
-<div class="script">
-What makes this special is that messages aren't just plain text. Agents send results as rich cards:
-<br>
-— <b>Transaction Card</b>: shows the amount, token, transaction hash, and status
-<br>
-— <b>Agent Result Card</b>: summarizes the work — value transferred, addresses, timestamps
-<br>
-— <b>Escrow Updates</b>: status changes from Locked to Settled
-<br><br>
-You can even type "/send 100 AlphaUSD to 0x..." directly in chat to send payments instantly.
-</div>
-
-<div class="action">Close ChatPanel. Point to NotificationBell in the top-right corner — click to open dropdown.</div>
-
-<div class="script">
-And here's the Smart Notification system. The notification bell shows how many unread notifications you have. Click to see them all.
-</div>
-
-<div class="action">Show notification dropdown — point to filter tabs: All, Stream, Job, Escrow, Swarm, Fiat, Payroll.</div>
-
-<div class="script">
-PayPol has 13 notification categories, clearly organized: Stream, Job, Escrow, Fiat, Payroll, Swarm, A2A, Intel, Wallet, Review, Agent, Offramp, and Judge. Each type has its own icon and color for quick identification.
-<br><br>
-The key feature: every notification is CLICKABLE and takes you to exactly the right place:
-<br>
-— Click <b>Task Completed</b> — opens the chat panel with that agent
-<br>
-— Click <b>Withdrawal Processing</b> — scrolls to the FiatOffRamp section
-<br>
-— Click <b>Milestone Submitted</b> — navigates to the Stream page
-<br>
-— Click <b>Swarm Created</b> — navigates to the Swarm page
-<br>
-— Click <b>Judge Verdict</b> — navigates to the Admin page
-<br><br>
-No more clicking a notification and wondering what to do next. Every notification is an action.
-</div>
-
-<div class="action">Click a "Task Completed" notification — ChatPanel reopens with the correct job channel.</div>
-
-<div class="script">
-As you can see, I clicked "Task Completed" and the chat panel automatically opened with the exact conversation for that job. Everything is interconnected — notifications, chat, and the marketplace.
+<b>Balances:</b> AlphaUSD in connected wallet, embedded wallet balances, pending amounts in escrow/streams.
+<br><b>Escrows:</b> Active escrows as client and provider &mdash; counterparty, amount, status, countdown.
+<br><b>Streams:</b> Your streams with progress bars and milestone counts.
+<br><b>Reputation:</b> On-chain score from ReputationRegistry. SVG gauge 0-100, tier badges: Bronze, Silver, Gold, Platinum, Diamond. Based on completed jobs, proof match rates, reviews, security deposits. Cannot be faked.
+<br><b>Activity:</b> Chronological timeline of all interactions with Block Explorer links.
 </div>
 
 <!-- ============================================== -->
-<h2><span class="time">19:30 - 21:00</span> SECTION 7: AI PROOF VERIFICATION</h2>
+<h2><span class="time">26:00 &ndash; 27:30</span> SECTION 11: LIVE TRANSACTION FEED [NEW v4.0]</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /verify. Show 4 stat cards (Commitments, Verified, Matched, Integrity Rate). Then the commitment history table with expandable rows. Click a commitment to show plan hash vs result hash comparison.
-<br>Camera: Stat cards → table → expanded commitment detail.
-</div>
+<div class="new-feature"><b>[NEW v4.0]</b> Live Feed at /live &mdash; real-time on-chain events via SSE. Escrow locks, shield deposits, settlements, milestones.</div>
 
-<div class="action">Navigate to paypol.xyz/verify.</div>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/live. Events slide in with fade-in animation. TVL counter top. Filter bar. Wait 10-15s for natural events.<br>Camera: Full browser, let feed animate.</div>
 
-<div class="script">
-This is the AI Proof Verification dashboard — it's completely public. Anyone can come here and check whether an AI agent actually did what it promised.
-</div>
-
-<div class="action">Point to the 4 stat cards at the top.</div>
+<div class="action">Navigate to agt.finance/live. Wait for events to appear.</div>
 
 <div class="script">
-Four key metrics:
-<br>
-— <b>Total Commitments</b>: total number of commitments recorded on-chain
-<br>
-— <b>Verified</b>: how many have been verified
-<br>
-— <b>Matched</b>: plans that matched the actual results
-<br>
-— <b>Integrity Rate</b>: the match percentage — the higher, the better
-</div>
-
-<div class="action">Click on a specific commitment in the history table.</div>
-
-<div class="script">
-Let's look at a specific commitment. Before starting any work, an agent must commit a hash of its plan to the blockchain — like an immutable promise.
+Live Transaction Feed &mdash; real-time stream of every protocol event. TVL (Total Value Locked) read directly from smart contracts. Events slide in as they happen: escrow locks, shield deposits, settlements, milestones.
 <br><br>
-After finishing, the actual result gets hashed and compared to the original plan:
-<br>
-— If they match: "Verified Match" — the agent kept its promise.
-<br>
-— If they don't match: "Mismatch" — the agent's reputation score gets slashed.
-<br><br>
-This is the "Trust but Verify" mechanism — you don't need to blindly trust AI, just verify on the blockchain.
+Filter by type: All, Escrow, Shield, Agent, Stream, Batch. Updates every 5 seconds via SSE &mdash; lightweight one-way streaming, more efficient than WebSockets. Not mock data &mdash; real production events.
 </div>
 
-<div class="action">Search for a commitment by ID.</div>
+<div class="note">Run test transactions beforehand for continuous event flow during recording.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">27:30 &ndash; 29:30</span> SECTION 12: CORTEX + SENTINEL + SWARM</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> Sequential: /cortex, /sentinel, /swarm. ~40 seconds each.<br>Camera: Full browser for each page.</div>
+
+<!-- 12A -->
+<h3>12A &mdash; Cortex Intelligence Hub</h3>
+
+<div class="action">Navigate to agt.finance/cortex. Multi-panel overview.</div>
 
 <div class="script">
-You can search for any commitment by its ID. All data is transparent and immutable.
+Cortex &mdash; intelligence hub aggregating data across the protocol. Live Feed, Shield Panel, Revenue Dashboard, Embedded Wallets. The operator's command center.
+</div>
+
+<!-- 12B -->
+<h3>12B &mdash; Sentinel Command Center</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/sentinel. Three.js 3D globe with colored arcs. Agent Heartbeat Grid. Threat Radar. Rotate globe slowly.<br>Camera: Full browser, dramatic 3D visuals.</div>
+
+<div class="action">Navigate to agt.finance/sentinel. Wait for 3D globe to render.</div>
+
+<div class="script">
+Sentinel &mdash; 3D monitoring built with Three.js. Globe with transaction arcs: green settlements, blue escrow locks, purple shield. Agent Heartbeat Grid shows online/offline status of all 32 agents. Threat Radar detects anomalies. Not just visualization &mdash; a real monitoring tool.
+</div>
+
+<div class="note">Close other tabs for smooth Three.js rendering. Rotate globe slowly with mouse.</div>
+
+<!-- 12C -->
+<h3>12C &mdash; Swarm &mdash; Multi-Agent Coordination</h3>
+
+<div class="action">Navigate to agt.finance/swarm. 6 stat cards, 5 tabs.</div>
+
+<div class="script">
+Swarm &mdash; multi-agent coordination. 6 stats: Active Swarms, Total Agents, Tasks Completed, Success Rate, Avg Duration, Total Value. 5 tabs: Streams, A2A Economy, Intel Market, Audit Trail, Escrow.
+<br><br>
+Audit Trail: compact log with severity filters (Info, Warning, Error, Critical). Hover for details. The compliance backbone for enterprise users.
 </div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">21:00 - 23:00</span> SECTION 8: STREAM — PIPELINE CARDS &amp; MILESTONE PAYMENTS</h2>
+<h2><span class="time">29:30 &ndash; 32:00</span> SECTION 13: ANALYTICS + WALLETS + DEVELOPER + ADMIN</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /stream. Show redesigned layout:
-<br>1. Header with gradient text "Stream Settlement" + role tabs (Client View / Agent View)
-<br>2. Three stat cards: Active Streams (indigo), Total Volume (magenta with progress bar), Pending Review (amber with pulse dot)
-<br>3. Action banner (amber) if pending milestones exist
-<br>4. Filter bar: ALL | ACTIVE | COMPLETED | CANCELLED
-<br>5. Stream pipeline cards in 2-column grid — each card shows agent avatar, budget, days remaining, and a horizontal milestone pipeline with numbered circles connected by gradient lines
-<br>6. Click a stream to show 2-panel detail view: left panel with SVG circular progress ring (130px), right panel with vertical milestone timeline cards
-<br>Camera: Top-down scroll through cards → click to expand → show progress ring + milestone timeline.
-</div>
+<!-- 13A -->
+<h3>13A &mdash; Analytics Dashboard [NEW v4.0]</h3>
 
-<div class="action">Navigate to paypol.xyz/stream.</div>
+<div class="new-feature"><b>[NEW v4.0]</b> Analytics at /analytics &mdash; protocol metrics, charts, trends for agent owners.</div>
+
+<div class="action">Navigate to agt.finance/analytics. Charts and KPI cards.</div>
 
 <div class="script">
-Stream is PayPol's milestone-based payment system. Instead of paying everything upfront, you split a project into milestones and release payment as each milestone gets approved.
+Analytics Dashboard &mdash; new in v4.0. Earnings Over Time (line), Jobs Completed (bar), Average Ratings (gauge), Revenue by Service Type (pie). Hover for exact numbers. Developers optimize agents for maximum revenue.
 </div>
 
-<div class="action">Point to the 3 stat cards at the top and the role toggle tabs.</div>
+<!-- 13B -->
+<h3>13B &mdash; Embedded Wallets</h3>
+
+<div class="action">Navigate to agt.finance/wallets. Wallet list with AES-256-GCM badge.</div>
 
 <div class="script">
-The Stream page has been completely redesigned with a pipeline-style layout. At the top, you can toggle between Client View and Agent View. Below that are three stat cards:
+Embedded Wallets &mdash; AES-256-GCM encryption, same as government/financial institutions. Each agent gets a dedicated wallet. Private key never exposed in plaintext. Create a new wallet in seconds.
+</div>
+
+<!-- 13C -->
+<h3>13C &mdash; Developer Experience</h3>
+
+<div class="action">Navigate to agt.finance/developers. Framework badges, registration flow.</div>
+
+<div class="script">
+Developer portal. 7 frameworks: OpenAI, Claude, LangChain, CrewAI, MCP, Eliza, OpenClaw. 5-step registration. Key incentive: developers keep 95-98% of revenue. Platform fee 2-5% &mdash; lowest in the industry.
+</div>
+
+<!-- 13D -->
+<h3>13D &mdash; Admin + Auto-Judge AI</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/admin. KPI overview, Conditional Rules, Auto-Judge AI 3-layer pipeline. Show dispute case with confidence score.<br>Camera: Full browser, zoom to Auto-Judge verdict.</div>
+
+<div class="action">Navigate to agt.finance/admin. KPI overview, Conditional Rules.</div>
+
+<div class="script">
+Admin panel. KPI overview: users, agents, volume, revenue, dispute rate, uptime. Conditional Rules auto-check every 60 seconds.
+</div>
+
+<div class="action">Scroll to Auto-Judge AI. Show 3-layer pipeline.</div>
+
+<div class="script">
+Auto-Judge AI &mdash; 3-layer dispute resolution:
 <br><br>
-— <b>Active Streams</b>: how many streams are currently running, shown with an indigo icon
-<br>
-— <b>Total Volume</b>: total budget locked across all streams, with a progress bar showing how much has been released
-<br>
-— <b>Pending Review</b>: milestones awaiting approval — this one has a pulsing amber dot when there are items to review
-</div>
-
-<div class="action">Point to the action banner and filter bar.</div>
-
-<div class="script">
-When milestones are pending, this action banner appears in amber: "N milestones awaiting review — click a stream to review." Below that, filter buttons let you view ALL, ACTIVE, COMPLETED, or CANCELLED streams.
-</div>
-
-<div class="action">Point to the stream pipeline cards in the grid — highlight the horizontal milestone circles.</div>
-
-<div class="script">
-Each stream is displayed as a pipeline card. At the top: the agent's name, the total budget, days remaining, and status. But the highlight is this milestone pipeline — a row of numbered circles, each representing a milestone:
-<br>
-— Green checkmark means approved and paid
-<br>
-— Amber exclamation means submitted and awaiting review
-<br>
-— Red X means rejected
-<br>
-— Gray number means still pending
+<b>Layer 1 &mdash; Deterministic:</b> Simple rules. Proof mismatch + low amount = auto-refund. Deadline expired, no proof = auto-refund.
+<br><b>Layer 2 &mdash; AI Scoring:</b> ML model analyzes context, history, proof data, feedback. Produces confidence score + recommendation.
+<br><b>Layer 3 &mdash; Human Review:</b> Low confidence or high amount triggers human reviewer with full context.
 <br><br>
-The circles are connected by gradient lines — green for completed sections, gray for upcoming ones. Below each circle is the milestone amount. You can see at a glance exactly where the project stands.
+Each ruling: confidence score, reasoning, 3 buttons: Release, Refund, Escalate. Resolves most disputes automatically &mdash; days to minutes.
 </div>
 
-<div class="action">Click on a stream — show the 2-panel detail view.</div>
-
-<div class="script">
-Click into a stream and you get a two-panel detail view. On the left is the overview panel with a circular SVG progress ring — showing the exact percentage of payment released. Below that: total budget, amount released, amount remaining, and the deadline countdown.
-<br><br>
-On the right is the milestone timeline — a vertical stack of cards, each with its deliverable, amount, status badge, and action buttons. Clients can approve or reject each milestone. Agents can submit proof of completion. Everything flows through the StreamV1 smart contract.
-</div>
-
-<div class="action">Point to the progress ring and milestone action buttons.</div>
-
-<div class="script">
-The progress ring is animated — it fills up as milestones get approved. And each milestone card shows transaction links to verify the on-chain payment. Platform fee is 5%.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">23:00 - 24:30</span> SECTION 9: CORTEX INTELLIGENCE HUB</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /cortex. Show 4 tabs. Click through each: Live Feed (scrolling events), Shield Panel (now with ZK Flow reference, nullifier stats), Revenue Dashboard (revenue breakdown cards), Wallets (balance grid).
-<br>Camera: Tab bar → click each tab, pause 3-4s per tab.
-</div>
-
-<div class="action">Navigate to paypol.xyz/cortex — the protocol operations dashboard.</div>
-
-<div class="script">
-This is Cortex — PayPol's intelligence hub. Think of it as mission control for the entire protocol.
-</div>
-
-<div class="action">Point to the 4 tabs: Live Feed, Shield Panel, Revenue, Wallets.</div>
-
-<div class="script">
-Cortex has 4 main panels:
-<br><br>
-<b>First — Live Feed.</b> A real-time stream of every on-chain transaction: escrow creates, settlements, shield deposits, payroll batches. Each event shows the transaction hash, block number, gas used, and decoded function call. Updated instantly via Server-Sent Events.
-<br><br>
-<b>Second — Shield Panel.</b> The operational dashboard for our ZK privacy system. It shows the ZK Flow Diagram we saw earlier — the same 5-step pipeline from sender to recipient. Plus active commitments, pending proofs, the nullifier registry size, proof generation latency, and the total value locked in ShieldVaultV2.
-<br><br>
-<b>Third — Revenue Dashboard.</b> Aggregated revenue metrics across all three engines: card processing margins, marketplace platform fees, Shield privacy premiums, and arbitration penalty collections. You can see exactly how much revenue the protocol generates in real-time.
-<br><br>
-<b>Fourth — Embedded Wallets.</b> A multi-wallet overview showing treasury balance, daemon wallet, and all agent wallets with real-time balance tracking.
-</div>
-
-<div class="action">Click through each tab, pausing briefly on each to show the data.</div>
-
-<div class="script">
-Everything here is reading directly from the blockchain and our database — no synthetic data. This is the real state of the protocol.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">24:30 - 26:00</span> SECTION 10: SENTINEL COMMAND CENTER</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /sentinel. 3D globe loads with glowing arcs. Slow rotation. Point to green/blue/purple arcs. Then Agent Heartbeat Grid on right (pulsing cells). Then Threat Radar at bottom. Toggle Cinematic Mode for full-screen globe.
-<br>Camera: Full viewport for 3D effect. Cinematic mode fills entire screen.
-</div>
-
-<div class="action">Navigate to paypol.xyz/sentinel — the 3D surveillance dashboard.</div>
-
-<div class="script">
-And this is Sentinel — the most visually impressive part of PayPol. It's a 3D command center built with Three.js.
-</div>
-
-<div class="action">Show the rotating 3D globe with payment arcs.</div>
-
-<div class="script">
-The centerpiece is this 3D globe. Each glowing arc represents a real payment flowing through the protocol:
-<br>
-— <b>Green arcs</b> are settlements — jobs being paid out
-<br>
-— <b>Blue arcs</b> are escrow locks — funds being secured
-<br>
-— <b>Purple arcs</b> are Shield transactions — ZK-private payments
-<br><br>
-The brighter the arc, the higher the transaction value.
-</div>
-
-<div class="action">Point to the Agent Heartbeat Grid on the right side.</div>
-
-<div class="script">
-On the right is the Agent Heartbeat Grid. Each cell represents one of our 32+ agents. Green means online and active. The pulsing animation shows real-time activity. You can see at a glance which agents are busy and which are idle.
-</div>
-
-<div class="action">Point to the Threat Detection Radar panel.</div>
-
-<div class="script">
-And down here is the Threat Radar — monitoring for anomalies in real-time: unusual transaction patterns, failed proof attempts that could indicate replay attacks, sudden drops in agent reputation, or suspicious smart contract interactions. This is how we keep the ecosystem safe.
-</div>
-
-<div class="action">Toggle Cinematic Mode — full-screen globe view.</div>
-
-<div class="script">
-And if you toggle Cinematic Mode — the globe goes full-screen. This is what protocol monitoring looks like in the age of AI agents.
-</div>
+<div class="note">Add animated 3-layer flowchart. Lower-third overlays for each layer.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">26:00 - 28:30</span> SECTION 11: SWARM — 6 STAT CARDS &amp; COMPACT AUDIT TRAIL</h2>
+<h2><span class="time">32:00 &ndash; 33:00</span> SECTION 14: CLOSING</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /swarm. Show redesigned layout:
-<br>1. Header with gradient text "Agent Swarm Hub" + bee emoji
-<br>2. Six stat cards in 3x2 grid: Total Swarms (amber), Agents Active (blue), Budget Locked (green), A2A Volume (purple), Intel Listed (red), Fees Earned (cyan)
-<br>3. Redesigned tab bar with gradient active states: Swarm Streams | A2A Economy | Intel Market | Audit Trail | Escrow
-<br>4. Click "Audit Trail" tab — show the compact table-style layout (~36px per row) with: time column, severity dot, icon+title, agent badge, severity label, TX link
-<br>5. Hover a row to reveal description subline
-<br>6. Show severity filter buttons with counts + scrollable event type filter
-<br>Camera: Stat cards grid → tab bar → Audit Trail compact rows → hover to show description.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Back to /protocol or summary slide. Transition to presenter webcam. Logo fade on dark background with "agt.finance". Hold 5 seconds. Fade to black.</div>
 
-<div class="action">Navigate to paypol.xyz/swarm — the multi-agent coordination dashboard.</div>
+<div class="action">Navigate to agt.finance/protocol. Traction summary. Transition to presenter webcam.</div>
 
 <div class="script">
-Swarm is PayPol's multi-agent coordination hub. Instead of one agent doing one job, Swarm lets multiple agents work together on complex tasks with a shared budget.
-</div>
-
-<div class="action">Point to the 6 stat cards in the 3x2 grid — highlight the new "Fees Earned" card.</div>
-
-<div class="script">
-The Swarm dashboard now has six stat cards in a clean 3-by-2 grid:
+Agentic Finance is live production infrastructure for the agentic economy:
 <br><br>
-— <b>Total Swarms</b>: number of swarm sessions, with active count below
-<br>
-— <b>Agents Active</b>: total agents currently coordinating
-<br>
-— <b>Budget Locked</b>: total funds secured in escrow, with released amount shown
-<br>
-— <b>A2A Volume</b>: agent-to-agent transfer volume with transfer count
-<br>
-— <b>Intel Listed</b>: ZK-verified intelligence submissions in the marketplace
-<br>
-— <b>Fees Earned</b>: this is new — total platform fees collected from swarm operations at 5%. This gives you real-time visibility into the swarm's revenue contribution.
-</div>
-
-<div class="action">Point to the redesigned tab bar — show gradient active states on each tab.</div>
-
-<div class="script">
-The tab bar has been redesigned with gradient active states. Five tabs: Swarm Streams, A2A Economy, Intel Market, Audit Trail, and Escrow. Each tab has its own color theme.
-</div>
-
-<div class="action">Click on "Swarm Streams" tab — show active swarm sessions.</div>
-
-<div class="script">
-<b>Streams</b> shows active swarm sessions with real-time progress. Each session displays the coordinator agent, worker agents, budget pool, and completion status.
+&mdash; 9 verified smart contracts on Tempo L1 (42431)
+<br>&mdash; 32 production AI agents across 8 categories
+<br>&mdash; Real ZK-SNARK PLONK proofs (Circom V2 + Poseidon)
+<br>&mdash; AI Execution Verification via AIProofRegistry
+<br>&mdash; RainbowKit multi-wallet connection
+<br>&mdash; Agent Chat Interface for conversational on-chain execution
+<br>&mdash; Portfolio Dashboard with on-chain reputation
+<br>&mdash; Live Transaction Feed via SSE
+<br>&mdash; Analytics Dashboard for agent owners
+<br>&mdash; AES-256-GCM encrypted embedded wallets
+<br>&mdash; Milestone streaming payments (StreamV1)
+<br>&mdash; 13-category notification system
+<br>&mdash; Auto-Judge AI 3-layer dispute resolution
+<br>&mdash; Fiat On-Ramp via Paddle
+<br>&mdash; Platform fee 2-5% &mdash; lowest in industry
+<br>&mdash; APS-1 v2.1 Agent Payment Standard
 <br><br>
-<b>A2A Economy</b> tracks micropayments between agents within swarms. Coordinators pay workers for sub-tasks, reviewers earn fees for quality checks.
+Everything is live. Gas is free on Tempo. Visit agt.finance.
 <br><br>
-<b>Intel Market</b> is PayPol's privacy-preserving knowledge economy. Agents trade intelligence — data, analysis, insights — using ZK-verified submissions.
-</div>
-
-<div class="action">Click on "Audit Trail" tab — show the new compact table-style layout.</div>
-
-<div class="script">
-And here's the redesigned Audit Trail — completely reworked for density and clarity. Instead of the old verbose timeline, every event is now a single compact row — about 36 pixels tall. You can see far more events at once.
-<br><br>
-Each row shows: the timestamp, a severity dot color-coded by type, an event icon, the title, the agent name, severity badge, and a transaction link. At the top, severity filter buttons show counts: INFO, SUCCESS, WARNING, ERROR. And a scrollable event-type filter lets you narrow down to specific actions.
-</div>
-
-<div class="action">Hover over an event row — show the description appearing below.</div>
-
-<div class="script">
-Hover over any row and the description slides in below — so you get the full context without cluttering the main view. With 50 events per page, you can review the entire swarm history much faster than before.
-</div>
-
-<div class="action">Click on "Escrow" tab.</div>
-
-<div class="script">
-And Escrow shows the swarm's total budget security — funds locked in NexusV2, only released when sub-tasks are completed and reviewed.
-</div>
-
-<div class="action">Show the A2A micropayment flow between agents.</div>
-
-<div class="script">
-Watch the A2A flow — the coordinator just paid the static analysis agent 800 AlphaUSD for completing their sub-task. The 5% platform fee was automatically deducted. A swarm with 6 agents can generate 6 separate escrow settlements — that's the revenue multiplier effect.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">28:30 - 29:30</span> SECTION 12: EMBEDDED WALLETS</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /wallets. Show wallet list with labels, addresses, balances. Click "Generate New Wallet" to create a new one. Show stats at top.
-<br>Camera: Wallet grid → generate button → new wallet appears.
-</div>
-
-<div class="action">Navigate to paypol.xyz/wallets.</div>
-
-<div class="script">
-This is Embedded Wallets — PayPol's built-in wallet system. Every AI agent or employee can have their own wallet, created and managed directly from the dashboard.
-</div>
-
-<div class="action">Point to the wallet list — showing agent and employee wallets.</div>
-
-<div class="script">
-Each wallet shows:
-<br>
-— <b>Label</b>: wallet name — "Agent: ContractGuard" or "Employee: John"
-<br>
-— <b>Address</b>: the on-chain wallet address
-<br>
-— <b>Balance</b>: current AlphaUSD balance
-<br>
-— <b>Type</b>: Agent wallet or Employee wallet
-<br>
-— <b>Status</b>: Active or Inactive
-</div>
-
-<div class="action">Click "Generate New Wallet" — create a new wallet.</div>
-
-<div class="script">
-Creating a new wallet takes just seconds. The system automatically generates an AES-256-GCM encrypted key pair — the private key is never stored in plain text. This is critical for security.
-<br><br>
-Agents can automatically receive payments, send funds, and manage their finances — all through this embedded wallet without needing MetaMask or any external wallet.
-</div>
-
-<div class="action">Point to the overview stats: total wallets, total balance.</div>
-
-<div class="script">
-At the top are the summary stats: total active wallets, total balance, and breakdown by Agent vs Employee. Each wallet tracks its transaction history and last usage time.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">29:30 - 31:00</span> SECTION 13: DEVELOPER EXPERIENCE</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /developers. Show revenue model breakdown, 7+ framework logos grid, quick start 5-step guide, and agent registration form.
-<br>Camera: Scroll through sections, pausing on framework grid and registration form.
-</div>
-
-<div class="action">Navigate to paypol.xyz/developers.</div>
-
-<div class="script">
-This section is for developers — and it's the most important part for growing the ecosystem.
-<br><br>
-PayPol is an open platform. Any AI developer can register their agent and start earning money.
-</div>
-
-<div class="action">Point to the Revenue Model section.</div>
-
-<div class="script">
-Our revenue-sharing model:
-<br>
-— <b>95 to 98 percent goes directly to the developer</b> — PayPol keeps just 2 to 5 percent as a platform fee
-<br>
-— Arbitration fee is capped at 3%, with a maximum of 10 dollars
-<br>
-— No hidden fees, no subscription charges
-</div>
-
-<div class="action">Point to the 7+ framework integrations.</div>
-
-<div class="script">
-We support 7+ popular AI frameworks:
-<br>
-— <b>OpenAI</b> with Function Calling adapters
-<br>
-— <b>Anthropic Claude</b> with Tool Use and MCP protocol
-<br>
-— <b>LangChain</b> with StructuredTool wrappers
-<br>
-— <b>CrewAI</b> with Python BaseTool
-<br>
-— <b>Google A2A</b> with Agent-to-Agent protocol adapters
-<br>
-— <b>Eliza</b> with a plugin featuring 18 pattern-matched actions
-<br>
-— <b>OpenClaw</b> with Skill marketplace integration
-<br><br>
-Any agent, built on any framework, can join the PayPol ecosystem.
-</div>
-
-<div class="action">Point to the Quick Start Guide — 5 steps.</div>
-
-<div class="script">
-Getting started takes just 5 steps: install the SDK, create a config, register on the marketplace, implement your job handling logic, and deploy. It's that simple.
-</div>
-
-<div class="action">Scroll to the Agent Registration form.</div>
-
-<div class="script">
-And here's the agent registration form, right in the dashboard. Fill in the name, description, skills, pricing, and webhook URL. Your agent will appear on the marketplace within seconds.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">31:00 - 32:30</span> SECTION 14: ADMIN, AUTO-JUDGE AI &amp; ARBITRATION</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate to /admin. Quick tour: Overview KPIs → Conditional Rules tab → Arbitration tab with Auto-Judge AI verdict cards showing confidence %, reasoning, and layer classification. Show Release/Refund/Escalate buttons.
-<br>Camera: Fast-paced, 20s per subtab. Zoom into Auto-Judge verdict card.
-</div>
-
-<div class="action">Navigate to paypol.xyz/admin.</div>
-
-<div class="script">
-Let's quickly look at the Admin panel — the management hub of PayPol.
-</div>
-
-<div class="action">Point to the Overview tab — 4 KPI cards.</div>
-
-<div class="script">
-The Overview shows key KPIs: total transactions, volume, active conditional rules, and current escrow count.
-</div>
-
-<div class="action">Click on the Conditional Rules tab — show active rules with "Watching" status.</div>
-
-<div class="script">
-Conditional Rules is a LIVE payment automation system running 24/7. The Daemon checks conditions every 60 seconds and automatically triggers when met. It supports 5 condition types:
-<br><br>
-— <b>Date/Time</b>: trigger on a specific date — e.g. pay salaries on the 1st of every month
-<br>
-— <b>Wallet Balance</b>: trigger when a wallet balance hits a threshold — reads directly from the blockchain
-<br>
-— <b>Price Feed</b>: trigger when token price meets a condition
-<br>
-— <b>TVL Threshold</b>: trigger when total value locked reaches a target
-<br>
-— <b>Webhook</b>: trigger from an external system
-<br><br>
-Each rule supports AND/OR logic, repeat modes (weekly, monthly), and cooldowns to prevent duplicate triggers. This isn't a demo — the daemon is running live on our VPS and checking rules every minute.
-</div>
-
-<div class="action">Click on the Arbitration tab — show Auto-Judge AI panel.</div>
-
-<div class="script">
-And here's the newest feature — <b>Auto-Judge AI</b>. When there's a dispute between a client and an agent, instead of waiting for manual human review, the AI system automatically evaluates and delivers a verdict.
-<br><br>
-Auto-Judge operates in 3 layers:
-<br>
-— <b>Layer 1 — Deterministic</b>: checks basic conditions — did the agent submit a result? Did it miss the deadline? If clear-cut, it decides immediately.
-<br>
-— <b>Layer 2 — AI Scoring</b>: uses AI to evaluate work quality, compare against original requirements, and assign a confidence score.
-<br>
-— <b>Layer 3 — Human Review</b>: when confidence is low or the case is complex, it escalates to a human arbitrator.
-</div>
-
-<div class="action">Point to a verdict card — show confidence score, reasoning, and action buttons.</div>
-
-<div class="script">
-Each verdict displays:
-<br>
-— <b>Verdict</b>: Settle, Refund, or Escalate
-<br>
-— <b>Confidence</b>: the AI's confidence level — for example, 87%
-<br>
-— <b>Reasoning</b>: a detailed explanation of why the AI made this decision
-<br>
-— And action buttons: <b>Release</b> (pay the agent, minus 5% fee), <b>Refund</b> (return to client, minus 3% penalty), or <b>Override</b> (human arbitrator overrides the AI's decision)
-<br><br>
-The entire verdict history is recorded on-chain — transparent and immutable. Both client and agent receive automatic notifications when a verdict is issued.
-</div>
-
-<!-- ============================================== -->
-<div class="page-break"></div>
-<h2><span class="time">32:30 - 33:30</span> SECTION 15: CLOSING</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Navigate back to /protocol. Show comparison table. Then traction numbers. Final frame: PayPol logo centered on dark background with website URL and social links.
-<br>Camera: Comparison table → traction → logo fade-out.
-</div>
-
-<div class="action">Navigate back to /protocol — scroll to the comparison table.</div>
-
-<div class="script">
-To wrap up — what makes PayPol different from everything else out there?
-</div>
-
-<div class="action">Point to the PayPol vs Stripe vs PayPal vs Coinbase comparison table.</div>
-
-<div class="script">
-Compared to Stripe, PayPal, or Coinbase Commerce:
-<br>
-— They don't support payments between AI agents
-<br>
-— They don't have ZK privacy
-<br>
-— They don't have on-chain verification
-<br>
-— And they don't have automated escrow for AI
-<br><br>
-PayPol was built from the ground up, specifically designed for the world of AI agents.
-</div>
-
-<div class="action">Show the traction numbers.</div>
-
-<div class="script">
-Today we have: 9 verified smart contracts on Tempo L1, 32 AI agents live on the marketplace, support for 7+ AI frameworks, the APS-1 v2.1 global payment standard, a Conditional Rule Engine that checks conditions and triggers payments every 60 seconds, real-time Live Chat with AI agents and rich transaction cards, a Smart Notification system with 13 clickable categories that navigate to the right section, FiatOffRamp for withdrawing crypto to PayPal, Auto-Judge AI for automated dispute resolution with 3-layer evaluation, Cortex intelligence, Sentinel 3D surveillance, Swarm multi-agent coordination, and a platform fee of just 2 to 5 percent — the lowest in the industry.
-</div>
-
-<div class="action">Final screen: PayPol logo + links.</div>
-
-<div class="script">
 Thank you all for watching!
-<br><br>
-Head over to paypol.xyz to try it out — gas is completely free, so you can test every feature at zero cost.
-<br><br>
-If you're an AI developer, register your agent and start earning today. 95 percent of the revenue is yours.
-<br><br>
-See you next time!
 </div>
+
+<div class="action">Logo on dark background (#0A0A0F) with "agt.finance" below. Hold 5 seconds. Fade to black.</div>
+
+<div class="note">Slow pace for last sentences. Music swell to 25% during logo. Final card: "Built on Tempo L1 | Chain 42431 | agt.finance".</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2>APPENDIX A: PRODUCTION NOTES</h2>
+<h2>APPENDIX A: PRODUCTION CHECKLIST</h2>
 
-<h3>Pre-Recording Checklist:</h3>
+<h3>Pre-Recording Checklist (12 Items)</h3>
 <table>
-  <tr><th>#</th><th>Item</th><th>Status</th></tr>
-  <tr><td>1</td><td>MetaMask connected with sufficient AlphaUSD balance</td><td></td></tr>
-  <tr><td>2</td><td>All tabs pre-opened: /, /protocol, /shield, /stream, /verify, /cortex, /sentinel, /swarm, /wallets, /developers, /admin</td><td></td></tr>
-  <tr><td>3</td><td>At least 2-3 active escrows available for demo</td><td></td></tr>
-  <tr><td>4</td><td>At least 1 stream with milestones available for demo</td><td></td></tr>
-  <tr><td>5</td><td>Proof commitments present in /verify</td><td></td></tr>
-  <tr><td>6</td><td>At least 1 active swarm session with audit events</td><td></td></tr>
-  <tr><td>7</td><td>Browser zoom set to 110-125%</td><td></td></tr>
-  <tr><td>8</td><td>All unrelated notifications/popups disabled</td><td></td></tr>
-  <tr><td>9</td><td>Microphone tested — clean audio, no echo</td><td></td></tr>
-  <tr><td>10</td><td>Screen resolution: 1920x1080 or higher</td><td></td></tr>
-  <tr><td>11</td><td>Close all other applications for smooth performance</td><td></td></tr>
+  <tr><th>#</th><th>Item</th><th>Details</th><th>&check;</th></tr>
+  <tr><td>1</td><td>Wallet Connected</td><td>RainbowKit + MetaMask on Tempo L1 (42431). Min 5,000 AlphaUSD. Verify ConnectButton.</td><td></td></tr>
+  <tr><td>2</td><td>Pages Pre-Loaded</td><td>Open all tabs: /welcome, /?app=1, /chat, /portfolio, /live, /analytics, /stream, /shield, /verify, /cortex, /sentinel, /swarm, /wallets, /developers, /admin, /transactions, /notifications.</td><td></td></tr>
+  <tr><td>3</td><td>Active Escrows</td><td>2-3 escrows in NexusV2 with different statuses (Locked, In Progress, Completed).</td><td></td></tr>
+  <tr><td>4</td><td>Stream + Milestones</td><td>1+ stream in StreamV1 with 3-5 milestones. Mix approved + pending.</td><td></td></tr>
+  <tr><td>5</td><td>Proof Commitments</td><td>3-5 entries in AIProofRegistry. Include Verified Match + Pending.</td><td></td></tr>
+  <tr><td>6</td><td>Swarm Session</td><td>1+ swarm session with agents. Audit Trail populated.</td><td></td></tr>
+  <tr><td>7</td><td>Notifications</td><td>5-7 unread across types (escrow, stream, agent, system).</td><td></td></tr>
+  <tr><td>8</td><td>Browser</td><td>Zoom 110-125%, 1920x1080+, Chrome/Brave, extensions disabled.</td><td></td></tr>
+  <tr><td>9</td><td>Audio</td><td>External mic, -12 to -6 dB peak, quiet room, notifications off.</td><td></td></tr>
+  <tr><td>10</td><td>Screen Recording</td><td>OBS/ScreenFlow/Loom, browser window only, 30fps+. Optional webcam 200x200 bottom-right.</td><td></td></tr>
+  <tr><td>11</td><td>Daemon Running</td><td>ssh root@37.27.190.158 "docker ps | grep daemon" &mdash; must be healthy.</td><td></td></tr>
+  <tr><td>12</td><td>Boardroom Employees</td><td>3-5 employees with addresses. Test 1 payroll batch.</td><td></td></tr>
 </table>
 
-<h3>AI Dubbing Tips (HeyGen / Rask AI):</h3>
+<h3>5 Tips for AI Dubbing</h3>
+
 <div class="tip">
-  <b>1. Speaking pace:</b> Speak 10-20% slower than normal. English tends to be longer than Vietnamese, so a slower pace helps lip-sync match better.
-  <br><br>
-  <b>2. Microphone:</b> Use an external mic or AirPods Pro. Cleaner audio means more accurate voice cloning.
-  <br><br>
-  <b>3. Lighting:</b> Ensure your face is clearly visible — lip-sync needs to see your mouth clearly.
-  <br><br>
-  <b>4. Background music:</b> Use only lofi/ambient at low volume (10-15%). No music with vocals.
-  <br><br>
-  <b>5. Review the translation:</b> After AI dubbing, check technical terms: escrow, ZK-SNARK, PLONK, blockchain, smart contract — make sure the AI translated them correctly.
-  <br><br>
-  <b>6. Export:</b> Export at 1080p or higher. Consider adding English subtitles for accessibility.
+<b>1. Speaking Pace:</b> 10-20% slower than conversational. 130-140 wpm target. Pause 1-2s between sentences, 2-3s between sections. AI dubbing needs room for lip-sync.
 </div>
+<div class="tip">
+<b>2. Microphone:</b> External condenser mic or AirPods Pro. 6-8 inches. Pop filter for plosives. Noise floor below -50 dB. Export 48kHz WAV.
+</div>
+<div class="tip">
+<b>3. Lighting:</b> Ring light or soft panels at 45&deg;. Face clearly lit, mouth visible. Neutral background.
+</div>
+<div class="tip">
+<b>4. Background Music:</b> Royalty-free lofi/ambient at 10-15%. No vocals. Add subtle UI clicks at 5-8%. License properly.
+</div>
+<div class="tip">
+<b>5. Export:</b> 1080p H.264 10-15 Mbps. English subtitles (SRT, Segoe UI 22-24pt, dark background). YouTube chapter markers at each section.
+</div>
+
+<h3>Section Timing</h3>
+<table>
+  <tr><th>Section</th><th>Start</th><th>End</th><th>Duration</th></tr>
+  <tr><td>0. Opening</td><td>0:00</td><td>1:00</td><td>1:00</td></tr>
+  <tr><td>1. Overview</td><td>1:00</td><td>3:30</td><td>2:30</td></tr>
+  <tr><td>2. Landing + Wallet</td><td>3:30</td><td>5:00</td><td>1:30</td></tr>
+  <tr><td>3. Dashboard</td><td>5:00</td><td>10:00</td><td>5:00</td></tr>
+  <tr><td>4. Shield Mode</td><td>10:00</td><td>12:00</td><td>2:00</td></tr>
+  <tr><td>5. Shield Dashboard</td><td>12:00</td><td>14:30</td><td>2:30</td></tr>
+  <tr><td>6. A2A Marketplace</td><td>14:30</td><td>19:30</td><td>5:00</td></tr>
+  <tr><td>7. AI Proof</td><td>19:30</td><td>21:00</td><td>1:30</td></tr>
+  <tr><td>8. Chat + Notif</td><td>21:00</td><td>23:00</td><td>2:00</td></tr>
+  <tr><td>9. Stream</td><td>23:00</td><td>24:30</td><td>1:30</td></tr>
+  <tr><td>10. Portfolio</td><td>24:30</td><td>26:00</td><td>1:30</td></tr>
+  <tr><td>11. Live Feed</td><td>26:00</td><td>27:30</td><td>1:30</td></tr>
+  <tr><td>12. Cortex+Sentinel+Swarm</td><td>27:30</td><td>29:30</td><td>2:00</td></tr>
+  <tr><td>13. Analytics+Wallets+Dev+Admin</td><td>29:30</td><td>32:00</td><td>2:30</td></tr>
+  <tr><td>14. Closing</td><td>32:00</td><td>33:00</td><td>1:00</td></tr>
+  <tr style="font-weight:bold"><td>TOTAL</td><td>0:00</td><td>33:00</td><td>33:00</td></tr>
+</table>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
 <h2>APPENDIX B: GIF CLIP STORYBOARD</h2>
 
-<p>Each section should have a short animated GIF clip (5-15 seconds) capturing the key visual moment. These are used for marketing, social media, and the /protocol page.</p>
+<p>Short animated clips (5-15s) for marketing, social media, pitch decks, and documentation.</p>
 
 <table>
-  <tr><th>Clip</th><th>Filename</th><th>Duration</th><th>Content</th><th>Key Action</th></tr>
-  <tr><td>0</td><td>clip-00-intro.gif</td><td>5s</td><td>Logo animation on dark background</td><td>Logo fade-in + particle effect</td></tr>
-  <tr><td>1</td><td>clip-01-overview.gif</td><td>8s</td><td>/protocol page — 5 competitive moats</td><td>Scroll through moat cards</td></tr>
-  <tr><td>2</td><td>clip-02-wallet.gif</td><td>6s</td><td>MetaMask connection flow</td><td>Click Connect → approve → dashboard loads</td></tr>
-  <tr><td>3</td><td>clip-03-terminal.gif</td><td>10s</td><td>OmniTerminal natural language payment</td><td>Type command → AI parses → highlight fields</td></tr>
-  <tr><td>4</td><td>clip-04-shield-mode.gif</td><td>8s</td><td>Shield toggle + ZK proof generation</td><td>Toggle ON → type command → proof loading → success</td></tr>
-  <tr><td>5</td><td>clip-05-shield-dashboard.gif</td><td>10s</td><td>Shield Dashboard with ZK Flow Diagram</td><td>Stat cards → ZK Flow 5-step pipeline → execute form</td></tr>
-  <tr><td>6</td><td>clip-06-a2a.gif</td><td>12s</td><td>A2A Marketplace — hire an agent</td><td>Type hire command → Discover → Negotiate → Escrow Lock</td></tr>
-  <tr><td>6D</td><td>clip-06d-chat.gif</td><td>10s</td><td>Live Chat + Smart Notifications</td><td>Chat button → ChatPanel with rich cards → notification click → scroll to section</td></tr>
-  <tr><td>7</td><td>clip-07-verify.gif</td><td>8s</td><td>AI Proof Verification</td><td>Show commitment → hash comparison → Verified Match</td></tr>
-  <tr><td>8</td><td>clip-08-stream.gif</td><td>12s</td><td>Stream pipeline cards + detail view</td><td>Pipeline card grid → click → progress ring + milestone timeline</td></tr>
-  <tr><td>9</td><td>clip-09-cortex.gif</td><td>10s</td><td>Cortex Intelligence Hub — 4 tabs</td><td>Click through Live Feed → Shield → Revenue → Wallets</td></tr>
-  <tr><td>10</td><td>clip-10-sentinel.gif</td><td>10s</td><td>Sentinel 3D globe + agent heartbeat</td><td>Globe rotation with arcs → heartbeat grid → cinematic mode</td></tr>
-  <tr><td>11</td><td>clip-11-swarm.gif</td><td>12s</td><td>Swarm 6 stat cards + Audit Trail</td><td>3x2 stat grid (show Fees Earned) → click Audit Trail → compact rows → hover description</td></tr>
-  <tr><td>12</td><td>clip-12-wallets.gif</td><td>6s</td><td>Embedded Wallets overview</td><td>Wallet list → generate new → balance appears</td></tr>
-  <tr><td>13</td><td>clip-13-developer.gif</td><td>8s</td><td>Developer page — frameworks + registration</td><td>Framework logos → scroll to registration form</td></tr>
-  <tr><td>14</td><td>clip-14-admin.gif</td><td>8s</td><td>Admin panel — Auto-Judge AI + arbitration</td><td>KPI cards → Conditional Rules → Auto-Judge verdict card → Release/Refund buttons</td></tr>
-  <tr><td>15</td><td>clip-15-closing.gif</td><td>5s</td><td>Comparison table + logo</td><td>PayPol vs competitors → final logo</td></tr>
+  <tr><th>Clip</th><th>Filename</th><th>Dur</th><th>Content</th><th>Key Action</th></tr>
+  <tr><td>0</td><td>clip-00-intro.gif</td><td>5s</td><td>Logo on dark bg with cyan-indigo glow</td><td>Logo fade + particles + dashboard reveal</td></tr>
+  <tr><td>1</td><td>clip-01-overview.gif</td><td>8s</td><td>/protocol &mdash; 5 moats</td><td>Scroll through moat cards</td></tr>
+  <tr><td>2</td><td>clip-02-wallet.gif</td><td>6s</td><td>RainbowKit connection</td><td>Connect &rarr; approve &rarr; dashboard</td></tr>
+  <tr><td>3A</td><td>clip-03a-payroll.gif</td><td>10s</td><td>NLP payroll command</td><td>Type &rarr; AI parse &rarr; execute</td></tr>
+  <tr><td>3C</td><td>clip-03c-daemon.gif</td><td>8s</td><td>Daemon Queue processing</td><td>Status transitions</td></tr>
+  <tr><td>3D</td><td>clip-03d-shield.gif</td><td>4s</td><td>Shield toggle activation</td><td>Toggle ON &rarr; purple theme</td></tr>
+  <tr><td>4</td><td>clip-04-shield.gif</td><td>10s</td><td>4-step ZK pipeline</td><td>Poseidon &rarr; PLONK &rarr; Verify</td></tr>
+  <tr><td>5</td><td>clip-05-zkflow.gif</td><td>10s</td><td>ZK Flow Diagram + Use Cases</td><td>Animated pipeline + grid</td></tr>
+  <tr><td>6A</td><td>clip-06a-browse.gif</td><td>8s</td><td>32 agent marketplace</td><td>Grid + category filters</td></tr>
+  <tr><td>6B</td><td>clip-06b-detail.gif</td><td>10s</td><td>Agent Detail [NEW]</td><td>Hero + stats + skills + reviews</td></tr>
+  <tr><td>6C</td><td>clip-06c-deal.gif</td><td>12s</td><td>Deal flow + Fiat</td><td>Discover &rarr; Negotiate &rarr; Escrow + Card</td></tr>
+  <tr><td>7</td><td>clip-07-verify.gif</td><td>8s</td><td>AI Proof Verification</td><td>Stats + hash comparison</td></tr>
+  <tr><td>8A</td><td>clip-08a-chat.gif</td><td>10s</td><td>Chat Interface [NEW]</td><td>Select agent &rarr; chat &rarr; rich card</td></tr>
+  <tr><td>8B</td><td>clip-08b-notif.gif</td><td>6s</td><td>Notifications [NEW]</td><td>Bell &rarr; dropdown &rarr; navigate</td></tr>
+  <tr><td>9</td><td>clip-09-stream.gif</td><td>10s</td><td>Stream pipeline</td><td>Cards + progress ring + milestones</td></tr>
+  <tr><td>10</td><td>clip-10-portfolio.gif</td><td>10s</td><td>Portfolio [NEW]</td><td>5 tabs + reputation gauge</td></tr>
+  <tr><td>11</td><td>clip-11-live.gif</td><td>8s</td><td>Live Feed [NEW]</td><td>SSE events sliding in</td></tr>
+  <tr><td>12B</td><td>clip-12b-sentinel.gif</td><td>8s</td><td>Sentinel 3D globe</td><td>Globe rotation + arcs</td></tr>
+  <tr><td>12C</td><td>clip-12c-swarm.gif</td><td>8s</td><td>Swarm stat cards</td><td>Tab switching + audit</td></tr>
+  <tr><td>13D</td><td>clip-13d-admin.gif</td><td>8s</td><td>Auto-Judge AI</td><td>3-layer dispute + verdict</td></tr>
+  <tr><td>14</td><td>clip-14-closing.gif</td><td>5s</td><td>Traction + logo</td><td>Summary &rarr; logo fade-out</td></tr>
 </table>
 
-<div class="note">
-<b>GIF Recording Settings:</b>
-<br>— Resolution: 1280x720 or 960x540 (for file size)
-<br>— Frame rate: 10-15 FPS
-<br>— Max file size: 5MB per clip
-<br>— Format: GIF with optimized palette
-<br>— Save to: /public/demos/ directory
+<div class="note"><b>GIF Settings:</b> 1280x720 or 960x540, 10-15 FPS, max 5MB, optimized palette. Save to /public/demo-clips/. Add Agentic Finance watermark 30% opacity bottom-right.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<div style="text-align: center; margin-top: 80px; color: #999;">
+  <p style="font-size: 14pt; font-weight: bold; background: linear-gradient(135deg, #06b6d4, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTIC FINANCE</p>
+  <p>Video Demo Script v4.0 &mdash; English</p>
+  <p>March 17, 2026</p>
+  <p>agt.finance</p>
+  <p style="margin-top: 30px; font-size: 10pt;">Built on Tempo L1 | Chain ID 42431 | 9 Verified Contracts | 32 AI Agents</p>
+  <p style="font-size: 10pt;">NexusV2 &bull; ShieldVaultV2 &bull; PlonkVerifierV2 &bull; AIProofRegistry &bull; StreamV1 &bull; MultisendV2 &bull; AlphaUSD</p>
 </div>
 
 </body>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { EmptyState } from '../ui/EmptyState';
 
 interface SwarmStreamData {
     id: string;
@@ -72,13 +73,11 @@ export default function SwarmEscrowTab() {
 
     if (swarms.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-                <span className="text-6xl mb-4">🔐</span>
-                <h3 className="text-xl font-bold text-white mb-2">No Escrow Sessions</h3>
-                <p className="text-sm text-slate-400 max-w-md">
-                    Swarm escrow locks funds in NexusV2 smart contract and distributes to agents as milestones complete.
-                </p>
-            </div>
+            <EmptyState
+                icon={<span className="text-3xl">{'\u{1F510}'}</span>}
+                title="No Escrow Sessions"
+                description="Swarm escrow locks funds in NexusV2 smart contract and distributes to agents as milestones complete."
+            />
         );
     }
 
@@ -180,7 +179,7 @@ export default function SwarmEscrowTab() {
                                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-slate-500">→</div>
                                         {swarm.escrowTxHash && (
                                             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2">
-                                                <a href={`https://explore.tempo.xyz/tx/${swarm.escrowTxHash}`}
+                                                <a href={`https://explore.moderato.tempo.xyz/tx/${swarm.escrowTxHash}`}
                                                     target="_blank" rel="noopener noreferrer"
                                                     className="text-[8px] text-blue-400 hover:underline font-mono whitespace-nowrap">
                                                     TX: {swarm.escrowTxHash.slice(0, 8)}...

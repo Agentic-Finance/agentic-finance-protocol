@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'streams',
   version:      '1.0.0',
   price:        8,
-  capabilities: ['create-stream', 'milestone-planning', 'progressive-escrow', 'on-chain-execution'],
+  capabilities: ['create-stream', 'milestone-design', 'progressive-escrow', 'statement-of-work', 'timeline-visualization', 'on-chain-execution'],
 };
 
 /**

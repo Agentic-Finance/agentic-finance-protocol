@@ -3,18 +3,19 @@
 <meta charset="UTF-8">
 <style>
   body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px 60px; line-height: 1.7; color: #1a1a1a; }
-  h1 { font-size: 28pt; color: #6366f1; text-align: center; margin-bottom: 5px; }
-  h2 { font-size: 18pt; color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 5px; margin-top: 35px; }
-  h3 { font-size: 14pt; color: #4f46e5; margin-top: 20px; }
+  h1 { font-size: 28pt; background: linear-gradient(135deg, #06b6d4, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 5px; }
+  h2 { font-size: 18pt; color: #06b6d4; border-bottom: 2px solid #06b6d4; padding-bottom: 5px; margin-top: 35px; }
+  h3 { font-size: 14pt; color: #0891b2; margin-top: 20px; }
   .subtitle { text-align: center; font-size: 12pt; color: #666; margin-bottom: 30px; }
-  .time { display: inline-block; background: #6366f1; color: white; padding: 2px 10px; border-radius: 12px; font-size: 10pt; font-weight: bold; }
-  .action { background: #f0f0ff; border-left: 4px solid #6366f1; padding: 8px 15px; margin: 10px 0; font-style: italic; color: #444; }
+  .time { display: inline-block; background: linear-gradient(135deg, #06b6d4, #6366f1); color: white; padding: 2px 10px; border-radius: 12px; font-size: 10pt; font-weight: bold; }
+  .action { background: #f0f9ff; border-left: 4px solid #06b6d4; padding: 8px 15px; margin: 10px 0; font-style: italic; color: #444; }
   .script { background: #fafafa; border-left: 4px solid #10b981; padding: 10px 15px; margin: 10px 0; font-size: 11pt; }
   .note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 8px 15px; margin: 10px 0; font-size: 10pt; }
   .tip { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px 15px; margin: 10px 0; }
   .storyboard { background: #f5f0ff; border-left: 4px solid #8b5cf6; padding: 8px 15px; margin: 10px 0; font-size: 10pt; }
+  .new-feature { background: #ecfdf5; border: 2px solid #06b6d4; border-radius: 8px; padding: 10px 15px; margin: 10px 0; }
   table { border-collapse: collapse; width: 100%; margin: 15px 0; }
-  th { background: #6366f1; color: white; padding: 10px 15px; text-align: left; }
+  th { background: linear-gradient(135deg, #06b6d4, #6366f1); color: white; padding: 10px 15px; text-align: left; }
   td { border: 1px solid #ddd; padding: 8px 15px; }
   tr:nth-child(even) { background: #f9f9f9; }
   .page-break { page-break-before: always; }
@@ -22,1126 +23,1081 @@
 </head>
 <body>
 
-<h1>PAYPOL PROTOCOL</h1>
-<h1 style="font-size: 20pt; color: #333; margin-top: 0;">Video Demo Script &amp; Storyboard — Tiếng Việt</h1>
+<h1>AGENTIC FINANCE</h1>
+<h1 style="font-size: 20pt; color: #333; -webkit-text-fill-color: #333; background: none;">Kịch Bản Video Demo &amp; Storyboard &mdash; Tiếng Việt</h1>
 <div class="subtitle">
-  Thời lượng: 30-33 phút | Định dạng: Screen Recording + Voice-over<br>
-  Phiên bản: 3.2 | Ngày: 10/03/2026<br>
-  <i>Cập nhật v3.2: Thêm Live Chat với AI agents, Notification System thông minh (13 categories, click di chuyển đến đúng section), FiatOffRamp rút tiền PayPal, Job History, Agent Earnings, Auto-Judge AI phân xử tranh chấp tự động</i>
+  Thời lượng: 30&ndash;33 phút | Định dạng: Quay màn hình + Lồng tiếng<br>
+  Phiên bản: 4.0 | Ngày: 17 tháng 3, 2026<br>
+  <i>v4.0: RainbowKit Wallet Connect, Giao diện Chat với Agent, Portfolio Dashboard, Live Transaction Feed, Analytics Dashboard, Trang chi tiết Agent, Hệ thống thông báo 13 danh mục, Ví nhúng mã hóa AES-256-GCM</i>
 </div>
 
 <table>
-  <tr><th>Phần</th><th>Nội Dung</th><th>Thời Gian</th><th>GIF Clip</th></tr>
-  <tr><td>0</td><td>Intro — Mở đầu</td><td>0:00 - 1:00</td><td>clip-00-intro.gif</td></tr>
-  <tr><td>1</td><td>Tổng Quan — PayPol là gì?</td><td>1:00 - 3:30</td><td>clip-01-overview.gif</td></tr>
-  <tr><td>2</td><td>Kết Nối Ví &amp; Workspace</td><td>3:30 - 5:00</td><td>clip-02-wallet.gif</td></tr>
-  <tr><td>3</td><td>OmniTerminal — Payroll, Boardroom, Daemon Queue, History</td><td>5:00 - 10:00</td><td>clip-03-terminal.gif</td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;3E: Job History, FiatOffRamp, Agent Earnings</td><td>9:00 - 10:00</td><td></td></tr>
-  <tr><td>4</td><td>Shield Mode — ZK-SNARK Privacy</td><td>10:00 - 12:00</td><td>clip-04-shield-mode.gif</td></tr>
-  <tr><td>5</td><td>Shield Dashboard — ZK Flow Diagram &amp; 10 Use Cases</td><td>12:00 - 14:30</td><td>clip-05-shield-dashboard.gif</td></tr>
-  <tr><td>6</td><td>A2A Marketplace — Agents Thuê Nhau</td><td>14:30 - 19:30</td><td>clip-06-a2a.gif</td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6A: Khám Phá Marketplace</td><td>14:30 - 15:30</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6B: Thực Hiện A2A Deal</td><td>15:30 - 17:00</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6C: Thanh Toán Bằng Thẻ (Fiat On-Ramp)</td><td>17:00 - 18:00</td><td></td></tr>
-  <tr><td></td><td>&nbsp;&nbsp;6D: Live Chat với AI Agent + Thông Báo Thông Minh</td><td>18:00 - 19:30</td><td>clip-06d-chat.gif</td></tr>
-  <tr><td>7</td><td>AI Proof Verification</td><td>19:30 - 21:00</td><td>clip-07-verify.gif</td></tr>
-  <tr><td>8</td><td>Stream — Pipeline Cards &amp; Thanh Toán Milestone</td><td>21:00 - 23:00</td><td>clip-08-stream.gif</td></tr>
-  <tr><td>9</td><td>Cortex Intelligence Hub</td><td>23:00 - 24:30</td><td>clip-09-cortex.gif</td></tr>
-  <tr><td>10</td><td>Sentinel Command Center</td><td>24:30 - 26:00</td><td>clip-10-sentinel.gif</td></tr>
-  <tr><td>11</td><td>Swarm — 6 Stat Cards &amp; Compact Audit Trail</td><td>26:00 - 28:30</td><td>clip-11-swarm.gif</td></tr>
-  <tr><td>12</td><td>Embedded Wallets</td><td>28:30 - 29:30</td><td>clip-12-wallets.gif</td></tr>
-  <tr><td>13</td><td>Developer Experience &amp; SDK</td><td>29:30 - 31:00</td><td>clip-13-developer.gif</td></tr>
-  <tr><td>14</td><td>Admin, Auto-Judge AI &amp; Arbitration</td><td>31:00 - 32:30</td><td>clip-14-admin.gif</td></tr>
-  <tr><td>15</td><td>Closing — Kết thúc</td><td>32:30 - 33:30</td><td>clip-15-closing.gif</td></tr>
+  <tr><th>Phần</th><th>Nội dung</th><th>Thời gian</th><th>GIF Clip</th></tr>
+  <tr><td>0</td><td>Mở đầu</td><td>0:00 &ndash; 1:00</td><td>clip-00-intro.gif</td></tr>
+  <tr><td>1</td><td>Tổng quan &mdash; Agentic Finance là gì?</td><td>1:00 &ndash; 3:30</td><td>clip-01-overview.gif</td></tr>
+  <tr><td>2</td><td>Trang chủ + Kết nối Ví [MỚI v4.0]</td><td>3:30 &ndash; 5:00</td><td>clip-02-wallet.gif</td></tr>
+  <tr><td>3</td><td>Dashboard + OmniTerminal</td><td>5:00 &ndash; 10:00</td><td>clip-03-terminal.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3A: Chế độ Payroll</td><td>5:00 &ndash; 6:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3B: Boardroom</td><td>6:30 &ndash; 7:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3C: Daemon Queue</td><td>7:30 &ndash; 8:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3D: Shield Mode Toggle</td><td>8:30 &ndash; 9:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;3E: Lịch sử + FiatOffRamp</td><td>9:00 &ndash; 10:00</td><td></td></tr>
+  <tr><td>4</td><td>Shield Mode &mdash; Bảo mật ZK-SNARK</td><td>10:00 &ndash; 12:00</td><td>clip-04-shield.gif</td></tr>
+  <tr><td>5</td><td>Shield Dashboard &mdash; Sơ đồ ZK &amp; 10 Ứng dụng</td><td>12:00 &ndash; 14:30</td><td>clip-05-zkflow.gif</td></tr>
+  <tr><td>6</td><td>A2A Marketplace &mdash; Agent thuê Agent</td><td>14:30 &ndash; 19:30</td><td>clip-06-a2a.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6A: Duyệt 32 Agent</td><td>14:30 &ndash; 15:30</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6B: Trang chi tiết Agent [MỚI v4.0]</td><td>15:30 &ndash; 17:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;6C: Giao dịch + Fiat On-Ramp</td><td>17:00 &ndash; 19:30</td><td></td></tr>
+  <tr><td>7</td><td>Xác minh AI Proof</td><td>19:30 &ndash; 21:00</td><td>clip-07-verify.gif</td></tr>
+  <tr><td>8</td><td>Chat + Thông báo [MỚI v4.0]</td><td>21:00 &ndash; 23:00</td><td>clip-08-chat.gif</td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;8A: Giao diện Chat với Agent</td><td>21:00 &ndash; 22:00</td><td></td></tr>
+  <tr><td></td><td>&nbsp;&nbsp;8B: Hệ thống Thông báo</td><td>22:00 &ndash; 23:00</td><td></td></tr>
+  <tr><td>9</td><td>Stream &mdash; Pipeline &amp; Milestone</td><td>23:00 &ndash; 24:30</td><td>clip-09-stream.gif</td></tr>
+  <tr><td>10</td><td>Portfolio Dashboard [MỚI v4.0]</td><td>24:30 &ndash; 26:00</td><td>clip-10-portfolio.gif</td></tr>
+  <tr><td>11</td><td>Live Transaction Feed [MỚI v4.0]</td><td>26:00 &ndash; 27:30</td><td>clip-11-live.gif</td></tr>
+  <tr><td>12</td><td>Cortex + Sentinel + Swarm</td><td>27:30 &ndash; 29:30</td><td>clip-12-cortex.gif</td></tr>
+  <tr><td>13</td><td>Analytics + Ví + Developer + Admin</td><td>29:30 &ndash; 32:00</td><td>clip-13-admin.gif</td></tr>
+  <tr><td>14</td><td>Kết thúc</td><td>32:00 &ndash; 33:00</td><td>clip-14-closing.gif</td></tr>
 </table>
 
-<p><b>Cách đọc kịch bản:</b></p>
-<div class="action">Dòng màu tím = Hướng dẫn thao tác trên màn hình</div>
-<div class="script">Dòng màu xanh = Lời thoại cần đọc/nói</div>
-<div class="note">Dòng màu vàng = Ghi chú cho người quay</div>
-<div class="storyboard">Dòng màu tím nhạt = Storyboard / ghi chú bố cục hình ảnh</div>
+<p><b>Hướng dẫn đọc kịch bản:</b></p>
+<div class="action">Dòng xanh dương = Hướng dẫn hành động trên màn hình</div>
+<div class="script">Dòng xanh lá = Lời thoại / lồng tiếng</div>
+<div class="note">Dòng vàng = Ghi chú sản xuất</div>
+<div class="storyboard">Dòng tím = Storyboard / bố cục hình ảnh</div>
+<div class="new-feature">[MỚI v4.0] = Tính năng mới trong phiên bản 4.0</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">0:00 - 1:00</span> PHẦN 0: MỞ ĐẦU</h2>
+<h2><span class="time">0:00 &ndash; 1:00</span> PHẦN 0: MỞ ĐẦU</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Nền tối (#111B2E). Logo PayPol fade in ở giữa, hiệu ứng hạt nhỏ phía sau. Sau 3 giây, logo thu nhỏ về góc trái và dashboard trượt vào từ phải.
-<br>Camera: Toàn màn hình &rarr; hiện dashboard.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Nền tối (#0A0A0F). Logo Agentic Finance hiện dần ở giữa với hiệu ứng gradient cyan-indigo. Hạt particle phía sau. Sau 3 giây, logo thu nhỏ góc trái, dashboard trượt vào từ phải.<br>Camera: Toàn màn hình &rarr; logo &rarr; chuyển cảnh dashboard.<br>Âm thanh: Nhạc ambient synth, âm lượng thấp.</div>
 
-<div class="action">Màn hình: Logo PayPol hoặc title card trên nền đen. Sau 3 giây chuyển sang màn hình dashboard.</div>
+<div class="action">Màn hình: Logo Agentic Finance trên nền tối (#0A0A0F). Hiệu ứng particle. Chuyển sang dashboard sau 3 giây.</div>
 
 <div class="script">
-Xin chào tất cả mọi người, tôi là [Tên bạn], founder của PayPol Protocol.
+Xin chào mọi người, mình là [Tên của bạn], founder của Agentic Finance.
 <br><br>
-Hôm nay tôi sẽ demo trực tiếp toàn bộ PayPol — một hệ thống thanh toán được thiết kế riêng cho AI agents, xây dựng trên Tempo L1 blockchain.
+Hôm nay mình sẽ demo toàn bộ nền tảng Agentic Finance &mdash; hạ tầng thanh toán agent-to-agent được xây dựng riêng cho nền kinh tế AI, chạy trên blockchain Tempo L1.
 <br><br>
-Trong khoảng 30 phút tới, các bạn sẽ thấy:
-<br>
-— AI agents tự động thuê nhau và thanh toán, không cần con người can thiệp
-<br>
-— ZK-SNARK bảo vệ quyền riêng tư của mọi giao dịch
-<br>
-— Hệ thống xác minh chứng minh rằng AI đã làm đúng những gì nó hứa
-<br>
-— Và tất cả đều đang chạy LIVE trên blockchain thật, không phải mockup
+Trong 30 phút tới, các bạn sẽ thấy:
+<br>&mdash; AI agent tự động thuê và thanh toán cho nhau, không cần con người can thiệp
+<br>&mdash; Mật mã ZK-SNARK bảo vệ quyền riêng tư của mọi giao dịch
+<br>&mdash; Hệ thống xác minh chứng minh AI agent đã làm đúng cam kết
+<br>&mdash; Kết nối đa ví qua RainbowKit
+<br>&mdash; Giao diện chat trực tiếp với agent và thực thi giao dịch on-chain
+<br>&mdash; Tất cả đều chạy THẬT trên blockchain thật &mdash; không phải mockup
 <br><br>
-OK, bắt đầu thôi!
+Bắt đầu thôi!
 </div>
 
-<div class="note">Ghi chú: Nói tự tin, nhìn thẳng vào camera. Tốc độ nói vừa phải — để AI dub tiếng Anh khớp lip-sync.</div>
+<div class="note">Ghi chú: Nói tự tin, nhìn vào camera. Tốc độ vừa phải. Phần mở đầu tạo ấn tượng cho toàn bộ demo. Quay 2-3 lần lấy bản tốt nhất. Kiểm tra âm thanh trước mỗi take.</div>
+
+<div class="tip"><b>Mẹo quay Phần 0:</b> Logo animation nên được thêm trong hậu kỳ (After Effects hoặc DaVinci Resolve). Quay phần lồng tiếng riêng. Ghép sau.</div>
 
 <!-- ============================================== -->
-<h2><span class="time">1:00 - 3:30</span> PHẦN 1: TỔNG QUAN — PAYPOL LÀ GÌ?</h2>
+<h2><span class="time">1:00 &ndash; 3:30</span> PHẦN 1: TỔNG QUAN &mdash; AGENTIC FINANCE LÀ GÌ?</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /protocol. Cuộn chậm qua hero section, dừng lại ở competitive moats. Zoom vào từng moat card khi nói đến.
-<br>Camera: Toàn bộ cửa sổ trình duyệt, chuột hiện để hướng dẫn cuộn.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Điều hướng đến agt.finance/protocol. Cuộn chậm qua hero section, dừng ở competitive moats. Zoom vào từng thẻ khi giới thiệu. Cuộn đến bảng 9 smart contract.<br>Camera: Toàn trình duyệt, chuột hướng dẫn cuộn.</div>
 
-<div class="action">Màn hình: Mở trang paypol.xyz/protocol — cuộn nhẹ xuống phần giới thiệu.</div>
+<div class="action">Điều hướng đến agt.finance/protocol. Cuộn chậm qua hero section.</div>
 
 <div class="script">
-PayPol giải quyết một vấn đề rất lớn trong ngành AI: các AI agents ngày càng thông minh, chúng có thể làm việc, tạo nội dung, viết code, phân tích dữ liệu... nhưng chưa có cách nào để chúng tự thanh toán cho nhau một cách an toàn và tự động.
+Mình bắt đầu bằng một ví dụ thực tế. Hãy tưởng tượng một AI agent marketing cần kiểm toán tuân thủ trước khi chạy chiến dịch. Trong thế giới hiện tại, công ty phải tìm công ty kiểm toán, đàm phán điều khoản, ký hợp đồng, chờ nhiều ngày, rồi xử lý thanh toán thủ công. Với Agentic Finance, agent marketing tự động tìm agent tuân thủ trên marketplace, đàm phán qua giao thức APS-1, khóa thanh toán vào smart contract escrow, nhận kết quả, xác minh bằng AI proof, và giải ngân &mdash; tất cả trong vài phút, không cần người can thiệp.
 <br><br>
-Hãy tưởng tượng thế này: bạn có một AI agent làm marketing. Nó cần thuê một AI agent khác để thiết kế logo, một agent nữa để viết content, và một agent nữa để dịch sang tiếng Anh.
-<br><br>
-Vậy ai sẽ giữ tiền? Làm sao để biết agent đã làm xong việc? Và nếu nó làm sai thì xử lý thế nào?
-<br><br>
-PayPol giải quyết toàn bộ các vấn đề đó.
+Đó là tương lai mà chúng tôi đang xây dựng. Và đây là lý do Agentic Finance khác biệt.
 </div>
 
-<div class="action">Cuộn xuống đến mục "5 Things Only PayPol Can Do" — trang /protocol, khu vực Competitive Moats.</div>
+<div class="action">Cuộn đến 5 lợi thế cạnh tranh. Dừng ở từng thẻ.</div>
 
 <div class="script">
-PayPol có 5 điểm khác biệt cốt lõi mà không platform nào khác có:
+5 lợi thế cạnh tranh chính:
 <br><br>
-<b>Thứ nhất — Agent-to-Agent Escrow.</b> Khi một AI agent thuê một agent khác, tiền sẽ được khoá trong smart contract. Agent chỉ nhận được tiền khi hoàn thành nhiệm vụ và được xác nhận. Nếu có tranh chấp, Judge sẽ phân xử ngay trên blockchain.
+<b>Thứ nhất: ZK-SNARK Privacy thật.</b> Mạch Circom V2 biên dịch thành PLONK proof với Poseidon hashing. Mỗi giao dịch bảo mật tạo một proof thật, xác minh on-chain bởi PlonkVerifierV2 tại 0x9FB9. Hoàn toàn riêng tư &mdash; người nhận, số tiền, mục đích đều ẩn, nhưng vẫn xác minh được.
 <br><br>
-<b>Thứ hai — AI Execution Verification.</b> Trước khi bắt đầu làm việc, agent phải commit kế hoạch lên blockchain. Sau khi làm xong, kết quả sẽ được hash và so sánh với kế hoạch ban đầu. Nếu không khớp, agent sẽ bị trừ điểm reputation.
+<b>Thứ hai: Xác minh AI Execution.</b> AIProofRegistry tại 0x8fDB tạo cam kết mật mã trước mỗi tác vụ. Sau khi hoàn thành, hash kết quả được so sánh. Không khớp thì reputation bị trừ và escrow tự động hoàn tiền.
 <br><br>
-<b>Thứ ba — Zero-Knowledge Privacy.</b> Chúng tôi dùng ZK-SNARK thật sự — Circom V2, PLONK proofs, Poseidon hash — để bảo vệ thông tin. Trên blockchain, không ai biết bạn trả bao nhiêu cho ai.
+<b>Thứ ba: 9 Smart Contract đã xác minh.</b> NexusV2 cho escrow, ShieldVaultV2 cho ZK privacy, PlonkVerifierV2, AIProofRegistry, StreamV1 cho milestone, MultisendV2 cho payroll batch, và AlphaUSD stablecoin. Tất cả trên Tempo L1, chain 42431.
 <br><br>
-<b>Thứ tư — Universal SDK.</b> PayPol hỗ trợ 7 framework phổ biến nhất: OpenAI, Anthropic Claude, LangChain, CrewAI, Eliza, MCP (Model Context Protocol), và OpenClaw. Bất kỳ AI agent nào cũng có thể tích hợp được.
+<b>Thứ tư: 32 AI Agent sản xuất.</b> 8 danh mục: DeFi, Bảo mật, Phân tích, Hạ tầng, Nghiên cứu, Sáng tạo, Dữ liệu, Tuân thủ. Không phải placeholder &mdash; mỗi agent có kỹ năng, giá, đánh giá, và lịch sử on-chain.
 <br><br>
-<b>Thứ năm — APS-1 v2.1 Global Standard.</b> Đây là tiêu chuẩn toàn cầu mở — giống như HTTP cho web và ERC-20 cho token, APS-1 v2.1 là tiêu chuẩn thanh toán giữa các AI agents. Có cross-chain interoperability, compliance framework, RFC spec, OpenAPI doc, và MIT License. Mục tiêu: APS-1 trở thành giao thức thanh toán chuẩn cho tất cả AI agents trên toàn thế giới.
+<b>Thứ năm: Chuẩn APS-1 v2.1.</b> Agent Payment Standard &mdash; giao thức phổ quát cho cách agent khám phá, đàm phán, escrow, thực thi, xác minh, và thanh toán. TCP/IP của thanh toán agent. Mọi framework đều kết nối được: OpenAI, Claude, LangChain, CrewAI, MCP, Eliza, OpenClaw.
 </div>
 
-<div class="action">Cuộn xuống bảng 9 Smart Contracts.</div>
+<div class="action">Cuộn đến bảng 9 smart contract. Dừng để người xem đọc địa chỉ.</div>
+
+<div class="action">Cuộn đến bảng 9 smart contract. Dừng 5 giây để người xem đọc.</div>
 
 <div class="script">
-Và đây là 9 smart contracts đã được deploy và verified trên Tempo L1 — chain ID 42431. Tất cả đều là code thật, giao dịch thật, không có gì là demo hay mockup.
+Bảng 9 smart contract &mdash; mỗi cái có tên, địa chỉ, và mô tả chức năng. Tất cả đã xác minh, source code public. Đây không phải PowerPoint, đây là phần mềm đang chạy trên blockchain thật. Và trong 30 phút tới, mình sẽ demo từng cái.
 </div>
 
-<!-- ============================================== -->
-<h2><span class="time">3:30 - 5:00</span> PHẦN 2: KẾT NỐI VÍ &amp; WORKSPACE</h2>
+<div class="note">Ghi chú: Phần nhiều thông tin. Nói rõ ràng, dừng 1-2 giây giữa mỗi lợi thế. Nếu quay nhiều take, chia thành 2 segment: 5 lợi thế riêng, bảng contract riêng.</div>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Landing page với giao diện tối. Click "Connect Wallet" — MetaMask trượt vào từ phải. Sau khi chấp nhận, hiện workspace selector. Dashboard load với 4 stat cards hiệu ứng fade in.
-<br>Camera: Nút wallet góc trái trên → MetaMask popup → stat cards.
-</div>
-
-<div class="action">Màn hình: Mở trang paypol.xyz — Landing page. MetaMask chưa kết nối.</div>
-
-<div class="script">
-OK, bây giờ tôi sẽ demo trực tiếp. Đây là trang chủ của PayPol. Việc đầu tiên là kết nối ví MetaMask.
-</div>
-
-<div class="action">Click "Connect Wallet" — MetaMask popup hiện lên — approve.</div>
-
-<div class="script">
-PayPol chạy trên Tempo L1, chain ID 42431. Điểm đặc biệt là gas trên testnet hoàn toàn miễn phí — bạn không cần lo về phí giao dịch.
-</div>
-
-<div class="action">Chọn hoặc tạo Workspace mới.</div>
-
-<div class="script">
-Mỗi workspace là một không gian làm việc độc lập. Có thể là công ty, DAO, hoặc project cá nhân của bạn. Trong mỗi workspace, bạn có danh sách nhân viên, lịch sử giao dịch, và cấu hình riêng.
-</div>
-
-<div class="action">Vào Dashboard chính. Chỉ tay lên 4 stat cards phía trên.</div>
-
-<div class="script">
-Đây là dashboard chính. Phía trên cùng là 4 chỉ số quan trọng:
-<br>
-— <b>Shielded Volume</b>: tổng giá trị đã được bảo vệ bởi ZK-SNARK
-<br>
-— <b>Executions</b>: tổng số giao dịch đã thực hiện
-<br>
-— <b>Integrity</b>: tỷ lệ xác minh thành công của mạng lưới
-<br>
-— <b>Velocity</b>: tốc độ giao dịch trung bình mỗi ngày
-</div>
+<div class="storyboard"><b>STORYBOARD chuyển cảnh:</b> Sau bảng contract, dissolve transition sang trang chủ /welcome. Thời gian chuyển cảnh: 0.5 giây.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">5:00 - 9:00</span> PHẦN 3: OMNI TERMINAL</h2>
+<h2><span class="time">3:30 &ndash; 5:00</span> PHẦN 2: TRANG CHỦ + KẾT NỐI VÍ [MỚI v4.0]</h2>
 
-<h3><span class="time">5:00 - 7:00</span> 3A: Payroll Mode — Trả Lương Bằng Ngôn Ngữ Tự Nhiên</h3>
+<div class="new-feature"><b>[MỚI v4.0]</b> RainbowKit thay thế MetaMask-only. Hỗ trợ MetaMask, Coinbase Wallet, WalletConnect, Rainbow, và nhiều ví khác.</div>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> OmniTerminal toàn màn hình. Hiệu ứng gõ chữ trong input. Kết quả AI parsing highlight: người nhận (xanh dương), số tiền (xanh lá), ghi chú (xám). Sau đó batch payroll với nhiều nhân viên xuất hiện dạng cards.
-<br>Camera: Input terminal → kết quả parsing → batch cards.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Điều hướng đến agt.finance/welcome. Landing page với hero, quả cầu 3D, feature cards. Click "Connect Wallet" mở RainbowKit modal. Chọn MetaMask. Dashboard load qua AuthGuard.<br>Camera: Toàn trình duyệt &rarr; zoom modal &rarr; quay lại toàn cảnh.</div>
 
-<div class="action">Màn hình: Click vào OmniTerminal — tab "Payroll".</div>
+<div class="action">Điều hướng đến agt.finance/welcome. Trang chủ hiển thị hero section và feature cards.</div>
 
 <div class="script">
-Đây là OmniTerminal — trái tim của PayPol. Nó hoạt động như một AI assistant. Bạn chỉ cần gõ lệnh bằng ngôn ngữ tự nhiên, và PayPol sẽ hiểu bạn muốn làm gì.
-</div>
-
-<div class="action">Gõ vào terminal: "Trả 500 AlphaUSD cho 0x1234...abcd cho việc thiết kế logo"</div>
-
-<div class="script">
-Tôi vừa gõ: "Trả 500 AlphaUSD cho địa chỉ này cho việc thiết kế logo". Claude AI phía sau sẽ phân tích câu lệnh và tự động nhận diện: người nhận là ai, số tiền bao nhiêu, và ghi chú là gì.
-</div>
-
-<div class="action">Hiển thị kết quả parsing — recipient, amount, note được highlight.</div>
-
-<div class="script">
-Như các bạn thấy, nó đã tự động tách ra: địa chỉ ví người nhận, số tiền 500 AlphaUSD, và ghi chú "thiết kế logo". Nếu bạn đã lưu danh sách nhân viên, chỉ cần gõ tên là đủ — không cần nhớ địa chỉ.
-</div>
-
-<div class="action">Gõ tiếp: "Trả lương tháng 3 cho tất cả nhân viên"</div>
-
-<div class="script">
-Hoặc đơn giản hơn — "Trả lương tháng 3 cho tất cả nhân viên". PayPol sẽ lấy danh sách nhân viên từ Boardroom và tạo hàng loạt giao dịch cùng lúc qua MultisendV2 — chỉ một transaction duy nhất cho tất cả.
-</div>
-
-<div class="action">Hiển thị CSV upload button.</div>
-
-<div class="script">
-Nếu bạn có danh sách lớn, chỉ cần upload file CSV với tên, địa chỉ ví, và số tiền. PayPol sẽ xử lý hàng trăm giao dịch trong một lúc.
-</div>
-
-<h3><span class="time">7:00 - 8:00</span> 3B: The Boardroom — Quản Lý Nhân Viên</h3>
-
-<div class="action">Cuộn xuống khu vực "The Boardroom" — bảng danh sách nhân viên.</div>
-
-<div class="script">
-Ngay bên dưới OmniTerminal là The Boardroom — nơi bạn quản lý toàn bộ danh sách nhân viên và người nhận thanh toán.
+Đây là trang chủ agt.finance/welcome. Hero section với số liệu chính, quả cầu 3D, và các thẻ tính năng. Giao diện tối với gradient cyan-indigo đặc trưng.
 <br><br>
-Mỗi nhân viên hiển thị: tên, địa chỉ ví, số tiền, trạng thái hiện tại — Awaiting Approval, Pending, hay đã Paid. Bạn có thể thêm nhân viên mới bằng tay, hoặc import từ CSV.
+Điều đầu tiên: kết nối ví. Trong v4.0, chúng tôi nâng cấp lên RainbowKit &mdash; chuẩn công nghiệp cho kết nối đa ví trong Web3.
+</div>
+
+<div class="action">Click "Connect Wallet". RainbowKit modal hiện ra với các tùy chọn ví.</div>
+
+<div class="script">
+Click "Connect Wallet" &mdash; modal RainbowKit hỗ trợ MetaMask, Coinbase Wallet, WalletConnect, Rainbow. Người dùng không bị khóa vào một nhà cung cấp.
 <br><br>
-Khi bạn gõ lệnh "Trả lương cho tất cả" trên OmniTerminal, hệ thống sẽ lấy danh sách từ đây và tạo giao dịch hàng loạt.
-</div>
-
-<div class="action">Click "Approve" trên một nhân viên — chuyển trạng thái từ Awaiting sang Pending.</div>
-
-<div class="script">
-Sau khi approve, giao dịch sẽ được chuyển sang Daemon Queue để xử lý. Nếu bật Shield mode, Daemon sẽ tự động tạo ZK proof và gửi on-chain.
-</div>
-
-<h3><span class="time">8:00 - 9:00</span> 3C: Daemon Queue &amp; Settled Batches</h3>
-
-<div class="action">Cuộn xuống phần "Daemon Queue" — hiển thị các giao dịch đang đợi xử lý.</div>
-
-<div class="script">
-Đây là Daemon Queue — hàng đợi xử lý. Mỗi entry hiển thị số tiền, loại giao dịch (Shield hay Public), và trạng thái hiện tại. Daemon chạy liên tục mỗi 5 giây, tự động pick up các giao dịch PENDING và xử lý chúng.
+Mình chọn MetaMask, phê duyệt kết nối đến Tempo L1 chain 42431, và xong. ConnectButton hiển thị địa chỉ ví và số dư AlphaUSD. AuthGuard phát hiện ví và tự động chuyển đến dashboard. Không cần đăng nhập, không mật khẩu &mdash; chỉ cần ví.
 <br><br>
-Nếu là Shield, Daemon sẽ: tạo ZK proof, deposit vào ShieldVault, rồi execute shielded payout. Nếu là Public, nó gửi thẳng qua MultisendV2.
+Quan trọng: gas trên Tempo L1 hoàn toàn miễn phí. Mọi giao dịch trong demo này không tốn phí gas. Chi phí duy nhất là phí nền tảng 2-5% cho dịch vụ agent.
 </div>
 
-<div class="action">Cuộn xuống phần "Settled Batches &amp; History" — hiển thị các giao dịch đã hoàn thành.</div>
+<div class="note">Cấu hình Tempo trước trong MetaMask: RPC https://rpc.moderato.tempo.game, Chain 42431, Symbol TEMPO. Kiểm tra kết nối thành công trước khi quay: gửi 1 giao dịch test.</div>
 
-<div class="script">
-Và đây là Settled Batches &amp; History — lịch sử toàn bộ giao dịch đã hoàn thành. Mỗi batch hiển thị:
-<br>
-— Loại: ZK-SHIELDED hoặc PUBLIC L1
-<br>
-— Số lượng người nhận và tổng giá trị
-<br>
-— Thời gian hoàn thành
-<br>
-— Và quan trọng nhất — link đến Tempo Block Explorer để xác nhận giao dịch trên blockchain
-<br><br>
-Click vào "View ZK Proof" để xem chi tiết: deposit transaction, payout transaction, và trạng thái của từng người nhận. Tất cả đều là giao dịch thật trên chain.
-</div>
+<div class="tip"><b>Quirk quan trọng:</b> Tempo L1 dùng custom transaction type 0x76 có thể gây lỗi khi parse bằng ethers.js v6. Nền tảng đã xử lý bằng hàm verifyTxOnChain() qua raw RPC. Luôn dùng { type: 0 } cho legacy transactions.</div>
 
-<div class="action">Click vào một batch — mở chi tiết breakdown.</div>
-
-<div class="script">
-Khi expand, bạn thấy chi tiết từng người nhận: tên, địa chỉ ví, số tiền, và link đến on-chain transaction. Mỗi giao dịch có thể verify độc lập trên block explorer.
-</div>
-
-<h3><span class="time">9:00 - 10:00</span> 3E: Job History, FiatOffRamp &amp; Agent Earnings</h3>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Cuộn xuống qua 3 section mới bên dưới Boardroom: Job History (bảng job với trạng thái), FiatOffRamp (lịch sử rút tiền PayPal), Agent Earnings (biểu đồ thu nhập agent). Sidebar: Escrow Tracker + Agent Earnings.
-<br>Camera: Cuộn nhẹ qua từng section, dừng 3-4 giây mỗi phần.
-</div>
-
-<div class="action">Cuộn xuống phần "Job History" — bên dưới Settlement Receipt.</div>
-
-<div class="script">
-Tiếp theo là Job History — lịch sử toàn bộ các job trên marketplace. Mỗi dòng hiện:
-<br>
-— Tên và avatar emoji của agent
-<br>
-— Trạng thái: Matched, Escrowed, Executing, Completed, Settled, hoặc Failed
-<br>
-— Thời gian thực hiện và link đến Tempo explorer
-<br>
-— Click expand để xem chi tiết prompt và kết quả
-</div>
-
-<div class="action">Cuộn xuống phần "Fiat Off-Ramp" — lịch sử rút tiền.</div>
-
-<div class="script">
-Đây là FiatOffRamp — tính năng rút tiền từ crypto sang USD qua PayPal. Mỗi giao dịch hiện:
-<br>
-— Số tiền USD và crypto tương ứng
-<br>
-— Địa chỉ PayPal người nhận
-<br>
-— Phí và trạng thái: Pending, Processing, Completed, hoặc Failed
-<br>
-Đây là cầu nối ngược lại — từ on-chain sang tài khoản ngân hàng thật.
-</div>
-
-<div class="action">Chỉ nhanh vào Agent Earnings bên sidebar phải.</div>
-
-<div class="script">
-Và sidebar bên phải có Agent Earnings — theo dõi thu nhập của từng agent: tổng thu nhập, số job hoàn thành, tỷ lệ thành công, và giá trị trung bình mỗi job. Developers thấy chính xác agents của họ đang kiếm được bao nhiêu.
-</div>
-
-<h3><span class="time">10:00 - 12:00</span> 3D: Shield Mode — ZK-SNARK Privacy</h3>
-
-<div class="action">Bật chế độ Shield trong OmniTerminal — toggle Shield ON.</div>
-
-<div class="script">
-Bây giờ tôi bật chế độ Shield — đây là tính năng bảo mật cao nhất của PayPol, sử dụng ZK-SNARK.
-</div>
-
-<div class="action">Gõ: "Trả 1000 AlphaUSD cho 0xABCD... với ZK privacy"</div>
-
-<div class="script">
-Khi bật Shield, giao dịch sẽ được xử lý qua ShieldVaultV2 smart contract. Đằng sau, hệ thống sẽ làm những việc sau:
-<br><br>
-Một — tạo một Zero-Knowledge proof bằng Circom V2 và snarkjs.
-<br>
-Hai — hash địa chỉ người nhận và số tiền bằng Poseidon hash.
-<br>
-Ba — tạo một nullifier để chống giao dịch trùng lặp.
-<br>
-Bốn — gửi proof lên PlonkVerifierV2 để xác minh trên blockchain.
-</div>
-
-<div class="action">Hiển thị loading animation — proof đang được tạo.</div>
-
-<div class="script">
-Proof đang được tạo... Đây là ZK-SNARK PLONK thật sự, không phải simulation. Daemon của chúng tôi đã được tối ưu hoá với Poseidon singleton cache. Proof đầu tiên mất khoảng 3 giây, nhưng các proof tiếp theo chỉ mất dưới 1 giây nhờ có cache.
-</div>
-
-<div class="action">Hiển thị thành công — transaction hash xuất hiện.</div>
-
-<div class="script">
-Hoàn tất! Giao dịch đã lên blockchain. Và điểm quan trọng là: trên chain, không ai có thể biết người nhận là ai hay số tiền là bao nhiêu. Chỉ có người gửi và người nhận mới biết — đúng như thiết kế.
-</div>
+<div class="storyboard"><b>STORYBOARD chuyển cảnh:</b> Sau khi ví kết nối thành công, AuthGuard detect ví và redirect sang dashboard. Hiệu ứng: slide transition từ phải sang trái, 0.3 giây. Dashboard load với 4 thẻ thống kê animation count-up.<br>Camera: Theo dõi chuyển trang &rarr; toàn cảnh dashboard &rarr; zoom 4 thẻ count-up.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">12:00 - 14:30</span> PHẦN 5: SHIELD DASHBOARD — ZK FLOW DIAGRAM &amp; 10 USE CASES</h2>
+<h2><span class="time">5:00 &ndash; 10:00</span> PHẦN 3: DASHBOARD + OMNITERMINAL</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /shield. Hiện 4 stat cards với nền gradient. ZK Flow Diagram — pipeline 5 bước ngang (desktop): Sender &rarr; Poseidon Hash &rarr; PLONK Proof &rarr; On-Chain &rarr; Recipient. Mỗi bước có icon màu (11x11px). Phía dưới: grid 2 cột use-case bên trái, form thực thi sticky bên phải. Form chỉ có 2 trường: recipient + amount (KHÔNG có adminSecret).
-<br>Camera: Bắt đầu từ stat cards, pan xuống ZK Flow Diagram (dừng 5s), rồi cuộn đến use cases + form.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Dashboard tại agt.finance/?app=1. Sidebar nav, 4 thẻ thống kê trên cùng, OmniTerminal ở giữa với các tab: Payroll, Boardroom, Daemon Queue, Settled Batches, Job History. Bắt đầu toàn cảnh, sau đó zoom dần vào từng khu vực.<br>Camera: Toàn trình duyệt &rarr; pan chậm từ sidebar qua thẻ thống kê &rarr; zoom OmniTerminal khi demo.</div>
 
-<div class="action">Chuyển sang trang paypol.xyz/shield.</div>
+<div class="action">Dashboard loaded tại agt.finance/?app=1. Hiển thị 4 thẻ thống kê.</div>
 
 <div class="script">
-Đây là Shield Dashboard — trung tâm điều hành cho toàn bộ hệ thống ZK privacy. Phía trên là 4 thẻ chỉ số thời gian thực với nền gradient: Shielded Volume, Executions, Integrity, và Velocity. Mỗi thẻ đọc trực tiếp từ blockchain.
-</div>
-
-<div class="action">Chỉ vào ZK Flow Diagram — pipeline 5 bước ngang bên dưới stat cards.</div>
-
-<div class="script">
-Và đây là điểm mới — ZK Flow Diagram. Đây là pipeline trực quan cho thấy chính xác một giao dịch Shield đi qua hệ thống như thế nào, từng bước một:
+Đây là dashboard chính &mdash; trung tâm điều khiển của toàn bộ nền tảng. Bên trái là sidebar navigation dẫn đến mọi trang. Phía trên là 4 thẻ thống kê thời gian thực: Treasury Balance hiển thị số dư AlphaUSD trong ví, Active Escrows đọc trực tiếp từ NexusV2 (0x6A46), Active Streams từ StreamV1 (0x4fE3), và Pending Verifications từ AIProofRegistry (0x8fDB). Tất cả đều on-chain, không cache.
 <br><br>
-<b>Bước 1 — Sender:</b> Người dùng khởi tạo thanh toán riêng tư.
-<br>
-<b>Bước 2 — Poseidon Hash:</b> Địa chỉ người nhận và số tiền được hash bằng hàm Poseidon — tối ưu cho mạch zero-knowledge.
-<br>
-<b>Bước 3 — PLONK Proof:</b> Một ZK-SNARK proof được tạo bằng hệ thống chứng minh PLONK — chứng minh giao dịch hợp lệ mà không tiết lộ bất kỳ chi tiết nào.
-<br>
-<b>Bước 4 — On-Chain:</b> Proof được gửi lên và xác minh trên Tempo L1.
-<br>
-<b>Bước 5 — Recipient:</b> Tiền được nhận — riêng tư, an toàn, và có thể xác minh.
+Ở giữa là OmniTerminal &mdash; giao diện ngôn ngữ tự nhiên đến blockchain. Gõ bằng tiếng Anh bình thường, AI sẽ phân tích và tạo giao dịch blockchain. Đây là nơi mọi thao tác chính diễn ra.
+</div>
+
+<h3>3A &mdash; Chế độ Payroll</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click tab Payroll. Gõ lệnh ngôn ngữ tự nhiên, camera zoom vào ô nhập liệu. AI phân tích hiển thị dưới dạng danh sách. Preview danh sách nhận với tổng tiền. Execute batch &mdash; zoom vào nút Execute, sau đó hiển thị kết quả thành công.<br>Camera: Zoom OmniTerminal &rarr; cận cảnh text input &rarr; pan xuống kết quả.</div>
+
+<div class="action">Click tab "Payroll". Gõ: "Pay Alice 500, Bob 300, Charlie 200 AlphaUSD for March development work".</div>
+
+<div class="script">
+Payroll &mdash; thao tác phổ biến nhất trong bất kỳ tổ chức nào. Thay vì mở bảng tính, copy-paste địa chỉ, gửi từng giao dịch riêng lẻ, ở đây mình chỉ cần gõ bằng tiếng Anh.
 <br><br>
-Trên điện thoại, sơ đồ này tự động chuyển sang bố cục dọc để dễ đọc hơn.
-</div>
-
-<div class="action">Cuộn xuống 10 use case cards — hiển thị trong grid 2 cột bên trái.</div>
-
-<div class="script">
-Chúng tôi đã thiết kế 10 ứng dụng thực tế cho ZK privacy:
+"Pay Alice 500, Bob 300, Charlie 200 AlphaUSD for March development work." AI phân tích câu lệnh, phân giải tên từ Boardroom ra địa chỉ ví, tính tổng 1,000 AlphaUSD, và hiển thị preview để xác nhận trước khi gửi.
 <br><br>
-<b>Autonomous Freelancers</b> — AI freelancer nhận thanh toán mà không lộ thông tin cá nhân.
-<br>
-<b>Shielded Payroll</b> — trả lương nhân viên mà họ không biết lương của nhau.
-<br>
-<b>DAO Performance Grants</b> — thưởng hiệu suất riêng tư trong DAO.
-<br>
-<b>Supply Chain Settlement</b> — thanh toán chuỗi cung ứng kín đáo.
-<br>
-<b>Private Bug Bounties</b> — trả tiền báo cáo lỗi bảo mật mà hacker không bị lộ danh tính.
+Cũng có thể upload CSV cho batch lớn &mdash; 50 hay 100 nhân viên cùng lúc. Upload file, hệ thống parse tự động, hiển thị preview, confirm rồi gửi. Một giao dịch duy nhất trên blockchain.
 </div>
 
-<div class="action">Cuộn thêm xuống 5 use cases tiếp theo.</div>
+<div class="action">Click "Execute Batch". Giao dịch gửi đến MultisendV2 (0x25f4). Hiển thị thành công với tx hash.</div>
 
 <div class="script">
-Và còn 5 ứng dụng nữa: A2A Micropayments cho các giao dịch siêu nhỏ giữa agents, Shielded Royalties cho bản quyền, Disaster Relief cho cứu trợ thiên tai, Global Remittances cho chuyển tiền quốc tế, và Autonomous VC cho đầu tư tự động.
+Click "Execute Batch" &mdash; một giao dịch on-chain duy nhất thanh toán cho cả ba người qua MultisendV2 tại 0x25f4. Xác nhận thành công với transaction hash và link Block Explorer. Mở link ra sẽ thấy chi tiết: ai nhận bao nhiêu, timestamp, block number. Minh bạch hoàn toàn trên blockchain công khai.
 </div>
 
-<div class="action">Chỉ vào form Shielded Execution bên phải (panel sticky). Nhập recipient và amount — chỉ cần 2 trường.</div>
+<div class="note">Nếu batch lớn hơn 50 người nhận, hệ thống tự động chia thành nhiều giao dịch nhỏ hơn để tránh vượt gas limit.</div>
+
+<h3>3B &mdash; Boardroom &mdash; Quản lý Nhân sự</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click tab Boardroom. Bảng nhân viên hiển thị dạng grid. Zoom vào từng cột: Tên, Địa chỉ ví (truncated), Vai trò, Lương tháng. Click "Add Employee" &mdash; form slide vào từ phải. Điền thông tin, lưu, nhân viên mới xuất hiện trong bảng.<br>Camera: Toàn OmniTerminal &rarr; zoom bảng &rarr; cận cảnh form thêm nhân viên.</div>
+
+<div class="action">Click tab "Boardroom". Hiển thị bảng nhân viên: Tên, Địa chỉ, Vai trò, Lương.</div>
 
 <div class="script">
-Bây giờ tôi sẽ thực hiện một giao dịch Shield trực tiếp từ dashboard này. Form đã được tinh giản — chỉ cần 2 trường: địa chỉ người nhận và số tiền. Không cần thêm bất kỳ thông tin bí mật nào.
-</div>
-
-<div class="action">Click "Execute Shielded Payout" — hiện loading "Broadcasting ZK-Proof..." — rồi hiện deposit TX và payout TX links.</div>
-
-<div class="script">
-Nhập địa chỉ người nhận, số tiền... và Execute. Hệ thống phát ZK proof lên blockchain... và thành công! Bạn có thể thấy cả deposit transaction và payout transaction — mỗi giao dịch có link trực tiếp đến Tempo block explorer.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">14:30 - 19:30</span> PHẦN 6: A2A MARKETPLACE</h2>
-
-<h3><span class="time">14:30 - 15:30</span> 6A: Khám Phá Marketplace</h3>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Chuyển sang OmniTerminal tab A2A. Grid các agent cards với avatar, badges kỹ năng, giá, rating sao, và icon tier bảo mật (Bronze/Silver/Gold). Hiệu ứng hover hiện chi tiết mở rộng.
-<br>Camera: Góc rộng grid → hover vào từng agent card.
-</div>
-
-<div class="action">Chuyển sang OmniTerminal — tab "A2A Marketplace".</div>
-
-<div class="script">
-Đây là phần tôi thích nhất — Agent-to-Agent Marketplace. Hiện tại có 32 AI agents đang chạy thật trên blockchain. Mỗi agent có kỹ năng chuyên môn, bảng giá, và lịch sử làm việc riêng.
-</div>
-
-<div class="action">Hiển thị danh sách agents — hover vào vài agent để thấy chi tiết.</div>
-
-<div class="script">
-Mỗi agent hiển thị:
-<br>
-— Tên và mô tả ngắn
-<br>
-— Kỹ năng chuyên môn: translation, code audit, design, data analysis...
-<br>
-— Giá cố định hoặc giá thương lượng
-<br>
-— Điểm đánh giá và số job đã hoàn thành
-<br>
-— Tier bảo mật: Bronze, Silver, hoặc Gold — dựa trên số tiền deposit
-</div>
-
-<h3><span class="time">15:30 - 17:00</span> 6B: Thực Hiện Một A2A Deal</h3>
-
-<div class="action">Gõ vào terminal: "Thuê một agent để audit smart contract, budget 200 AlphaUSD"</div>
-
-<div class="script">
-Tôi sẽ thử thuê một agent. Gõ: "Thuê agent audit smart contract với budget 200 AlphaUSD".
+Boardroom quản lý danh bạ nhóm &mdash; nghĩ như một cuốn sổ địa chỉ thông minh cho tổ chức. Mỗi nhân viên hoặc agent có entry với tên, địa chỉ ví, vai trò, lương tháng. Dữ liệu này kết nối trực tiếp vào Payroll &mdash; khi gõ "pay Alice" hệ thống tự phân giải địa chỉ ví từ Boardroom. Không cần nhớ hay copy-paste địa chỉ dài 42 ký tự.
 <br><br>
-PayPol sẽ thực hiện 3 bước tự động theo chuẩn APS-1:
+Ngoài ra, Boardroom còn theo dõi lịch sử thanh toán cho từng người. Click vào tên sẽ thấy tất cả các lần trả lương trước đó, tổng đã nhận, ngày bắt đầu. Rất hữu ích cho kế toán và kiểm toán nội bộ.
 </div>
 
-<div class="action">Hiển thị quá trình Discover.</div>
+<div class="action">Click "Add Employee". Điền: "David", "0x...abc", "Security Auditor", "1500 AlphaUSD". Lưu.</div>
 
 <div class="script">
-<b>Bước 1 — Discover:</b> Tìm kiếm agent có kỹ năng phù hợp. Hệ thống trả về danh sách các agent chuyên về code audit.
+Thêm nhân viên mới chỉ cần 4 trường: tên, địa chỉ ví, vai trò, và lương. Click Save, nhân viên xuất hiện ngay trong danh sách, và từ giờ có thể dùng tên "David" trong Payroll command.
 </div>
 
-<div class="action">Hiển thị quá trình Negotiate.</div>
+<h3>3C &mdash; Daemon Queue</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click tab Daemon Queue. Hàng đợi hiển thị với trạng thái màu: Pending (badge vàng nhấp nháy), Processing (badge xanh dương với spinner), Completed (badge xanh lá với checkmark), Failed (badge đỏ với X). Zoom vào một entry đang Processing, chờ chuyển sang Completed. Hiển thị animation real-time.<br>Camera: Toàn OmniTerminal &rarr; zoom hàng đợi &rarr; cận cảnh entry đang processing.</div>
+
+<div class="action">Click "Daemon Queue". Hiển thị hàng đợi giao dịch.</div>
 
 <div class="script">
-<b>Bước 2 — Negotiate:</b> Agent và client tự động thương lượng giá. Agent đề xuất 180 AlphaUSD, client chấp nhận.
-</div>
-
-<div class="action">Hiển thị quá trình Escrow Lock — transaction on-chain.</div>
-
-<div class="script">
-<b>Bước 3 — Escrow Lock:</b> 180 AlphaUSD được khoá vào NexusV2 smart contract. Lúc này, không ai có thể rút tiền — kể cả agent lẫn client. Tiền chỉ được giải ngân khi job hoàn thành và được xác nhận.
-</div>
-
-<div class="action">Mở Escrow Tracker — hiển thị lifecycle.</div>
-
-<div class="script">
-Đây là Escrow Tracker. Mỗi giao dịch đi qua vòng đời rõ ràng:
-<br>
-CREATED — MATCHED — ESCROW LOCKED — EXECUTING — COMPLETED — SETTLED.
+Daemon Queue là động cơ xử lý phía sau &mdash; nơi mọi giao dịch được xếp hàng và thực thi. Daemon chạy trên VPS tại 37.27.190.158, xử lý mỗi 5 giây: nhận giao dịch pending, gửi lên blockchain, cập nhật trạng thái thời gian thực.
 <br><br>
-Mỗi escrow có countdown deadline. Nếu agent không hoàn thành kịp hạn, client sẽ được tự động hoàn tiền. Platform fee chỉ 5% — thấp nhất thị trường. Và nếu có tranh chấp, hệ thống Arbitration sẽ giải quyết.
-</div>
-
-<h3><span class="time">17:00 - 18:00</span> 6C: Thanh Toán Bằng Thẻ — Fiat On-Ramp</h3>
-
-<div class="action">Màn hình: Mở Fiat Checkout — click "Pay with Card" trên một escrow.</div>
-
-<div class="script">
-Một tính năng quan trọng nữa: bạn không cần có crypto sẵn để sử dụng PayPol. Chúng tôi tích hợp Paddle — nền thanh toán Fiat-to-Crypto.
+Trạng thái hiển thị rõ ràng: badge vàng nhấp nháy cho Pending, xanh dương với spinner cho Processing, xanh lá với checkmark cho Completed, đỏ với X cho Failed. Nếu giao dịch fail, hệ thống retry tự động lên đến 3 lần trước khi đánh dấu thất bại.
 <br><br>
-Khi bạn chọn "Pay with Card", hệ thống sẽ:
-<br>
-— <b>Bước 1</b>: Hiển thị form thanh toán — nhập số thẻ tín dụng, email
-<br>
-— <b>Bước 2</b>: Paddle xử lý thanh toán fiat (USD)
-<br>
-— <b>Bước 3</b>: Tự động convert sang AlphaUSD và gửi vào escrow trên blockchain
+Điều quan trọng: daemon xử lý cả giao dịch công khai qua MultisendV2 lẫn giao dịch bảo mật qua ShieldVaultV2, tùy theo Shield Mode toggle. Singleton Poseidon cache được khởi tạo một lần và tái sử dụng, giảm 40% thời gian tạo proof cho giao dịch Shield.
 </div>
 
-<div class="action">Hiển thị quá trình thanh toán — Paddle checkout form.</div>
+<div class="note">Kiểm tra daemon trước khi quay: ssh root@37.27.190.158 "docker ps | grep daemon". Container phải hiển thị "healthy".</div>
+
+<h3>3D &mdash; Shield Mode Toggle</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Zoom vào Shield Mode toggle ở góc trên OmniTerminal. Click toggle &mdash; hiệu ứng chuyển đổi: nền chuyển từ tối sang tông tím, biểu tượng khiên xuất hiện, viền gradient thay đổi.<br>Camera: Cận cảnh toggle &rarr; zoom out thấy toàn bộ giao diện chuyển tông.</div>
+
+<div class="action">Click Shield Mode toggle. Giao diện chuyển tông tím.</div>
 
 <div class="script">
-Đây là Paddle checkout. Hỗ trợ Visa, Mastercard, Apple Pay, và nhiều phương thức khác. Sau khi thanh toán thành công, AlphaUSD sẽ được mint và tự động khoá vào NexusV2 escrow — toàn bộ diễn ra trong vài giây.
+Shield Mode toggle &mdash; một click duy nhất, toàn bộ OmniTerminal chuyển sang chế độ riêng tư. Tông tím cho biết mọi giao dịch từ giờ sẽ đi qua ShieldVaultV2 (0x3B4b) với bảo mật ZK-SNARK đầy đủ. Mỗi thanh toán tạo PLONK proof thật &mdash; không phải checkmark giả.
 <br><br>
-Người dùng không cần mua crypto trước, không cần hiểu blockchain — chỉ cần có thẻ tín dụng là đủ. Đây là cầu nối giữa Web2 và Web3.
+Nếu bạn đang trả lương cho nhóm và không muốn công khai ai nhận bao nhiêu, bật Shield Mode trước khi gõ payroll command. Blockchain ghi nhận giao dịch đã xảy ra, nhưng chi tiết hoàn toàn ẩn. Phần 4 sẽ đi sâu vào cách hoạt động.
 </div>
 
-<div class="action">Hiển thị confirmation — transaction hash xuất hiện.</div>
+<h3>3E &mdash; Lịch sử, FiatOffRamp, Agent Earnings</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> Lần lượt click qua: Settled Batches (bảng lịch sử với row mở rộng), FiatOffRamp (form rút tiền PayPal), Agent Earnings sidebar (bảng xếp hạng dọc).<br>Camera: Toàn OmniTerminal &rarr; zoom Settled Batches khi mở rộng row &rarr; pan sang FiatOffRamp &rarr; pan sang Agent Earnings.</div>
+
+<div class="action">Click "Settled Batches". Hiển thị lịch sử batch với chi tiết mở rộng.</div>
 
 <div class="script">
-Hoàn tất! Tiền đã vào escrow từ thẻ tín dụng. Agent giờ có thể bắt đầu làm việc ngay — mọi thứ tự động và liền mạch.
+Settled Batches &mdash; lịch sử đầy đủ các batch đã xử lý. Mỗi entry hiển thị: ngày giờ, tổng số tiền, số người nhận, transaction hash. Click vào bất kỳ entry nào để mở rộng xem chi tiết từng thanh toán với link Block Explorer. Đây là audit trail hoàn chỉnh &mdash; mọi đồng tiền đều có trace on-chain.
 </div>
 
-<h3><span class="time">18:00 - 19:30</span> 6D: Live Chat với AI Agent &amp; Thông Báo Thông Minh</h3>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Chat button nhấp nháy góc dưới phải. Click mở ChatPanel — slide in từ phải. Channel list bên trái hiện các kênh chat với agent. Message thread bên phải hiện rich cards (transaction, escrow status). Sau đó hiện NotificationBell — dropdown với các thông báo phân loại. Click thông báo — tự động cuộn đến section FiatOffRamp.
-<br>Camera: Chat button → ChatPanel mở → tin nhắn rich card → đóng panel → click notification bell → click thông báo → cuộn đến section.
-</div>
-
-<div class="action">Chỉ vào nút Chat hình tròn góc dưới phải — đang nhấp nháy có badge unread.</div>
+<div class="action">Hiển thị FiatOffRamp với tùy chọn rút PayPal.</div>
 
 <div class="script">
-Khi agent bắt đầu làm việc, bạn có thể giao tiếp trực tiếp với nó qua Live Chat. Nút chat góc dưới phải này nhấp nháy khi có tin nhắn mới.
+FiatOffRamp &mdash; cầu nối từ crypto sang tài chính truyền thống. Agent và nhân viên có thể chuyển đổi AlphaUSD sang tiền pháp định và rút qua PayPal. Nhập số AlphaUSD muốn rút, chọn PayPal, xác nhận. Rất quan trọng cho ứng dụng thực tế &mdash; cuối ngày, nhân viên muốn nhận tiền thật, không phải token.
 </div>
 
-<div class="action">Click Chat button — ChatPanel trượt vào từ bên phải.</div>
+<div class="action">Hiển thị Agent Earnings sidebar &mdash; bảng xếp hạng agent theo doanh thu.</div>
 
 <div class="script">
-Đây là ChatPanel — giao diện chat thời gian thực. Bên trái là danh sách kênh — mỗi khi bạn thuê một agent trên marketplace, hệ thống tự động tạo một kênh chat riêng. Bên phải là luồng tin nhắn.
-</div>
-
-<div class="action">Chỉ vào các tin nhắn rich card — Transaction Card, Agent Result Card.</div>
-
-<div class="script">
-Điểm đặc biệt là tin nhắn không chỉ là text. Agent gửi kết quả dưới dạng rich cards:
-<br>
-— <b>Transaction Card</b>: hiển thị số tiền, token, hash giao dịch, và trạng thái
-<br>
-— <b>Agent Result Card</b>: tóm tắt kết quả công việc — giá trị đã chuyển, địa chỉ, thời gian
-<br>
-— <b>Escrow Updates</b>: trạng thái escrow thay đổi từ Locked sang Settled
+Agent Earnings hiển thị bảng xếp hạng &mdash; agent nào kiếm nhiều nhất trên nền tảng. Doanh thu thời gian thực, minh bạch cho mọi người. Developer thấy agent của mình đứng đâu và tối ưu chiến lược.
 <br><br>
-Bạn có thể gõ lệnh "/send 100 AlphaUSD to 0x..." trực tiếp trong chat để chuyển tiền nhanh.
+Bảng xếp hạng hiển thị: vị trí, tên agent, danh mục, tổng doanh thu AlphaUSD, số job hoàn thành, và rating trung bình. Agent top sẽ có badge đặc biệt trên profile &mdash; Top Earner, Most Active, Highest Rated. Incentive cho agent cải thiện liên tục.
 </div>
 
-<div class="action">Đóng ChatPanel. Chỉ lên NotificationBell ở góc phải trên — click mở dropdown.</div>
+<div class="note">Trong demo, chỉ hiển thị giao diện FiatOffRamp, không thực hiện rút tiền thật. Agent Earnings cần ít nhất 5-10 agent có doanh thu để bảng xếp hạng có ý nghĩa.</div>
 
-<div class="script">
-Và đây là hệ thống Notification thông minh. Chuông thông báo hiển thị số tin chưa đọc. Click vào để xem tất cả.
-</div>
-
-<div class="action">Hiện dropdown thông báo — chỉ các tab filter: All, Stream, Job, Escrow, Swarm, Fiat, Payroll.</div>
-
-<div class="script">
-PayPol có 13 loại thông báo, được phân loại rõ ràng: Stream, Job, Escrow, Fiat, Payroll, Swarm, A2A, Intel, Wallet, Review, Agent, Offramp, và Judge. Mỗi loại có icon riêng và màu sắc riêng để phân biệt nhanh.
-<br><br>
-Điểm quan trọng nhất: mỗi thông báo là CLICKABLE và sẽ đưa bạn đến đúng nơi cần đến:
-<br>
-— Click <b>Task Completed</b> — mở chat panel với agent đó
-<br>
-— Click <b>Withdrawal Processing</b> — cuộn đến mục FiatOffRamp
-<br>
-— Click <b>Milestone Submitted</b> — chuyển đến trang Stream
-<br>
-— Click <b>Swarm Created</b> — chuyển đến trang Swarm
-<br>
-— Click <b>Judge Verdict</b> — chuyển đến trang Admin
-<br><br>
-Không còn tình trạng nhận thông báo mà không biết phải làm gì. Mỗi thông báo là một hành động.
-</div>
-
-<div class="action">Click vào một thông báo "Task Completed" — ChatPanel mở lại với đúng kênh của job đó.</div>
-
-<div class="script">
-Như các bạn thấy, tôi click vào "Task Completed" và chat panel tự động mở với đúng cuộc hội thoại của job đó. Mọi thứ liên kết với nhau — thông báo, chat, và marketplace.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">19:30 - 21:00</span> PHẦN 7: AI PROOF VERIFICATION</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /verify. Hiện 4 stat cards (Commitments, Verified, Matched, Integrity Rate). Bảng lịch sử commitment với các dòng có thể expand. Click một commitment để hiện so sánh plan hash vs result hash.
-<br>Camera: Stat cards → bảng → chi tiết commitment mở rộng.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/verify.</div>
-
-<div class="script">
-Đây là AI Proof Verification — trang xác minh công khai. Bất kỳ ai cũng có thể vào đây để kiểm tra xem AI agent có làm đúng lời hứa hay không.
-</div>
-
-<div class="action">Chỉ vào 4 stat cards phía trên.</div>
-
-<div class="script">
-4 chỉ số chính:
-<br>
-— <b>Total Commitments</b>: tổng số cam kết đã ghi nhận trên chain
-<br>
-— <b>Verified</b>: số lượng đã được xác minh
-<br>
-— <b>Matched</b>: số kế hoạch khớp với kết quả thực tế
-<br>
-— <b>Integrity Rate</b>: tỷ lệ khớp — càng cao càng tốt
-</div>
-
-<div class="action">Click vào một commitment trong bảng lịch sử.</div>
-
-<div class="script">
-Hãy xem chi tiết một commitment. Trước khi bắt đầu làm việc, agent phải commit một hash của kế hoạch lên blockchain — giống như một lời hứa bất biến.
-<br><br>
-Sau khi làm xong, kết quả thực tế được hash và so sánh với kế hoạch ban đầu:
-<br>
-— Nếu khớp: "Verified Match" — agent đã làm đúng lời hứa.
-<br>
-— Nếu không khớp: "Mismatch" — agent sẽ bị slash điểm reputation.
-<br><br>
-Đây là cơ chế "Trust but Verify" — không cần phải tin AI, chỉ cần xác minh trên blockchain.
-</div>
-
-<div class="action">Thử tìm kiếm một commitment bằng ID.</div>
-
-<div class="script">
-Bạn có thể tìm kiếm bất kỳ commitment nào bằng ID. Tất cả dữ liệu đều minh bạch và không thể sửa đổi.
-</div>
+<div class="storyboard"><b>STORYBOARD chuyển cảnh Phần 3 &rarr; 4:</b> Sau khi demo đủ 5 tab OmniTerminal, bật Shield Mode toggle (hiệu ứng tím), dừng 2 giây ở trạng thái Shield, rồi dissolve transition sang trang /shield. Tạo cầu nối tự nhiên giữa Shield toggle và Shield deep-dive.<br>Camera: Cận cảnh toggle &rarr; hold 2 giây &rarr; dissolve sang /shield.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">21:00 - 23:00</span> PHẦN 8: STREAM — PIPELINE CARDS &amp; THANH TOÁN MILESTONE</h2>
+<h2><span class="time">10:00 &ndash; 12:00</span> PHẦN 4: SHIELD MODE &mdash; BẢO MẬT ZK-SNARK</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /stream. Hiện giao diện mới:
-<br>1. Header với gradient text "Stream Settlement" + role tabs (Client View / Agent View)
-<br>2. Ba stat cards: Active Streams (indigo), Total Volume (magenta với progress bar), Pending Review (amber với pulse dot)
-<br>3. Action banner (amber) nếu có milestone đang chờ
-<br>4. Filter bar: ALL | ACTIVE | COMPLETED | CANCELLED
-<br>5. Stream pipeline cards trong grid 2 cột — mỗi card hiện agent avatar, budget, ngày còn lại, và pipeline milestone ngang với các vòng tròn số nối bằng gradient lines
-<br>6. Click stream để hiện 2-panel detail: panel trái với SVG vòng tròn progress ring (130px), panel phải với timeline milestone cards dọc
-<br>Camera: Cuộn từ trên xuống qua cards → click expand → hiện progress ring + milestone timeline.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Điều hướng đến /shield hoặc dùng OmniTerminal Shield mode. Giải thích 4 bước: Poseidon &rarr; Nullifier &rarr; PLONK &rarr; On-Chain Verify. Hiển thị loading animation khi tạo proof. Hiển thị thành công với tx hash.<br>Camera: Toàn trình duyệt, zoom vào proof generation.</div>
 
-<div class="action">Chuyển sang trang paypol.xyz/stream.</div>
+<div class="action">Điều hướng đến agt.finance/shield hoặc bật Shield Mode. Nhập giao dịch bảo mật.</div>
 
 <div class="script">
-Stream là hệ thống thanh toán theo tiến độ. Thay vì trả hết tiền một lần, bạn chia project thành nhiều milestone và thanh toán khi mỗi milestone được approve.
-</div>
-
-<div class="action">Chỉ vào 3 stat cards phía trên và nút chuyển Client/Agent View.</div>
-
-<div class="script">
-Trang Stream đã được thiết kế lại hoàn toàn với giao diện pipeline. Phía trên, bạn có thể chuyển giữa Client View và Agent View. Bên dưới là 3 thẻ chỉ số:
+Shield Mode sử dụng ZK-SNARK PLONK proof thật &mdash; nhấn mạnh "thật." Hầu hết các dự án Web3 nói về ZK đều dùng proof giả lập. Chúng tôi dùng mật mã cấp sản xuất.
 <br><br>
-— <b>Active Streams</b>: số lượng streams đang chạy, với icon indigo
-<br>
-— <b>Total Volume</b>: tổng ngân sách đã khoá, với thanh tiến độ hiện số tiền đã giải ngân
-<br>
-— <b>Pending Review</b>: milestone đang chờ duyệt — cái này có chấm amber nhấp nháy khi có items cần review
-</div>
-
-<div class="action">Chỉ vào action banner và filter bar.</div>
-
-<div class="script">
-Khi có milestone đang chờ, banner màu amber này sẽ xuất hiện: "N milestones đang chờ review — click vào stream để review." Phía dưới, các nút filter cho phép xem ALL, ACTIVE, COMPLETED, hoặc CANCELLED.
-</div>
-
-<div class="action">Chỉ vào các stream pipeline cards trong grid — highlight các vòng tròn milestone ngang.</div>
-
-<div class="script">
-Mỗi stream được hiển thị như một pipeline card. Phía trên: tên agent, tổng ngân sách, số ngày còn lại, và trạng thái. Điểm nổi bật là pipeline milestone này — một hàng các vòng tròn đánh số, mỗi vòng đại diện cho một milestone:
-<br>
-— Dấu tích xanh nghĩa là đã approve và thanh toán
-<br>
-— Dấu chấm than vàng nghĩa là đã submit và đang chờ review
-<br>
-— Dấu X đỏ nghĩa là bị từ chối
-<br>
-— Số xám nghĩa là chưa bắt đầu
+Quy trình mật mã 4 bước:
 <br><br>
-Các vòng tròn được nối bởi các đường gradient — xanh cho phần đã hoàn thành, xám cho phần sắp tới. Bên dưới mỗi vòng là số tiền milestone. Bạn thấy ngay tức thì project đang ở đâu.
-</div>
-
-<div class="action">Click vào một stream — hiển thị chi tiết 2-panel.</div>
-
-<div class="script">
-Click vào stream và bạn thấy chi tiết 2 panel. Bên trái là panel tổng quan với vòng tròn SVG progress ring — hiện chính xác phần trăm tiền đã giải ngân. Bên dưới: tổng ngân sách, số tiền đã giải ngân, số tiền còn lại, và đếm ngược deadline.
+<b>Bước 1: Poseidon Hashing.</b> Địa chỉ người nhận, số tiền, và bí mật ngẫu nhiên được đưa vào hàm hash Poseidon &mdash; thiết kế riêng cho mạch ZK, thân thiện đại số, proof gọn nhẹ. Singleton Poseidon cache giảm thời gian tạo proof 40%.
 <br><br>
-Bên phải là timeline milestone — các card xếp dọc, mỗi card có deliverable, số tiền, badge trạng thái, và nút hành động. Client có thể approve hoặc reject từng milestone. Agent có thể submit bằng chứng hoàn thành. Mọi thứ chạy qua StreamV1 smart contract.
-</div>
-
-<div class="action">Chỉ vào progress ring và các nút hành động trên milestone.</div>
-
-<div class="script">
-Vòng tròn progress có hiệu ứng animation — nó lấp đầy dần khi các milestone được approve. Và mỗi milestone card hiển thị link giao dịch để xác minh thanh toán on-chain. Platform fee là 5%.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">23:00 - 24:30</span> PHẦN 9: CORTEX INTELLIGENCE HUB</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /cortex. Hiện 4 tab. Click qua từng tab: Live Feed (sự kiện cuộn), Shield Panel (giờ có ZK Flow reference, thống kê nullifier), Revenue Dashboard (cards doanh thu), Wallets (grid số dư).
-<br>Camera: Tab bar → click từng tab, dừng 3-4 giây mỗi tab.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/cortex — dashboard điều hành giao thức.</div>
-
-<div class="script">
-Đây là Cortex — trung tâm tình báo của PayPol. Hãy nghĩ nó như phòng điều khiển cho toàn bộ giao thức.
-</div>
-
-<div class="action">Chỉ vào 4 tab: Live Feed, Shield Panel, Revenue, Wallets.</div>
-
-<div class="script">
-Cortex có 4 panel chính:
+<b>Bước 2: Nullifier Generation.</b> Nullifier duy nhất ngăn double-spending. Một khi gửi on-chain, không bao giờ tái sử dụng được. Không tiết lộ gì về giao dịch gốc.
 <br><br>
-<b>Thứ nhất — Live Feed.</b> Luồng giao dịch thời gian thực: escrow tạo mới, settlements, shield deposits, payroll batches. Mỗi sự kiện hiển thị transaction hash, block number, gas used, và decoded function call. Cập nhật tức thời qua Server-Sent Events.
+<b>Bước 3: PLONK Proof Generation.</b> Mạch Circom V2 tạo PLONK proof bằng snarkjs &mdash; đảm bảo toán học giao dịch hợp lệ mà không tiết lộ dữ liệu. Mất 2-5 giây.
 <br><br>
-<b>Thứ hai — Shield Panel.</b> Dashboard điều hành cho hệ thống ZK privacy. Hiển thị ZK Flow Diagram mà chúng ta vừa thấy — cùng pipeline 5 bước từ sender đến recipient. Thêm vào đó là commitments đang active, proofs đang pending, kích thước nullifier registry, độ trễ tạo proof, và tổng giá trị khoá trong ShieldVaultV2.
+<b>Bước 4: On-Chain Verification.</b> Proof gửi đến PlonkVerifierV2 (0x9FB9). Đúng hoặc sai, không mơ hồ. Nếu đúng, ShieldVaultV2 (0x3B4b) thực hiện chuyển tiền. Riêng tư, on-chain, xác minh mật mã.
+</div>
+
+<div class="action">Hiển thị animation tạo proof. Để chạy hoàn toàn không nói.</div>
+
+<div class="script">
+Và... xong! Proof xác minh thành công. ShieldVaultV2 đã chuyển tiền. Transaction hash hiển thị. Mở Block Explorer sẽ thấy: giao dịch đã xảy ra, nhưng người nhận và số tiền hoàn toàn ẩn. Chỉ có proof xác minh hợp lệ. Đó là sức mạnh của ZK-SNARK.
 <br><br>
-<b>Thứ ba — Revenue Dashboard.</b> Chỉ số doanh thu tổng hợp từ cả 3 engine: margin xử lý thẻ, phí platform marketplace, Shield privacy premium, và penalty arbitration. Bạn thấy chính xác giao thức tạo ra bao nhiêu doanh thu theo thời gian thực.
-<br><br>
-<b>Thứ tư — Embedded Wallets.</b> Tổng quan ví đa nguồn: số dư treasury, ví daemon, và tất cả ví agent với theo dõi số dư realtime.
+So sánh: giao dịch bình thường qua MultisendV2 &mdash; ai cũng thấy ai gửi, ai nhận, bao nhiêu tiền. Giao dịch Shield qua ShieldVaultV2 &mdash; chỉ thấy "một giao dịch đã xảy ra" và "proof hợp lệ." Hai thế giới hoàn toàn khác nhau.
 </div>
 
-<div class="action">Click qua từng tab, dừng lại vài giây để hiển thị dữ liệu.</div>
+<div class="note">Animation tạo proof là khoảnh khắc kịch tính. Để im lặng 3-5 giây khi animation chạy. Nói lại với năng lượng cao khi thành công. Đây là highlight của toàn bộ demo.</div>
 
-<div class="script">
-Tất cả dữ liệu ở đây đều đọc trực tiếp từ blockchain và database — không có dữ liệu tổng hợp. Đây là trạng thái thật của giao thức.
-</div>
+<div class="tip"><b>Mẹo quay Shield:</b> Quay animation tạo proof ở chế độ slow-motion nếu có thể (60fps thay vì 30fps). Trong hậu kỳ có thể slow down 50% để tăng dramatic effect. Thêm sound effect nhẹ khi proof verified. Gợi ý sound: tiếng "chime" hoặc "success tone" khi Verified xanh lá xuất hiện.</div>
 
-<!-- ============================================== -->
-<h2><span class="time">24:30 - 26:00</span> PHẦN 10: SENTINEL COMMAND CENTER</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /sentinel. Quả cầu 3D load với các cung sáng. Xoay chậm. Chỉ các cung xanh/xanh dương/tím. Sau đó Agent Heartbeat Grid bên phải (các ô nhấp nháy). Threat Radar phía dưới. Bật Cinematic Mode để toàn màn hình.
-<br>Camera: Toàn viewport cho hiệu ứng 3D. Cinematic mode chiếm toàn màn hình.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/sentinel — dashboard giám sát 3D.</div>
-
-<div class="script">
-Và đây là Sentinel — phần ấn tượng nhất của PayPol. Đây là trung tâm chỉ huy 3D được xây dựng bằng Three.js.
-</div>
-
-<div class="action">Hiển thị quả cầu 3D xoay với các cung thanh toán.</div>
-
-<div class="script">
-Trung tâm là quả cầu 3D này. Mỗi cung sáng đại diện cho một giao dịch thực đang chạy qua giao thức:
-<br>
-— <b>Cung xanh lá</b> là settlements — job đang được thanh toán
-<br>
-— <b>Cung xanh dương</b> là escrow locks — tiền đang được bảo đảm
-<br>
-— <b>Cung tím</b> là Shield transactions — thanh toán ZK-private
-<br><br>
-Cung càng sáng, giá trị giao dịch càng cao.
-</div>
-
-<div class="action">Chỉ vào Agent Heartbeat Grid bên phải.</div>
-
-<div class="script">
-Bên phải là Agent Heartbeat Grid. Mỗi ô đại diện cho một trong 32+ agents. Màu xanh là online và đang hoạt động. Hiệu ứng nhấp nháy cho thấy hoạt động thời gian thực. Bạn thấy ngay agents nào đang bận và agents nào đang rảnh.
-</div>
-
-<div class="action">Chỉ vào Threat Detection Radar panel.</div>
-
-<div class="script">
-Và phía dưới là Threat Radar — giám sát bất thường theo thời gian thực: giao dịch bất thường, proof thất bại có thể là replay attack, reputation agent giảm đột ngột, hoặc tương tác smart contract đáng ngờ. Đây là cách chúng tôi bảo vệ hệ sinh thái.
-</div>
-
-<div class="action">Bật Cinematic Mode — quả cầu toàn màn hình.</div>
-
-<div class="script">
-Và khi bật Cinematic Mode — quả cầu hiển thị toàn màn hình. Đây chính là giao diện giám sát giao thức trong kỷ nguyên AI agents.
-</div>
+<div class="storyboard"><b>STORYBOARD chuyển cảnh Phần 4 &rarr; 5:</b> Sau khi giao dịch Shield thành công, zoom out từ tx hash, dissolve sang Shield Dashboard. Camera pan từ kết quả giao dịch sang tổng quan Shield Dashboard &mdash; tạo narrative: "vừa thấy 1 giao dịch, giờ thấy toàn bộ hệ thống."<br>Camera: Zoom out &rarr; dissolve &rarr; toàn cảnh Shield Dashboard.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">26:00 - 28:30</span> PHẦN 11: SWARM — 6 STAT CARDS &amp; COMPACT AUDIT TRAIL</h2>
+<h2><span class="time">12:00 &ndash; 14:30</span> PHẦN 5: SHIELD DASHBOARD &mdash; SƠ ĐỒ ZK &amp; 10 ỨNG DỤNG</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /swarm. Hiện giao diện mới:
-<br>1. Header với gradient text "Agent Swarm Hub" + emoji ong
-<br>2. Sáu stat cards trong grid 3x2: Total Swarms (vàng), Agents Active (xanh dương), Budget Locked (xanh lá), A2A Volume (tím), Intel Listed (đỏ), Fees Earned (cyan)
-<br>3. Tab bar thiết kế lại với gradient active states: Swarm Streams | A2A Economy | Intel Market | Audit Trail | Escrow
-<br>4. Click "Audit Trail" — hiện compact table-style layout (~36px mỗi dòng) với: cột thời gian, chấm severity, icon+tiêu đề, agent badge, severity label, TX link
-<br>5. Hover một dòng để hiện mô tả phía dưới
-<br>6. Hiện severity filter buttons với số lượng + scrollable event type filter
-<br>Camera: Grid stat cards → tab bar → Audit Trail dòng compact → hover để hiện mô tả.
-</div>
+<div class="storyboard"><b>STORYBOARD:</b> Shield Dashboard: 4 thẻ gradient, ZK Flow Diagram (5 bước với đường gradient nhấp nháy), 10 Use Cases, form thực thi sticky. Bắt đầu toàn cảnh, zoom lần lượt vào từng khu vực.<br>Camera: Toàn trình duyệt &rarr; zoom thẻ gradient &rarr; pan xuống ZK Flow &rarr; cuộn chậm qua 10 Use Cases.</div>
 
-<div class="action">Chuyển sang trang paypol.xyz/swarm — dashboard phối hợp đa agent.</div>
+<div class="action">Hiển thị 4 thẻ: Total Shielded, Active Proofs, Verified Transactions, Privacy Score.</div>
 
 <div class="script">
-Swarm là trung tâm phối hợp đa agent của PayPol. Thay vì một agent làm một việc, Swarm cho phép nhiều agents cùng làm việc trên nhiệm vụ phức tạp với ngân sách chung.
+Shield Dashboard &mdash; tổng quan toàn bộ hoạt động ZK trên nền tảng. 4 thẻ gradient ở trên cùng: Total Shielded Value cho biết tổng giá trị đã được bảo vệ bằng ZK, Active Proofs là số proof đang chờ xác minh, Verified Transactions là tổng giao dịch ZK đã thành công, và Privacy Score đánh giá mức độ sử dụng Shield trên toàn hệ thống.
 </div>
 
-<div class="action">Chỉ vào 6 stat cards trong grid 3x2 — highlight thẻ "Fees Earned" mới.</div>
+<div class="action">Cuộn đến ZK Flow Diagram. 5 bước với đường gradient động.</div>
 
 <div class="script">
-Dashboard Swarm bây giờ có 6 thẻ chỉ số trong grid gọn gàng 3x2:
+Sơ đồ ZK Flow &mdash; pipeline trực quan 5 bước: Input Preparation, Poseidon Commitment, Circuit Compilation, PLONK Proof, On-Chain Verify. Đường gradient động hiển thị luồng dữ liệu chạy từ trái sang phải. Mỗi bước có biểu tượng và mô tả ngắn. Trên mobile, bố cục tự động chuyển thành dọc để giữ trải nghiệm mượt.
+</div>
+
+<div class="action">Cuộn đến 10 Use Cases. Dừng ở từng use case 2-3 giây.</div>
+
+<div class="script">
+10 ứng dụng thực tế của ZK-SNARK trên Agentic Finance &mdash; đây không phải lý thuyết, mà là các trường hợp sử dụng được thiết kế cụ thể cho nền kinh tế agent:
 <br><br>
-— <b>Total Swarms</b>: số phiên swarm, với số lượng active phía dưới
-<br>
-— <b>Agents Active</b>: tổng số agents đang phối hợp
-<br>
-— <b>Budget Locked</b>: tổng tiền đã khoá trong escrow, với số tiền đã giải ngân
-<br>
-— <b>A2A Volume</b>: khối lượng chuyển tiền agent-to-agent với số lượng transfers
-<br>
-— <b>Intel Listed</b>: số lượng intel đã được ZK-verify trong marketplace
-<br>
-— <b>Fees Earned</b>: đây là mới — tổng phí platform đã thu từ các hoạt động swarm ở mức 5%. Thẻ này cho bạn thấy doanh thu từ swarm theo thời gian thực.
-</div>
-
-<div class="action">Chỉ vào tab bar đã được thiết kế lại — hiện gradient active states trên từng tab.</div>
-
-<div class="script">
-Tab bar đã được thiết kế lại với gradient active states. 5 tab: Swarm Streams, A2A Economy, Intel Market, Audit Trail, và Escrow. Mỗi tab có theme màu riêng.
-</div>
-
-<div class="action">Click vào "Swarm Streams" — hiện các phiên swarm đang active.</div>
-
-<div class="script">
-<b>Streams</b> hiện các phiên swarm đang active với tiến trình thời gian thực. Mỗi phiên hiện agent điều phối, các worker agents, ngân sách chung, và trạng thái.
+<b>1. Payroll riêng tư:</b> Trả lương mà không ai ngoài người nhận biết số tiền. Nhân viên không so sánh lương với nhau. Công ty bảo mật cấu trúc lương.
 <br><br>
-<b>A2A Economy</b> theo dõi các vụ thanh toán giữa agents trong swarm. Agent điều phối trả cho workers cho sub-tasks, reviewers nhận phí kiểm tra chất lượng.
+<b>2. Giao dịch Agent bảo mật:</b> Agent thuê agent mà đối thủ không biết chiến lược. Ví dụ: agent DeFi thuê agent phân tích &mdash; đối thủ không thể sao chép.
 <br><br>
-<b>Intel Market</b> là nền kinh tế tri thức bảo mật quyền riêng tư của PayPol. Agents mua bán thông tin bằng ZK-verified submissions.
-</div>
-
-<div class="action">Click vào "Audit Trail" — hiện giao diện compact table-style mới.</div>
-
-<div class="script">
-Và đây là Audit Trail đã được thiết kế lại — làm lại hoàn toàn để gọn gàng và rõ ràng hơn. Thay vì timeline cũ đầy đủ, mỗi sự kiện bây giờ là một dòng compact — khoảng 36 pixel cao. Bạn thấy được nhiều sự kiện hơn cùng một lúc.
+<b>3. Tuân thủ ẩn danh:</b> Chứng minh tuân thủ quy định mà không tiết lộ dữ liệu nội bộ. Auditor xác minh mà không thấy chi tiết.
 <br><br>
-Mỗi dòng hiện: thời gian, chấm màu severity, icon sự kiện, tiêu đề, tên agent, badge severity, và link giao dịch. Phía trên, các nút filter severity hiện số lượng: INFO, SUCCESS, WARNING, ERROR. Và filter loại sự kiện cuộn ngang cho phép lọc theo hành động cụ thể.
-</div>
-
-<div class="action">Hover trên một dòng sự kiện — hiện mô tả xuất hiện phía dưới.</div>
-
-<div class="script">
-Hover vào bất kỳ dòng nào và mô tả sẽ trượt ra phía dưới — bạn thấy đủ ngữ cảnh mà không làm rối giao diện chính. Với 50 sự kiện mỗi trang, bạn có thể xem lại toàn bộ lịch sử swarm nhanh hơn nhiều trước đây.
-</div>
-
-<div class="action">Click vào "Escrow" tab.</div>
-
-<div class="script">
-Và Escrow hiện bảo mật ngân sách của swarm — tiền khoá trong NexusV2, chỉ được giải ngân khi sub-tasks hoàn thành và được review.
-</div>
-
-<div class="action">Hiển thị luồng A2A micropayment giữa các agents.</div>
-
-<div class="script">
-Hãy xem luồng A2A — agent điều phối vừa trả cho agent phân tích tính 800 AlphaUSD khi hoàn thành sub-task. Phí platform 5% tự động được trừ. Một swarm với 6 agents có thể tạo ra 6 escrow settlements riêng biệt — đó chính là hiệu ứng nhân doanh thu.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">28:30 - 29:30</span> PHẦN 12: EMBEDDED WALLETS</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /wallets. Hiện danh sách ví với labels, addresses, balances. Click "Generate New Wallet" để tạo ví mới. Hiện stats phía trên.
-<br>Camera: Grid ví → nút tạo → ví mới xuất hiện.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/wallets.</div>
-
-<div class="script">
-Đây là Embedded Wallets — hệ thống ví nội bộ của PayPol. Mỗi AI agent hoặc nhân viên có thể có một ví riêng, được tạo và quản lý trực tiếp trên dashboard.
-</div>
-
-<div class="action">Chỉ vào danh sách wallets — hiển thị ví của agents và employees.</div>
-
-<div class="script">
-Mỗi ví hiển thị:
-<br>
-— <b>Label</b>: tên ví — "Agent: ContractGuard" hoặc "Employee: John"
-<br>
-— <b>Address</b>: địa chỉ ví on-chain
-<br>
-— <b>Balance</b>: số dư AlphaUSD hiện tại
-<br>
-— <b>Loại</b>: Agent wallet hoặc Employee wallet
-<br>
-— <b>Trạng thái</b>: Active hoặc Inactive
-</div>
-
-<div class="action">Click "Generate New Wallet" — tạo ví mới.</div>
-
-<div class="script">
-Tạo ví mới chỉ mất vài giây. Hệ thống tự động tạo cặp khoá AES-256-GCM mã hoá — private key không bao giờ được lưu dạng plain text. Điểm này cực kỳ quan trọng cho bảo mật.
+<b>4. Thanh toán AI Y tế:</b> Bảo vệ dữ liệu bệnh nhân trong thanh toán. HIPAA compliance bằng mật mã, không bằng lời hứa.
 <br><br>
-Agent có thể tự động nhận thanh toán, gửi tiền, và quản lý tài chính — tất cả thông qua ví embedded này mà không cần MetaMask hay ví ngoài.
-</div>
-
-<div class="action">Chỉ vào thống kê tổng quan: tổng số ví, tổng balance.</div>
-
-<div class="script">
-Phía trên là thống kê: tổng số ví đang active, tổng số dư, và phân loại theo Agent/Employee. Mỗi ví có thể theo dõi lịch sử giao dịch và thời gian sử dụng gần nhất.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">29:30 - 31:00</span> PHẦN 13: DEVELOPER EXPERIENCE</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /developers. Hiện revenue model, grid 7 framework logos, hướng dẫn 5 bước, và form đăng ký agent.
-<br>Camera: Cuộn qua các phần, dừng lại ở grid framework và form đăng ký.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/developers.</div>
-
-<div class="script">
-Phần này dành cho các developer — và đây là phần quan trọng nhất cho sự phát triển của ecosystem.
+<b>5. Thanh toán quốc tế:</b> Chuyển tiền xuyên biên giới mà không lộ danh tính người gửi/nhận. Phù hợp cho freelancer quốc tế.
 <br><br>
-PayPol là một platform mở. Bất kỳ AI developer nào cũng có thể đăng ký agent và bắt đầu kiếm tiền.
-</div>
-
-<div class="action">Chỉ vào phần Revenue Model.</div>
-
-<div class="script">
-Mô hình chia sẻ doanh thu của chúng tôi:
-<br>
-— <b>95 đến 98 phần trăm về tay developer</b> — PayPol chỉ giữ 2 đến 5 phần trăm platform fee
-<br>
-— Phí arbitration tối đa 3%, trần 10 đô
-<br>
-— Không có phí ẩn, không subscription fee
-</div>
-
-<div class="action">Chỉ vào 7 framework integrations.</div>
-
-<div class="script">
-Chúng tôi hỗ trợ 7 AI framework phổ biến nhất:
-<br>
-— <b>OpenAI</b> với Function Calling adapters
-<br>
-— <b>Anthropic Claude</b> với Tool Use và MCP protocol
-<br>
-— <b>LangChain</b> với StructuredTool wrappers
-<br>
-— <b>CrewAI</b> với Python BaseTool
-<br>
-— <b>MCP</b> với Model Context Protocol server
-<br>
-— <b>Eliza</b> với plugin gồm 18 pattern-matched actions
-<br>
-— <b>OpenClaw</b> với Skill marketplace
+<b>6. Tình báo cạnh tranh:</b> Agent thu thập dữ liệu thị trường mà không lộ nguồn hoặc khách hàng.
 <br><br>
-Bất kỳ agent nào, xây trên bất kỳ framework nào, đều có thể tham gia PayPol ecosystem.
-</div>
-
-<div class="action">Chỉ vào Quick Start Guide — 5 bước.</div>
-
-<div class="script">
-Bắt đầu chỉ cần 5 bước: cài SDK, tạo config, đăng ký trên marketplace, implement logic xử lý, và deploy. Thật sự đơn giản.
-</div>
-
-<div class="action">Cuộn xuống form Agent Registration.</div>
-
-<div class="script">
-Và đây là form đăng ký agent trực tiếp từ dashboard. Điền tên, mô tả, skills, giá, và webhook URL. Agent của bạn sẽ xuất hiện trên marketplace chỉ trong vài giây.
-</div>
-
-<!-- ============================================== -->
-<h2><span class="time">31:00 - 32:30</span> PHẦN 14: ADMIN, AUTO-JUDGE AI &amp; ARBITRATION</h2>
-
-<div class="storyboard">
-<b>STORYBOARD:</b> Mở trang /admin. Tour nhanh: Overview KPIs → Conditional Rules tab → Arbitration tab với Auto-Judge AI verdict cards hiện confidence %, reasoning, và layer classification. Hiện Release/Refund/Escalate buttons.
-<br>Camera: Nhịp nhanh, 20 giây mỗi sub-tab. Zoom vào Auto-Judge verdict card.
-</div>
-
-<div class="action">Chuyển sang trang paypol.xyz/admin.</div>
-
-<div class="script">
-Nhanh qua phần Admin. Đây là trung tâm quản lý của PayPol.
-</div>
-
-<div class="action">Chỉ vào Overview tab — 4 KPI cards.</div>
-
-<div class="script">
-Overview hiển thị các KPI chính: tổng giao dịch, khối lượng, conditional rules đang active, và số lượng escrows.
-</div>
-
-<div class="action">Click vào tab Conditional Rules — hiện danh sách rules đang active với trạng thái "Watching".</div>
-
-<div class="script">
-Conditional Rules là hệ thống tự động hoá thanh toán đang chạy LIVE 24/7. Daemon kiểm tra điều kiện mỗi 60 giây và tự động trigger khi điều kiện được thoả mãn. Hỗ trợ 5 loại điều kiện:
+<b>7. Thưởng tố cáo (Whistleblower):</b> Thanh toán cho người tố cáo nội bộ mà không lộ danh tính. Bảo vệ người dũng cảm.
 <br><br>
-— <b>Date/Time</b>: trigger khi đến ngày cụ thể — ví dụ trả lương ngày 1 hàng tháng
-<br>
-— <b>Wallet Balance</b>: trigger khi số dư ví đạt ngưỡng — đọc trực tiếp từ blockchain
-<br>
-— <b>Price Feed</b>: trigger khi giá token đạt điều kiện
-<br>
-— <b>TVL Threshold</b>: trigger khi tổng giá trị khoá đạt mục tiêu
-<br>
-— <b>Webhook</b>: trigger từ hệ thống bên ngoài
+<b>8. Escrow pháp lý:</b> Tiền ký quỹ trong tranh chấp pháp lý &mdash; số tiền và các bên được bảo mật cho đến khi phán quyết.
 <br><br>
-Mỗi rule hỗ trợ logic AND/OR, chế độ lặp lại (hàng tuần, hàng tháng), và cooldown để tránh trigger trùng. Đây không phải demo — daemon đang chạy thật trên VPS và đang kiểm tra rules mỗi phút.
+<b>9. Tài trợ đầu tư:</b> Nhà đầu tư tài trợ dự án mà không lộ quy mô đầu tư cho đối thủ cạnh tranh.
+<br><br>
+<b>10. Bồi thường bảo hiểm:</b> Xử lý bồi thường bảo hiểm riêng tư &mdash; chỉ chứng minh yêu cầu hợp lệ mà không lộ chi tiết tài chính.
+<br><br>
+Mỗi use case trong giao diện có phần mô tả vấn đề, giải pháp ZK tương ứng, và smart contract nào được sử dụng.
 </div>
 
-<div class="action">Click vào tab Arbitration — hiện Auto-Judge AI panel.</div>
+<div class="action">Hiển thị form thực thi sticky ở dưới: Người nhận + Số tiền.</div>
 
 <div class="script">
-Và đây là tính năng mới — <b>Auto-Judge AI</b>. Khi có tranh chấp giữa client và agent, thay vì phải chờ người phân xử thủ công, hệ thống AI sẽ tự động đánh giá và đưa ra phán quyết.
-<br><br>
-Auto-Judge hoạt động theo 3 lớp:
-<br>
-— <b>Layer 1 — Deterministic</b>: kiểm tra điều kiện cơ bản — agent đã submit kết quả chưa? Có vượt deadline không? Nếu rõ ràng thì phán quyết ngay.
-<br>
-— <b>Layer 2 — AI Scoring</b>: sử dụng AI để đánh giá chất lượng công việc, so sánh với yêu cầu ban đầu, và cho điểm confidence.
-<br>
-— <b>Layer 3 — Human Review</b>: khi confidence thấp hoặc vụ việc phức tạp, chuyển lên cho trọng tài viên con người.
+Form thực thi sticky luôn hiển thị khi cuộn: nhập địa chỉ người nhận, số tiền AlphaUSD, và click "Execute Shielded Transfer." Kích hoạt toàn bộ pipeline ZK 4 bước ngay tại đây. Tiện lợi &mdash; không cần quay về dashboard.
 </div>
 
-<div class="action">Chỉ vào một verdict card — hiện confidence score, reasoning, và các nút hành động.</div>
+<div class="note">Khi demo 10 use cases, không cần đọc hết mỗi cái. Chọn 3-4 use case ấn tượng nhất (ví dụ: Payroll riêng tư, Thanh toán AI Y tế, Thưởng tố cáo) để nói chi tiết. Phần còn lại cuộn nhanh cho người xem thấy.</div>
 
-<div class="script">
-Mỗi phán quyết hiển thị:
-<br>
-— <b>Verdict</b>: Settle, Refund, hoặc Escalate
-<br>
-— <b>Confidence</b>: tỷ lệ tự tin của AI — ví dụ 87%
-<br>
-— <b>Reasoning</b>: lý do cụ thể tại sao AI đưa ra quyết định này
-<br>
-— Và các nút: <b>Release</b> (giải ngân cho agent, trừ 5% fee), <b>Refund</b> (trả lại cho client, trừ 3% penalty), hoặc <b>Override</b> (trọng tài viên thay đổi quyết định của AI)
-<br><br>
-Toàn bộ lịch sử phán quyết được ghi nhận on-chain — minh bạch và không thể sửa đổi. Client và agent đều nhận thông báo tự động khi có kết quả.
-</div>
+<div class="tip"><b>Ý tưởng hậu kỳ:</b> Thêm callout animation cho mỗi use case khi cuộn qua &mdash; icon nhỏ + tên use case bay vào từ trái. Giúp người xem theo dõi khi cuộn nhanh.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2><span class="time">32:30 - 33:30</span> PHẦN 15: KẾT THÚC</h2>
+<h2><span class="time">14:30 &ndash; 19:30</span> PHẦN 6: A2A MARKETPLACE &mdash; AGENT THUÊ AGENT</h2>
 
-<div class="storyboard">
-<b>STORYBOARD:</b> Quay lại trang /protocol. Hiện bảng so sánh. Rồi traction numbers. Frame cuối: Logo PayPol ở giữa trên nền tối với URL website và link mạng xã hội.
-<br>Camera: Bảng so sánh → traction → logo fade-out.
-</div>
+<h3>6A &mdash; Duyệt Marketplace (32 Agent)</h3>
 
-<div class="action">Quay lại trang /protocol — cuộn xuống bảng so sánh.</div>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/cortex. Grid 32 agent cards. Bộ lọc danh mục. Hiệu ứng hover.<br>Camera: Toàn trình duyệt, zoom vào từng card.</div>
 
-<div class="script">
-Để tổng kết — tại sao PayPol khác biệt so với tất cả các giải pháp hiện tại?
-</div>
-
-<div class="action">Chỉ vào bảng so sánh PayPol vs Stripe vs PayPal vs Coinbase.</div>
+<div class="action">Điều hướng đến agt.finance/cortex. 32 agent cards trong grid responsive.</div>
 
 <div class="script">
-So với Stripe, PayPal, hay Coinbase Commerce:
-<br>
-— Họ không hỗ trợ thanh toán giữa các AI agents với nhau
-<br>
-— Họ không có ZK privacy
-<br>
-— Họ không có on-chain verification
-<br>
-— Và họ không có escrow tự động cho AI
-<br><br>
-PayPol được xây dựng từ con số không, thiết kế riêng cho thế giới AI agents.
+A2A Marketplace &mdash; nơi AI agent thuê AI agent khác. 32 agent sản xuất trong 8 danh mục: DeFi, Bảo mật, Phân tích, Hạ tầng, Nghiên cứu, Sáng tạo, Dữ liệu, Tuân thủ. Mỗi card hiển thị tên, danh mục, giá, đánh giá, tier uy tín (Bronze đến Diamond), và khả năng.
 </div>
 
-<div class="action">Hiển thị traction numbers.</div>
+<div class="action">Click bộ lọc: "DeFi" rồi "Security".</div>
 
 <div class="script">
-Hiện tại chúng tôi đã có: 9 smart contracts đã verified trên Tempo L1, 32 AI agents đang hoạt động trên marketplace, hỗ trợ 7 AI frameworks, tiêu chuẩn thanh toán toàn cầu APS-1 v2.1, Conditional Rule Engine tự động kiểm tra điều kiện và trigger thanh toán mỗi 60 giây, Live Chat thời gian thực với AI agents và rich transaction cards, hệ thống Notification thông minh với 13 loại thông báo clickable di chuyển đến đúng section, FiatOffRamp rút tiền từ crypto sang PayPal, Auto-Judge AI phân xử tranh chấp tự động với 3 lớp đánh giá, Cortex intelligence, Sentinel giám sát 3D, Swarm phối hợp đa agent, và platform fee chỉ 2 đến 5 phần trăm — thấp nhất trong ngành.
+Lọc theo danh mục. "DeFi" hiển thị agent tối ưu yield, phân tích thanh khoản, quản lý portfolio. "Security" hiển thị kiểm toán smart contract, quét lỗ hổng, penetration testing. Nhiều agent cạnh tranh về chất lượng, giá, và uy tín &mdash; tạo thị trường lành mạnh.
+<br><br>
+8 danh mục chi tiết:
+<br>&mdash; <b>DeFi:</b> Yield optimization, liquidity analysis, portfolio management
+<br>&mdash; <b>Bảo mật:</b> Smart contract audit, vulnerability scan, access control review
+<br>&mdash; <b>Phân tích:</b> On-chain analytics, market research, trend detection
+<br>&mdash; <b>Hạ tầng:</b> Node operation, RPC management, deployment automation
+<br>&mdash; <b>Nghiên cứu:</b> Whitepaper analysis, protocol comparison, tokenomics review
+<br>&mdash; <b>Sáng tạo:</b> Content generation, UI/UX design, branding
+<br>&mdash; <b>Dữ liệu:</b> Data extraction, ETL pipelines, database optimization
+<br>&mdash; <b>Tuân thủ:</b> KYC/AML check, regulatory compliance, tax reporting
 </div>
 
-<div class="action">Màn hình cuối: Logo PayPol + các link.</div>
+<div class="action">Hover vào agent card. Hiệu ứng glow border + tooltip với success rate.</div>
 
 <div class="script">
-Cảm ơn tất cả các bạn đã theo dõi!
+Mỗi card khi hover có hiệu ứng glow border &mdash; cyan cho agent hoạt động, vàng cho agent đang bận. Tooltip nhanh hiển thị: tên đầy đủ, success rate, giá khởi điểm, và số reviews. Đủ thông tin để quyết định click hay không mà không cần mở trang detail.
 <br><br>
-Truy cập paypol.xyz để trải nghiệm ngay — gas hoàn toàn miễn phí, bạn có thể thử mọi tính năng mà không tốn bất kỳ chi phí nào.
-<br><br>
-Nếu bạn là AI developer, hãy đăng ký agent và bắt đầu kiếm tiền ngay hôm nay. 95 phần trăm doanh thu thuộc về bạn.
-<br><br>
-Hẹn gặp lại các bạn!
+Sắp xếp: mặc định theo rating, cũng có thể sắp theo giá (thấp đến cao hoặc ngược lại), theo số job hoàn thành, hoặc theo tier uy tín. Thanh tìm kiếm ở trên cho phép tìm agent theo tên hoặc kỹ năng cụ thể.
 </div>
+
+<h3>6B &mdash; Trang Chi Tiết Agent [MỚI v4.0]</h3>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> Trang chi tiết tại /cortex/[agentId] với hero, thống kê, kỹ năng, đánh giá, và "Hire This Agent".</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click agent card &rarr; /cortex/[agentId]. Hero section với avatar lớn và gradient nền. 4 thẻ thống kê hàng ngang. Cuộn xuống: badge kỹ năng, bảng giá dạng tier, reviews với star rating. Nút "Hire This Agent" cố định ở dưới.<br>Camera: Toàn trình duyệt &rarr; zoom hero avatar &rarr; pan xuống stats &rarr; cuộn chậm qua skills/pricing/reviews &rarr; cận cảnh nút Hire.</div>
+
+<div class="action">Click "NexusGuard" (Security). Trang chi tiết hiển thị.</div>
+
+<div class="script">
+Mỗi agent có trang profile đầy đủ trong v4.0 &mdash; nghĩ như LinkedIn cho AI agent. Hero section hiển thị avatar, tên agent, danh mục, và mô tả ngắn về khả năng.
+<br><br>
+4 thẻ thống kê: Jobs Completed cho biết agent đã hoàn thành bao nhiêu tác vụ, Success Rate là tỷ lệ thành công dựa trên AI Proof match, Average Rating từ reviews khách hàng, và Total Earned hiển thị tổng doanh thu on-chain.
+<br><br>
+Tiếp theo là badge kỹ năng &mdash; NexusGuard có "Smart Contract Audit," "Vulnerability Scan," "Gas Optimization," "Access Control Review." Mỗi badge liên kết với lịch sử tác vụ đã chứng minh kỹ năng.
+</div>
+
+<div class="action">Cuộn đến bảng giá dịch vụ.</div>
+
+<div class="script">
+Bảng giá hiển thị dạng tier rõ ràng: Basic Audit 200 AlphaUSD cho review code nhanh trong 2 giờ, Standard Audit 500 AlphaUSD cho review toàn diện kèm báo cáo chi tiết, và Comprehensive Review 800 AlphaUSD bao gồm audit, gas optimization, và khuyến nghị cải thiện. Minh bạch, không phí ẩn &mdash; khách hàng biết chính xác mình trả bao nhiêu cho dịch vụ gì.
+</div>
+
+<div class="action">Cuộn đến phần Reviews.</div>
+
+<div class="script">
+Reviews từ khách hàng trước với star rating 1-5 sao. Điểm quan trọng: uy tín hoàn toàn on-chain. Mỗi review liên kết với một giao dịch NexusV2 đã xác minh &mdash; nghĩa là reviewer thực sự đã thuê và trả tiền cho agent. Không thể fake review mà không bỏ tiền thật sử dụng agent. Đây là cách chúng tôi giải quyết bài toán trust trong kinh tế agent: uy tín dựa trên hành động thật, không phải lời nói.
+</div>
+
+<div class="action">Click "Hire This Agent" &mdash; mở OmniTerminal với agent đã chọn.</div>
+
+<div class="script">
+Click "Hire This Agent" &mdash; nút cố định ở dưới cùng trang profile. Click sẽ mở OmniTerminal với agent đã pre-select, sẵn sàng gõ yêu cầu và tạo escrow. Luồng liền mạch từ khám phá đến hành động.
+</div>
+
+<div class="note">Demo nên click vào agent NexusGuard (Security) vì có nhiều reviews và kỹ năng đa dạng nhất. Backup: DataForge (Analytics).</div>
+
+<h3>6C &mdash; Giao dịch + Fiat On-Ramp</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> 3 bước: Discover &rarr; Negotiate &rarr; Escrow Lock. Sau đó Fiat On-Ramp qua Paddle.<br>Camera: Toàn OmniTerminal, zoom vào các bước.</div>
+
+<div class="action">Gõ: "Hire NexusGuard for smart contract audit, budget 500 AlphaUSD". Hệ thống bắt đầu deal flow.</div>
+
+<div class="script">
+3 bước theo APS-1 v2.1:
+<br><br>
+<b>Discover:</b> Hệ thống xác nhận agent khả dụng, kiểm tra uy tín, xác minh kỹ năng.
+<br><b>Negotiate:</b> So sánh ngân sách với giá. Nếu đủ, điều khoản được đồng ý. Trong chế độ tự động hoàn toàn, AI agent đàm phán trực tiếp.
+<br><b>Escrow Lock:</b> 500 AlphaUSD khóa vào NexusV2 (0x6A46). On-chain, smart contract kiểm soát. Giải ngân cần đồng thuận, xác minh proof, hoặc Auto-Judge.
+</div>
+
+<div class="action">Hiển thị "Pay with Card". Fiat on-ramp qua Paddle.</div>
+
+<div class="script">
+Cho người dùng chưa có crypto: "Pay with Card" qua Paddle. Thẻ tín dụng chuyển thành AlphaUSD, nạp trực tiếp vào escrow. Paddle xử lý fiat, KYC, tuân thủ. Xóa bỏ rào cản lớn nhất.
+</div>
+
+<div class="action">Hiển thị Escrow Tracker: Locked &rarr; In Progress &rarr; Proof Submitted &rarr; Verified &rarr; Released.</div>
+
+<div class="script">
+Escrow Tracker hiển thị toàn bộ vòng đời giao dịch: 5 trạng thái lần lượt.
+<br>&mdash; <b>Locked:</b> Tiền đã khóa, agent bắt đầu công việc.
+<br>&mdash; <b>In Progress:</b> Agent đang thực hiện, commitment hash đã gửi lên AIProofRegistry.
+<br>&mdash; <b>Proof Submitted:</b> Agent hoàn thành, result hash đã gửi.
+<br>&mdash; <b>Verified:</b> Plan hash khớp result hash, proof xác minh thành công.
+<br>&mdash; <b>Released:</b> Tiền giải ngân từ NexusV2 cho agent. Hoàn tất.
+<br><br>
+Nếu ở bước "Proof Submitted" mà hash không khớp, trạng thái chuyển sang "Disputed" và Auto-Judge AI kích hoạt.
+</div>
+
+<div class="note">Nên thêm lower-third overlay: "Bước 1/3: Discover", "Bước 2/3: Negotiate", "Bước 3/3: Escrow Lock". Và timeline 5 trạng thái với icon cho mỗi bước.</div>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2>PHỤ LỤC A: GHI CHÚ SẢN XUẤT</h2>
+<h2><span class="time">19:30 &ndash; 21:00</span> PHẦN 7: XÁC MINH AI PROOF</h2>
 
-<h3>Checklist trước khi quay:</h3>
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/verify. 4 thẻ thống kê, bảng lịch sử commitment. Click mở rộng: plan hash vs result hash. Verified Match và giải thích Mismatch.<br>Camera: Toàn trình duyệt, zoom vào chi tiết.</div>
+
+<div class="action">Điều hướng đến agt.finance/verify. Thẻ thống kê và lịch sử commitment.</div>
+
+<div class="script">
+Xác minh AI Proof &mdash; lớp tin cậy. Không có hệ thống này, bạn gửi tiền cho agent và hy vọng. Với hệ thống này, bạn có bằng chứng mật mã.
+<br><br>
+4 thống kê: Total Commitments, Verified Matches, Pending, Mismatches. Bảng lịch sử: ID, Agent, Task, Status, Timestamp. Tìm kiếm theo ID, lọc theo agent hoặc trạng thái.
+</div>
+
+<div class="action">Click commitment. Hiển thị plan hash vs result hash cạnh nhau.</div>
+
+<div class="script">
+Plan Hash cam kết trước khi bắt đầu. Result Hash gửi sau hoàn thành. Nếu khớp: "Verified Match" xanh lá. Nếu không: "Mismatch" đỏ &mdash; reputation bị trừ trên ReputationRegistry, escrow bị flag hoàn tiền, sự cố ghi vào Audit Trail. Động lực mạnh mẽ để agent thực hiện đúng cam kết.
+</div>
+
+<div class="note">Chuẩn bị 3-5 commitment trước, bao gồm ít nhất 1 "Verified Match" và 1 "Pending".</div>
+
+<div class="tip"><b>Kịch bản demo:</b> Tạo 1 commitment "Verified Match" cho NexusGuard (audit hoàn thành đúng) và 1 "Pending" cho DataForge (đang xử lý). Nếu có thời gian, tạo thêm 1 "Mismatch" để demo trường hợp thất bại &mdash; rất ấn tượng cho investor.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">21:00 &ndash; 23:00</span> PHẦN 8: CHAT + THÔNG BÁO [MỚI v4.0]</h2>
+
+<h3>8A &mdash; Giao diện Chat với Agent [MỚI v4.0]</h3>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> Chat tại /chat &mdash; duyệt agent, chọn, trò chuyện, kích hoạt giao dịch on-chain. Kết quả dạng rich card.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> Hai panel: danh sách agent trái (scrollable, highlight khi chọn), cửa sổ chat phải (bubble messages + rich cards). Chọn agent, gõ câu hỏi đầu tiên, chờ response, gõ tiếp follow-up, nhận rich card với tx hash và biểu đồ.<br>Camera: Toàn trình duyệt &rarr; zoom panel trái khi chọn agent &rarr; zoom cửa sổ chat khi gõ &rarr; cận cảnh rich card response.</div>
+
+<div class="action">Điều hướng đến agt.finance/chat. Giao diện hai panel.</div>
+
+<div class="script">
+Giao diện Chat với Agent &mdash; thay vì dòng lệnh OmniTerminal, giờ bạn trò chuyện tự nhiên như nhắn tin. Panel trái hiển thị danh sách 32 agent có thể chat. Chọn một agent, panel phải biến thành cửa sổ chat thời gian thực.
+</div>
+
+<div class="action">Chọn "DataForge" (Analytics). Gõ: "Phân tích khối lượng giao dịch 7 ngày qua, tìm bất thường."</div>
+
+<div class="script">
+Mình chọn DataForge &mdash; agent chuyên phân tích dữ liệu. Gõ yêu cầu đầu tiên: "Phân tích khối lượng giao dịch 7 ngày qua, tìm bất thường." Agent nhận, xử lý, truy vấn dữ liệu on-chain, và trả về rich card với biểu đồ xu hướng, bảng dữ liệu chi tiết, phát hiện chính, và transaction hash.
+</div>
+
+<div class="action">Gõ follow-up: "So sánh với tuần trước, có pattern nào lặp lại không?"</div>
+
+<div class="script">
+Tiếp tục hội thoại &mdash; "So sánh với tuần trước, có pattern nào lặp lại không?" Agent hiểu ngữ cảnh từ câu trước, phân tích thêm, và trả lời với biểu đồ so sánh hai tuần. Đây là conversational AI thật sự kết nối blockchain &mdash; nói chuyện tự nhiên, blockchain hoạt động phía sau.
+</div>
+
+<div class="action">Gõ: "Thuê bạn làm báo cáo chi tiết, ngân sách 300 AlphaUSD."</div>
+
+<div class="script">
+Và đây là phần mạnh nhất: từ cùng cửa sổ chat, mình có thể thuê agent trực tiếp. Gõ "Thuê bạn làm báo cáo chi tiết, ngân sách 300 AlphaUSD." Agent xác nhận điều khoản, hệ thống tạo escrow qua NexusV2, khóa 300 AlphaUSD. Toàn bộ deal flow diễn ra ngay trong chat &mdash; từ khám phá, trao đổi, đến thanh toán.
+</div>
+
+<div class="action">Chuyển sang agent khác. Chọn "NexusGuard" (Security). Gõ: "Kiểm tra smart contract tại 0x1234...abcd có lỗ hổng reentrancy không?"</div>
+
+<div class="script">
+Chuyển sang agent khác &mdash; NexusGuard, chuyên bảo mật. Gõ yêu cầu kiểm tra lỗ hổng reentrancy. Agent phân tích bytecode, trả về kết quả: phát hiện 2 vấn đề tiềm ẩn, severity Medium và Low, kèm khuyến nghị sửa. Rich card hiển thị code snippet, dòng có vấn đề, và giải pháp gợi ý.
+</div>
+
+<div class="action">Gõ follow-up: "Ước tính chi phí để sửa 2 lỗi này?"</div>
+
+<div class="script">
+Follow-up tự nhiên: "Ước tính chi phí?" NexusGuard trả lời với bảng giá: sửa lỗi Medium 150 AlphaUSD, lỗi Low 80 AlphaUSD, tổng 230 AlphaUSD. Và đề xuất: "Thuê tôi sửa ngay, escrow 230 AlphaUSD?" Từ phát hiện vấn đề đến đề xuất giải pháp và thanh toán &mdash; tất cả trong một cửa sổ chat.
+</div>
+
+<div class="note">Chuẩn bị 2-3 agent đã có lịch sử chat để demo liền mạch. DataForge và NexusGuard là lựa chọn tốt. Gõ trước 1-2 câu để warm up response cache.</div>
+
+<h3>8B &mdash; Hệ thống Thông báo [MỚI v4.0]</h3>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> 13 danh mục thông báo với chuông, dropdown preview, trang đầy đủ tại /notifications.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> Click chuông ở header &rarr; dropdown hiển thị 5 thông báo gần đây với icon màu theo loại. Sau đó điều hướng đến /notifications &rarr; trang đầy đủ với bộ lọc tab. Click từng tab để hiển thị loại khác nhau.<br>Camera: Zoom chuông thông báo &rarr; cận cảnh dropdown &rarr; toàn cảnh trang /notifications &rarr; zoom bộ lọc.</div>
+
+<div class="action">Click chuông thông báo ở header. Dropdown hiển thị thông báo gần đây.</div>
+
+<div class="script">
+Hệ thống thông báo với 13 danh mục đầy đủ &mdash; không bỏ sót bất kỳ sự kiện nào trên nền tảng:
+<br><br>
+<b>1. Escrow Lock:</b> Khi tiền được khóa vào NexusV2 cho một deal mới.
+<br><b>2. Escrow Release:</b> Khi escrow được giải ngân sau khi hoàn thành.
+<br><b>3. Shield Transaction:</b> Khi giao dịch ZK-SNARK được tạo hoặc xác minh.
+<br><b>4. Stream Milestone:</b> Khi milestone trong StreamV1 được duyệt hoặc từ chối.
+<br><b>5. Proof Verification:</b> Khi AI Proof match hoặc mismatch.
+<br><b>6. Agent Hire:</b> Khi một agent được thuê qua marketplace hoặc chat.
+<br><b>7. Agent Completion:</b> Khi agent hoàn thành tác vụ và gửi kết quả.
+<br><b>8. System Alert:</b> Thông báo hệ thống &mdash; bảo trì, cập nhật, cảnh báo.
+<br><b>9. Reputation Change:</b> Khi điểm uy tín thay đổi (tăng hoặc giảm).
+<br><b>10. Payment:</b> Khi nhận được thanh toán qua payroll hoặc escrow.
+<br><b>11. Dispute:</b> Khi tranh chấp được mở hoặc giải quyết.
+<br><b>12. Admin Action:</b> Hành động từ admin panel ảnh hưởng đến tài khoản.
+<br><b>13. Batch Settlement:</b> Khi batch payroll được xử lý hoàn tất.
+<br><br>
+Click bất kỳ thông báo nào để điều hướng trực tiếp đến phần liên quan.
+</div>
+
+<div class="action">Điều hướng đến agt.finance/notifications. Trang đầy đủ với bộ lọc.</div>
+
+<div class="script">
+Trang thông báo đầy đủ tại /notifications với bộ lọc tab: All, Unread, Escrow, Shield, Stream, Agent, System. Đánh dấu đã đọc từng cái hoặc tất cả, phân trang cho lịch sử dài. Không bao giờ bỏ lỡ sự kiện quan trọng trên nền tảng.
+</div>
+
+<div class="action">Click tab "Escrow". Chỉ hiển thị thông báo liên quan đến escrow. Click "Mark All Read".</div>
+
+<div class="script">
+Demo bộ lọc: click "Escrow" &mdash; chỉ hiển thị escrow lock và release. Click "Shield" &mdash; chỉ giao dịch ZK. Click "Agent" &mdash; hire và completion. Mỗi thông báo có icon màu riêng theo loại, timestamp, và mô tả ngắn. Click thông báo để điều hướng trực tiếp &mdash; ví dụ click thông báo escrow lock sẽ mở trang deal detail.
+</div>
+
+<div class="note">Chuẩn bị 5-7 thông báo chưa đọc đa loại trước khi quay. Lý tưởng: 2 escrow, 1 shield, 1 stream, 1 agent, 1 system, 1 payment.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">23:00 &ndash; 24:30</span> PHẦN 9: STREAM &mdash; PIPELINE &amp; MILESTONE</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/stream. Role toggle (Payer/Payee), 3 thẻ thống kê, pipeline cards với milestone circles và gradient lines. Click card xem chi tiết SVG progress ring.<br>Camera: Toàn trình duyệt, zoom pipeline.</div>
+
+<div class="action">Điều hướng đến agt.finance/stream. Role toggle, thẻ thống kê, pipeline cards.</div>
+
+<div class="script">
+Stream &mdash; thanh toán theo milestone qua StreamV1 (0x4fE3). Thay vì escrow toàn bộ, chia công việc thành milestone với thanh toán dần.
+<br><br>
+Role toggle: Payer (tài trợ) vs Payee (thực hiện). 3 thống kê: Active Streams, Total Streamed, Pending Milestones.
+<br><br>
+Pipeline cards hiển thị đối tác, số tiền, tiến độ, milestone indicator &mdash; xanh lá đã duyệt, vàng chờ duyệt, xám sắp tới.
+</div>
+
+<div class="action">Click stream card. SVG progress ring và timeline milestone.</div>
+
+<div class="script">
+Chi tiết: SVG progress ring với phần trăm hoàn thành. Timeline milestone với mô tả, số tiền, trạng thái, nút hành động. Payer: duyệt hoặc từ chối. Payee: gửi proof hoàn thành. Duyệt xong, AlphaUSD giải ngân ngay từ StreamV1.
+</div>
+
+<div class="action">Click "Approve Milestone 2". Giao dịch gửi đến StreamV1. Hiển thị thành công.</div>
+
+<div class="script">
+Mình duyệt Milestone 2 &mdash; giao dịch gửi đến StreamV1, 200 AlphaUSD giải ngân cho agent. Progress ring cập nhật từ 40% lên 60%. Milestone tiếp theo chuyển từ "Upcoming" sang "Awaiting Proof." Luồng rõ ràng, minh bạch, không tranh cãi.
+<br><br>
+Ưu điểm của Stream so với Escrow toàn bộ: giảm rủi ro cho cả hai bên. Payer không phải khóa toàn bộ ngân sách. Payee nhận thanh toán dần khi hoàn thành công việc. Incentive đúng hướng.
+</div>
+
+<div class="note">Chuẩn bị stream có milestone đang "Awaiting Approval" để demo nút Approve. Nên có 3-5 milestone, 2 đã hoàn thành, 1 đang chờ.</div>
+
+<!-- ============================================== -->
+<h2><span class="time">24:30 &ndash; 26:00</span> PHẦN 10: PORTFOLIO DASHBOARD [MỚI v4.0]</h2>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> Portfolio tại /portfolio: số dư, escrow, stream, uy tín, hoạt động &mdash; tất cả trong một.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/portfolio. 5 tab ngang ở trên. Bắt đầu tab Balances, lần lượt click qua 5 tab. Mỗi tab có layout riêng biệt.<br>Camera: Toàn trình duyệt &rarr; zoom tab bar &rarr; zoom nội dung từng tab.</div>
+
+<div class="action">Điều hướng đến agt.finance/portfolio. Mặc định tab Balances.</div>
+
+<div class="script">
+Portfolio Dashboard &mdash; trung tâm tài chính cá nhân, nơi tập hợp mọi thông tin tài khoản của bạn. 5 tab, mỗi tab một khía cạnh.
+</div>
+
+<div class="action">Tab 1: Balances. Hiển thị số dư ví kết nối, ví nhúng, và tiền khóa.</div>
+
+<div class="script">
+<b>Tab Balances:</b> Số dư AlphaUSD trong ví kết nối (MetaMask), số dư trong ví nhúng mã hóa AES-256-GCM, và tổng số tiền đang khóa trong escrow và stream. Ba con số này cho bạn bức tranh toàn diện &mdash; bao nhiêu sẵn sàng sử dụng, bao nhiêu đang làm việc.
+</div>
+
+<div class="action">Tab 2: Escrows. Danh sách escrow đang hoạt động.</div>
+
+<div class="script">
+<b>Tab Escrows:</b> Mọi escrow đang hoạt động qua NexusV2. Mỗi entry hiển thị đối tác, số tiền khóa, trạng thái (Locked, In Progress, Awaiting Proof), và đếm ngược thời gian còn lại. Click để xem chi tiết deal và lịch sử tương tác.
+</div>
+
+<div class="action">Tab 3: Streams. Danh sách stream với progress bar.</div>
+
+<div class="script">
+<b>Tab Streams:</b> Stream đang hoạt động qua StreamV1. Progress bar trực quan cho từng stream &mdash; xanh cho milestone đã duyệt, vàng cho đang chờ. Tổng đã giải ngân vs tổng còn lại.
+</div>
+
+<div class="action">Tab 4: Reputation. SVG gauge 0-100 và tier badge.</div>
+
+<div class="script">
+<b>Tab Reputation:</b> Điểm uy tín on-chain từ ReputationRegistry. SVG gauge hiển thị điểm 0-100 với kim chỉ, tier badge: Bronze (0-20), Silver (21-40), Gold (41-60), Platinum (61-80), Diamond (81-100). Điểm dựa trên số job hoàn thành, tỷ lệ proof match, reviews từ khách hàng, và số tiền ký quỹ. Hoàn toàn on-chain, không thể gian lận.
+</div>
+
+<div class="action">Tab 5: Activity. Timeline hoạt động gần đây.</div>
+
+<div class="script">
+<b>Tab Activity:</b> Timeline mọi hoạt động gần đây &mdash; thanh toán đã gửi, escrow đã tạo, proof đã xác minh, stream đã duyệt. Mỗi entry có icon loại sự kiện, timestamp, số tiền, và link Block Explorer để kiểm chứng trực tiếp trên blockchain. Lịch sử hoàn chỉnh trên một trang.
+<br><br>
+Bộ lọc Activity cho phép xem theo loại: Payments, Escrows, Streams, Proofs, All. Phân trang cho lịch sử dài. Export CSV cho kế toán.
+</div>
+
+<div class="note">Đảm bảo có ít nhất 10-15 activity entries trước khi quay. Chạy vài giao dịch test trên mỗi loại: 2-3 payroll, 1-2 escrow, 1 stream milestone, 1 proof verification.</div>
+
+<div class="script">
+Tổng kết Portfolio: đây là nơi bạn thấy toàn bộ "tài sản" của mình trên Agentic Finance. Tiền mặt, tiền đang làm việc trong escrow và stream, uy tín tích lũy qua thời gian, và lịch sử hoạt động. Tất cả on-chain, tất cả xác minh được.
+<br><br>
+Điểm khác biệt so với portfolio dashboard truyền thống: mọi con số ở đây đều đọc trực tiếp từ blockchain, không phải từ database. Số dư đọc từ AlphaUSD contract (0x20c0). Escrow đọc từ NexusV2 (0x6A46). Stream đọc từ StreamV1 (0x4fE3). Reputation đọc từ ReputationRegistry. Không thể gian lận, không thể chỉnh sửa.
+</div>
+
+<div class="tip"><b>Mẹo demo Portfolio:</b> Click nhanh qua 5 tab, dừng lâu nhất ở Reputation (SVG gauge ấn tượng nhất về mặt hình ảnh) và Escrows (hiển thị deal đang hoạt động). Tab Activity cuộn nhanh qua để thấy lịch sử dài.</div>
+
+<!-- ============================================== -->
+<h2><span class="time">26:00 &ndash; 27:30</span> PHẦN 11: LIVE TRANSACTION FEED [MỚI v4.0]</h2>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> Live Feed tại /live &mdash; sự kiện on-chain thời gian thực qua SSE.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/live. TVL banner ở trên. Sự kiện trượt vào từ trên xuống với animation fade-in. Bộ lọc loại sự kiện ở trên. Chờ vài sự kiện hiển thị.<br>Camera: Toàn trình duyệt &rarr; zoom TVL banner &rarr; zoom sự kiện đang trượt vào &rarr; cận cảnh chi tiết một sự kiện.</div>
+
+<div class="action">Điều hướng đến agt.finance/live. Chờ sự kiện xuất hiện.</div>
+
+<div class="script">
+Live Transaction Feed &mdash; stream thời gian thực mọi sự kiện trên giao thức. Ở trên cùng là TVL &mdash; Total Value Locked &mdash; đọc trực tiếp từ smart contract NexusV2, ShieldVaultV2, và StreamV1. Con số này là proof-of-traction thật.
+<br><br>
+Bên dưới, sự kiện trượt vào liên tục. Các loại sự kiện:
+<br>&mdash; <b>Escrow Lock:</b> Khi tiền khóa vào NexusV2, badge xanh dương.
+<br>&mdash; <b>Shield Deposit:</b> Giao dịch ZK-SNARK qua ShieldVaultV2, badge tím.
+<br>&mdash; <b>Settlement:</b> Escrow giải ngân thành công, badge xanh lá.
+<br>&mdash; <b>Milestone:</b> Stream milestone được duyệt, badge vàng.
+<br>&mdash; <b>Batch:</b> Payroll batch hoàn thành qua MultisendV2, badge cam.
+<br>&mdash; <b>Agent Hire:</b> Agent được thuê qua marketplace, badge cyan.
+<br><br>
+Lọc theo loại: All, Escrow, Shield, Agent, Stream, Batch. Cập nhật mỗi 5 giây qua SSE &mdash; Server-Sent Events, công nghệ streaming nhẹ hơn WebSocket, chỉ cần HTTP connection một chiều. Dữ liệu sản xuất thật, không mock.
+</div>
+
+<div class="action">Hover vào một sự kiện. Hiển thị tooltip chi tiết: tx hash, block number, timestamp chính xác, giá trị.</div>
+
+<div class="script">
+Hover vào sự kiện để thấy chi tiết đầy đủ: transaction hash, block number, timestamp chính xác đến giây, giá trị AlphaUSD, các bên liên quan. Click để mở Block Explorer trong tab mới.
+<br><br>
+Về công nghệ: SSE &mdash; Server-Sent Events &mdash; là giao thức streaming một chiều qua HTTP. Nhẹ hơn WebSocket vì không cần kết nối hai chiều. Server đẩy sự kiện khi có giao dịch mới, client chỉ lắng nghe. Tự động reconnect nếu mất kết nối. Rất phù hợp cho feed chỉ đọc.
+<br><br>
+TVL &mdash; Total Value Locked &mdash; là tổng giá trị AlphaUSD đang khóa trong tất cả smart contract: NexusV2 (escrow), ShieldVaultV2 (ZK deposits), StreamV1 (milestone payments). Con số này cập nhật real-time và là chỉ số quan trọng nhất cho sức khỏe giao thức.
+</div>
+
+<div class="note">Chạy vài giao dịch test trước để có sự kiện liên tục trong quá trình quay. Lý tưởng: 1 giao dịch mỗi 30 giây trong suốt phần này. Dùng script tự động nếu cần.</div>
+
+<div class="tip"><b>Kịch bản ấn tượng:</b> Trong khi quay Live Feed, mở tab thứ hai và thực hiện 1 giao dịch Shield. Quay lại Live Feed, sự kiện Shield xuất hiện real-time. Chứng minh hệ thống live thật.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">27:30 &ndash; 29:30</span> PHẦN 12: CORTEX + SENTINEL + SWARM</h2>
+
+<h3>12A &mdash; Cortex &mdash; Trung tâm Thông minh</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/cortex. Tổng quan đa panel: Live Feed mini ở góc, Shield Panel với thống kê ZK, Revenue Dashboard dạng biểu đồ, Embedded Wallets. Camera bắt đầu toàn cảnh rồi zoom lần lượt vào từng panel theo chiều kim đồng hồ.<br>Camera: Toàn cảnh đa panel &rarr; zoom Live Feed mini (góc trái trên) &rarr; pan sang Shield Panel (góc phải trên) &rarr; zoom Revenue Dashboard (giữa) &rarr; pan xuống Embedded Wallets.</div>
+
+<div class="action">Điều hướng đến agt.finance/cortex. Tổng quan đa panel.</div>
+
+<div class="script">
+Cortex &mdash; trung tâm thông minh tổng hợp dữ liệu toàn giao thức vào một màn hình. Đây là bảng điều khiển cho operator &mdash; người vận hành nền tảng.
+<br><br>
+Panel Live Feed hiển thị giao dịch gần đây dạng compact &mdash; tương tự /live nhưng thu nhỏ, chỉ hiển thị 5 sự kiện mới nhất. Shield Panel tóm tắt hoạt động ZK: tổng đã shield, proof success rate, thời gian trung bình tạo proof. Revenue Dashboard hiển thị doanh thu nền tảng theo thời gian dạng mini chart. Và Embedded Wallets hiển thị trạng thái ví nhúng cho từng agent với số dư.
+<br><br>
+Cortex là nơi bạn nhìn vào và biết ngay toàn bộ sức khỏe của giao thức &mdash; không cần mở từng trang riêng. Nếu bạn chỉ có 30 giây để kiểm tra hệ thống, Cortex là trang bạn mở.
+</div>
+
+<div class="action">Hover vào Shield Panel. Tooltip hiển thị: proof tạo gần nhất, thời gian, kết quả.</div>
+
+<div class="note">Cortex tải nhiều dữ liệu cùng lúc. Đợi 2-3 giây sau khi navigate để tất cả panel load xong trước khi nói.</div>
+
+<h3>12B &mdash; Sentinel &mdash; Giám sát 3D</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/sentinel. Quả cầu 3D Three.js với các đường cung màu. Agent Heartbeat Grid. Threat Radar. Xoay chậm quả cầu.<br>Camera: Toàn trình duyệt, hình ảnh 3D ấn tượng.</div>
+
+<div class="action">Điều hướng đến agt.finance/sentinel. Chờ quả cầu 3D render.</div>
+
+<div class="script">
+Sentinel &mdash; giám sát 3D bằng Three.js. Quả cầu với đường cung giao dịch: xanh lá settlements, xanh dương escrow locks, tím shield. Agent Heartbeat Grid hiển thị trạng thái online/offline 32 agent. Threat Radar phát hiện bất thường. Không chỉ đẹp &mdash; công cụ giám sát thật.
+</div>
+
+<div class="action">Xoay quả cầu bằng chuột. Hover vào đường cung để thấy chi tiết giao dịch.</div>
+
+<div class="script">
+Xoay quả cầu và hover vào các đường cung. Mỗi đường là một giao dịch thật &mdash; từ đâu đến đâu, bao nhiêu AlphaUSD, loại gì. Agent Heartbeat Grid bên phải: 32 ô, xanh lá online, đỏ offline, vàng busy. Nếu một agent mất kết nối, operator thấy ngay.
+<br><br>
+Threat Radar phía dưới hiển thị các bất thường: volume đột biến, giao dịch giá trị cao bất thường, agent fail rate tăng. Mức severity: Low (xanh), Medium (vàng), High (cam), Critical (đỏ). Sentinel là mắt thần của toàn hệ thống.
+</div>
+
+<div class="note">Tắt tab khác để Three.js render mượt. Xoay chậm quả cầu bằng chuột. Nếu lag, giảm chất lượng render trong DevTools.</div>
+
+<h3>12C &mdash; Swarm &mdash; Phối hợp Đa Agent</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/swarm. 6 thẻ thống kê hàng ngang ở trên. 5 tab bên dưới. Bắt đầu toàn cảnh 6 thẻ, zoom vào tab Audit Trail, hiển thị severity filter, hover vào entry xem tooltip chi tiết.<br>Camera: Toàn cảnh &rarr; zoom 6 thẻ thống kê &rarr; pan xuống tab bar &rarr; zoom Audit Trail &rarr; cận cảnh hover tooltip.</div>
+
+<div class="action">Điều hướng đến agt.finance/swarm. 6 thẻ thống kê, 5 tab.</div>
+
+<div class="script">
+Swarm &mdash; phối hợp đa agent cho tác vụ phức tạp. Khi một công việc quá lớn cho một agent, Swarm chia nhỏ và phân phối cho nhiều agent làm song song.
+<br><br>
+6 thống kê: Active Swarms đang chạy, Total Agents tham gia, Tasks Completed tổng tác vụ, Success Rate tỷ lệ thành công, Avg Duration thời gian trung bình, Total Value tổng giá trị xử lý.
+<br><br>
+5 tab: Streams hiển thị luồng thanh toán, A2A Economy là kinh tế agent nội bộ, Intel Market cho trao đổi thông tin, Audit Trail log toàn bộ hoạt động, Escrow cho tiền ký quỹ swarm.
+<br><br>
+Audit Trail đặc biệt quan trọng &mdash; log compact với severity filter: Info (xám), Warning (vàng), Error (cam), Critical (đỏ). Hover xem chi tiết đầy đủ. Đây là xương sống tuân thủ cho doanh nghiệp &mdash; mọi hành động đều có trace.
+</div>
+
+<div class="action">Click tab "Audit Trail". Chọn severity filter "Warning". Hiển thị log đã lọc.</div>
+
+<div class="script">
+Audit Trail tab &mdash; click "Warning" filter. Chỉ hiển thị log cảnh báo: agent response chậm, timeout gần ngưỡng, proof generation lâu hơn bình thường. Hover vào entry: popup chi tiết với timestamp, agent ID, mô tả đầy đủ, và recommended action.
+<br><br>
+Đây là tính năng mà enterprise khách hàng yêu cầu nhiều nhất. Khi quản lý 32 agent, bạn cần biết ngay khi có vấn đề, trước khi nó thành sự cố lớn. Swarm + Audit Trail cung cấp visibility đầy đủ.
+</div>
+
+<div class="note">Chuẩn bị ít nhất 5-10 audit trail entries với mix severity: 5 Info, 3 Warning, 1 Error. Không cần Critical cho demo.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">29:30 &ndash; 32:00</span> PHẦN 13: ANALYTICS + VÍ + DEVELOPER + ADMIN</h2>
+
+<h3>13A &mdash; Analytics Dashboard [MỚI v4.0]</h3>
+
+<div class="new-feature"><b>[MỚI v4.0]</b> Analytics tại /analytics &mdash; số liệu giao thức, biểu đồ, xu hướng cho agent owner.</div>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/analytics. 4 biểu đồ chính: line chart (Earnings Over Time), bar chart (Jobs Completed), gauge (Average Ratings), pie chart (Revenue by Service Type). Zoom lần lượt vào từng biểu đồ, hover hiển thị tooltip với số liệu chính xác.<br>Camera: Toàn cảnh 4 biểu đồ &rarr; zoom line chart &rarr; zoom bar chart &rarr; zoom gauge &rarr; zoom pie chart.</div>
+
+<div class="action">Điều hướng đến agt.finance/analytics. Biểu đồ và thẻ KPI.</div>
+
+<div class="script">
+Analytics Dashboard &mdash; mới trong v4.0, dành cho agent owner và developer muốn hiểu hiệu suất agent của mình.
+<br><br>
+4 biểu đồ chính: Earnings Over Time (line chart) hiển thị doanh thu theo ngày/tuần/tháng với xu hướng tăng trưởng. Jobs Completed (bar chart) so sánh số tác vụ hoàn thành qua từng giai đoạn. Average Ratings (gauge) hiển thị điểm đánh giá trung bình dạng đồng hồ. Revenue by Service Type (pie chart) chia doanh thu theo loại dịch vụ &mdash; audit, phân tích, sáng tạo, tuân thủ.
+<br><br>
+Hover vào bất kỳ điểm nào trên biểu đồ để thấy số liệu chính xác. Developer dùng data này để tối ưu agent: dịch vụ nào kiếm nhiều nhất, thời điểm nào có nhiều yêu cầu nhất, rating giảm thì cần cải thiện gì.
+</div>
+
+<h3>13B &mdash; Ví Nhúng Mã Hóa</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/wallets. Danh sách ví dạng card, mỗi card hiển thị tên agent, địa chỉ truncated, số dư, badge AES-256-GCM. Nút "Create Wallet" ở trên. Zoom vào badge mã hóa, sau đó click tạo ví mới.<br>Camera: Toàn cảnh danh sách ví &rarr; zoom badge AES-256-GCM &rarr; cận cảnh nút Create &rarr; animation tạo ví.</div>
+
+<div class="action">Điều hướng đến agt.finance/wallets. Danh sách ví với badge AES-256-GCM.</div>
+
+<div class="script">
+Ví nhúng &mdash; mã hóa AES-256-GCM, chuẩn được sử dụng trong quân sự và tài chính ngân hàng. Mỗi agent có ví riêng biệt để nhận thanh toán. Private key mã hóa ở phía server, không bao giờ hiển thị plaintext trên frontend.
+<br><br>
+Mỗi ví card hiển thị: tên agent, địa chỉ ví truncated, số dư AlphaUSD hiện tại, và badge xác nhận mã hóa AES-256-GCM. Click vào ví để xem lịch sử giao dịch chi tiết.
+<br><br>
+Tạo ví mới chỉ vài giây: click "Create Wallet", đặt tên, hệ thống tạo keypair, mã hóa private key, và ví sẵn sàng nhận thanh toán.
+</div>
+
+<h3>13C &mdash; Developer Experience</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/developers. Badge 7 framework ở trên (logo mỗi framework). 5 bước đăng ký agent dạng stepper. Highlight phần "95-98% doanh thu".<br>Camera: Toàn cảnh &rarr; zoom badge framework &rarr; pan xuống stepper &rarr; zoom highlight doanh thu.</div>
+
+<div class="action">Điều hướng đến agt.finance/developers. Badge framework, luồng đăng ký.</div>
+
+<div class="script">
+Cổng developer &mdash; nơi developer đăng ký agent mới lên marketplace. 7 framework được hỗ trợ: OpenAI, Claude, LangChain, CrewAI, MCP, Eliza, OpenClaw. Bất kỳ AI agent nào cũng kết nối được qua APS-1.
+<br><br>
+Quy trình đăng ký 5 bước: mô tả agent, khai báo kỹ năng, thiết lập giá, cấu hình ví nhận tiền, và publish. Điểm hấp dẫn nhất: developer giữ 95-98% doanh thu. Phí nền tảng chỉ 2-5% &mdash; thấp nhất ngành. So sánh: App Store lấy 30%, các marketplace khác 10-20%.
+<br><br>
+5 bước chi tiết:
+<br><b>Bước 1 &mdash; Mô tả:</b> Tên agent, mô tả ngắn (hiển thị trên card), mô tả dài (trang profile), danh mục (chọn 1 trong 8).
+<br><b>Bước 2 &mdash; Kỹ năng:</b> Khai báo kỹ năng dạng tag, ví dụ "Smart Contract Audit", "Gas Optimization". Tối đa 10 kỹ năng.
+<br><b>Bước 3 &mdash; Giá:</b> Thiết lập bảng giá theo tier (Basic, Standard, Premium) hoặc giá cố định.
+<br><b>Bước 4 &mdash; Ví:</b> Chọn ví nhúng hoặc ví ngoài để nhận doanh thu. Nên dùng ví nhúng cho bảo mật.
+<br><b>Bước 5 &mdash; Publish:</b> Review lại toàn bộ, submit. Agent xuất hiện trên marketplace ngay lập tức.
+</div>
+
+<div class="note">Demo chỉ cần hiển thị 5 bước stepper, không cần hoàn thành đăng ký thật. Cuộn qua từng bước để người xem thấy luồng.</div>
+
+<h3>13D &mdash; Admin + Auto-Judge AI</h3>
+
+<div class="storyboard"><b>STORYBOARD:</b> agt.finance/admin. KPI overview dạng dashboard cards, Conditional Rules dạng danh sách toggle, Auto-Judge AI 3 lớp dạng flowchart ngang. Hiển thị dispute case thật với confidence score và 3 nút hành động.<br>Camera: Toàn trình duyệt &rarr; zoom KPI cards &rarr; pan xuống Conditional Rules &rarr; zoom Auto-Judge flowchart &rarr; cận cảnh dispute case.</div>
+
+<div class="action">Điều hướng đến agt.finance/admin. KPI overview, Conditional Rules.</div>
+
+<div class="script">
+Admin panel &mdash; bảng điều khiển cho quản trị viên nền tảng. KPI overview hiển thị 6 thẻ chính:
+<br>&mdash; Total Users: số người dùng đã kết nối ví
+<br>&mdash; Active Agents: agent đang hoạt động trên marketplace
+<br>&mdash; Transaction Volume: tổng giá trị giao dịch (AlphaUSD)
+<br>&mdash; Platform Revenue: doanh thu phí 2-5%
+<br>&mdash; Dispute Rate: tỷ lệ tranh chấp (mục tiêu dưới 2%)
+<br>&mdash; System Uptime: thời gian hoạt động liên tục
+<br><br>
+Conditional Rules cho phép thiết lập quy tắc tự động kiểm tra mỗi 60 giây. Ví dụ: "nếu dispute rate vượt 5% thì pause đăng ký agent mới", "nếu một agent có 3 proof mismatch liên tiếp thì tạm đình chỉ." Quy tắc toggle bật/tắt.
+</div>
+
+<div class="action">Cuộn đến Auto-Judge AI. 3 lớp giải quyết tranh chấp.</div>
+
+<div class="script">
+Auto-Judge AI &mdash; giải quyết tranh chấp 3 lớp:
+<br><br>
+<b>Lớp 1 &mdash; Deterministic:</b> Quy tắc đơn giản. Proof không khớp + số tiền nhỏ = tự động hoàn tiền. Hết hạn, không có proof = tự động hoàn tiền.
+<br><b>Lớp 2 &mdash; AI Scoring:</b> Mô hình ML phân tích ngữ cảnh, lịch sử, proof data, feedback. Tạo điểm confidence + khuyến nghị.
+<br><b>Lớp 3 &mdash; Human Review:</b> Confidence thấp hoặc số tiền lớn kích hoạt reviewer con người với đầy đủ ngữ cảnh.
+<br><br>
+Mỗi phán quyết: điểm confidence, lý do, 3 nút: Release, Refund, Escalate. Giải quyết hầu hết tranh chấp tự động &mdash; từ nhiều ngày xuống vài phút.
+</div>
+
+<div class="action">Hiển thị dispute case cụ thể. Confidence score 87%. 3 nút hành động.</div>
+
+<div class="script">
+Đây là dispute case thật &mdash; khách hàng khiếu nại NexusGuard không hoàn thành audit đúng thời hạn. Auto-Judge phân tích: AI Proof submitted nhưng result hash không khớp plan hash. Confidence score 87% khuyến nghị Refund. Admin có thể chấp nhận khuyến nghị hoặc override. Hệ thống kết hợp tự động và kiểm soát con người.
+</div>
+
+<div class="note">Thêm sơ đồ flowchart 3 lớp. Lower-third overlay cho mỗi lớp. Chuẩn bị 1 dispute case giả lập trước khi quay.</div>
+
+<div class="tip"><b>Ý tưởng hậu kỳ cho Phần 13:</b> Chia nhỏ thành 4 segment ngắn với title card giữa mỗi segment: "Analytics", "Encrypted Wallets", "Developer Portal", "Admin Panel". Giúp người xem theo dõi trong phần có nhiều nội dung.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2><span class="time">32:00 &ndash; 33:00</span> PHẦN 14: KẾT THÚC</h2>
+
+<div class="storyboard"><b>STORYBOARD:</b> Quay lại /protocol hoặc slide tóm tắt. Chuyển sang webcam presenter. Logo trên nền tối với "agt.finance". Giữ 5 giây. Fade to black.</div>
+
+<div class="action">Điều hướng đến agt.finance/protocol. Tóm tắt traction. Chuyển webcam presenter.</div>
+
+<div class="script">
+Agentic Finance là hạ tầng sản xuất cho nền kinh tế agent:
+<br><br>
+&mdash; 9 smart contract đã xác minh trên Tempo L1 (42431)
+<br>&mdash; 32 AI agent sản xuất trong 8 danh mục
+<br>&mdash; ZK-SNARK PLONK proof thật (Circom V2 + Poseidon)
+<br>&mdash; Xác minh AI Execution qua AIProofRegistry
+<br>&mdash; Kết nối đa ví RainbowKit
+<br>&mdash; Giao diện Chat với agent cho thực thi on-chain
+<br>&mdash; Portfolio Dashboard với uy tín on-chain
+<br>&mdash; Live Transaction Feed qua SSE
+<br>&mdash; Analytics Dashboard cho agent owner
+<br>&mdash; Ví nhúng mã hóa AES-256-GCM
+<br>&mdash; Thanh toán milestone qua StreamV1
+<br>&mdash; Hệ thống thông báo 13 danh mục
+<br>&mdash; Auto-Judge AI giải quyết tranh chấp 3 lớp
+<br>&mdash; Fiat On-Ramp qua Paddle
+<br>&mdash; Phí nền tảng 2-5% &mdash; thấp nhất ngành
+<br>&mdash; Chuẩn APS-1 v2.1
+<br><br>
+Tất cả đều đang chạy thật. Gas miễn phí trên Tempo. Truy cập agt.finance.
+<br><br>
+Cảm ơn mọi người đã theo dõi!
+</div>
+
+<div class="action">Logo trên nền tối (#0A0A0F) với "agt.finance" bên dưới. Giữ 5 giây. Fade to black.</div>
+
+<div class="script">
+Trước khi kết thúc, mình muốn nhấn mạnh: tất cả những gì các bạn vừa thấy đều đang chạy trên blockchain thật. Không phải slide. Không phải mockup. Không phải "coming soon." Đây là phần mềm sản xuất với giao dịch thật, proof thật, tiền thật.
+<br><br>
+Nếu bạn là developer: đăng ký agent, giữ 95-98% doanh thu.
+<br>Nếu bạn là doanh nghiệp: dùng OmniTerminal để payroll, escrow, và quản lý agent.
+<br>Nếu bạn là nhà đầu tư: TVL, transaction volume, và agent count đều on-chain, xác minh được.
+<br><br>
+agt.finance &mdash; xây dựng hạ tầng thanh toán cho nền kinh tế agent.
+</div>
+
+<div class="note">Nói chậm ở câu cuối. Nhạc tăng 25% khi logo. Card cuối: "Built on Tempo L1 | Chain 42431 | agt.finance". Giữ 5 giây rồi fade to black.</div>
+
+<div class="storyboard"><b>STORYBOARD kết thúc:</b> Webcam presenter nói 2 câu cuối, nhìn thẳng camera. Dissolve sang logo Agentic Finance trên nền tối (#0A0A0F). Text "agt.finance" fade in bên dưới logo. Particle effect nhẹ. Card cuối hiển thị 3 giây: "Built on Tempo L1 | Chain 42431 | 9 Smart Contracts | 32 AI Agents". Fade to black.<br>Camera: Webcam cận mặt &rarr; dissolve logo &rarr; hold 5s &rarr; fade to black.<br>Âm thanh: Nhạc ambient tăng 25%, fade out 3 giây cuối.</div>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<h2>PHỤ LỤC A: CHECKLIST SẢN XUẤT</h2>
+
+<h3>Danh sách kiểm tra trước khi quay (12 mục)</h3>
 <table>
-  <tr><th>#</th><th>Hạng mục</th><th>Trạng thái</th></tr>
-  <tr><td>1</td><td>MetaMask đã kết nối, có đủ AlphaUSD trong ví</td><td></td></tr>
-  <tr><td>2</td><td>Mở sẵn tất cả tab: /, /protocol, /shield, /stream, /verify, /cortex, /sentinel, /swarm, /developers, /admin</td><td></td></tr>
-  <tr><td>3</td><td>Có ít nhất 2-3 escrows đang active để demo</td><td></td></tr>
-  <tr><td>4</td><td>Có ít nhất 1 stream với milestones để demo</td><td></td></tr>
-  <tr><td>5</td><td>Có proof commitments trong /verify</td><td></td></tr>
-  <tr><td>6</td><td>Có ít nhất 1 swarm session đang active với audit events</td><td></td></tr>
-  <tr><td>7</td><td>Browser zoom 110-125%</td><td></td></tr>
-  <tr><td>8</td><td>Tắt tất cả notifications/popups không liên quan</td><td></td></tr>
-  <tr><td>9</td><td>Mic đã test — âm thanh sạch, không echo</td><td></td></tr>
-  <tr><td>10</td><td>Độ phân giải màn hình: 1920x1080 trở lên</td><td></td></tr>
-  <tr><td>11</td><td>Đóng tất cả app khác để máy chạy mượt</td><td></td></tr>
+  <tr><th>#</th><th>Hạng mục</th><th>Chi tiết</th><th>&check;</th></tr>
+  <tr><td>1</td><td>Kết nối ví</td><td>RainbowKit + MetaMask trên Tempo L1 (42431). Tối thiểu 5,000 AlphaUSD. Kiểm tra ConnectButton.</td><td></td></tr>
+  <tr><td>2</td><td>Mở sẵn các tab</td><td>Mở tất cả: /welcome, /?app=1, /chat, /portfolio, /live, /analytics, /stream, /shield, /verify, /cortex, /sentinel, /swarm, /wallets, /developers, /admin, /transactions, /notifications.</td><td></td></tr>
+  <tr><td>3</td><td>Escrow hoạt động</td><td>2-3 escrow trong NexusV2 với trạng thái khác nhau (Locked, In Progress, Completed).</td><td></td></tr>
+  <tr><td>4</td><td>Stream + Milestone</td><td>1+ stream trong StreamV1 với 3-5 milestone. Mix đã duyệt + đang chờ.</td><td></td></tr>
+  <tr><td>5</td><td>Proof Commitments</td><td>3-5 entry trong AIProofRegistry. Bao gồm Verified Match + Pending.</td><td></td></tr>
+  <tr><td>6</td><td>Swarm Session</td><td>1+ swarm session với agents. Audit Trail có dữ liệu.</td><td></td></tr>
+  <tr><td>7</td><td>Thông báo</td><td>5-7 thông báo chưa đọc đa loại (escrow, stream, agent, system).</td><td></td></tr>
+  <tr><td>8</td><td>Trình duyệt</td><td>Zoom 110-125%, 1920x1080+, Chrome/Brave, tắt extension.</td><td></td></tr>
+  <tr><td>9</td><td>Âm thanh</td><td>Mic ngoài, -12 đến -6 dB peak, phòng yên tĩnh, tắt thông báo hệ thống.</td><td></td></tr>
+  <tr><td>10</td><td>Phần mềm quay</td><td>OBS/ScreenFlow/Loom, chỉ quay cửa sổ trình duyệt, 30fps+. Webcam 200x200 góc phải dưới (tùy chọn).</td><td></td></tr>
+  <tr><td>11</td><td>Daemon chạy</td><td>ssh root@37.27.190.158 "docker ps | grep daemon" &mdash; phải healthy.</td><td></td></tr>
+  <tr><td>12</td><td>Nhân viên Boardroom</td><td>3-5 nhân viên với địa chỉ. Test 1 batch payroll.</td><td></td></tr>
 </table>
 
-<h3>Tips cho AI Dubbing (HeyGen / Rask AI):</h3>
+<h3>Lịch trình quay gợi ý</h3>
+
+<table>
+  <tr><th>Buổi</th><th>Phần quay</th><th>Thời lượng ước tính</th><th>Ghi chú</th></tr>
+  <tr><td>Buổi 1 (Sáng)</td><td>Phần 0-3: Mở đầu, Tổng quan, Ví, Dashboard</td><td>~90 phút (bao gồm setup)</td><td>Quay phần Dashboard trước khi mệt. Cần daemon healthy + 3-5 nhân viên Boardroom. Test payroll batch trước khi bấm Record.</td></tr>
+  <tr><td>Buổi 2 (Sáng)</td><td>Phần 4-5: Shield Mode, Shield Dashboard</td><td>~60 phút</td><td>Quay liền sau buổi 1. ZK proof generation cần daemon ổn định. Chuẩn bị 2 giao dịch Shield sẵn để demo animation.</td></tr>
+  <tr><td>Buổi 3 (Chiều)</td><td>Phần 6-7: Marketplace, AI Proof</td><td>~75 phút</td><td>Phần dài nhất. Cần escrow hoạt động + proof commitment sẵn. Quay deal flow trước, Fiat on-ramp sau.</td></tr>
+  <tr><td>Buổi 4 (Chiều)</td><td>Phần 8-9: Chat, Thông báo, Stream</td><td>~60 phút</td><td>Chuẩn bị 5-7 thông báo chưa đọc. Chat với DataForge trước 2-3 câu để warm up. Stream cần milestone đang chờ duyệt.</td></tr>
+  <tr><td>Buổi 5 (Ngày 2)</td><td>Phần 10-13: Portfolio, Live, Cortex, Sentinel, Swarm, Analytics, Ví, Dev, Admin</td><td>~90 phút</td><td>Nhiều trang, mỗi trang ngắn. Chạy giao dịch test liên tục cho Live Feed. Tắt tab thừa trước Sentinel (Three.js nặng).</td></tr>
+  <tr><td>Buổi 6 (Ngày 2)</td><td>Phần 14: Kết thúc + Webcam</td><td>~30 phút</td><td>Quay webcam riêng. Ánh sáng tốt, nền sạch. Nói chậm, tự tin. Quay 3 lần lấy bản tốt nhất.</td></tr>
+</table>
+
+<div class="tip"><b>Mẹo tổng thể:</b> Mỗi buổi quay tối đa 90 phút để giữ năng lượng giọng nói. Nghỉ 15 phút giữa các buổi. Uống nước ấm. Kiểm tra daemon health trước mỗi buổi: ssh root@37.27.190.158 "docker ps | grep daemon".</div>
+
+<div class="tip"><b>Backup plan:</b> Nếu daemon down giữa buổi quay, có thể dùng recording cũ cho phần animation. Phần lồng tiếng quay riêng. Ghép trong hậu kỳ. Luôn kiểm tra daemon 5 phút trước mỗi buổi.</div>
+
+<div class="tip"><b>Quay màn hình:</b> Dùng OBS Studio với "Window Capture" chỉ quay cửa sổ Chrome. Tắt tất cả notification hệ thống. Tắt Slack, Discord, email. Zoom trình duyệt 110-125% tùy độ phân giải. Ẩn bookmark bar. Ẩn DevTools.</div>
+
+<h3>Checklist sau khi quay (Post-Production)</h3>
+
+<table>
+  <tr><th>#</th><th>Hạng mục</th><th>Chi tiết</th><th>&check;</th></tr>
+  <tr><td>1</td><td>Ghép video</td><td>Ghép tất cả buổi quay theo thứ tự phần. Thêm transition giữa các phần (dissolve 0.5s).</td><td></td></tr>
+  <tr><td>2</td><td>Đồng bộ audio</td><td>Sync lồng tiếng với màn hình. Kiểm tra lip-sync nếu có webcam. Loại bỏ tiếng "uh", "um".</td><td></td></tr>
+  <tr><td>3</td><td>Lower-thirds</td><td>Thêm title card cho mỗi phần. Font: Segoe UI hoặc Inter. Gradient cyan-indigo.</td><td></td></tr>
+  <tr><td>4</td><td>Phụ đề SRT</td><td>Tạo file phụ đề tiếng Việt. Segoe UI 22-24pt. Nền tối bán trong suốt.</td><td></td></tr>
+  <tr><td>5</td><td>YouTube chapters</td><td>Thêm chapter markers theo bảng thời gian. Copy timestamps từ bảng trên.</td><td></td></tr>
+  <tr><td>6</td><td>Thumbnail</td><td>1280x720. Logo + "Full Demo" + gradient background. Text lớn, rõ ràng.</td><td></td></tr>
+  <tr><td>7</td><td>Export GIF clips</td><td>Cắt 24 clip GIF theo bảng Phụ lục B. Tối ưu dung lượng dưới 5MB.</td><td></td></tr>
+</table>
+
+<h3>5 Mẹo AI Dubbing</h3>
+
 <div class="tip">
-  <b>1. Tốc độ nói:</b> Chậm hơn bình thường 10-20%. Tiếng Anh thường dài hơn tiếng Việt, nói chậm giúp lip-sync khớp hơn.
-  <br><br>
-  <b>2. Micro:</b> Dùng mic ngoài hoặc AirPods Pro. Âm thanh càng sạch, voice clone càng chính xác.
-  <br><br>
-  <b>3. Ánh sáng:</b> Quay mặt rõ ràng — lip-sync cần thấy rõ môi.
-  <br><br>
-  <b>4. Nhạc nền:</b> Chỉ dùng lofi/ambient âm lượng nhỏ (10-15%). Không dùng nhạc có lời.
-  <br><br>
-  <b>5. Review bản dịch:</b> Sau khi AI dub, kiểm tra lại các thuật ngữ: escrow, ZK-SNARK, PLONK, blockchain, smart contract — để chắc là AI không dịch sai.
-  <br><br>
-  <b>6. Export:</b> Xuất 1080p hoặc cao hơn. Nên có subtitle tiếng Anh để tăng độ tiếp cận.
+<b>1. Tốc độ nói:</b> Chậm hơn bình thường 10-20%. 130-140 từ/phút. Dừng 1-2 giây giữa câu, 2-3 giây giữa phần. AI dubbing cần thời gian lip-sync.
 </div>
+<div class="tip">
+<b>2. Microphone:</b> Mic condenser ngoài hoặc AirPods Pro. Khoảng cách 15-20cm. Pop filter cho plosives. Noise floor dưới -50 dB. Export WAV 48kHz.
+</div>
+<div class="tip">
+<b>3. Ánh sáng:</b> Ring light hoặc soft panel 45&deg;. Mặt sáng rõ, miệng nhìn thấy. Nền trung tính.
+</div>
+<div class="tip">
+<b>4. Nhạc nền:</b> Lofi/ambient không lời, 10-15% âm lượng. Thêm tiếng click UI nhẹ 5-8%. Bản quyền hợp lệ.
+</div>
+<div class="tip">
+<b>5. Export:</b> 1080p H.264 10-15 Mbps. Phụ đề tiếng Việt (SRT, Segoe UI 22-24pt, nền tối bán trong suốt). YouTube chapter markers theo từng phần.
+</div>
+<div class="tip">
+<b>6. Kiểm tra cuối:</b> Xem lại toàn bộ video từ đầu đến cuối ít nhất 2 lần. Lần 1: kiểm tra nội dung và flow. Lần 2: kiểm tra âm thanh, phụ đề, timing. Nhờ 1-2 người khác xem và góp ý trước khi publish.
+</div>
+<div class="tip">
+<b>7. SEO YouTube:</b> Title: "Agentic Finance - Full Platform Demo | Agent-to-Agent Payment Infrastructure". Description: bao gồm timestamps, link agt.finance, danh sách tính năng. Tags: AI agent, Web3, ZK-SNARK, blockchain, payment, DeFi.
+</div>
+
+<h3>Bảng Thời Gian Tham Chiếu</h3>
+<table>
+  <tr><th>Phần</th><th>Bắt đầu</th><th>Kết thúc</th><th>Thời lượng</th></tr>
+  <tr><td>0. Mở đầu</td><td>0:00</td><td>1:00</td><td>1:00</td></tr>
+  <tr><td>1. Tổng quan</td><td>1:00</td><td>3:30</td><td>2:30</td></tr>
+  <tr><td>2. Trang chủ + Ví</td><td>3:30</td><td>5:00</td><td>1:30</td></tr>
+  <tr><td>3. Dashboard</td><td>5:00</td><td>10:00</td><td>5:00</td></tr>
+  <tr><td>4. Shield Mode</td><td>10:00</td><td>12:00</td><td>2:00</td></tr>
+  <tr><td>5. Shield Dashboard</td><td>12:00</td><td>14:30</td><td>2:30</td></tr>
+  <tr><td>6. A2A Marketplace</td><td>14:30</td><td>19:30</td><td>5:00</td></tr>
+  <tr><td>7. AI Proof</td><td>19:30</td><td>21:00</td><td>1:30</td></tr>
+  <tr><td>8. Chat + Thông báo</td><td>21:00</td><td>23:00</td><td>2:00</td></tr>
+  <tr><td>9. Stream</td><td>23:00</td><td>24:30</td><td>1:30</td></tr>
+  <tr><td>10. Portfolio</td><td>24:30</td><td>26:00</td><td>1:30</td></tr>
+  <tr><td>11. Live Feed</td><td>26:00</td><td>27:30</td><td>1:30</td></tr>
+  <tr><td>12. Cortex+Sentinel+Swarm</td><td>27:30</td><td>29:30</td><td>2:00</td></tr>
+  <tr><td>13. Analytics+Ví+Dev+Admin</td><td>29:30</td><td>32:00</td><td>2:30</td></tr>
+  <tr><td>14. Kết thúc</td><td>32:00</td><td>33:00</td><td>1:00</td></tr>
+  <tr style="font-weight:bold"><td>TỔNG</td><td>0:00</td><td>33:00</td><td>33:00</td></tr>
+</table>
 
 <!-- ============================================== -->
 <div class="page-break"></div>
-<h2>PHỤ LỤC B: GIF CLIP STORYBOARD</h2>
+<h2>PHỤ LỤC B: BẢNG GIF CLIP STORYBOARD</h2>
 
-<p>Mỗi section cần một GIF clip ngắn (5-15 giây) ghi lại khoảnh khắc trực quan chính. Dùng cho marketing, mạng xã hội, và trang /protocol.</p>
+<p>Các clip GIF ngắn (5-15 giây) cho marketing, mạng xã hội, pitch deck, và documentation.</p>
 
 <table>
-  <tr><th>Clip</th><th>Tên file</th><th>Thời lượng</th><th>Nội dung</th><th>Hành động chính</th></tr>
-  <tr><td>0</td><td>clip-00-intro.gif</td><td>5s</td><td>Logo animation trên nền tối</td><td>Logo fade-in + hiệu ứng hạt</td></tr>
-  <tr><td>1</td><td>clip-01-overview.gif</td><td>8s</td><td>Trang /protocol — 5 competitive moats</td><td>Cuộn qua các moat cards</td></tr>
-  <tr><td>2</td><td>clip-02-wallet.gif</td><td>6s</td><td>Luồng kết nối MetaMask</td><td>Click Connect → approve → dashboard load</td></tr>
-  <tr><td>3</td><td>clip-03-terminal.gif</td><td>10s</td><td>OmniTerminal thanh toán ngôn ngữ tự nhiên</td><td>Gõ lệnh → AI parse → highlight các trường</td></tr>
-  <tr><td>4</td><td>clip-04-shield-mode.gif</td><td>8s</td><td>Shield toggle + tạo ZK proof</td><td>Toggle ON → gõ lệnh → proof loading → thành công</td></tr>
-  <tr><td>5</td><td>clip-05-shield-dashboard.gif</td><td>10s</td><td>Shield Dashboard với ZK Flow Diagram</td><td>Stat cards → ZK Flow pipeline 5 bước → form execute</td></tr>
-  <tr><td>6</td><td>clip-06-a2a.gif</td><td>12s</td><td>A2A Marketplace — thuê agent</td><td>Gõ lệnh thuê → Discover → Negotiate → Escrow Lock</td></tr>
-  <tr><td>6D</td><td>clip-06d-chat.gif</td><td>12s</td><td>Live Chat + Notifications</td><td>Chat button → ChatPanel mở → rich cards → notification bell → click thông báo → cuộn đến section</td></tr>
-  <tr><td>7</td><td>clip-07-verify.gif</td><td>8s</td><td>AI Proof Verification</td><td>Hiện commitment → so sánh hash → Verified Match</td></tr>
-  <tr><td>8</td><td>clip-08-stream.gif</td><td>12s</td><td>Stream pipeline cards + detail view</td><td>Grid pipeline cards → click → progress ring + milestone timeline</td></tr>
-  <tr><td>9</td><td>clip-09-cortex.gif</td><td>10s</td><td>Cortex Intelligence Hub — 4 tabs</td><td>Click qua Live Feed → Shield → Revenue → Wallets</td></tr>
-  <tr><td>10</td><td>clip-10-sentinel.gif</td><td>10s</td><td>Sentinel quả cầu 3D + agent heartbeat</td><td>Quả cầu xoay với cung → heartbeat grid → cinematic mode</td></tr>
-  <tr><td>11</td><td>clip-11-swarm.gif</td><td>12s</td><td>Swarm 6 stat cards + Audit Trail</td><td>Grid stat 3x2 (hiện Fees Earned) → click Audit Trail → dòng compact → hover mô tả</td></tr>
-  <tr><td>12</td><td>clip-12-wallets.gif</td><td>6s</td><td>Embedded Wallets tổng quan</td><td>Danh sách ví → tạo mới → số dư hiển thị</td></tr>
-  <tr><td>13</td><td>clip-13-developer.gif</td><td>8s</td><td>Developer — frameworks + đăng ký</td><td>Logos framework → cuộn đến form đăng ký</td></tr>
-  <tr><td>14</td><td>clip-14-admin.gif</td><td>6s</td><td>Admin panel — arbitration</td><td>KPI cards → Conditional Rules → Arbitration panel</td></tr>
-  <tr><td>15</td><td>clip-15-closing.gif</td><td>5s</td><td>Bảng so sánh + logo</td><td>PayPol vs đối thủ → logo cuối cùng</td></tr>
+  <tr><th>Clip</th><th>Tên file</th><th>TL</th><th>Nội dung</th><th>Hành động chính</th></tr>
+  <tr><td>0</td><td>clip-00-intro.gif</td><td>5s</td><td>Logo nền tối gradient cyan-indigo</td><td>Logo fade + particles + dashboard</td></tr>
+  <tr><td>1</td><td>clip-01-overview.gif</td><td>8s</td><td>/protocol &mdash; 5 lợi thế</td><td>Cuộn qua thẻ lợi thế</td></tr>
+  <tr><td>2</td><td>clip-02-wallet.gif</td><td>6s</td><td>RainbowKit kết nối</td><td>Connect &rarr; approve &rarr; dashboard</td></tr>
+  <tr><td>3A</td><td>clip-03a-payroll.gif</td><td>10s</td><td>NLP payroll command</td><td>Gõ &rarr; AI parse &rarr; execute</td></tr>
+  <tr><td>3B</td><td>clip-03b-boardroom.gif</td><td>8s</td><td>Boardroom nhân sự</td><td>Bảng nhân viên &rarr; Add Employee &rarr; lưu</td></tr>
+  <tr><td>3C</td><td>clip-03c-daemon.gif</td><td>8s</td><td>Daemon Queue xử lý</td><td>Entry Pending &rarr; Processing (spinner) &rarr; Completed (checkmark)</td></tr>
+  <tr><td>4</td><td>clip-04-shield.gif</td><td>10s</td><td>Pipeline ZK 4 bước</td><td>Poseidon &rarr; PLONK &rarr; Verify</td></tr>
+  <tr><td>5</td><td>clip-05-zkflow.gif</td><td>10s</td><td>ZK Flow + Use Cases</td><td>Pipeline động + grid</td></tr>
+  <tr><td>6A</td><td>clip-06a-browse.gif</td><td>8s</td><td>32 agent marketplace</td><td>Grid + bộ lọc danh mục</td></tr>
+  <tr><td>6B</td><td>clip-06b-detail.gif</td><td>10s</td><td>Chi tiết Agent [MỚI]</td><td>Hero + stats + skills + reviews</td></tr>
+  <tr><td>6C</td><td>clip-06c-deal.gif</td><td>12s</td><td>Deal flow + Fiat</td><td>Discover &rarr; Negotiate &rarr; Escrow</td></tr>
+  <tr><td>7</td><td>clip-07-verify.gif</td><td>8s</td><td>Xác minh AI Proof</td><td>Stats + so sánh hash</td></tr>
+  <tr><td>8A</td><td>clip-08a-chat.gif</td><td>10s</td><td>Chat Interface [MỚI]</td><td>Chọn agent &rarr; chat &rarr; rich card</td></tr>
+  <tr><td>8B</td><td>clip-08b-notifications.gif</td><td>8s</td><td>Thông báo 13 danh mục [MỚI]</td><td>Chuông &rarr; dropdown &rarr; /notifications &rarr; bộ lọc tab</td></tr>
+  <tr><td>9</td><td>clip-09-stream.gif</td><td>10s</td><td>Stream pipeline</td><td>Cards + progress ring + milestones</td></tr>
+  <tr><td>10</td><td>clip-10-portfolio.gif</td><td>10s</td><td>Portfolio [MỚI]</td><td>5 tab + reputation gauge</td></tr>
+  <tr><td>11</td><td>clip-11-live.gif</td><td>8s</td><td>Live Feed [MỚI]</td><td>Sự kiện SSE trượt vào</td></tr>
+  <tr><td>12A</td><td>clip-12a-cortex.gif</td><td>8s</td><td>Cortex đa panel</td><td>Toàn cảnh Live Feed + Shield + Revenue + Wallets</td></tr>
+  <tr><td>12B</td><td>clip-12b-sentinel.gif</td><td>8s</td><td>Sentinel quả cầu 3D</td><td>Xoay + đường cung</td></tr>
+  <tr><td>12C</td><td>clip-12c-swarm.gif</td><td>8s</td><td>Swarm phối hợp đa agent</td><td>6 thẻ thống kê &rarr; Audit Trail &rarr; severity filter</td></tr>
+  <tr><td>13A</td><td>clip-13a-analytics.gif</td><td>8s</td><td>Analytics Dashboard [MỚI]</td><td>4 biểu đồ: line + bar + gauge + pie</td></tr>
+  <tr><td>13B</td><td>clip-13b-wallets.gif</td><td>6s</td><td>Ví nhúng AES-256-GCM</td><td>Danh sách ví &rarr; badge mã hóa &rarr; Create Wallet</td></tr>
+  <tr><td>13D</td><td>clip-13d-admin.gif</td><td>8s</td><td>Auto-Judge AI</td><td>3 lớp tranh chấp + phán quyết</td></tr>
+  <tr><td>14</td><td>clip-14-closing.gif</td><td>5s</td><td>Traction + logo</td><td>Tóm tắt &rarr; logo fade-out</td></tr>
 </table>
 
-<div class="note">
-<b>Cài đặt quay GIF:</b>
-<br>— Độ phân giải: 1280x720 hoặc 960x540 (để giảm kích thước file)
-<br>— Frame rate: 10-15 FPS
-<br>— Kích thước tối đa: 5MB mỗi clip
-<br>— Định dạng: GIF với palette tối ưu
-<br>— Lưu vào: /public/demos/ directory
+<div class="note"><b>Cài đặt GIF:</b> 1280x720 hoặc 960x540, 10-15 FPS, tối đa 5MB, palette tối ưu. Lưu vào /public/demo-clips/. Thêm watermark Agentic Finance 30% opacity góc phải dưới.</div>
+
+<h3>Hướng dẫn sản xuất GIF</h3>
+
+<div class="tip">
+<b>Công cụ tạo GIF:</b> Dùng FFmpeg để convert screen recording sang GIF. Command mẫu:
+<br><code>ffmpeg -i input.mp4 -vf "fps=12,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 output.gif</code>
+<br>Hoặc dùng ScreenToGif (Windows) / Gifski (macOS) cho workflow nhanh hơn.
+</div>
+
+<div class="tip">
+<b>Tối ưu dung lượng:</b> GIF trên 5MB sẽ load chậm trên mạng xã hội và pitch deck. Giảm FPS xuống 10 nếu cần. Crop chỉ vùng quan trọng thay vì toàn màn hình. Giảm màu xuống 128 nếu 256 quá nặng.
+</div>
+
+<div class="tip">
+<b>Ưu tiên clip:</b> Nếu thời gian hạn chế, ưu tiên sản xuất theo thứ tự: clip-04-shield (ZK proof &mdash; ấn tượng nhất), clip-08a-chat (chat mới), clip-03a-payroll (NLP command), clip-06c-deal (deal flow). 4 clip này đủ cho pitch deck cơ bản.
+</div>
+
+<h3>Sử dụng GIF theo ngữ cảnh</h3>
+
+<table>
+  <tr><th>Ngữ cảnh</th><th>Clip khuyến nghị</th><th>Ghi chú</th></tr>
+  <tr><td>Pitch Deck (Investor)</td><td>clip-00, clip-04, clip-06c, clip-08a, clip-14</td><td>5 clip cho 5 slide chính. Tập trung ZK + Deal Flow + Chat.</td></tr>
+  <tr><td>Twitter/X Thread</td><td>clip-03a, clip-04, clip-12b</td><td>3 clip ngắn gọn. Payroll NLP, ZK proof, Sentinel 3D &mdash; visual impact cao.</td></tr>
+  <tr><td>Landing Page</td><td>clip-02, clip-03a, clip-06b, clip-10</td><td>Hero section dùng clip-02. Feature sections dùng phần còn lại.</td></tr>
+  <tr><td>Developer Documentation</td><td>clip-03a, clip-06c, clip-09, clip-13a</td><td>Tập trung vào workflow: payroll, deal, stream, analytics.</td></tr>
+  <tr><td>Blog Post</td><td>clip-04, clip-05, clip-08a</td><td>Deep dive vào tính năng cụ thể. ZK, Shield Dashboard, Chat.</td></tr>
+</table>
+
+<!-- ============================================== -->
+<div class="page-break"></div>
+<div style="text-align: center; margin-top: 80px; color: #999;">
+  <p style="font-size: 14pt; font-weight: bold; background: linear-gradient(135deg, #06b6d4, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AGENTIC FINANCE</p>
+  <p>Kịch Bản Video Demo v4.0 &mdash; Tiếng Việt</p>
+  <p>17 tháng 3, 2026</p>
+  <p>agt.finance</p>
+  <p style="margin-top: 30px; font-size: 10pt;">Built on Tempo L1 | Chain ID 42431 | 9 Smart Contract | 32 AI Agent</p>
+  <p style="font-size: 10pt;">NexusV2 &bull; ShieldVaultV2 &bull; PlonkVerifierV2 &bull; AIProofRegistry &bull; StreamV1 &bull; MultisendV2 &bull; AlphaUSD</p>
 </div>
 
 </body>

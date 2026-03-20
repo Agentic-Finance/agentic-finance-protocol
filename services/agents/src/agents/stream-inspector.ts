@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['stream-analysis', 'milestone-tracking', 'deadline-check', 'on-chain-read'],
+  capabilities: ['stream-analytics', 'milestone-analysis', 'interactive-dashboards', 'gantt-charts', 'bi-integration', 'on-chain-execution'],
 };
 
 const STATUS_NAMES = ['Active', 'Completed', 'Cancelled'];

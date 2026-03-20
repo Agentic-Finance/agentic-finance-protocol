@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import SubPageNav from '../components/SubPageNav';
+import { AppShell } from '../components/ui/AppShell';
 
 const LiveDashboard = dynamic(() => import('../components/LiveDashboard'), {
   ssr: false,
@@ -24,12 +24,32 @@ const EmbeddedWallets = dynamic(() => import('../components/EmbeddedWallets'), {
   loading: () => <TabSkeleton label="Loading Wallets..." />,
 });
 
-function TabSkeleton({ label }: { label: string }) {
+function TabSkeleton({ label: _label }: { label: string }) {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-slate-400 text-sm">{label}</p>
+    <div className="space-y-4 p-4 max-w-[1600px] mx-auto px-4 sm:px-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="rounded-2xl border border-white/[0.06] p-4" style={{ background: 'var(--pp-bg-card)' }}>
+            <div className="w-16 h-3 mb-3 pp-skeleton" />
+            <div className="w-12 h-6 pp-skeleton" />
+            <div className="w-20 h-3 mt-2 pp-skeleton" />
+          </div>
+        ))}
+      </div>
+      <div className="rounded-2xl border border-white/[0.06] p-4" style={{ background: 'var(--pp-bg-card)' }}>
+        <div className="w-40 h-5 mb-4 pp-skeleton" />
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg pp-skeleton" />
+              <div className="flex-1">
+                <div className="w-32 h-3 mb-1 pp-skeleton" />
+                <div className="w-48 h-3 pp-skeleton" />
+              </div>
+              <div className="w-16 h-4 pp-skeleton" />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -46,22 +66,11 @@ const viewTabs: { id: ViewTab; label: string; icon: string }[] = [
 
 export default function CortexPage() {
   const [activeView, setActiveView] = useState<ViewTab>('feed');
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-
-  // Try to get wallet from localStorage (set by OmniTerminal or other wallet flows)
-  React.useEffect(() => {
-    try {
-      const saved = localStorage.getItem('connectedWallet') || localStorage.getItem('walletAddress');
-      if (saved) setWalletAddress(saved);
-    } catch {}
-  }, []);
 
   return (
-    <div className="min-h-screen text-white" style={{ background: 'linear-gradient(180deg, #0a0a12 0%, #0d0d1a 50%, #0a0a12 100%)' }}>
-      <SubPageNav />
-
+    <AppShell>
       {/* Internal tab bar */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 pt-5 pb-2">
+      <div className="pt-1 pb-2">
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -99,7 +108,7 @@ export default function CortexPage() {
 
       {/* Tab content */}
       {activeView === 'feed' && <LiveDashboard />}
-      {activeView === 'shield' && <ShieldPanel walletAddress={walletAddress} />}
+      {activeView === 'shield' && <ShieldPanel />}
       {activeView === 'revenue' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <RevenueDashboard />
@@ -107,9 +116,9 @@ export default function CortexPage() {
       )}
       {activeView === 'wallets' && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <EmbeddedWallets walletAddress={walletAddress} />
+          <EmbeddedWallets />
         </div>
       )}
-    </div>
+    </AppShell>
   );
 }

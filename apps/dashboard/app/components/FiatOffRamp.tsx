@@ -118,6 +118,11 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
   // Pagination
   const { paginatedItems: paginatedWithdrawals, currentPage: wPage, totalPages: wTotalPages, setCurrentPage: setWPage, totalItems: wTotal, itemsPerPage: wPerPage } = usePagination(withdrawals, 10);
 
+  // Off-ramp method tab
+  const [offRampMethod, setOffRampMethod] = useState<'paypal' | 'card'>('paypal');
+  const [cardAmount, setCardAmount] = useState('');
+  const [isCardProcessing, setIsCardProcessing] = useState(false);
+
   // Timer ref for cooldown visual
   const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [cooldownSecs, setCooldownSecs] = useState(0);
@@ -231,11 +236,7 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
   const isFormValid = amountNum >= 5 && amountNum <= 10000 && paypalEmail.includes('@') && paypalEmail.includes('.');
 
   return (
-    <div className="relative z-20 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="absolute -inset-[1px] bg-gradient-to-r from-emerald-500/40 via-teal-500/20 to-emerald-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none" />
-
-      <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#061014]/90 shadow-inner backdrop-blur-3xl overflow-hidden">
-        <div className="absolute top-0 right-0 w-[50%] h-32 bg-emerald-500/5 blur-[80px] pointer-events-none" />
+    <div className="agt-card agt-card-accent-mint p-5 sm:p-6 relative overflow-hidden">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 border-b border-white/[0.05] pb-5 relative z-10">
@@ -249,33 +250,43 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
               Fiat Off-Ramp
             </h2>
             <p className="text-sm text-emerald-400/80 mt-2 ml-14">
-              AlphaUSD {'\u2192'} USD via PayPal Payouts {config?.environment === 'sandbox' && <span className="text-amber-400 text-xs ml-1">(SANDBOX)</span>}
+              AlphaUSD {'\u2192'} USD {config?.environment === 'sandbox' && <span className="text-amber-400 text-xs ml-1">(SANDBOX)</span>}
             </p>
           </div>
 
-          <button
-            onClick={() => { setShowForm(!showForm); setShowConfirm(false); }}
-            disabled={isCoolingDown}
-            className={`px-5 py-2.5 border rounded-xl text-sm font-bold transition-all flex items-center gap-2 mt-4 md:mt-0 ${
-              isCoolingDown
-                ? 'bg-slate-800/50 border-slate-700/30 text-slate-500 cursor-not-allowed'
-                : 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 hover:border-emerald-400/50 text-emerald-400'
-            }`}
-          >
-            {isCoolingDown ? (
-              <>
-                <span className="w-4 h-4 border-2 border-slate-500/30 border-t-slate-400 rounded-full animate-spin" />
-                Wait {cooldownSecs}s
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Withdraw
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2 mt-4 md:mt-0">
+            {/* Method Tabs */}
+            <div className="flex bg-white/[0.03] rounded-lg border border-white/[0.06] p-0.5 mr-2">
+              {(['paypal', 'card'] as const).map(method => (
+                <button key={method} onClick={() => setOffRampMethod(method)} className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all ${offRampMethod === method ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/50'}`}>
+                  {method === 'paypal' ? 'PayPal' : 'Card'}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => { setShowForm(!showForm); setShowConfirm(false); }}
+              disabled={isCoolingDown}
+              className={`px-5 py-2.5 border rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
+                isCoolingDown
+                  ? 'bg-slate-800/50 border-slate-700/30 text-slate-500 cursor-not-allowed'
+                  : 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 hover:border-emerald-400/50 text-emerald-400'
+              }`}
+            >
+              {isCoolingDown ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-slate-500/30 border-t-slate-400 rounded-full animate-spin" />
+                  Wait {cooldownSecs}s
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Withdraw
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Submit result banner */}
@@ -295,7 +306,53 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
           </div>
         )}
 
-        {/* Withdrawal Form */}
+        {/* Card Tab Content */}
+        {offRampMethod === 'card' && (
+          <div className="mb-6 p-5 rounded-xl border border-white/[0.06] bg-white/[0.02]">
+            <h4 className="text-sm font-bold text-white mb-1">Card Withdrawal (Visa / Mastercard)</h4>
+            <p className="text-xs text-slate-500 mb-4">Convert AlphaUSD to fiat and receive on your debit/credit card.</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[11px] text-slate-500 font-bold uppercase tracking-wider mb-1 block">Amount (AlphaUSD)</label>
+                <input type="number" min="5" max="10000" step="0.01" value={cardAmount} onChange={e => setCardAmount(e.target.value)} placeholder="100.00" className="w-full bg-black/30 border border-white/[0.08] rounded-lg px-4 py-2.5 text-sm text-white font-mono outline-none focus:border-emerald-500/50 transition-colors" />
+              </div>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>Processing fee</span>
+                <span className="text-white/60">3.5% + $0.30</span>
+              </div>
+              {cardAmount && parseFloat(cardAmount) >= 5 && (
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-slate-400">You receive</span>
+                  <span className="text-emerald-400">${(parseFloat(cardAmount) * 0.965 - 0.30).toFixed(2)} USD</span>
+                </div>
+              )}
+              <button
+                onClick={async () => {
+                  if (!cardAmount || parseFloat(cardAmount) < 5) return;
+                  setIsCardProcessing(true);
+                  try {
+                    const res = await fetch('/api/fiat/checkout', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ amount: parseFloat(cardAmount), userWallet: walletAddress, returnUrl: window.location.href }),
+                    });
+                    const data = await res.json();
+                    if (data.checkoutUrl) window.open(data.checkoutUrl, '_blank');
+                    else alert(data.error || 'Failed to create checkout session');
+                  } catch { alert('Network error'); }
+                  setIsCardProcessing(false);
+                }}
+                disabled={isCardProcessing || !cardAmount || parseFloat(cardAmount) < 5}
+                className="w-full py-3 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 font-bold text-sm rounded-xl transition-all disabled:opacity-30"
+              >
+                {isCardProcessing ? 'Processing...' : 'Withdraw to Card'}
+              </button>
+            </div>
+            <p className="text-[10px] text-slate-600 mt-3 text-center">Powered by Paddle (Visa / Mastercard / Apple Pay)</p>
+          </div>
+        )}
+
+        {/* PayPal Withdrawal Form */}
         {showForm && (
           <div className="mb-6 p-5 bg-black/40 rounded-xl border border-emerald-500/20 animate-in fade-in slide-in-from-top-2 duration-300">
             <form onSubmit={handleFormSubmit} className="space-y-4">
@@ -660,7 +717,6 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
             <span className="text-[9px] text-slate-600">100+ countries</span>
           </div>
         </div>
-      </div>
 
       {/* Slow spin animation for processing icon */}
       <style jsx>{`

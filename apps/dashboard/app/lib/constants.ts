@@ -12,6 +12,10 @@ export const AGTFI_SHIELD_ADDRESS = "0x4cfcaE530d7a49A0FE8c0de858a0fA8Cf9Aea8B1"
 export const AGTFI_SHIELD_V2_ADDRESS = "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055";
 export const PLONK_VERIFIER_V2_ADDRESS = "0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B";
 
+// Batch Shield Executor - batches multiple ZK payouts into 1 atomic TX
+// ShieldVaultV2.masterDaemon → BatchShieldExecutor → ShieldVaultV2.executeShieldedPayout
+export const BATCH_SHIELD_EXECUTOR_ADDRESS = "0xBc7dF45b15739c41c3223b1B794A73d793A65Ea2";
+
 // V2 Escrow Contract - full lifecycle (dispute, refund, timeout, settlement)
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const AGTFI_NEXUS_V2_ADDRESS = "0x6A467Cd4156093bB528e448C04366586a1052Fab";

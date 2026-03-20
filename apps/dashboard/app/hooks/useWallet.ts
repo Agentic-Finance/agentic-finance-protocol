@@ -5,15 +5,16 @@
  * Unified wallet connection interface wrapping wagmi hooks
  *
  * Usage:
- *   const { address, isConnected, connect, disconnect } = useWallet();
+ *   const { address, isConnected, connect, disconnect, balance, shortAddress } = useWallet();
  */
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
 import { useCallback } from 'react';
 
 export function useWallet() {
   const { address, isConnected, chain } = useAccount();
   const { connectAsync, connectors, isPending: isConnecting } = useConnect();
   const { disconnectAsync } = useDisconnect();
+  const { data: balanceData } = useBalance({ address });
 
   const connect = useCallback(async () => {
     try {
@@ -43,9 +44,12 @@ export function useWallet() {
   return {
     address: address ?? null,
     displayAddress,
+    shortAddress: displayAddress || '',
     isConnected,
     isConnecting,
     chain: chain ?? null,
+    chainId: chain?.id,
+    balance: balanceData ? Number(balanceData.value) / Math.pow(10, balanceData.decimals) : 0,
     connect,
     disconnect,
   };

@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'payments',
   version:      '1.0.0',
   price:        8,
-  capabilities: ['batch-transfer', 'multisend', 'gas-efficient', 'on-chain-execution'],
+  capabilities: ['batch-payment', 'multisend', 'csv-import', 'excel-import', 'payment-manifest', 'receipt-tracking', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Multisend Batch agent for MultisendVaultV2 on Tempo blockchain.

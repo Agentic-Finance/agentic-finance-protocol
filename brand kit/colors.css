@@ -1,0 +1,76 @@
+/* ============================================
+   Agentic Finance — Brand Color Tokens
+   Domain: agt.finance | Token: AGT
+   ============================================ */
+
+:root {
+  /* ── Core Brand Colors ── */
+  --agt-pink:        #FF2D87;   /* Spectrum Pink — primary accent */
+  --agt-blue:        #1BBFEC;   /* Electric Blue — secondary accent */
+  --agt-mint:        #3EDDB9;   /* Mint Teal — tertiary accent */
+  --agt-orange:      #FF7D2C;   /* Sunrise Orange — warm accent */
+
+  /* ── Extended Palette ── */
+  --agt-pink-light:  #FF6EB3;
+  --agt-pink-dark:   #D0157A;
+  --agt-blue-light:  #6DD6F4;
+  --agt-blue-dark:   #0890B8;
+  --agt-mint-light:  #7EEBD3;
+  --agt-mint-dark:   #20A884;
+
+  /* ── Gradients ── */
+  --agt-grad-primary:  linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9);
+  --agt-grad-warm:     linear-gradient(135deg, #FF2D87, #FF7D2C);
+  --agt-grad-cool:     linear-gradient(135deg, #1BBFEC, #3EDDB9);
+
+  /* ── Background Surfaces ── */
+  --agt-bg-black:    #000000;   /* Primary background */
+  --agt-bg-1:        #0A0A0F;   /* App background */
+  --agt-bg-2:        #111118;   /* Card background */
+  --agt-bg-3:        #1A1A24;   /* Elevated surface */
+  --agt-bg-light:    #F0F2F8;   /* Light background */
+
+  /* ── Text ── */
+  --agt-text-1:      #FFFFFF;   /* Primary text */
+  --agt-text-2:      #C4C4D4;   /* Secondary text */
+  --agt-text-3:      #6B6B8A;   /* Muted text */
+
+  /* ── Border ── */
+  --agt-border:      rgba(255, 255, 255, 0.08);
+  --agt-border-pink: rgba(255, 45, 135, 0.3);
+
+  /* ── Typography ── */
+  --agt-font-display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
+  --agt-font-body:    'DM Sans', system-ui, sans-serif;
+  --agt-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── Spacing Scale ── */
+  --agt-space-1:  4px;
+  --agt-space-2:  8px;
+  --agt-space-3:  12px;
+  --agt-space-4:  16px;
+  --agt-space-5:  24px;
+  --agt-space-6:  32px;
+  --agt-space-7:  48px;
+  --agt-space-8:  64px;
+
+  /* ── Border Radius ── */
+  --agt-radius-sm:  6px;
+  --agt-radius-md:  10px;
+  --agt-radius-lg:  16px;
+  --agt-radius-xl:  24px;
+  --agt-radius-full: 9999px;
+}
+
+/* ── Utility Classes ── */
+.agt-text-gradient {
+  background: var(--agt-grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.agt-bg-gradient { background: var(--agt-grad-primary); }
+.agt-text-pink   { color: var(--agt-pink); }
+.agt-text-blue   { color: var(--agt-blue); }
+.agt-text-mint   { color: var(--agt-mint); }

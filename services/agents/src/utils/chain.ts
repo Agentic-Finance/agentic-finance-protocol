@@ -14,7 +14,7 @@ import { ethers } from 'ethers';
 
 export const TEMPO_RPC = 'https://rpc.moderato.tempo.xyz';
 export const TEMPO_CHAIN_ID = 42431;
-export const TEMPO_EXPLORER = 'https://explore.tempo.xyz';
+export const TEMPO_EXPLORER = 'https://explore.moderato.tempo.xyz';
 
 // ── Deployed Contract Addresses ──────────────────────────────
 

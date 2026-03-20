@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { EmptyState } from '../ui/EmptyState';
 
 interface MilestoneData {
     id: string;
@@ -91,13 +92,11 @@ export default function SwarmStreamsTab() {
 
     if (swarms.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-                <span className="text-6xl mb-4">🐝</span>
-                <h3 className="text-xl font-bold text-white mb-2">No Swarms Yet</h3>
-                <p className="text-sm text-slate-400 max-w-md">
-                    Swarm sessions coordinate multiple AI agents working in parallel on complex tasks with shared budgets.
-                </p>
-            </div>
+            <EmptyState
+                icon={<span className="text-3xl">{'\u{1F41D}'}</span>}
+                title="No Swarms Yet"
+                description="Swarm sessions coordinate multiple AI agents working in parallel on complex tasks with shared budgets."
+            />
         );
     }
 
@@ -145,11 +144,11 @@ export default function SwarmStreamsTab() {
             </div>
 
             {filteredSwarms.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <span className="text-4xl mb-3">🔍</span>
-                    <h3 className="text-lg font-bold text-white mb-1">No matching sessions</h3>
-                    <p className="text-sm text-slate-400">Try adjusting your search or filter criteria.</p>
-                </div>
+                <EmptyState
+                    icon={<span className="text-3xl">{'\u{1F50D}'}</span>}
+                    title="No Matching Sessions"
+                    description="Try adjusting your search or filter criteria."
+                />
             )}
 
             {filteredSwarms.map((swarm) => {

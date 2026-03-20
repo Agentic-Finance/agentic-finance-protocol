@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'payments',
   version:      '1.0.0',
   price:        12,
-  capabilities: ['recurring-payment', 'scheduled-streams', 'payroll-schedule', 'on-chain-execution'],
+  capabilities: ['recurring-payment', 'subscription', 'billing-platform', 'invoice-reminders', 'stripe-integration', 'on-chain-execution'],
 };
 
 /**

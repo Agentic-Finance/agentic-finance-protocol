@@ -22,7 +22,17 @@ export async function POST(req: Request) {
         // Normalize input to array to handle both terminal inputs and CSV uploads
         const payloads = Array.isArray(body) ? body : [body];
 
-        const operations = payloads.map(p => 
+        // Resolve workspace for scoping
+        const walletHeader = req.headers.get('x-wallet-address') || req.headers.get('X-Wallet-Address');
+        let workspaceId: string | null = null;
+        if (walletHeader) {
+            const ws = await prisma.workspace.findFirst({
+                where: { adminWallet: { equals: walletHeader, mode: 'insensitive' } },
+            });
+            if (ws) workspaceId = ws.id;
+        }
+
+        const operations = payloads.map(p =>
             prisma.autopilotRule.create({
                 data: {
                     name: p.name || "Anonymous",
@@ -31,7 +41,8 @@ export async function POST(req: Request) {
                     token: p.token || "AlphaUSD",
                     schedule: p.schedule,
                     note: p.note || "",
-                    status: "Active" // Set to active by default upon creation
+                    status: "Active",
+                    workspaceId,
                 }
             })
         );
@@ -59,20 +70,23 @@ export async function PUT(req: Request) {
             const rule = await prisma.autopilotRule.findUnique({ where: { id: Number(id) } });
             if (!rule) throw new Error("Agent not found");
 
-            let workspace = await prisma.workspace.findFirst();
-            if (!workspace) {
-                workspace = await prisma.workspace.create({
-                    data: { name: "Genesis Workspace", adminWallet: "0x0000000000000000000000000000000000000000" }
-                });
+            // Use rule's workspace, or fallback to first workspace
+            let wsId = rule.workspaceId;
+            if (!wsId) {
+                const ws = await prisma.workspace.findFirst();
+                if (!ws) throw new Error("No workspace found");
+                wsId = ws.id;
             }
 
             // Push a copy to The Boardroom queue
             await prisma.timeVaultPayload.create({
                 data: {
-                    workspaceId: workspace.id,
+                    workspaceId: wsId,
                     recipientWallet: rule.wallet_address,
+                    name: rule.name,
                     amount: rule.amount,
                     status: "Draft",
+                    note: rule.note || undefined,
                     zkCommitment: `[Autopilot] ${rule.schedule}` // Tag note to know origin
                 }
             });

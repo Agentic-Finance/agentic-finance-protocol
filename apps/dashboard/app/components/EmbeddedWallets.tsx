@@ -10,6 +10,7 @@ import {
     XMarkIcon,
     ClipboardDocumentIcon,
 } from '@/app/components/icons';
+import { EmptyState } from './ui/EmptyState';
 
 interface WalletItem {
     id: string;
@@ -179,7 +180,7 @@ export default function EmbeddedWallets({ walletAddress }: { walletAddress?: str
 
                 {/* Generate Modal */}
                 {showGenerate && (
-                    <div className="mb-5 bg-[#0A0E17] border border-indigo-500/20 rounded-xl p-5 animate-in fade-in duration-300">
+                    <div className="mb-5 border border-indigo-500/20 rounded-xl p-5 animate-in fade-in duration-300" style={{ background: 'var(--pp-bg-elevated)' }}>
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="text-white font-semibold text-sm">Generate New Wallet</h4>
                             <button onClick={() => setShowGenerate(false)} className="text-slate-500 hover:text-white">
@@ -245,9 +246,11 @@ export default function EmbeddedWallets({ walletAddress }: { walletAddress?: str
 
                 {/* Wallet Table */}
                 {wallets.length === 0 ? (
-                    <div className="text-center py-12 text-slate-600 text-sm">
-                        No wallets generated yet. Click "Generate Wallet" to create one.
-                    </div>
+                    <EmptyState
+                        icon={<span className="text-3xl">{'\u{1F45B}'}</span>}
+                        title="No Wallets Generated"
+                        description="Click 'Generate Wallet' to create an isolated agent wallet."
+                    />
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">

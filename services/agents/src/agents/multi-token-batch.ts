@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'payments',
   version:      '1.0.0',
   price:        10,
-  capabilities: ['multi-token-batch', 'batch-payment', 'any-token', 'on-chain-execution'],
+  capabilities: ['multi-token-batch', 'enterprise-payroll', 'hris-integration', 'payslip-generation', 'approval-workflows', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Multi-Token Batch agent. Parse batch payment with a specific token.

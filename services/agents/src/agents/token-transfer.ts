@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'payments',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['erc20-transfer', 'multi-token', 'on-chain-execution'],
+  capabilities: ['erc20-transfer', 'multi-token', 'email-notification', 'receipt-generation', 'payment-history', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Token Transfer agent on Tempo blockchain.

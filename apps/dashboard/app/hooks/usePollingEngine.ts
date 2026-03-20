@@ -49,15 +49,24 @@ export function usePollingEngine({
 
     const isFetchingRef = useRef(false);
 
-    const fetchData = useCallback(async () => {
-        if (isFetchingRef.current) return;
+    const fetchData = useCallback(async (force = false) => {
+        if (isFetchingRef.current && !force) return;
+        // If forced, wait for current fetch to finish before re-fetching
+        if (isFetchingRef.current && force) {
+            let waited = 0;
+            while (isFetchingRef.current && waited < 3000) {
+                await new Promise(r => setTimeout(r, 100));
+                waited += 100;
+            }
+        }
         isFetchingRef.current = true;
 
         try {
             // Promise.allSettled — each endpoint independent, no cascade failures
+            const walletHeaders: Record<string, string> = walletAddress ? { 'X-Wallet-Address': walletAddress } : {};
             const results = await Promise.allSettled([
-                fetch('/api/payout-history'),
-                fetch('/api/employees'),
+                fetch(`/api/payout-history${walletAddress ? `?wallet=${walletAddress}` : ''}`, { headers: walletHeaders }),
+                fetch(`/api/employees${walletAddress ? `?wallet=${walletAddress}` : ''}`, { headers: walletHeaders }),
                 fetch('/api/autopilot'),
                 fetch('/api/stats'),
                 walletAddress ? fetch(`/api/daemon-status?wallet=${walletAddress}`) : Promise.resolve(null),

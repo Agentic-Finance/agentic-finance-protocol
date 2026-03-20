@@ -10,6 +10,10 @@ import {
   ClockIcon,
   SparklesIcon,
 } from '@/app/components/icons';
+import { BarChartCard } from './ui/charts/BarChartCard';
+import { DonutChartCard } from './ui/charts/DonutChartCard';
+import { AreaChartCard } from './ui/charts/AreaChartCard';
+import { EmptyState } from './ui/EmptyState';
 
 interface RevenueData {
   tvl: { total: number; byContract: any[]; byToken: any[] };
@@ -342,6 +346,78 @@ export default function RevenueDashboard() {
         />
       </div>
 
+      {/* ── Recharts Visualizations ─────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        {/* Revenue Trend Area Chart */}
+        {chart && chart.labels && chart.labels.length > 0 ? (
+          <AreaChartCard
+            title="Revenue Trend"
+            subtitle="Last 30 days"
+            data={chart.labels.map((label, i) => ({
+              date: label,
+              volume: chart.volume[i] ?? 0,
+              fees: chart.fees[i] ?? 0,
+            }))}
+            dataKey="fees"
+            xAxisKey="date"
+            color="#3EDDB9"
+          />
+        ) : (
+          <EmptyState
+            icon={<span className="text-3xl">📈</span>}
+            title="No Revenue Trend Data"
+            description="Revenue trend will appear once transaction data is available."
+          />
+        )}
+
+        {/* Fee Distribution Donut Chart */}
+        {data && data.fees && (data.fees.today > 0 || data.fees.week > 0 || data.fees.month > 0) ? (
+          <DonutChartCard
+            title="Fee Distribution"
+            data={[
+              { name: 'Today', value: data.fees.today, color: '#f59e0b' },
+              { name: 'This Week', value: Math.max(data.fees.week - data.fees.today, 0), color: '#818cf8' },
+              { name: 'This Month', value: Math.max(data.fees.month - data.fees.week, 0), color: '#3EDDB9' },
+              { name: 'Older', value: Math.max(data.fees.allTime - data.fees.month, 0), color: '#64748b' },
+            ].filter(s => s.value > 0)}
+            centerLabel="Total Fees"
+            centerValue={formatUSD(data.fees.allTime)}
+          />
+        ) : (
+          <EmptyState
+            icon={<span className="text-3xl">🍩</span>}
+            title="No Fee Data Yet"
+            description="Fee distribution will appear once fees are collected."
+          />
+        )}
+
+        {/* Volume & Jobs Bar Chart */}
+        {chart && chart.labels && chart.labels.length > 0 ? (
+          <BarChartCard
+            title="Volume & Jobs"
+            subtitle={`${period} breakdown`}
+            data={chart.labels.map((label, i) => ({
+              date: label,
+              volume: chart.volume[i] ?? 0,
+              jobs: chart.jobs[i] ?? 0,
+            }))}
+            dataKeys={[
+              { key: 'volume', color: '#818cf8', label: 'Volume' },
+              { key: 'jobs', color: '#f59e0b', label: 'Jobs' },
+            ]}
+            xAxisKey="date"
+            className="lg:col-span-2"
+          />
+        ) : (
+          <EmptyState
+            icon={<span className="text-3xl">📊</span>}
+            title="No Volume Data Yet"
+            description="Volume and job data will appear once agents start processing transactions."
+            className="lg:col-span-2"
+          />
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* TVL Breakdown */}
         <div className="pp-card p-6">
@@ -417,7 +493,11 @@ export default function RevenueDashboard() {
               });
             })()}
             {(!data?.topAgents || data.topAgents.length === 0) && (
-              <p className="text-slate-600 text-sm text-center py-4">No agent revenue data yet</p>
+              <EmptyState
+                icon={<span className="text-3xl">🤖</span>}
+                title="No Agent Revenue Data Yet"
+                description="Revenue data will appear once agents start processing transactions."
+              />
             )}
           </div>
         </div>
@@ -506,7 +586,11 @@ export default function RevenueDashboard() {
             </div>
           ))}
           {(!data?.recentSettlements || data.recentSettlements.length === 0) && (
-            <p className="text-slate-600 text-sm text-center py-4">No settlements yet</p>
+            <EmptyState
+              icon={<span className="text-3xl">📋</span>}
+              title="No Settlements Yet"
+              description="Settlement history will appear once agents complete transactions."
+            />
           )}
         </div>
       </div>

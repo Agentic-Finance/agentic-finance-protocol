@@ -7,7 +7,7 @@
  */
 
 // Chain
-export { tempoModerato } from './chain';
+export { tempoModerato, tempoMainnet, getActiveChain, isMainnet } from './chain';
 
 // Clients
 export {
@@ -86,3 +86,27 @@ export {
   ACCESS_KEY_TIERS,
   getDefaultConfig,
 } from './access-keys';
+
+// MPP — Machine Payments Protocol (Tempo + Stripe)
+export {
+  createChargeIntent,
+  createSession,
+  streamPayment,
+  canPay,
+  cancelSession,
+} from './mpp-client';
+
+// TIP-403 Compliance Registry
+export {
+  isTransferAllowed,
+  getTokenPolicy,
+  isWhitelisted,
+  checkBatchCompliance,
+} from './compliance';
+
+// Passkey Authentication (WebAuthn P256)
+export {
+  isPasskeySupported,
+  registerPasskey,
+  authenticatePasskey,
+} from './passkey';

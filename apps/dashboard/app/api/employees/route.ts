@@ -12,8 +12,22 @@ export async function GET(req: Request) {
     if (!auth.valid) return auth.response!;
 
     try {
+        // Scope to workspace if wallet provided
+        const { searchParams } = new URL(req.url);
+        const wallet = searchParams.get('wallet')?.trim();
+        const where: any = { status: { in: ['Draft', 'PENDING', 'PROCESSING', 'Vaulted', 'COMPLETED', 'FAILED'] } };
+
+        if (wallet) {
+            const workspace = await prisma.workspace.findFirst({
+                where: { adminWallet: { equals: wallet, mode: 'insensitive' } },
+            });
+            if (workspace) {
+                where.workspaceId = workspace.id;
+            }
+        }
+
         const payloads = await prisma.timeVaultPayload.findMany({
-            where: { status: { in: ['Draft', 'PENDING', 'PROCESSING', 'Vaulted', 'COMPLETED', 'FAILED'] } },
+            where,
             orderBy: { createdAt: 'desc' },
             take: 200,
         });
@@ -72,8 +86,8 @@ export async function POST(req: Request) {
         const intentsArray = Array.isArray(payload) ? payload : (payload.intents || [payload]);
 
         // 🛡️ Batch size limit to prevent DoS
-        if (intentsArray.length > 100) {
-            return apiError('Max 100 intents per batch', 400);
+        if (intentsArray.length > 200) {
+            return apiError('Max 200 intents per batch', 400);
         }
 
         // 🛡️ Validate all wallet addresses before creating any payloads

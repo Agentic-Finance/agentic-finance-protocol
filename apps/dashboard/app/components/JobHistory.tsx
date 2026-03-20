@@ -7,7 +7,7 @@ import {
     ArrowTopRightOnSquareIcon, CpuChipIcon, StarIcon,
 } from '@/app/components/icons';
 
-const EXPLORER = 'https://explore.tempo.xyz';
+const EXPLORER = 'https://explore.moderato.tempo.xyz';
 
 interface Job {
     id: string;

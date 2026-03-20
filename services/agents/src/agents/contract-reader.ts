@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['contract-state', 'job-counter', 'batch-history', 'rating-check', 'on-chain-read'],
+  capabilities: ['contract-state-read', 'cross-contract', 'rest-api-generation', 'websocket-feeds', 'data-integration', 'on-chain-execution'],
 };
 
 export const handler: AgentHandler = async (job) => {

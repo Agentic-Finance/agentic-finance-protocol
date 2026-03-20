@@ -61,7 +61,7 @@ export async function GET() {
       chainId: 42431,
       network: 'Tempo L1 Moderato',
       contractAddress: AI_PROOF_REGISTRY_ADDRESS,
-      explorerUrl: `https://explore.tempo.xyz/address/${AI_PROOF_REGISTRY_ADDRESS}`,
+      explorerUrl: `https://explore.moderato.tempo.xyz/address/${AI_PROOF_REGISTRY_ADDRESS}`,
       lastUpdated: new Date().toISOString(),
     };
 

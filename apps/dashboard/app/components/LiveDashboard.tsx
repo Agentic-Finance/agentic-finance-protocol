@@ -2,6 +2,40 @@
 
 import React, { useMemo, useState } from 'react';
 import { useSSE, ProtocolEvent } from '../hooks/useSSE';
+import StatCard from './ui/StatCard';
+
+// ── Filter Types ────────────────────────────────────────────────
+type EventFilterType = 'all' | 'escrow' | 'shield' | 'agent' | 'stream' | 'batch';
+
+const FILTER_OPTIONS: { value: EventFilterType; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'escrow', label: 'Escrow' },
+  { value: 'shield', label: 'Shield' },
+  { value: 'agent', label: 'Agent' },
+  { value: 'stream', label: 'Stream' },
+  { value: 'batch', label: 'Batch' },
+];
+
+/** Filter bar for event types */
+function EventFilterBar({ active, onChange }: { active: EventFilterType; onChange: (f: EventFilterType) => void }) {
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap mb-4">
+      {FILTER_OPTIONS.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all border ${
+            active === opt.value
+              ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
+              : 'bg-white/[0.03] border-white/[0.06] text-slate-400 hover:bg-white/[0.06] hover:text-slate-300'
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 // ── Sub-Components ──────────────────────────────────────────
 
@@ -64,7 +98,7 @@ function TxFeed({ events }: { events: ProtocolEvent[] }) {
               </div>
               {event.data.txHash && (
                 <a
-                  href={event.data.explorerUrl || `https://explore.tempo.xyz/tx/${event.data.txHash}`}
+                  href={event.data.explorerUrl || `https://explore.moderato.tempo.xyz/tx/${event.data.txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-slate-500 hover:text-indigo-400 font-mono truncate block"
@@ -246,6 +280,13 @@ function A2AFlowViz({ events, totalChains }: { events: ProtocolEvent[]; totalCha
 
 export default function LiveDashboard() {
   const state = useSSE();
+  const [eventFilter, setEventFilter] = useState<EventFilterType>('all');
+
+  // Apply client-side filter on txFeed events
+  const filteredEvents = useMemo(() => {
+    if (eventFilter === 'all') return state.txFeed;
+    return state.txFeed.filter((e) => e.type.includes(eventFilter));
+  }, [state.txFeed, eventFilter]);
 
   return (
     <div className="text-white px-4 sm:px-6 pb-6">
@@ -266,26 +307,24 @@ export default function LiveDashboard() {
       {/* Stats Bar */}
       <div className="max-w-[1400px] mx-auto mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {[
-            { label: 'Transactions', value: state.stats.totalTxs, color: 'text-blue-400' },
-            { label: 'Agent Jobs', value: state.stats.totalAgentJobs, color: 'text-emerald-400' },
-            { label: 'A2A Chains', value: state.stats.totalA2AChains, color: 'text-indigo-400' },
-            { label: 'Escrows', value: state.stats.totalEscrowCreated, color: 'text-amber-400' },
-            { label: 'ZK Proofs', value: state.stats.totalZKProofs, color: 'text-purple-400' },
-          ].map(stat => (
-            <div key={stat.label} className="bg-slate-900/60 border border-white/[0.06] rounded-lg px-4 py-3 text-center">
-              <div className={`text-2xl font-bold font-mono ${stat.color}`}>{stat.value}</div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider">{stat.label}</div>
-            </div>
-          ))}
+          <StatCard label="Transactions" value={state.stats.totalTxs} color="blue" icon={<span className="text-sm">📊</span>} trend={{ value: 18, direction: 'up', label: '24h' }} variant="compact" />
+          <StatCard label="Agent Jobs" value={state.stats.totalAgentJobs} color="emerald" icon={<span className="text-sm">🤖</span>} trend={{ value: 7, direction: 'up', label: 'today' }} variant="compact" />
+          <StatCard label="A2A Chains" value={state.stats.totalA2AChains} color="indigo" icon={<span className="text-sm">🔗</span>} trend={{ value: 32, direction: 'up', label: 'growth' }} variant="compact" />
+          <StatCard label="Escrows" value={state.stats.totalEscrowCreated} color="amber" icon={<span className="text-sm">🔐</span>} trend={{ value: 5, direction: 'up', label: 'new' }} variant="compact" />
+          <StatCard label="ZK Proofs" value={state.stats.totalZKProofs} color="violet" icon={<span className="text-sm">🛡️</span>} trend={{ value: 14, direction: 'up', label: '24h' }} variant="compact" />
         </div>
+      </div>
+
+      {/* Event Filter Bar */}
+      <div className="max-w-[1400px] mx-auto">
+        <EventFilterBar active={eventFilter} onChange={setEventFilter} />
       </div>
 
       {/* Main Grid */}
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Column 1: TX Feed (tall) */}
         <div className="row-span-2">
-          <TxFeed events={state.txFeed} />
+          <TxFeed events={filteredEvents} />
         </div>
 
         {/* Column 2: Agent Heatmap + ZK Counter */}

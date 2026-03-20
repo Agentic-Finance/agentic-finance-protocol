@@ -304,7 +304,7 @@ export default function FiatCheckout({ amount: initialAmount, userWallet, agentJ
             </p>
             {txHash ? (
               <a
-                href={`https://explore.tempo.xyz/tx/${txHash}`}
+                href={`https://explore.moderato.tempo.xyz/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`text-[10px] font-mono hover:underline ${shieldEnabled ? 'text-violet-300' : 'text-emerald-300'}`}
@@ -447,7 +447,7 @@ export default function FiatCheckout({ amount: initialAmount, userWallet, agentJ
           </p>
           {txHash && (
             <a
-              href={`https://explore.tempo.xyz/tx/${txHash}`}
+              href={`https://explore.moderato.tempo.xyz/tx/${txHash}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-300 text-[10px] font-mono hover:underline"

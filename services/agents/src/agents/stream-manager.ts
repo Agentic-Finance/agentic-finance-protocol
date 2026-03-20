@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'streams',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['submit-milestone', 'approve-milestone', 'reject-milestone', 'cancel-stream', 'stream-status', 'on-chain-execution'],
+  capabilities: ['manage-stream', 'milestone-approval', 'proof-of-delivery', 'quality-assurance', 'notification-system', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Stream Manager agent for Agentic FinanceStreamV1 on Tempo blockchain.

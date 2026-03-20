@@ -78,7 +78,7 @@ export async function GET(request: Request) {
       timestamp,
       timestampISO: timestamp > 0 ? new Date(timestamp * 1000).toISOString() : null,
       status,
-      explorerUrl: `https://explore.tempo.xyz/address/${AI_PROOF_REGISTRY_ADDRESS}`,
+      explorerUrl: `https://explore.moderato.tempo.xyz/address/${AI_PROOF_REGISTRY_ADDRESS}`,
       chainId: 42431,
     });
   } catch (error: any) {

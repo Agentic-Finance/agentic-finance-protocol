@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'privacy',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['vault-inspection', 'commitment-check', 'nullifier-check', 'on-chain-read'],
+  capabilities: ['vault-inspection', 'zk-state-analysis', 'health-dashboards', 'sla-tracking', 'infrastructure-monitoring', 'on-chain-execution'],
 };
 
 export const handler: AgentHandler = async (job) => {

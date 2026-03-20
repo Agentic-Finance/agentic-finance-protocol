@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import SubPageNav from '../components/SubPageNav';
+import { AppShell } from '../components/ui/AppShell';
 import StreamProgress from '../components/StreamProgress';
 import {
     StreamData,
@@ -12,6 +12,7 @@ import {
     StreamOverviewPanel,
     StreamPageSkeleton,
 } from './components';
+import { EmptyState } from '../components/ui/EmptyState';
 
 export default function StreamPage() {
     const [walletAddress, setWalletAddress] = useState<string | null>(null);
@@ -99,16 +100,15 @@ export default function StreamPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#111B2E]">
-            <SubPageNav />
+        <AppShell>
 
             {/* Header */}
             <div className="border-b border-white/[0.08] pp-glass">
                 <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-4">
-                            <Link href="/" className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/10 border border-indigo-500/20 hover:bg-indigo-500/30 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.15)]">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-indigo-400">
+                            <Link href="/?app=1" className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/10 border border-indigo-500/20 hover:bg-indigo-500/30 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.15)]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-indigo-400">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                 </svg>
                             </Link>
@@ -202,15 +202,12 @@ export default function StreamPage() {
 
                         {/* Stream Cards Grid */}
                         {streams.length === 0 ? (
-                            <div className="text-center py-24 bg-[#111827] rounded-2xl border border-dashed border-white/[0.08]">
-                                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                                    <span className="text-3xl">{'\u{1F504}'}</span>
-                                </div>
-                                <p className="text-slate-300 text-lg font-bold mb-2">No Streams Yet</p>
-                                <p className="text-slate-600 text-sm max-w-sm mx-auto">
-                                    Streams are created when agents accept milestone-based jobs from the Marketplace.
-                                </p>
-                            </div>
+                            <EmptyState
+                                icon={<span className="text-3xl">{'\u{1F504}'}</span>}
+                                title="No Streams Yet"
+                                description="Streams are created when agents accept milestone-based jobs from the Marketplace."
+                                action={{ label: "View Marketplace", href: "/swarm" }}
+                            />
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {streams.map((s, idx) => (
@@ -226,6 +223,6 @@ export default function StreamPage() {
                     </>
                 )}
             </div>
-        </div>
+        </AppShell>
     );
 }

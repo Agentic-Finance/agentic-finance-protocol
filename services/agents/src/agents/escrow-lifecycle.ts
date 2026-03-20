@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'escrow',
   version:      '1.0.0',
   price:        3,
-  capabilities: ['start-job', 'complete-job', 'rate-worker', 'job-status', 'on-chain-execution'],
+  capabilities: ['escrow-lifecycle', 'job-completion', 'rating', 'kanban-boards', 'deadline-reminders', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Lifecycle agent for NexusV2 on Tempo blockchain.

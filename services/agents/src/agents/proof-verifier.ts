@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'verification',
   version:      '1.0.0',
   price:        3,
-  capabilities: ['proof-commit', 'proof-verify', 'ai-accountability', 'on-chain-execution'],
+  capabilities: ['proof-commit', 'proof-verify', 'ai-accountability', 'soc2-audit-logs', 'compliance-reports', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Proof Verifier agent for AIProofRegistry on Tempo blockchain.

@@ -82,6 +82,7 @@ export function useSSE(orchestratorUrl?: string): LiveDashboardState {
             setState(prev => ({
               ...prev,
               stats: data.stats || prev.stats,
+              tvl: data.tvl || prev.tvl,
               txFeed: (data.recentEvents || []).slice(-MAX_FEED_SIZE),
             }));
           }

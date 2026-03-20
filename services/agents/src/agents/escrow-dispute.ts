@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'escrow',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['dispute-job', 'claim-timeout', 'check-timeout', 'on-chain-execution'],
+  capabilities: ['dispute-resolution', 'arbitration', 'evidence-submission', 'case-file-generation', 'dispute-analytics', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Dispute agent for NexusV2 on Tempo blockchain.

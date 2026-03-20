@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'deployment',
   version:      '1.0.0',
   price:        10,
-  capabilities: ['mint-token', 'erc20-deploy', 'custom-supply', 'on-chain-execution'],
+  capabilities: ['token-minting', 'erc20-deploy', 'brand-packages', 'economic-modeling', 'whitepaper-templates', 'on-chain-execution'],
 };
 
 // Minimal ERC20 bytecode (OpenZeppelin-compatible)

@@ -13,6 +13,26 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
         }
         const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
+
+        // Single agent lookup by ID (for detail page)
+        if (id) {
+            const agent = await prisma.marketplaceAgent.findUnique({
+                where: { id },
+                include: {
+                    reviews: {
+                        orderBy: { createdAt: 'desc' },
+                        take: 20,
+                        include: { job: { select: { clientWallet: true } } },
+                    },
+                },
+            });
+            if (!agent) {
+                return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
+            }
+            return NextResponse.json({ success: true, agent: { ...agent, skills: JSON.parse(agent.skills) } });
+        }
+
         const category = searchParams.get('category');
         const minRating = searchParams.get('minRating');
         const verified = searchParams.get('verified');

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
+import { AppShell } from '../components/ui/AppShell';
 import {
     CpuChipIcon,
     RocketLaunchIcon,
@@ -15,7 +15,6 @@ import {
     ShieldCheckIcon,
     XCircleIcon,
     BoltIcon,
-    HomeIcon,
     CommandLineIcon,
     BookOpenIcon,
     WrenchScrewdriverIcon,
@@ -405,32 +404,8 @@ export default function DevelopersPage() {
     }, [form]);
 
     return (
-        <div className="min-h-screen bg-[#111B2E] text-white">
-            {/* ═══ TOP NAV ═══ */}
-            <nav className="sticky top-0 z-50 bg-[#111B2E]/80 backdrop-blur-xl border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <a href="/" className="flex items-center gap-3 group">
-                        <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="h-8 w-8 object-contain" priority /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
-                        <span className="text-xs font-mono text-slate-500 border border-white/5 px-2 py-0.5 rounded-md">developers</span>
-                    </a>
-                    <div className="flex items-center gap-4">
-                        <a href="/protocol" className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
-                            <ShieldCheckIcon className="w-4 h-4" /> Protocol
-                        </a>
-                        <a href="/verify" className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
-                            <SparklesIcon className="w-4 h-4" /> AI Proofs
-                        </a>
-                        <a href="/docs/documentation" className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
-                            <BookOpenIcon className="w-4 h-4" /> Docs
-                        </a>
-                        <a href="/" className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
-                            <HomeIcon className="w-4 h-4" /> Dashboard
-                        </a>
-                    </div>
-                </div>
-            </nav>
-
-            <div className="max-w-7xl mx-auto px-6 py-12 space-y-20">
+        <AppShell>
+            <div className="text-white space-y-20">
                 {/* ═══ SECTION 1: HERO ═══ */}
                 <section className="text-center relative">
                     <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent pointer-events-none rounded-3xl" />
@@ -1074,6 +1049,6 @@ await client.delegateA2A({
                     </div>
                 </div>
             </footer>
-        </div>
+        </AppShell>
     );
 }

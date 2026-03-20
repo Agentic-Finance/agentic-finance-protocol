@@ -17,31 +17,31 @@ const statDefs = [
 
 export default function WarRoomStatsBar({ stats }: Props) {
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 w-full">
             {statDefs.map((def) => {
                 const value = stats ? (stats as any)[def.key] : null;
                 return (
                     <div
                         key={def.key}
-                        className="relative overflow-hidden rounded-xl border border-white/[0.06] p-3 sm:p-4"
+                        className="relative overflow-hidden rounded-xl border border-white/[0.06] p-4 sm:p-5 min-w-0"
                         style={{ background: 'rgba(255,255,255,0.02)' }}
                     >
                         {/* Glow accent */}
                         <div
-                            className="absolute top-0 right-0 w-16 h-16 blur-[40px] opacity-20 pointer-events-none"
+                            className="absolute top-0 right-0 w-20 h-20 blur-[40px] opacity-20 pointer-events-none"
                             style={{ background: def.color }}
                         />
                         <div className="relative z-10">
-                            <div className="flex items-center gap-1.5 mb-1.5">
-                                <span className="text-xs">{def.icon}</span>
-                                <span className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">{def.label}</span>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <span className="text-sm">{def.icon}</span>
+                                <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">{def.label}</span>
                             </div>
                             {value != null ? (
-                                <div className="text-lg sm:text-xl font-black tabular-nums" style={{ color: def.color }}>
+                                <div className="text-xl sm:text-2xl font-black tabular-nums" style={{ color: def.color }}>
                                     {def.format(value)}
                                 </div>
                             ) : (
-                                <div className="h-7 w-20 rounded-lg bg-white/[0.04] animate-pulse" />
+                                <div className="h-8 w-24 rounded-lg bg-white/[0.04] animate-pulse" />
                             )}
                         </div>
                     </div>

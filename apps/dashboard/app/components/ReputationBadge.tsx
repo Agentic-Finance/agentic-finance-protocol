@@ -145,7 +145,7 @@ export default function ReputationBadge({
       {hovered && showBreakdown && breakdown && (
         <div style={{
           position: 'absolute', top: '100%', left: 0, marginTop: 8,
-          background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)',
+          background: 'var(--pp-bg-card)', border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: 12, padding: '12px 16px', minWidth: 220,
           zIndex: 50, boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
         }}>

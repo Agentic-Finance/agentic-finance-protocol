@@ -20,7 +20,7 @@ export const manifest: AgentDescriptor = {
   category:     'security',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['token-sweep', 'emergency-recovery', 'wallet-migration', 'on-chain-execution'],
+  capabilities: ['emergency-sweep', 'asset-recovery', 'post-incident-reports', 'security-documentation', 'emergency-alerts', 'on-chain-execution'],
 };
 
 const ALL_TOKENS = [

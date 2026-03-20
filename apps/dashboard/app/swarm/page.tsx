@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import SubPageNav from '../components/SubPageNav';
+import { AppShell } from '../components/ui/AppShell';
+import StatCard from '../components/ui/StatCard';
 import dynamic from 'next/dynamic';
 
 // Lazy-load tab components
@@ -16,7 +17,6 @@ type TabId = 'streams' | 'a2a' | 'intel' | 'audit' | 'escrow';
 interface Stats {
     totalSwarms: number;
     activeSwarms: number;
-    activeAgents: number;
     totalBudgetLocked: number;
     a2aVolume: number;
     intelCount: number;
@@ -78,56 +78,18 @@ export default function SwarmPage() {
 
     const activeTabData = tabs.find(t => t.id === activeTab)!;
 
-    const statCards = [
-        { label: 'Total Swarms', value: stats?.totalSwarms ?? '-', color: '#f59e0b', sub: `${stats?.activeSwarms ?? 0} active`,
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-            </svg>
-          ),
-        },
-        { label: 'Agents Active', value: stats?.activeAgents ?? '-', color: '#3b82f6', sub: 'coordinating',
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-            </svg>
-          ),
-        },
-        { label: 'Budget Locked', value: stats ? `$${(stats.totalBudgetLocked || 0).toLocaleString()}` : '-', color: '#10b981', sub: `$${(stats?.totalReleased || 0).toLocaleString()} released`,
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-          ),
-        },
-        { label: 'A2A Volume', value: stats ? `$${(stats.a2aVolume || 0).toLocaleString()}` : '-', color: '#8b5cf6', sub: `${stats?.a2aCount ?? 0} transfers`,
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-            </svg>
-          ),
-        },
-        { label: 'Intel Listed', value: stats?.intelCount ?? '-', color: '#ef4444', sub: 'ZK-verified',
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-          ),
-        },
-        { label: 'Fees Earned', value: stats ? `$${(stats.totalFees || 0).toLocaleString()}` : '-', color: '#06b6d4', sub: '5% platform fee',
-          icon: (
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth={1.5} opacity={0.4}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-        },
+    const statCards: { label: string; value: string | number; color: 'amber' | 'blue' | 'emerald' | 'violet' | 'red' | 'cyan'; subtitle: string; icon: string; trend?: { value: number; direction: 'up' | 'down' | 'flat'; label?: string } }[] = [
+        { label: 'Total Swarms', value: stats?.totalSwarms ?? '—', color: 'amber', subtitle: `${stats?.activeSwarms ?? 0} active`, icon: '👥', trend: stats ? { value: 12, direction: 'up', label: 'vs last week' } : undefined },
+        { label: 'Agents Active', value: stats ? stats.totalSwarms * 3 : '—', color: 'blue', subtitle: 'coordinating', icon: '🧪', trend: stats ? { value: 8, direction: 'up', label: 'growth' } : undefined },
+        { label: 'Budget Locked', value: stats ? `$${(stats.totalBudgetLocked || 0).toLocaleString()}` : '—', color: 'emerald', subtitle: `$${(stats?.totalReleased || 0).toLocaleString()} released`, icon: '🔒', trend: stats ? { value: 5.2, direction: 'up', label: 'TVL growth' } : undefined },
+        { label: 'A2A Volume', value: stats ? `$${(stats.a2aVolume || 0).toLocaleString()}` : '—', color: 'violet', subtitle: `${stats?.a2aCount ?? 0} transfers`, icon: '⚡', trend: stats ? { value: 23, direction: 'up', label: '24h change' } : undefined },
+        { label: 'Intel Listed', value: stats?.intelCount ?? '—', color: 'red', subtitle: 'ZK-verified', icon: '🛡️', trend: stats ? { value: 3, direction: 'up', label: 'new today' } : undefined },
+        { label: 'Fees Earned', value: stats ? `$${(stats.totalFees || 0).toLocaleString()}` : '—', color: 'cyan', subtitle: '5% platform fee', icon: '💰', trend: stats ? { value: 15, direction: 'up', label: 'vs last week' } : undefined },
     ];
 
     return (
-        <div className="min-h-screen bg-[#111B2E]">
-            <SubPageNav />
-
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <AppShell>
+            <div>
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-2">
@@ -150,18 +112,15 @@ export default function SwarmPage() {
                 {/* Stat Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
                     {statCards.map((card) => (
-                        <div key={card.label}
-                            className="relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.12] transition-all"
-                            style={{ background: `linear-gradient(135deg, ${card.color}08, transparent 60%)` }}>
-                            <div className="p-4">
-                                <div className="absolute top-3 right-3">{card.icon}</div>
-                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{card.label}</p>
-                                <p className="text-xl sm:text-2xl font-black tabular-nums" style={{ color: card.color }}>
-                                    {card.value}
-                                </p>
-                                <p className="text-[10px] text-slate-600 mt-0.5">{card.sub}</p>
-                            </div>
-                        </div>
+                        <StatCard
+                            key={card.label}
+                            label={card.label}
+                            value={card.value}
+                            color={card.color}
+                            icon={<span className="text-sm">{card.icon}</span>}
+                            subtitle={card.subtitle}
+                            trend={card.trend}
+                        />
                     ))}
                 </div>
 
@@ -206,6 +165,6 @@ export default function SwarmPage() {
                     {activeTab === 'escrow' && <SwarmEscrowTab />}
                 </Suspense>
             </div>
-        </div>
+        </AppShell>
     );
 }

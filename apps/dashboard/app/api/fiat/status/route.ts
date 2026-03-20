@@ -152,7 +152,7 @@ export async function GET(req: NextRequest) {
       transferTxHash: payment.transferTxHash,
       escrowTxHash: payment.escrowTxHash,
       explorerUrl: payment.transferTxHash
-        ? `https://explore.tempo.xyz/tx/${payment.transferTxHash}`
+        ? `https://explore.moderato.tempo.xyz/tx/${payment.transferTxHash}`
         : null,
       createdAt: payment.createdAt.toISOString(),
       completedAt: payment.completedAt?.toISOString() ?? null,

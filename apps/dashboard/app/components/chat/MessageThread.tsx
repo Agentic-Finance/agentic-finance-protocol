@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { ChatChannel, ChatMessage } from './ChatPanel';
 
-const EXPLORER = 'https://explore.tempo.xyz';
+const EXPLORER = 'https://explore.moderato.tempo.xyz';
 
 interface MessageThreadProps {
     channel: ChatChannel;

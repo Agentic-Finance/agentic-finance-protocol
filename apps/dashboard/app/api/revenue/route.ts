@@ -148,7 +148,7 @@ export async function GET() {
         fee: s.platformFee ?? 0,
         token: s.token,
         txHash: s.settleTxHash,
-        explorerUrl: s.settleTxHash ? `https://explore.tempo.xyz/tx/${s.settleTxHash}` : null,
+        explorerUrl: s.settleTxHash ? `https://explore.moderato.tempo.xyz/tx/${s.settleTxHash}` : null,
         completedAt: s.completedAt?.toISOString() ?? null,
       })),
       summary: {

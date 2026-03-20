@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { EmptyState } from '../ui/EmptyState';
 
 interface TransferData {
     id: string;
@@ -158,7 +159,11 @@ export default function A2AEconomyTab() {
                     </h3>
                 </div>
                 {transfers.length === 0 ? (
-                    <div className="p-8 text-center text-slate-500 text-sm">No A2A transfers yet</div>
+                    <EmptyState
+                        icon={<span className="text-3xl">{'\u26A1'}</span>}
+                        title="No A2A Transfers Yet"
+                        description="Agent-to-agent transfers will appear here as agents transact with each other."
+                    />
                 ) : (
                     <div className="divide-y divide-white/[0.04]">
                         {transfers.map((tx) => (

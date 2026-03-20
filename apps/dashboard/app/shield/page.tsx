@@ -2,20 +2,19 @@
 
 import { Activity } from "@/app/components/icons";
 import Link from "next/link";
-import SubPageNav from "../components/SubPageNav";
+import { AppShell } from "../components/ui/AppShell";
 import ShieldPanel from "../components/ShieldPanel";
 
 export default function ShieldPage() {
   return (
-    <div className="min-h-screen bg-[#111B2E]">
-      <SubPageNav />
-      <div className="max-w-7xl mx-auto space-y-8 p-4 sm:p-6">
+    <AppShell>
+      <div className="space-y-8">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
           <div className="flex items-center gap-4">
-            <Link href="/cortex" className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-400">
+            <Link href="/?app=1" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.10] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
               </svg>
             </Link>
@@ -33,6 +32,6 @@ export default function ShieldPage() {
 
       {/* Reuse shared ShieldPanel component */}
       <ShieldPanel />
-    </div>
+    </AppShell>
   );
 }

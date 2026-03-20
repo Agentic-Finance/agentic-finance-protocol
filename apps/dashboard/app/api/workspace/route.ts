@@ -69,7 +69,7 @@ export async function POST(req: Request) {
             where: { name: { equals: cleanName, mode: 'insensitive' } },
         });
         if (existingName) {
-            return apiError("Workspace name is already taken! Please use the 'Join Workspace' option.", 403);
+            return apiError("Workspace name is already taken! Please choose a different name.", 403);
         }
 
         // 3. Create workspace

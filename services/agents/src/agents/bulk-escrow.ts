@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'escrow',
   version:      '1.0.0',
   price:        10,
-  capabilities: ['bulk-create-escrow', 'batch-hiring', 'multi-job', 'on-chain-execution'],
+  capabilities: ['bulk-escrow-creation', 'multi-job', 'procurement-workflow', 'vendor-comparison', 'purchase-orders', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Bulk Escrow agent. Parse the user's request into multiple escrow job specifications.

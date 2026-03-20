@@ -29,7 +29,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['gas-benchmarking', 'cost-comparison', 'tempo-advantage', 'on-chain-execution'],
+  capabilities: ['benchmark', 'gas-analysis', 'cost-comparison', 'report-generation', 'chart-creation', 'csv-export', 'on-chain-execution'],
 };
 
 // Standard Ethereum gas estimates for equivalent operations

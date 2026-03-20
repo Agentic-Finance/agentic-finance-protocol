@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ShieldAlert, Terminal, CheckCircle2, Search, ExternalLink } from "@/app/components/icons";
+import { AppShell } from "../components/ui/AppShell";
 import Link from "next/link";
 
 export default function AuditLogPage() {
@@ -34,8 +35,8 @@ export default function AuditLogPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#111B2E] text-slate-300 font-mono p-4 sm:p-6 lg:p-8 selection:bg-indigo-500/30">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <AppShell>
+      <div className="text-slate-300 font-mono selection:bg-indigo-500/30 space-y-6">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
@@ -123,7 +124,7 @@ export default function AuditLogPage() {
                       </td>
                       <td className="px-4 sm:px-6 py-3.5">
                         <a
-                          href={`https://explore.tempo.xyz/tx/${log.txHash}`}
+                          href={`https://explore.moderato.tempo.xyz/tx/${log.txHash}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1.5 text-slate-500 hover:text-indigo-400 transition-colors"
@@ -145,6 +146,6 @@ export default function AuditLogPage() {
           Data cryptographically synced with Prisma
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

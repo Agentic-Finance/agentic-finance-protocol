@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { WalletProvider } from "./providers/WalletProvider";
+import PrivyProvider from "./providers/PrivyProvider";
+import { ToastProvider } from "./components/ui/Toast";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Agentic Finance",
     description: "Finance for the Agentic Economy. Agent-to-agent payments on Tempo L1.",
-    creator: "@agentic_finance",
+    creator: "@agenticfinance",
   },
   robots: { index: true, follow: true },
 };
@@ -65,13 +68,14 @@ export default function RootLayout({
         {/* Preload critical assets for faster rendering */}
         <link rel="preload" href="/textures/earth-blue-marble.jpg" as="image" />
         <link rel="preload" href="/textures/earth-topology.png" as="image" />
-        <link rel="preload" href="/logos/horizontal-dark.png" as="image" />
+        <link rel="preload" href="/logo.png" as="image" />
         {/* DNS prefetch for external services */}
-        <link rel="dns-prefetch" href="https://explore.tempo.xyz" />
+        <link rel="dns-prefetch" href="https://explore.moderato.tempo.xyz" />
         <link rel="dns-prefetch" href="https://rpc.tempo.xyz" />
       </head>
       <body
-        className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased bg-[#0A0A0F] text-white min-h-screen`}
+        className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen`}
+        style={{ background: 'var(--pp-bg-primary)', color: 'var(--pp-text-primary)' }}
       >
         {/* Skip to main content — accessibility */}
         <a
@@ -81,7 +85,15 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ErrorBoundary>
-          {children}
+          <PrivyProvider>
+            <WalletProvider>
+              <ToastProvider>
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
+              </ToastProvider>
+            </WalletProvider>
+          </PrivyProvider>
         </ErrorBoundary>
       </body>
     </html>

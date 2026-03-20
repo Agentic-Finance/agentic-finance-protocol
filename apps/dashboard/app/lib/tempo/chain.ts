@@ -1,30 +1,44 @@
 /**
- * Tempo Moderato Chain Definition
- * Custom chain config for viem — Tempo L1 testnet (Chain 42431)
+ * Tempo Chain Definitions — Testnet + Mainnet
+ * Custom chain configs for viem
  */
 import { defineChain } from 'viem';
 
+/** Tempo Moderato — Testnet (Chain 42431) */
 export const tempoModerato = defineChain({
   id: 42431,
   name: 'Tempo Moderato',
-  nativeCurrency: {
-    name: 'TEMPO',
-    symbol: 'TEMPO',
-    decimals: 18,
-  },
+  nativeCurrency: { name: 'TEMPO', symbol: 'TEMPO', decimals: 18 },
   rpcUrls: {
-    default: {
-      http: ['https://rpc.moderato.tempo.xyz'],
-    },
+    default: { http: ['https://rpc.moderato.tempo.xyz'] },
   },
   blockExplorers: {
-    default: {
-      name: 'Tempo Explorer',
-      url: 'https://explorer.moderato.tempo.xyz',
-    },
+    default: { name: 'Tempo Explorer', url: 'https://explore.moderato.tempo.xyz' },
   },
-  // Tempo L1 specifics
-  // - Gas is free on testnet (no native gas token needed)
-  // - Custom tx type 0x76 (TempoTransaction) for AA features
-  // - TIP-20 precompile tokens use 5-6x more gas than standard ERC20
 });
+
+/** Tempo Mainnet (Chain 4217) */
+export const tempoMainnet = defineChain({
+  id: 4217,
+  name: 'Tempo',
+  nativeCurrency: { name: 'TEMPO', symbol: 'TEMPO', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.tempo.xyz'] },
+  },
+  blockExplorers: {
+    default: { name: 'Tempo Explorer', url: 'https://explore.tempo.xyz' },
+  },
+});
+
+/** Get the active chain based on environment */
+export function getActiveChain() {
+  const env = typeof window !== 'undefined'
+    ? (process.env.NEXT_PUBLIC_CHAIN_ENV || 'testnet')
+    : (process.env.NEXT_PUBLIC_CHAIN_ENV || process.env.CHAIN_ENV || 'testnet');
+  return env === 'mainnet' ? tempoMainnet : tempoModerato;
+}
+
+/** Check if we're on mainnet */
+export function isMainnet(): boolean {
+  return getActiveChain().id === 4217;
+}

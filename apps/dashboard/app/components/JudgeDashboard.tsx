@@ -361,7 +361,7 @@ export default function JudgeDashboard({ isAgtfiArbitrator = false, walletAddres
                                             <span className="text-xs text-teal-400 font-bold uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
                                                 <LinkIcon className="w-4 h-4" /> Escrow Transaction
                                             </span>
-                                            <a href={`https://explore.tempo.xyz/tx/${escrow.escrowTxHash}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium text-slate-200 hover:text-white transition-colors mt-2">
+                                            <a href={`https://explore.moderato.tempo.xyz/tx/${escrow.escrowTxHash}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-medium text-slate-200 hover:text-white transition-colors mt-2">
                                                 <span className="underline decoration-teal-500/50 underline-offset-4 font-mono">{escrow.escrowTxHash.slice(0, 16)}...{escrow.escrowTxHash.slice(-8)}</span>
                                                 <PaperClipIcon className="w-3.5 h-3.5 text-teal-400/50" />
                                             </a>

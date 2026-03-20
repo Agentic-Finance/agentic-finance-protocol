@@ -10,13 +10,12 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY package.json ./
 COPY prisma ./prisma/
 
-# Cache npm downloads — survives across builds even if package.json changes
-# --force: skip platform checks (package-lock.json may contain macOS-specific optional deps)
+# Install deps from scratch (no lock file — avoids macOS/Linux native binding conflicts)
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --force && npx prisma generate
+    npm install --force && npx prisma generate
 
 # ── Stage 2: Build the application ──────────────────────────
 FROM node:20-alpine AS builder

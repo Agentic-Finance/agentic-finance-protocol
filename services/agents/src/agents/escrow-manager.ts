@@ -14,7 +14,7 @@ export const manifest: AgentDescriptor = {
   category:     'escrow',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['create-escrow', 'settle-escrow', 'refund-escrow', 'dispute', 'on-chain-execution'],
+  capabilities: ['create-escrow', 'settle-escrow', 'refund-escrow', 'dispute', 'invoice-generation', 'webhook-notifications', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Manager for the NexusV2 smart contract on Tempo blockchain.

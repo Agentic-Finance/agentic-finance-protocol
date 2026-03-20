@@ -10,7 +10,7 @@ import TopStatsCards from './components/TopStatsCards';
 import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
 import { FeatureErrorBoundary } from './components/FeatureErrorBoundary';
 import { usePollingEngine } from './hooks/usePollingEngine';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivy, useWallets, useSignMessage as usePrivySignMessage } from '@privy-io/react-auth';
 
 // Lazy load heavy / conditionally-rendered components (Phase 3)
 const LandingPage = lazy(() => import('./components/LandingPage'));
@@ -55,8 +55,10 @@ export default function Dashboard() {
         const params = new URLSearchParams(window.location.search);
         // Skip landing if ?app=1 OR returning from OAuth redirect (sessionStorage flag OR Privy URL params)
         const oauthPending = sessionStorage.getItem('agtfi_oauth_pending') === 'true';
-        if (oauthPending) sessionStorage.removeItem('agtfi_oauth_pending');
+        // Don't remove oauthPending here — let the Privy auto-connect effect consume it
         const privyOAuthRedirect = !!params.get('privy_oauth_code') || !!params.get('privy_oauth_provider');
+        // If we detect OAuth redirect via URL params, also set the flag for the Privy effect
+        if (privyOAuthRedirect && !oauthPending) sessionStorage.setItem('agtfi_oauth_pending', 'true');
         const skipLanding = params.get('app') === '1' || oauthPending || privyOAuthRedirect;
         if (skipLanding) {
             setShowLanding(false);
@@ -96,8 +98,10 @@ export default function Dashboard() {
         setIsReady(true);
     }, []);
 
-    // Privy hook — must be at top level (React rules of hooks)
-    const { authenticated: privyAuthenticated, user: privyUser, ready: privyReady } = usePrivy();
+    // Privy hooks — must be at top level (React rules of hooks)
+    const { authenticated: privyAuthenticated, user: privyUser, ready: privyReady, exportWallet: privyExportWallet } = usePrivy();
+    const { wallets: privyWallets } = useWallets();
+    const { signMessage: privySignMsg } = usePrivySignMessage();
 
     // Listen for notification clicks to open chat panel (same-page navigation)
     useEffect(() => {
@@ -106,8 +110,21 @@ export default function Dashboard() {
             if (detail?.jobId) setChatTargetJobId(detail.jobId);
             setIsChatOpen(true);
         };
+        const handleExportWallet = () => {
+            if (privyAuthenticated && privyExportWallet) {
+                privyExportWallet().catch(() => {
+                    alert('Private key export is only available for Privy embedded wallets. For external wallets, export from the wallet app directly.');
+                });
+            } else {
+                alert('Private key export is only available for Privy embedded wallets. For external wallets (MetaMask, Rabby), export from the wallet app directly.');
+            }
+        };
         window.addEventListener('agtfi:openChat', handleOpenChat);
-        return () => window.removeEventListener('agtfi:openChat', handleOpenChat);
+        window.addEventListener('privy-export-wallet', handleExportWallet);
+        return () => {
+            window.removeEventListener('agtfi:openChat', handleOpenChat);
+            window.removeEventListener('privy-export-wallet', handleExportWallet);
+        };
     }, []);
 
     // Listen for notification clicks to scroll to a specific section
@@ -334,9 +351,13 @@ export default function Dashboard() {
 
     const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); if (data.workspace.daemonStatus) setAgentStatus(data.workspace.daemonStatus); localStorage.removeItem('agtfi_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('agtfi_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); if (joinData.workspace.daemonStatus) setAgentStatus(joinData.workspace.daemonStatus); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('agtfi_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
 
-    // Privy: auto-connect wallet after authentication (only when not on landing page)
+    // Privy: auto-connect wallet ONLY after fresh OAuth redirect (not from stale sessions)
     useEffect(() => {
         if (privyReady && privyAuthenticated && privyUser && !walletAddress && !privyAutoConnectRef.current && !showLanding) {
+            // Only auto-connect if user JUST completed OAuth (sessionStorage flag set before redirect)
+            const oauthPending = sessionStorage.getItem('agtfi_oauth_pending') === 'true';
+            if (!oauthPending) return; // Stale Privy session — don't auto-connect, let user click explicitly
+            sessionStorage.removeItem('agtfi_oauth_pending');
             privyAutoConnectRef.current = true;
             const wallet = (privyUser.wallet as any)?.address
                 || (privyUser.linkedAccounts?.find((a: any) => a.type === 'wallet') as any)?.address;
@@ -390,7 +411,7 @@ export default function Dashboard() {
         }
     }, [showToast, ensureTempoNetwork]);
     const disconnectWallet = useCallback(() => { setWalletAddress(null); setCurrentWorkspace(undefined); setUserBalance("0.00"); setShowLanding(true); showToast('success', 'Session disconnected.'); }, [showToast]);
-    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `AGENTIC FINANCE GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { showToast('success', 'Workspace created!'); setSetupStep(4); /* Show setup wizard (theme selector) before entering dashboard */ fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
+    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const msg = `AGENTIC FINANCE GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; /* Use Privy embedded wallet if available, otherwise fall back to window.ethereum */ const embeddedWallet = privyWallets?.find((w: any) => w.walletClientType === 'privy'); let signPromise: Promise<any>; if (embeddedWallet) { signPromise = privySignMsg({ message: msg }); } else if ((window as any).ethereum) { signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [msg, walletAddress] }); } else { throw new Error('No wallet available for signing.'); } const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { showToast('success', 'Workspace created!'); setSetupStep(4); /* Show setup wizard (theme selector) before entering dashboard */ fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken, privyWallets, privySignMsg]);
     const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('agtfi_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
     const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? AGTFI_SHIELD_ADDRESS : AGTFI_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
     const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; const prevState = agentStatus; setAgentStatus(newState); /* optimistic */ try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { setAgentStatus(prevState); /* rollback */ showToast('error', 'Failed to update daemon status.'); } } catch { setAgentStatus(prevState); /* rollback */ showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast, setAgentStatus]);

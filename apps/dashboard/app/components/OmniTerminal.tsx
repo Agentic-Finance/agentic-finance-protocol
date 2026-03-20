@@ -32,7 +32,7 @@ interface OmniTerminalProps {
     SUPPORTED_TOKENS: readonly any[];
     contacts: { name: string; wallet: string }[];
     showToast: (type: 'success' | 'error', msg: string) => void;
-    fetchData: () => Promise<void>;
+    fetchData: (force?: boolean) => Promise<void>;
     boardroomRef: any;
     autopilotRef: any;
     history?: any[];
@@ -516,7 +516,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 const freqLabel = recurringMode === 'monthly' ? ' (Monthly)' : recurringMode === 'weekly' ? ' (Weekly)' : '';
                 showToast('success', `Conditional rule deployed${freqLabel}! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
                 resetTerminal(true);
-                await fetchData();
+                await fetchData(true);
             } else {
                 // STANDARD MODE: Send all intents as a batch to Boardroom
                 const empRes = await fetch('/api/employees', {
@@ -530,8 +530,16 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 }
                 showToast('success', `${recipients.length} payload${recipients.length > 1 ? 's' : ''} queued in Boardroom! Total: ${totalPayrollAmount.toFixed(2)} AlphaUSD`);
                 resetTerminal(true);
-                await fetchData();
-                setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                await fetchData(true); // force re-fetch even if polling is active
+                // Retry scroll — Boardroom needs React re-render after state update
+                const scrollToBoardroom = (attempts = 0) => {
+                    if (boardroomRef.current) {
+                        boardroomRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else if (attempts < 10) {
+                        setTimeout(() => scrollToBoardroom(attempts + 1), 200);
+                    }
+                };
+                setTimeout(() => scrollToBoardroom(), 150);
             }
         } catch (error: any) {
             showToast('error', error.message || (conditions.length > 0 ? 'Failed to deploy conditional rule.' : 'Failed to push to queue.'));
@@ -579,7 +587,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             // Priority: aiPrompt (discover flow) → marketplace.taskPrompt (browse hire flow) → agent description fallback
             const taskPrompt = aiPrompt.trim() || marketplace.taskPrompt || marketplace.selectedAgent?.agent.description || 'Agent task via marketplace';
             const result = await marketplace.confirmDeal(walletAddress, taskPrompt, options?.skipEscrow);
-            await fetchData();
+            await fetchData(true); // force re-fetch
 
             if (options?.skipEscrow) {
                 // Card payment: funds already handled, no Boardroom step needed
@@ -590,7 +598,15 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             } else {
                 // Crypto: escrow queued in Boardroom, scroll to it
                 showToast('success', 'Agent contract queued in Escrow!');
-                setTimeout(() => boardroomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                // Retry scroll — Boardroom needs React re-render after state update
+                const scrollToBoardroom = (attempts = 0) => {
+                    if (boardroomRef.current) {
+                        boardroomRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else if (attempts < 10) {
+                        setTimeout(() => scrollToBoardroom(attempts + 1), 200);
+                    }
+                };
+                setTimeout(() => scrollToBoardroom(), 150);
             }
         } catch (err: any) {
             showToast('error', err.message || 'Failed to confirm deal');
@@ -770,14 +786,14 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                         {/* Chat Answer (Payroll) */}
                         {chatAnswer && (
-                            <div className="mt-4 p-5 rounded-2xl border border-indigo-500/30 animate-in fade-in slide-in-from-top-4" style={{ background: 'radial-gradient(ellipse at top, rgba(49,46,129,0.12) 0%, rgba(21,27,39,0.95) 100%)' }}>
+                            <div className="mt-4 p-5 rounded-2xl border border-indigo-500/30 animate-in fade-in slide-in-from-top-4 stat-card-bg">
                                 <div className="text-slate-200 font-sans text-lg leading-relaxed whitespace-pre-wrap">{chatAnswer}</div>
                             </div>
                         )}
 
                         {/* Copilot Guide (structured step-by-step) */}
                         {guideData && (
-                            <div className="mt-4 p-5 rounded-2xl border border-cyan-500/30 animate-in fade-in slide-in-from-top-4 duration-500" style={{ background: 'radial-gradient(ellipse at top, rgba(6,182,212,0.08) 0%, rgba(21,27,39,0.95) 100%)' }}>
+                            <div className="mt-4 p-5 rounded-2xl border border-cyan-500/30 animate-in fade-in slide-in-from-top-4 duration-500 stat-card-bg">
                                 <h3 className="text-cyan-400 font-bold text-sm mb-4 flex items-center gap-2 tracking-wide">
                                     <span className="w-5 h-5 rounded-md bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-[10px]">✦</span>
                                     {guideData.title}
@@ -1004,6 +1020,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             hasConditions={hasConditions}
                             totalAmount={totalPayrollAmount}
                             intentCount={liveIntents.length}
+                            isDeploying={isDeployingAnimation}
                         />
                     </div>
                 </div>

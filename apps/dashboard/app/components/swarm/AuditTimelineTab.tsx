@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { ExternalLink } from '@/app/components/icons';
+import { EmptyState } from '../ui/EmptyState';
 
 interface AuditEventData {
     id: string;
@@ -45,7 +46,7 @@ const eventTypeIcons: Record<string, string> = {
     SYSTEM_EVENT: '\u2699\uFE0F',
 };
 
-const EXPLORER = 'https://explore.tempo.xyz/tx/';
+const EXPLORER = 'https://explore.moderato.tempo.xyz/tx/';
 
 export default function AuditTimelineTab() {
     const [events, setEvents] = useState<AuditEventData[]>([]);
@@ -155,11 +156,11 @@ export default function AuditTimelineTab() {
 
             {/* ── Events Table ─────────────────────── */}
             {events.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <span className="text-5xl mb-3">{'\u{1F4CA}'}</span>
-                    <h3 className="text-lg font-bold text-white mb-1">No Audit Events</h3>
-                    <p className="text-xs text-slate-500">Events will appear here as swarm agents take actions.</p>
-                </div>
+                <EmptyState
+                    icon={<span className="text-3xl">{'\u{1F4CA}'}</span>}
+                    title="No Audit Events"
+                    description="Events will appear here as swarm agents take actions."
+                />
             ) : (
                 <div className="rounded-xl border border-white/[0.06] overflow-hidden">
                     {/* Table header */}

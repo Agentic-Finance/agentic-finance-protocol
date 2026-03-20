@@ -332,7 +332,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
                             key={t.id}
                             className="pointer-events-auto flex items-center gap-2.5 px-4 py-2.5 rounded-xl border shadow-2xl animate-slide-in-right"
                             style={{
-                                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+                                background: 'var(--pp-bg-card)',
                                 borderColor: `${t.color}40`,
                                 boxShadow: `0 8px 32px ${t.color}20`,
                             }}
@@ -366,7 +366,7 @@ function NotificationBell({ walletAddress }: NotificationBellProps) {
 
                 {/* Dropdown */}
                 {isOpen && (
-                    <div className="absolute right-0 mt-2 w-[400px] max-h-[540px] flex flex-col bg-[#111827] border border-white/[0.08] rounded-2xl shadow-2xl z-[100]">
+                    <div className="absolute right-0 mt-2 w-[400px] max-h-[540px] flex flex-col border rounded-2xl shadow-2xl z-[100]" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                         {/* Header */}
                         <div className="border-b border-white/[0.06] px-4 py-3 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-2">

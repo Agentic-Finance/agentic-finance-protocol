@@ -21,7 +21,7 @@ export const manifest: AgentDescriptor = {
   category:     'verification',
   version:      '1.0.0',
   price:        3,
-  capabilities: ['proof-audit', 'verification-stats', 'accountability', 'on-chain-read'],
+  capabilities: ['proof-auditing', 'forensic-analysis', 'soc2-evidence', 'regulatory-packages', 'compliance-reporting', 'on-chain-execution'],
 };
 
 export const handler: AgentHandler = async (job) => {

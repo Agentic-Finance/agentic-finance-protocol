@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { EmptyState } from '../ui/EmptyState';
 
 interface IntelData {
     id: string;
@@ -118,13 +119,11 @@ export default function IntelMarketTab() {
 
             {/* Intel Grid */}
             {submissions.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <span className="text-6xl mb-4">🛡️</span>
-                    <h3 className="text-xl font-bold text-white mb-2">No Intelligence Listed</h3>
-                    <p className="text-sm text-slate-400">
-                        ZK-verified intelligence submissions will appear here.
-                    </p>
-                </div>
+                <EmptyState
+                    icon={<span className="text-3xl">{'\u{1F6E1}\uFE0F'}</span>}
+                    title="No Intelligence Listed"
+                    description="ZK-verified intelligence submissions will appear here."
+                />
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {submissions.map((intel) => {

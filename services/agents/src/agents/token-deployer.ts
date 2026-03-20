@@ -10,7 +10,7 @@ export const manifest: AgentDescriptor = {
   category:     'deployment',
   version:      '2.0.0',
   price:        350,
-  capabilities: ['erc20-deploy', 'erc721-deploy', 'tokenomics', 'on-chain-execution'],
+  capabilities: ['deploy-token', 'erc20', 'solidity', 'tokenomics', 'brand-identity', 'documentation', 'on-chain-execution'],
 };
 
 // ── Minimal ERC20 Bytecode Generator ─────────────────────────

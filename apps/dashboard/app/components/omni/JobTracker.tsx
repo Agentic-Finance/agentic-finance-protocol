@@ -7,7 +7,7 @@ import {
 } from '@/app/components/icons';
 import type { AgentJobData, MarketplacePhase, AIProofData } from '../../hooks/useAgentMarketplace';
 
-const EXPLORER = 'https://explore.tempo.xyz';
+const EXPLORER = 'https://explore.moderato.tempo.xyz';
 
 interface JobTrackerProps {
     phase: MarketplacePhase;

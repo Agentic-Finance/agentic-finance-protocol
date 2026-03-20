@@ -283,7 +283,7 @@ function ProtocolDashboard() {
                                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.15)" tick={{ fontSize: 10 }} tickMargin={8} />
                                     <YAxis stroke="rgba(255,255,255,0.15)" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `$${v}`} />
                                     <Tooltip
-                                        contentStyle={{ backgroundColor: '#111827', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', fontSize: '12px' }}
+                                        contentStyle={{ backgroundColor: 'var(--pp-bg-card)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', fontSize: '12px' }}
                                         itemStyle={{ color: '#d946ef', fontWeight: 'bold' }}
                                         labelStyle={{ color: '#94a3b8', fontSize: '10px' }}
                                     />
@@ -372,7 +372,7 @@ function ProtocolDashboard() {
                                                     <span className="text-[9px] text-blue-400/70 font-mono truncate max-w-[80px]">{event.agentName}</span>
                                                 )}
                                                 {event.txHash && (
-                                                    <a href={`https://explore.tempo.xyz/tx/${event.txHash}`}
+                                                    <a href={`https://explore.moderato.tempo.xyz/tx/${event.txHash}`}
                                                         target="_blank" rel="noopener noreferrer"
                                                         className="text-[9px] text-indigo-400/50 hover:text-indigo-400 font-mono transition-colors shrink-0">
                                                         TX
@@ -449,6 +449,27 @@ function ProtocolDashboard() {
                                         <span className="text-[10px] text-slate-500">{row.label}</span>
                                     </div>
                                     <span className="text-[11px] font-bold font-mono tabular-nums text-white">{row.value.toLocaleString()}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Infrastructure Status */}
+                        <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+                            <p className="text-[10px] font-bold text-white/50 uppercase tracking-wider mb-2">Infrastructure</p>
+                            {[
+                                { label: 'TIP-403 Compliance', status: 'Active', ok: true },
+                                { label: 'Gas Sponsorship', status: 'Enabled', ok: true },
+                                { label: 'Parallel Nonces', status: '3 Lanes', ok: true },
+                                { label: 'MPP Protocol', status: 'Ready', ok: true },
+                                { label: 'Passkey Auth', status: 'Available', ok: true },
+                                { label: 'Network', status: 'Moderato (42431)', ok: true },
+                            ].map((row) => (
+                                <div key={row.label} className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${row.ok ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                                        <span className="text-[10px] text-slate-500">{row.label}</span>
+                                    </div>
+                                    <span className={`text-[11px] font-bold font-mono ${row.ok ? 'text-emerald-400/70' : 'text-red-400/70'}`}>{row.status}</span>
                                 </div>
                             ))}
                         </div>

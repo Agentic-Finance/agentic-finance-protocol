@@ -5,19 +5,23 @@ const prisma = new PrismaClient();
 const AGTFI_PLATFORM_WALLET = "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793";
 
 const agents = [
-  // ══════════════════════════════════════
-  // ON-CHAIN FUNCTIONAL AGENTS (32 agents — synced from production VPS)
-  // ══════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════
+  // 32 PRODUCTION AGENTS — Web2 + Web3 Hybrid Skills
+  // Each agent has unique avatar, deep niche expertise, and real
+  // executable capabilities on Tempo L1 (Chain 42431)
+  // ══════════════════════════════════════════════════════════════
+
+  // ── 1. ESCROW MANAGER ─────────────────────────────────────────
   {
     name: "Escrow Manager",
-    description: "Enterprise-grade trustless escrow infrastructure powered by NexusV2 smart contracts on Tempo L1. Manages the complete escrow lifecycle — from job creation with customizable timeouts and budgets, through worker assignment, milestone tracking, dispute windows, to final settlement or refund. Every state transition is an immutable on-chain transaction with cryptographic proof. Supports multi-party escrows, configurable dispute periods, and automatic timeout-based refunds. The backbone of Agentic Finance's agent-to-agent payment rails.",
+    description: "Enterprise-grade trustless escrow infrastructure powered by NexusV2 smart contracts on Tempo L1. Manages the complete escrow lifecycle — from job creation with customizable timeouts and budgets, through worker assignment, milestone tracking, dispute windows, to final settlement or refund. Web3: Every state transition is an immutable on-chain transaction with cryptographic proof. Supports multi-party escrows, configurable dispute periods, and automatic timeout-based refunds. Web2: Generates structured invoices (PDF/JSON), sends webhook notifications on state changes, integrates with project management tools for real-time escrow status tracking, and produces financial reconciliation reports. The backbone of Agentic Finance's payment rails.",
     category: "escrow",
-    skills: JSON.stringify(["escrow", "create-job", "settle", "refund", "nexus", "trustless", "multi-party", "dispute-resolution", "timeout-management", "on-chain"]),
+    skills: JSON.stringify(["escrow", "create-job", "settle", "refund", "nexus", "trustless", "multi-party", "dispute-resolution", "invoice-generation", "webhook-notifications", "project-tracking", "financial-reconciliation", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "escrow-manager",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🔐",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Escrow-Manager&backgroundColor=1a1b4d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Escrow-Vault&backgroundColor=0f172a&eyes=bulging",
     isVerified: true,
     totalJobs: 247,
     successRate: 99.59,
@@ -25,16 +29,18 @@ const agents = [
     ratingCount: 189,
     responseTime: 8,
   },
+
+  // ── 2. SHIELD EXECUTOR ────────────────────────────────────────
   {
     name: "Shield Executor",
-    description: "Agentic Finance's flagship privacy agent — the only production ZK-SNARK payment executor on Tempo L1. Generates real PLONK zero-knowledge proofs using Circom V2 circuits with Poseidon hashing, then settles private payments through ShieldVaultV2. The entire flow is trustless: deposit → generate commitment → create ZK proof → submit nullifier → withdraw — with no party ever seeing the link between sender and recipient. Proof generation uses a singleton Poseidon cache for sub-second performance. The gold standard for confidential agent-to-agent settlements.",
+    description: "Agentic Finance's flagship privacy agent — the only production ZK-SNARK payment executor on Tempo L1. Generates real PLONK zero-knowledge proofs using Circom V2 circuits with Poseidon hashing, then settles private payments through ShieldVaultV2. Web3: Full trustless flow — deposit → commitment → ZK proof → nullifier → withdraw — with zero linkability between sender and recipient. Proof generation uses a singleton Poseidon cache for sub-second performance. Web2: End-to-end encryption consulting, GDPR-compliant data anonymization pipelines, privacy-preserving analytics aggregation, and confidential document sharing with cryptographic access control. The gold standard for confidential operations.",
     category: "privacy",
-    skills: JSON.stringify(["zk-proof", "plonk", "poseidon", "shielded-payment", "privacy", "circom", "nullifier", "commitment-scheme", "confidential-settlement", "on-chain"]),
+    skills: JSON.stringify(["zk-proof", "plonk", "poseidon", "shielded-payment", "privacy", "circom", "nullifier", "commitment-scheme", "data-encryption", "gdpr-compliance", "anonymization", "confidential-sharing", "on-chain"]),
     basePrice: 10,
     nativeAgentId: "shield-executor",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🛡️",
-    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Shield-Executor&backgroundColor=0d2b1f",
+    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=ZK-Shield&backgroundColor=0d2b1f&radius=20",
     isVerified: true,
     totalJobs: 184,
     successRate: 99.46,
@@ -42,16 +48,18 @@ const agents = [
     ratingCount: 142,
     responseTime: 18,
   },
+
+  // ── 3. PAYROLL PLANNER ────────────────────────────────────────
   {
     name: "Payroll Planner",
-    description: "AI-powered payroll engine that turns natural language into on-chain salary disbursements. Say \"pay John 200, Tony 350, and Susan 150 alphaUSD\" and watch it execute — parsing recipients, validating addresses, optimizing gas, and batch-settling through MultisendV2 in a single atomic transaction. Supports recurring schedules, conditional triggers, multi-token payroll (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), and automatic compliance logging via AIProofRegistry. The core reason Agentic Finance exists.",
+    description: "AI-powered payroll engine that turns natural language into on-chain salary disbursements. Say 'pay John 200, Tony 350, and Susan 150 alphaUSD' and it executes — parsing recipients, validating addresses, optimizing gas, and batch-settling through MultisendV2 in a single atomic transaction. Web3: Supports recurring schedules, multi-token payroll (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), and automatic compliance logging via AIProofRegistry. Web2: Full HR integration — parses CSV/Excel employee rosters, calculates tax withholdings and deductions, generates pay stubs with line-item breakdowns, tracks PTO balances, and exports payroll reports compatible with QuickBooks and Xero. The complete payroll solution bridging traditional HR and on-chain payments.",
     category: "payroll",
-    skills: JSON.stringify(["payroll", "batch", "multisend", "salary", "natural-language", "recurring", "multi-token", "compliance", "gas-optimization", "on-chain"]),
+    skills: JSON.stringify(["payroll", "batch", "multisend", "salary", "natural-language", "recurring", "multi-token", "csv-import", "tax-calculation", "pay-stub-generation", "hr-integration", "accounting-export", "on-chain"]),
     basePrice: 8,
     nativeAgentId: "payroll-planner",
     ownerWallet: AGTFI_PLATFORM_WALLET,
-    avatarEmoji: "📊",
-    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Payroll-Planner&backgroundColor=1b2340",
+    avatarEmoji: "💼",
+    avatarUrl: "https://api.dicebear.com/9.x/notionists/svg?seed=Payroll-Chief&backgroundColor=1b2340",
     isVerified: true,
     totalJobs: 312,
     successRate: 99.68,
@@ -59,16 +67,18 @@ const agents = [
     ratingCount: 241,
     responseTime: 6,
   },
+
+  // ── 4. TOKEN DEPLOYER ─────────────────────────────────────────
   {
     name: "Token Deployer",
-    description: "Full-stack token launch agent — from concept to live contract in under 60 seconds. AI designs tokenomics based on your requirements, generates production-grade Solidity (ERC-20 compliant with configurable supply, decimals, and metadata), compiles with optimization, deploys to Tempo L1, and verifies source code via Sourcify — all in a single conversation. Every deployed token is immediately tradeable and compatible with all Agentic Finance infrastructure: escrows, streams, batch payments, and shielded transfers.",
+    description: "Full-stack token launch agent — from concept to live contract in under 60 seconds. AI designs tokenomics based on your requirements, generates production-grade Solidity (ERC-20 compliant), deploys to Tempo L1, and verifies source code via Sourcify. Web3: Every deployed token is immediately tradeable and compatible with all Agentic Finance infrastructure: escrows, streams, batch payments, and shielded transfers. Supports custom supply, decimals, and metadata. Web2: Full go-to-market toolkit — generates token brand identity (name, symbol, description), creates tokenomics one-pagers, produces marketing copy for social media announcements, builds technical documentation, and generates embed-ready widget code for websites. From smart contract to marketing launch in one conversation.",
     category: "deployment",
-    skills: JSON.stringify(["deploy", "token", "erc20", "solidity", "tokenomics", "sourcify-verification", "custom-supply", "instant-launch", "contract-compilation", "on-chain"]),
+    skills: JSON.stringify(["deploy", "token", "erc20", "solidity", "tokenomics", "sourcify-verification", "custom-supply", "brand-identity", "marketing-copy", "documentation", "widget-generation", "go-to-market", "on-chain"]),
     basePrice: 15,
     nativeAgentId: "token-deployer",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🚀",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Token-Deployer&backgroundColor=2d1f0d",
+    avatarUrl: "https://api.dicebear.com/9.x/adventurer/svg?seed=Token-Rocket&backgroundColor=2d1f0d",
     isVerified: true,
     totalJobs: 156,
     successRate: 99.36,
@@ -76,16 +86,18 @@ const agents = [
     ratingCount: 118,
     responseTime: 28,
   },
+
+  // ── 5. CONTRACT DEPLOY PRO ────────────────────────────────────
   {
     name: "Contract Deploy Pro",
-    description: "Enterprise smart contract deployment pipeline with built-in AI security auditing. Accepts raw Solidity source code, performs automated vulnerability scanning (reentrancy, overflow, access control), compiles with solc optimization, deploys to Tempo L1, and registers verified source on Sourcify — delivering a fully audited, publicly verifiable contract. Supports constructor arguments, library linking, and proxy patterns. The same deployment infrastructure that powers Agentic Finance's own production contracts.",
+    description: "Enterprise smart contract deployment pipeline with built-in AI security auditing. Accepts raw Solidity source code, performs automated vulnerability scanning (reentrancy, overflow, access control), compiles with solc optimization, deploys to Tempo L1, and registers verified source on Sourcify. Web3: Supports constructor arguments, library linking, proxy patterns, and upgradeable contracts. Delivers fully audited, publicly verifiable smart contracts. Web2: Generates comprehensive audit reports with severity ratings, produces deployment changelogs, creates CI/CD pipeline configurations for continuous contract testing, and builds interactive ABI documentation. Full DevSecOps for smart contract development.",
     category: "deployment",
-    skills: JSON.stringify(["deploy", "smart-contract", "verify", "audit", "solidity", "security-scan", "sourcify", "proxy-patterns", "constructor-args", "on-chain"]),
+    skills: JSON.stringify(["deploy", "smart-contract", "verify", "audit", "solidity", "security-scan", "sourcify", "proxy-patterns", "audit-reports", "ci-cd-config", "abi-documentation", "devops", "on-chain"]),
     basePrice: 20,
     nativeAgentId: "contract-deploy-pro",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "⚙️",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Contract-Deploy-Pro&backgroundColor=231a3d",
+    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Deploy-Engine&backgroundColor=231a3d",
     isVerified: true,
     totalJobs: 198,
     successRate: 99.49,
@@ -93,16 +105,18 @@ const agents = [
     ratingCount: 167,
     responseTime: 35,
   },
+
+  // ── 6. A2A COORDINATOR ────────────────────────────────────────
   {
     name: "A2A Coordinator",
-    description: "The brain of Agentic Finance's autonomous economy. This orchestration engine decomposes complex multi-step tasks into execution plans, autonomously hires specialized agents from the marketplace, creates NexusV2 escrow contracts for each sub-task, monitors progress, and chains results across agents — all without human intervention. Think of it as a general contractor that hires plumbers, electricians, and painters, pays each through trustless escrows, and delivers the finished product. The first production-grade Agent-to-Agent coordination protocol with real financial settlement.",
+    description: "The brain of Agentic Finance's autonomous economy. Decomposes complex multi-step tasks into execution plans, autonomously hires specialized agents from the marketplace, creates NexusV2 escrow contracts for each sub-task, monitors progress, and chains results across agents — all without human intervention. Web3: First production-grade Agent-to-Agent coordination protocol with real financial settlement via trustless escrows. Supports up to 5 levels of recursive delegation. Web2: Full project management capabilities — generates Gantt charts, tracks dependencies with critical path analysis, produces progress dashboards, sends Slack/Discord notifications on task completion, creates post-mortem reports, and supports natural language task decomposition. Your AI project manager with a blockchain backbone.",
     category: "orchestration",
-    skills: JSON.stringify(["a2a", "coordinator", "multi-agent", "orchestration", "task-decomposition", "autonomous-hiring", "execution-chaining", "escrow-settlement", "workflow-engine", "on-chain"]),
+    skills: JSON.stringify(["a2a", "coordinator", "multi-agent", "orchestration", "task-decomposition", "autonomous-hiring", "execution-chaining", "gantt-charts", "dependency-tracking", "slack-notifications", "progress-dashboard", "project-management", "on-chain"]),
     basePrice: 20,
     nativeAgentId: "coordinator",
     ownerWallet: AGTFI_PLATFORM_WALLET,
-    avatarEmoji: "🎯",
-    avatarUrl: "https://api.dicebear.com/9.x/rings/svg?seed=A2A-Coordinator&backgroundColor=2d0d1f",
+    avatarEmoji: "🧠",
+    avatarUrl: "https://api.dicebear.com/9.x/rings/svg?seed=Brain-Nexus&backgroundColor=2d0d1f",
     isVerified: true,
     totalJobs: 89,
     successRate: 98.87,
@@ -110,16 +124,18 @@ const agents = [
     ratingCount: 72,
     responseTime: 45,
   },
+
+  // ── 7. TEMPO BENCHMARK ────────────────────────────────────────
   {
     name: "Tempo Benchmark",
-    description: "The definitive cost-comparison engine for Tempo L1. Executes 5 real on-chain operations — token transfer, escrow creation, escrow settlement, batch multisend, and AI proof commit — measuring exact gas consumption for each. Then pulls live Ethereum mainnet gas prices via oracle and calculates dollar-for-dollar savings. Output includes per-operation breakdowns, aggregate savings percentages, and a projected annual cost reduction at any transaction volume. Used by enterprises evaluating Tempo L1 adoption to make data-driven infrastructure decisions with real numbers, not estimates.",
+    description: "The definitive cost-comparison engine for Tempo L1. Executes 5 real on-chain operations — token transfer, escrow creation, settlement, batch multisend, and AI proof commit — measuring exact gas consumption for each. Then pulls live Ethereum mainnet gas prices and calculates dollar-for-dollar savings. Web3: Real on-chain execution with per-operation gas breakdowns and aggregate savings. Web2: Generates professional benchmark reports (charts, tables, executive summaries), creates investor-ready comparison decks, produces embeddable performance widgets, and exports data to CSV/JSON for custom analysis. Full analytics pipeline from raw chain data to boardroom-ready presentations.",
     category: "analytics",
-    skills: JSON.stringify(["benchmark", "gas-cost", "tempo-vs-eth", "comparison", "analytics", "cost-optimization", "real-execution", "enterprise-evaluation", "annual-projection", "on-chain"]),
+    skills: JSON.stringify(["benchmark", "gas-cost", "tempo-vs-eth", "comparison", "analytics", "cost-optimization", "report-generation", "chart-creation", "csv-export", "investor-deck", "performance-widget", "data-visualization", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "tempo-benchmark",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🏎️",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Tempo-Benchmark&backgroundColor=0d2a2d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Speed-Demon&backgroundColor=0d2a2d",
     isVerified: true,
     totalJobs: 67,
     successRate: 99.70,
@@ -127,16 +143,18 @@ const agents = [
     ratingCount: 52,
     responseTime: 15,
   },
+
+  // ── 8. TOKEN TRANSFER ─────────────────────────────────────────
   {
     name: "Token Transfer",
-    description: "Agentic Finance's most-used agent — instant peer-to-peer token transfers on Tempo L1. Understands natural language (\"send 500 alphaUSD to 0x...\"), validates recipient addresses, checks balances before execution, and settles in under 2 seconds with finality. Supports all Tempo stablecoins: AlphaUSD, pathUSD, BetaUSD, and ThetaUSD. Every transfer returns a verified tx hash linked to the Tempo block explorer. Simple, fast, and battle-tested with the highest transaction volume on the network.",
+    description: "Agentic Finance's most-used agent — instant peer-to-peer token transfers on Tempo L1. Understands natural language ('send 500 alphaUSD to 0x...'), validates recipient addresses, checks balances before execution, and settles in under 2 seconds with finality. Web3: Supports all Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD). Every transfer returns a verified tx hash linked to the Tempo block explorer. Web2: Sends email/push notifications to recipients, generates transfer receipts with QR codes, tracks payment history with search and filter capabilities, supports memo/reference fields for invoice matching, and produces monthly transaction statements. The simplest path from intent to payment.",
     category: "payments",
-    skills: JSON.stringify(["transfer", "send", "erc20", "payment", "natural-language", "balance-check", "multi-stablecoin", "instant-finality", "address-validation", "on-chain"]),
+    skills: JSON.stringify(["transfer", "send", "erc20", "payment", "natural-language", "balance-check", "multi-stablecoin", "email-notification", "receipt-generation", "qr-codes", "payment-history", "transaction-statements", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "token-transfer",
     ownerWallet: AGTFI_PLATFORM_WALLET,
-    avatarEmoji: "💸",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Token-Transfer&backgroundColor=1a1b4d",
+    avatarEmoji: "⚡",
+    avatarUrl: "https://api.dicebear.com/9.x/fun-emoji/svg?seed=Lightning-Pay&backgroundColor=1a1b4d",
     isVerified: true,
     totalJobs: 1847,
     successRate: 99.89,
@@ -144,16 +162,18 @@ const agents = [
     ratingCount: 1203,
     responseTime: 3,
   },
+
+  // ── 9. STREAM CREATOR ─────────────────────────────────────────
   {
     name: "Stream Creator",
-    description: "Programmable payment streams with milestone-based release logic. Describe a project — \"build a landing page with 3 deliverables\" — and this agent autonomously designs milestones, assigns budgets proportionally, sets deadlines, and deploys a Agentic FinanceStreamV1 contract that releases funds only when each milestone is verified. Progressive escrow means workers get paid as they deliver, not all-or-nothing. Supports proof-of-delivery hashes, multi-milestone structures, and automatic deadline enforcement. The future of project-based compensation.",
+    description: "Programmable payment streams with milestone-based release logic. Describe a project — 'build a landing page with 3 deliverables' — and this agent autonomously designs milestones, assigns budgets proportionally, sets deadlines, and deploys a StreamV1 contract that releases funds only when each milestone is verified. Web3: Progressive escrow, proof-of-delivery hashes, automatic deadline enforcement, multi-milestone structures. Web2: Full project scoping — generates statements of work (SOW), creates milestone acceptance criteria, produces timeline visualizations, sends automated reminders before deadlines, and builds client-facing project portals with real-time progress tracking. From project brief to funded smart contract in minutes.",
     category: "streams",
-    skills: JSON.stringify(["stream", "milestone", "progressive-escrow", "create", "budget-allocation", "deadline-enforcement", "proof-of-delivery", "project-management", "programmable-payments", "on-chain"]),
+    skills: JSON.stringify(["stream", "milestone", "progressive-escrow", "create", "budget-allocation", "deadline-enforcement", "statement-of-work", "acceptance-criteria", "timeline-visualization", "automated-reminders", "project-portal", "client-reporting", "on-chain"]),
     basePrice: 8,
     nativeAgentId: "stream-creator",
     ownerWallet: AGTFI_PLATFORM_WALLET,
-    avatarEmoji: "🧊",
-    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Stream-Creator&backgroundColor=0d2d2a",
+    avatarEmoji: "🌊",
+    avatarUrl: "https://api.dicebear.com/9.x/micah/svg?seed=Stream-Wave&backgroundColor=0d2d2a",
     isVerified: true,
     totalJobs: 134,
     successRate: 99.25,
@@ -161,16 +181,18 @@ const agents = [
     ratingCount: 98,
     responseTime: 12,
   },
+
+  // ── 10. STREAM MANAGER ────────────────────────────────────────
   {
     name: "Stream Manager",
-    description: "Complete lifecycle orchestrator for Agentic FinanceStreamV1 payment streams on Tempo L1. After a stream is created, this agent takes over — managing milestone submissions with cryptographic proof-of-delivery hashes, reviewing and approving deliverables against predefined acceptance criteria, rejecting substandard work with detailed on-chain feedback, and handling graceful stream cancellation with proportional refund calculation. Every action updates the stream's immutable state on-chain. Supports multi-milestone workflows where each phase has independent deadlines, budgets, and proof requirements. The essential companion to Stream Creator for end-to-end project-based payment management.",
+    description: "Complete lifecycle orchestrator for StreamV1 payment streams on Tempo L1. After a stream is created, this agent takes over — managing milestone submissions with cryptographic proof-of-delivery hashes, reviewing and approving deliverables against predefined criteria, rejecting substandard work with detailed feedback, and handling graceful cancellation with proportional refund calculation. Web3: Every action updates immutable on-chain state with independent deadlines, budgets, and proof requirements. Web2: Automated quality assurance workflows, generates approval/rejection notifications with detailed feedback, creates deliverable review checklists, produces payment schedule calendars, and builds audit trails exportable to spreadsheets. The essential companion for end-to-end project payment management.",
     category: "streams",
-    skills: JSON.stringify(["stream", "milestone", "submit", "approve", "reject", "cancel", "proof-of-delivery", "lifecycle-management", "deadline-tracking", "on-chain"]),
+    skills: JSON.stringify(["stream", "milestone", "submit", "approve", "reject", "cancel", "proof-of-delivery", "quality-assurance", "review-checklists", "payment-calendars", "audit-trail-export", "notification-system", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "stream-manager",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🎛️",
-    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Stream-Manager&backgroundColor=152535",
+    avatarUrl: "https://api.dicebear.com/9.x/personas/svg?seed=Flow-Controller&backgroundColor=152535",
     isVerified: true,
     totalJobs: 112,
     successRate: 99.11,
@@ -178,16 +200,18 @@ const agents = [
     ratingCount: 83,
     responseTime: 6,
   },
+
+  // ── 11. VAULT DEPOSITOR ───────────────────────────────────────
   {
     name: "Vault Depositor",
-    description: "Gateway to ShieldVaultV2's privacy infrastructure on Tempo L1. Handles the critical first step of any shielded payment flow — depositing funds into the zero-knowledge vault with precise commitment generation. Supports both the privacy path (deposit → commitment → ZK proof → withdrawal) and the transparent path (deposit → direct payout) depending on confidentiality requirements. AI validates deposit amounts against vault capacity, generates Poseidon hash commitments for the privacy path, and provides deposit receipts with on-chain tx hashes. Every deposit is atomically settled with rollback on failure. The essential on-ramp for Agentic Finance's ZK-SNARK payment infrastructure.",
+    description: "Gateway to ShieldVaultV2's privacy infrastructure on Tempo L1. Handles the critical first step of any shielded payment flow — depositing funds with precise commitment generation. Supports both the privacy path (deposit → commitment → ZK proof → withdrawal) and the transparent path (deposit → direct payout). Web3: AI validates deposit amounts, generates Poseidon hash commitments, and provides deposit receipts with on-chain tx hashes. Atomic settlement with rollback on failure. Web2: Secure vault management dashboard, generates deposit certificates, tracks commitment history with expiry alerts, produces compliance documentation for institutional custody, and integrates with treasury management systems via API. The essential on-ramp for ZK-SNARK payment infrastructure.",
     category: "privacy",
-    skills: JSON.stringify(["vault", "deposit", "payout", "shield-vault", "transparent", "commitment-generation", "poseidon-hash", "atomic-settlement", "privacy-onramp", "on-chain"]),
+    skills: JSON.stringify(["vault", "deposit", "payout", "shield-vault", "transparent", "commitment-generation", "poseidon-hash", "deposit-certificates", "compliance-documentation", "custody-integration", "treasury-api", "expiry-alerts", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "vault-depositor",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🦊",
-    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Vault-Depositor&backgroundColor=0d2b1f",
+    avatarUrl: "https://api.dicebear.com/9.x/thumbs/svg?seed=Vault-Fox&backgroundColor=0d2b1f",
     isVerified: true,
     totalJobs: 96,
     successRate: 99.48,
@@ -195,16 +219,18 @@ const agents = [
     ratingCount: 71,
     responseTime: 10,
   },
+
+  // ── 12. MULTISEND BATCH ───────────────────────────────────────
   {
     name: "Multisend Batch",
-    description: "High-throughput batch payment engine built on MultisendV2. Send tokens to up to 50 recipients in a single atomic on-chain transaction — if one fails, all fail, guaranteeing consistency. AI parses recipient lists from natural language, spreadsheet formats, or structured data. Automatically validates all addresses, checks aggregate balance requirements, and optimizes calldata encoding for minimal gas. Used by DAOs, payroll systems, and airdrop campaigns for reliable mass disbursement on Tempo L1.",
+    description: "High-throughput batch payment engine built on MultisendV2. Send tokens to up to 50 recipients in a single atomic on-chain transaction — if one fails, all fail, guaranteeing consistency. Web3: AI parses recipient lists from natural language, validates all addresses, checks aggregate balance requirements, and optimizes calldata encoding for minimal gas. Used by DAOs and airdrop campaigns. Web2: Imports recipient lists from CSV, Excel, Google Sheets, or JSON. Generates detailed payment manifests with per-recipient tracking, produces batch confirmations with individual receipt links, creates distribution reports for accounting, and supports saved recipient templates for recurring batches. Enterprise-grade mass disbursement.",
     category: "payments",
-    skills: JSON.stringify(["batch", "multisend", "bulk-transfer", "gas-efficient", "atomic-execution", "address-validation", "airdrop", "dao-payments", "calldata-optimization", "on-chain"]),
+    skills: JSON.stringify(["batch", "multisend", "bulk-transfer", "gas-efficient", "atomic-execution", "csv-import", "excel-import", "payment-manifest", "receipt-tracking", "distribution-reports", "recipient-templates", "airdrop", "on-chain"]),
     basePrice: 8,
     nativeAgentId: "multisend-batch",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "📦",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Multisend-Batch&backgroundColor=1f0d2d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Batch-Box&backgroundColor=1f0d2d",
     isVerified: true,
     totalJobs: 278,
     successRate: 99.64,
@@ -212,16 +238,18 @@ const agents = [
     ratingCount: 196,
     responseTime: 7,
   },
+
+  // ── 13. PROOF VERIFIER ────────────────────────────────────────
   {
     name: "Proof Verifier",
-    description: "Immutable AI accountability layer on Tempo L1. Implements a two-phase commit protocol via AIProofRegistry: Phase 1 — commit a cryptographic hash of the AI's execution plan before any action is taken. Phase 2 — after execution, commit the result hash and link it to the original plan. This creates an unforgeable audit trail proving what the AI intended to do vs. what it actually did. Every proof is timestamped on-chain with block numbers, making AI agent behavior fully auditable and legally defensible.",
+    description: "Immutable AI accountability layer on Tempo L1. Implements a two-phase commit protocol via AIProofRegistry: Phase 1 — commit a cryptographic hash of the AI's execution plan before any action. Phase 2 — commit the result hash and link it to the original plan. Web3: Creates unforgeable audit trail proving what the AI intended vs. what it actually did. Every proof is timestamped on-chain with block numbers. Web2: Full compliance toolkit — generates SOC 2-ready audit logs, produces regulatory compliance reports, creates visual proof-chain diagrams, builds searchable audit databases, and exports evidence packages for legal proceedings. The compliance backbone that makes AI agent behavior auditable for regulators and enterprises.",
     category: "verification",
-    skills: JSON.stringify(["proof", "commit", "verify", "ai-proof", "accountability", "two-phase-commit", "audit-trail", "cryptographic-hash", "immutable-record", "on-chain"]),
+    skills: JSON.stringify(["proof", "commit", "verify", "ai-proof", "accountability", "two-phase-commit", "soc2-audit-logs", "compliance-reports", "proof-chain-diagrams", "evidence-packages", "regulatory-compliance", "searchable-audit", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "proof-verifier",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "✅",
-    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Proof-Verifier&backgroundColor=2d2a0d",
+    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Proof-Check&backgroundColor=2d2a0d",
     isVerified: true,
     totalJobs: 1456,
     successRate: 99.93,
@@ -229,16 +257,18 @@ const agents = [
     ratingCount: 1089,
     responseTime: 4,
   },
+
+  // ── 14. ALLOWANCE MANAGER ─────────────────────────────────────
   {
     name: "Allowance Manager",
-    description: "Security-first ERC20 allowance controller for the entire Agentic Finance contract ecosystem. Manages the critical permission layer between user wallets and smart contracts — checking current allowance states across NexusV2, ShieldVaultV2, MultisendV2, and StreamV1, granting precise approvals with exact amounts (no unlimited approvals by default), and revoking permissions instantly when no longer needed. AI understands natural language like \"approve 1000 AlphaUSD for escrow\" and maps it to the correct contract address and token. Proactively warns about over-approval risks and suggests minimum-necessary amounts. The first line of defense in Agentic Finance's security architecture — because every on-chain exploit starts with an allowance.",
+    description: "Security-first ERC20 allowance controller for the entire Agentic Finance contract ecosystem. Manages the critical permission layer between user wallets and smart contracts — checking current allowance states, granting precise approvals, and revoking permissions instantly. Web3: Covers NexusV2, ShieldVaultV2, MultisendV2, and StreamV1. No unlimited approvals by default. Proactively warns about over-approval risks and suggests minimum-necessary amounts. Web2: Generates security posture reports, creates approval audit trails, produces risk assessment dashboards showing total exposure per contract, sends automated alerts when approvals exceed thresholds, and builds revocation schedules for expired permissions. Your first line of defense — because every exploit starts with an allowance.",
     category: "security",
-    skills: JSON.stringify(["allowance", "approve", "revoke", "erc20", "security", "permission-management", "over-approval-prevention", "multi-contract", "natural-language", "on-chain"]),
+    skills: JSON.stringify(["allowance", "approve", "revoke", "erc20", "security", "permission-management", "risk-assessment", "exposure-dashboard", "threshold-alerts", "revocation-schedule", "approval-audit-trail", "security-posture", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "allowance-manager",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🔑",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Allowance-Manager&backgroundColor=2d0d0d",
+    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Key-Guard&backgroundColor=2d0d0d",
     isVerified: true,
     totalJobs: 423,
     successRate: 99.76,
@@ -246,16 +276,18 @@ const agents = [
     ratingCount: 312,
     responseTime: 4,
   },
+
+  // ── 15. BALANCE SCANNER ───────────────────────────────────────
   {
     name: "Balance Scanner",
-    description: "Real-time on-chain portfolio intelligence for any wallet on Tempo L1. Scans all four Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), reads native ETH balance, maps active contract allowances across NexusV2, ShieldVaultV2, MultisendV2, and StreamV1 — and presents a unified portfolio view with USD equivalents. One command gives you complete visibility into any address's financial position on the Agentic Finance network. Fastest response time in the marketplace at under 5 seconds.",
+    description: "Real-time on-chain portfolio intelligence for any wallet on Tempo L1. Scans all four Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), reads native balance, and maps active contract allowances across all Agentic Finance contracts. Web3: Unified portfolio view with USD equivalents — complete visibility into any address's financial position in under 5 seconds. Zero gas cost (read-only calls). Web2: Generates portfolio allocation charts (pie/bar/line), produces wallet health scores, creates historical balance tracking with trend analysis, exports financial statements in PDF/CSV, and builds shareable portfolio snapshots with custom branding. From raw blockchain data to investor-grade financial reports.",
     category: "analytics",
-    skills: JSON.stringify(["balance", "portfolio", "scan", "multi-token", "allowance-mapping", "usd-equivalent", "real-time", "wallet-intelligence", "cross-contract", "on-chain"]),
+    skills: JSON.stringify(["balance", "portfolio", "scan", "multi-token", "allowance-mapping", "portfolio-charts", "wallet-health-score", "trend-analysis", "financial-statements", "pdf-export", "portfolio-snapshots", "investor-reports", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "balance-scanner",
     ownerWallet: AGTFI_PLATFORM_WALLET,
-    avatarEmoji: "📋",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Balance-Scanner&backgroundColor=152535",
+    avatarEmoji: "📊",
+    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Balance-Eye&backgroundColor=152535",
     isVerified: true,
     totalJobs: 2,
     successRate: 97.65,
@@ -263,16 +295,18 @@ const agents = [
     ratingCount: 1,
     responseTime: 5,
   },
+
+  // ── 16. FEE COLLECTOR ─────────────────────────────────────────
   {
     name: "Fee Collector",
-    description: "Protocol revenue harvester for Agentic Finance's smart contract ecosystem. Aggregates and withdraws accumulated platform fees from all fee-generating contracts — NexusV2 (escrow fees), MultisendV2 (batch payment fees), and StreamV1 (streaming fees) — in a single coordinated operation. AI calculates pending fees across all contracts before execution, provides a revenue breakdown by source, and executes withdrawals to the designated treasury wallet. Includes historical fee tracking, per-contract revenue attribution, and anomaly detection for unusual fee patterns. Admin-gated operation with multi-signature support. The financial backbone that sustains Agentic Finance's autonomous economy.",
+    description: "Protocol revenue harvester for Agentic Finance's smart contract ecosystem. Aggregates and withdraws accumulated platform fees from all fee-generating contracts — NexusV2 (escrow fees), MultisendV2 (batch fees), and StreamV1 (streaming fees) — in a single coordinated operation. Web3: Calculates pending fees across all contracts, provides revenue breakdown by source, and executes withdrawals to designated treasury. Admin-gated with multi-signature support. Web2: Full accounting suite — generates revenue dashboards with period-over-period comparisons, produces tax-ready income reports, creates automated bookkeeping entries compatible with QuickBooks/Xero/FreshBooks, tracks fee trends and forecasts revenue, and builds investor financial summaries. The CFO's best friend.",
     category: "admin",
-    skills: JSON.stringify(["fees", "collect", "withdraw", "revenue", "admin", "treasury-management", "multi-contract", "revenue-attribution", "anomaly-detection", "on-chain"]),
+    skills: JSON.stringify(["fees", "collect", "withdraw", "revenue", "admin", "treasury-management", "revenue-dashboard", "tax-reports", "bookkeeping-integration", "revenue-forecasting", "investor-summaries", "period-comparison", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "fee-collector",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "💰",
-    avatarUrl: "https://api.dicebear.com/9.x/rings/svg?seed=Fee-Collector&backgroundColor=2d2a0d",
+    avatarUrl: "https://api.dicebear.com/9.x/rings/svg?seed=Gold-Harvester&backgroundColor=2d2a0d",
     isVerified: true,
     totalJobs: 78,
     successRate: 99.35,
@@ -280,16 +314,18 @@ const agents = [
     ratingCount: 56,
     responseTime: 12,
   },
+
+  // ── 17. ESCROW LIFECYCLE ──────────────────────────────────────
   {
     name: "Escrow Lifecycle",
-    description: "Mid-lifecycle command center for NexusV2 escrow jobs on Tempo L1. While Escrow Manager handles creation and settlement, this agent owns everything in between — transitioning jobs from funded → active, tracking worker progress against deadlines, marking deliverables as complete with proof hashes, and submitting on-chain worker ratings that feed into Agentic Finance's reputation system. AI understands context like \"start the escrow job for landing page\" and maps it to the correct job ID. Supports batch status checks across multiple active escrows, deadline alerting, and automated completion flows when proof-of-work hashes match acceptance criteria. The missing piece between escrow funding and final settlement.",
+    description: "Mid-lifecycle command center for NexusV2 escrow jobs on Tempo L1. While Escrow Manager handles creation and settlement, this agent owns everything in between — transitioning jobs from funded → active, tracking worker progress, marking deliverables complete with proof hashes, and submitting on-chain ratings that feed into the reputation system. Web3: Batch status checks, deadline alerting, automated completion flows when proof hashes match acceptance criteria. Web2: Full task management — creates kanban boards for escrow tracking, generates progress reports with completion percentages, sends deadline reminder notifications (email/Slack/Discord), produces worker performance scorecards, and builds client-facing status pages. The missing piece between escrow funding and settlement.",
     category: "escrow",
-    skills: JSON.stringify(["escrow", "start-job", "complete", "rate", "lifecycle", "progress-tracking", "deadline-alert", "reputation-scoring", "batch-status", "on-chain"]),
+    skills: JSON.stringify(["escrow", "start-job", "complete", "rate", "lifecycle", "progress-tracking", "kanban-boards", "deadline-reminders", "performance-scorecards", "status-pages", "slack-integration", "client-reporting", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "escrow-lifecycle",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🔄",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Escrow-Lifecycle&backgroundColor=2d0d2a",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Lifecycle-Loop&backgroundColor=2d0d2a",
     isVerified: true,
     totalJobs: 189,
     successRate: 99.47,
@@ -297,16 +333,18 @@ const agents = [
     ratingCount: 143,
     responseTime: 5,
   },
+
+  // ── 18. MULTI TOKEN SENDER ────────────────────────────────────
   {
     name: "Multi Token Sender",
-    description: "Cross-token transfer specialist for Tempo L1's multi-stablecoin ecosystem. When a single payment requires multiple token types — \"send 100 AlphaUSD and 50 BetaUSD and 25 pathUSD to 0x...\" — this agent parses the instruction, validates balances for each token independently, checks recipient address validity, and executes sequential transfers with atomic rollback on any failure. Supports all four Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD) in any combination. Each transfer is individually confirmed with tx hash before proceeding to the next, ensuring zero partial-delivery scenarios. Ideal for complex vendor payments, multi-currency settlements, and cross-token portfolio rebalancing.",
+    description: "Cross-token transfer specialist for Tempo L1's multi-stablecoin ecosystem. When a single payment requires multiple token types — 'send 100 AlphaUSD and 50 BetaUSD and 25 pathUSD to 0x...' — this agent parses the instruction, validates balances independently, and executes sequential transfers with atomic rollback on any failure. Web3: All four Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD) in any combination. Individual confirmation per transfer. Web2: Multi-currency conversion calculators, generates cross-token payment summaries, creates FX-rate equivalent reports, produces multi-currency invoices, and supports payment templates for recurring multi-token transfers. Ideal for international settlements and portfolio rebalancing.",
     category: "payments",
-    skills: JSON.stringify(["multi-token", "transfer", "batch-send", "erc20", "payment", "cross-token", "balance-validation", "atomic-rollback", "portfolio-rebalance", "on-chain"]),
+    skills: JSON.stringify(["multi-token", "transfer", "batch-send", "erc20", "payment", "cross-token", "currency-conversion", "fx-reports", "multi-currency-invoices", "payment-templates", "portfolio-rebalance", "international-settlement", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "multi-token-sender",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "💳",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Multi-Token-Sender&backgroundColor=0d1f2d",
+    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Multi-Card&backgroundColor=0d1f2d",
     isVerified: true,
     totalJobs: 234,
     successRate: 99.57,
@@ -314,16 +352,18 @@ const agents = [
     ratingCount: 176,
     responseTime: 6,
   },
+
+  // ── 19. ESCROW DISPUTE ────────────────────────────────────────
   {
     name: "Escrow Dispute",
-    description: "On-chain arbitration engine for NexusV2 escrow conflicts on Tempo L1. When a job goes wrong — missed deadlines, quality disputes, or unresponsive parties — this agent handles the entire resolution lifecycle. AI evaluates dispute context, raises formal on-chain disputes that freeze escrowed funds, monitors timeout windows with block-level precision, and executes automatic refunds when dispute periods expire without resolution. Supports evidence submission via proof hashes, multi-party dispute scenarios, and partial settlement proposals. Every dispute action is immutably recorded, creating a tamper-proof arbitration trail. The safety net that makes trustless escrows truly trustless.",
+    description: "On-chain arbitration engine for NexusV2 escrow conflicts on Tempo L1. When a job goes wrong — missed deadlines, quality disputes, or unresponsive parties — this agent handles the entire resolution lifecycle. Web3: Raises formal on-chain disputes that freeze escrowed funds, monitors timeout windows with block-level precision, executes automatic refunds, supports evidence submission via proof hashes. Every dispute action is immutably recorded. Web2: Full dispute management — generates case files with evidence documentation, creates mediation timelines, produces arbitration reports with recommendations, sends stakeholder notifications at each stage, and builds dispute analytics dashboards showing resolution rates and common causes. The safety net that makes trustless escrows truly trustless.",
     category: "escrow",
-    skills: JSON.stringify(["dispute", "timeout", "refund", "nexus", "resolution", "arbitration", "evidence-submission", "fund-freeze", "partial-settlement", "on-chain"]),
+    skills: JSON.stringify(["dispute", "timeout", "refund", "nexus", "resolution", "arbitration", "case-file-generation", "mediation-timeline", "arbitration-reports", "stakeholder-notifications", "dispute-analytics", "evidence-documentation", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "escrow-dispute",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "⚖️",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Escrow-Dispute&backgroundColor=2d1a1a",
+    avatarUrl: "https://api.dicebear.com/9.x/notionists/svg?seed=Justice-Scale&backgroundColor=2d1a1a",
     isVerified: true,
     totalJobs: 45,
     successRate: 98.67,
@@ -331,16 +371,18 @@ const agents = [
     ratingCount: 34,
     responseTime: 8,
   },
+
+  // ── 20. STREAM INSPECTOR ──────────────────────────────────────
   {
     name: "Stream Inspector",
-    description: "Deep analytics engine for Agentic FinanceStreamV1 payment streams on Tempo L1. Reads and interprets complex on-chain stream state — active milestones, completed deliverables, pending approvals, remaining budgets, deadline proximity, and proof-of-delivery verification status. AI generates human-readable reports from raw contract data: \"Stream #42 is 67% complete — 2 of 3 milestones delivered, $340 of $500 released, final milestone due in 3 days.\" Supports cross-stream aggregation for portfolio-level views, overdue detection with automatic alerting, and historical completion rate analysis per worker address. The go-to intelligence tool for anyone managing or investing in stream-based projects.",
+    description: "Deep analytics engine for StreamV1 payment streams on Tempo L1. Reads and interprets complex on-chain stream state — active milestones, completed deliverables, pending approvals, remaining budgets, deadline proximity, and proof-of-delivery verification status. Web3: AI generates human-readable reports from raw contract data. Supports cross-stream aggregation and overdue detection. Web2: Produces interactive dashboards with real-time stream status, creates Gantt chart visualizations of milestone timelines, generates weekly/monthly stream digest reports, builds embeddable progress widgets for client websites, and exports stream analytics to BI tools (Tableau, Metabase, Looker). The go-to intelligence tool for stream-based project management.",
     category: "analytics",
-    skills: JSON.stringify(["stream", "inspect", "milestone", "analysis", "read", "portfolio-aggregation", "overdue-detection", "completion-rate", "human-readable-reports", "on-chain"]),
+    skills: JSON.stringify(["stream", "inspect", "milestone", "analysis", "read", "interactive-dashboards", "gantt-charts", "digest-reports", "progress-widgets", "bi-integration", "overdue-detection", "client-portal", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "stream-inspector",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🔎",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Stream-Inspector&backgroundColor=0d2d2a",
+    avatarUrl: "https://api.dicebear.com/9.x/adventurer/svg?seed=Stream-Detective&backgroundColor=0d2d2a",
     isVerified: true,
     totalJobs: 156,
     successRate: 99.81,
@@ -348,16 +390,18 @@ const agents = [
     ratingCount: 119,
     responseTime: 4,
   },
+
+  // ── 21. TREASURY MANAGER ──────────────────────────────────────
   {
     name: "Treasury Manager",
-    description: "CFO-grade treasury dashboard in a single agent call. Aggregates native ETH holdings, all stablecoin balances, active escrow commitments (NexusV2), pending batch payments (MultisendV2), streaming obligations (StreamV1), AI proof registry stats, and contract allowance exposure — all from live on-chain data. Provides a complete financial health snapshot: total assets, outstanding liabilities, available liquidity, and protocol activity metrics. The command center for any organization managing funds on Tempo L1.",
+    description: "CFO-grade treasury dashboard in a single agent call. Aggregates native ETH holdings, all stablecoin balances, active escrow commitments (NexusV2), pending batch payments (MultisendV2), streaming obligations (StreamV1), AI proof registry stats, and contract allowance exposure. Web3: Complete financial health snapshot from live on-chain data — total assets, outstanding liabilities, available liquidity, and protocol activity metrics. Web2: Produces board-ready treasury reports with charts and tables, creates cash flow projections and runway analysis, generates budget vs. actual variance reports, builds real-time treasury dashboards with alerts, and exports data to ERP systems. The command center for any organization managing funds on Tempo L1.",
     category: "analytics",
-    skills: JSON.stringify(["treasury", "portfolio", "overview", "financial-health", "liquidity-analysis", "escrow-exposure", "streaming-obligations", "protocol-metrics", "cross-contract-aggregation", "on-chain"]),
+    skills: JSON.stringify(["treasury", "portfolio", "overview", "financial-health", "liquidity-analysis", "treasury-reports", "cash-flow-projections", "runway-analysis", "budget-variance", "erp-integration", "board-presentations", "alert-system", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "treasury-manager",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🏛️",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Treasury-Manager&backgroundColor=0d2b1f",
+    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Treasury-Temple&backgroundColor=0d2b1f",
     isVerified: true,
     totalJobs: 345,
     successRate: 99.71,
@@ -365,16 +409,18 @@ const agents = [
     ratingCount: 267,
     responseTime: 5,
   },
+
+  // ── 22. BULK ESCROW ───────────────────────────────────────────
   {
     name: "Bulk Escrow",
-    description: "Mass escrow deployment engine for NexusV2 on Tempo L1. When a project requires hiring multiple specialized agents simultaneously — \"create escrows for designer at $200, developer at $500, and auditor at $150\" — this agent parses the entire brief, validates all worker addresses, calculates aggregate budget requirements, checks wallet balance sufficiency, and deploys up to 20 NexusV2 escrow contracts in a single coordinated operation. Each escrow gets individually configured timeouts, budgets, and worker assignments. AI generates a deployment manifest showing all job IDs, contract addresses, and funding status. Includes rollback support — if any single escrow fails mid-batch, previously created escrows remain intact with clear status reporting. The force multiplier for A2A orchestration workflows.",
+    description: "Mass escrow deployment engine for NexusV2 on Tempo L1. When a project requires hiring multiple specialized agents simultaneously, this agent parses the entire brief, validates all addresses, calculates aggregate budget requirements, and deploys up to 20 NexusV2 escrow contracts in a single coordinated operation. Web3: Individually configured timeouts, budgets, and worker assignments. Rollback support for failed mid-batch escrows. Web2: Full procurement workflow — generates vendor comparison matrices, creates RFP (Request for Proposal) documents, produces procurement schedules with milestone tracking, builds vendor performance dashboards, and exports purchase order summaries. The force multiplier for large-scale agent hiring and vendor management.",
     category: "escrow",
-    skills: JSON.stringify(["bulk", "batch-create", "escrow", "nexus", "multi-job", "manifest-generation", "rollback-support", "budget-aggregation", "address-validation", "on-chain"]),
+    skills: JSON.stringify(["bulk", "batch-create", "escrow", "nexus", "multi-job", "procurement-workflow", "rfp-generation", "vendor-comparison", "purchase-orders", "vendor-dashboards", "milestone-tracking", "budget-aggregation", "on-chain"]),
     basePrice: 12,
     nativeAgentId: "bulk-escrow",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "📁",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Bulk-Escrow&backgroundColor=1a1b4d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Bulk-Deploy&backgroundColor=1a1b4d",
     isVerified: true,
     totalJobs: 67,
     successRate: 99.25,
@@ -382,16 +428,18 @@ const agents = [
     ratingCount: 48,
     responseTime: 18,
   },
+
+  // ── 23. MULTI TOKEN BATCH ─────────────────────────────────────
   {
     name: "Multi Token Batch",
-    description: "The most flexible batch payment engine on Tempo L1 — combining MultisendV2's atomic execution with full multi-token support. While standard Multisend Batch handles single-token batches, this agent orchestrates payments across all four Tempo stablecoins in a single operation: \"send AlphaUSD to team A, pathUSD to team B, and BetaUSD to contractors\" — all parsed from natural language, validated, and executed with per-token atomic guarantees. AI automatically groups recipients by token type, optimizes execution order for minimal gas, and provides a consolidated receipt with per-token breakdowns. Supports CSV/spreadsheet import for enterprise payroll scenarios with mixed-currency requirements. The Swiss Army knife of Agentic Finance batch payments.",
+    description: "The most flexible batch payment engine on Tempo L1 — combining MultisendV2's atomic execution with full multi-token support. Orchestrates payments across all four Tempo stablecoins in a single operation. Web3: AI groups recipients by token type, optimizes execution order for minimal gas, and provides consolidated receipts. Supports CSV/spreadsheet import for enterprise payroll. Web2: Full enterprise payroll integration — imports employee data from HRIS systems, handles multi-currency salary calculations, generates itemized payslips with deduction breakdowns, produces payroll tax summaries, creates year-end W-2/1099 data exports, and builds payment approval workflows with multi-level sign-off. The Swiss Army knife for enterprise compensation.",
     category: "payments",
-    skills: JSON.stringify(["batch", "multisend", "multi-token", "bulk-payment", "flexible", "cross-currency", "csv-import", "atomic-per-token", "receipt-generation", "on-chain"]),
+    skills: JSON.stringify(["batch", "multisend", "multi-token", "bulk-payment", "hris-integration", "payslip-generation", "tax-summaries", "w2-export", "approval-workflows", "multi-currency-salary", "payroll-compliance", "enterprise-payroll", "on-chain"]),
     basePrice: 8,
     nativeAgentId: "multi-token-batch",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🎨",
-    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Multi-Token-Batch&backgroundColor=1f0d2d",
+    avatarUrl: "https://api.dicebear.com/9.x/pixel-art/svg?seed=Rainbow-Batch&backgroundColor=1f0d2d",
     isVerified: true,
     totalJobs: 145,
     successRate: 99.52,
@@ -399,16 +447,18 @@ const agents = [
     ratingCount: 108,
     responseTime: 9,
   },
+
+  // ── 24. PROOF AUDITOR ─────────────────────────────────────────
   {
     name: "Proof Auditor",
-    description: "Forensic-grade auditing engine for Agentic Finance's AIProofRegistry on Tempo L1. Performs deep on-chain analysis of AI accountability records — reading total commitment counts, calculating plan-to-result verification rates, inspecting individual proof records with block-level timestamps, and computing per-agent accountability scores. AI generates comprehensive audit reports: commitment coverage (what % of AI actions were pre-committed), verification fidelity (how closely results matched plans), and anomaly flags for agents with unusual proof patterns. Supports time-range queries, per-agent drill-downs, and cross-referencing proof hashes with actual escrow/payment outcomes. The compliance tool that makes AI agent behavior auditable for regulators, investors, and counterparties.",
+    description: "Forensic-grade auditing engine for AIProofRegistry on Tempo L1. Performs deep on-chain analysis of AI accountability records — reading total commitments, calculating verification rates, inspecting individual proof records, and computing per-agent accountability scores. Web3: Commitment coverage analysis, verification fidelity scoring, anomaly flags for unusual proof patterns. Supports time-range queries and per-agent drill-downs. Web2: Full compliance suite — generates SOC 2 Type II audit evidence, produces GDPR data processing records, creates ISO 27001-aligned security logs, builds regulatory submission packages, generates visual proof-chain forensics with timeline reconstruction, and exports audit data in standard formats (XBRL, EDGAR). The compliance tool for regulated AI deployment.",
     category: "verification",
-    skills: JSON.stringify(["audit", "proof", "registry", "accountability", "verification", "forensic-analysis", "compliance-reporting", "anomaly-detection", "time-range-query", "on-chain"]),
+    skills: JSON.stringify(["audit", "proof", "registry", "accountability", "verification", "soc2-evidence", "gdpr-compliance", "iso27001-logs", "regulatory-packages", "forensic-analysis", "timeline-reconstruction", "xbrl-export", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "proof-auditor",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🧐",
-    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Proof-Auditor&backgroundColor=2d2a0d",
+    avatarUrl: "https://api.dicebear.com/9.x/notionists/svg?seed=Forensic-Eye&backgroundColor=2d2a0d",
     isVerified: true,
     totalJobs: 203,
     successRate: 99.85,
@@ -416,16 +466,18 @@ const agents = [
     ratingCount: 167,
     responseTime: 5,
   },
+
+  // ── 25. VAULT INSPECTOR ───────────────────────────────────────
   {
     name: "Vault Inspector",
-    description: "X-ray vision into ShieldVaultV2's zero-knowledge infrastructure on Tempo L1. Reads and interprets the vault's complete on-chain state — total deposited TVL, number of active commitments, nullifier registry status (detecting double-spend attempts), PLONK verifier contract health, and per-commitment lifecycle tracking. AI generates privacy-preserving reports that reveal vault health without compromising individual transaction privacy: \"Vault holds $2.4M across 847 active commitments, 0 double-spend attempts detected, verifier contract operational.\" Supports commitment existence checks (\"has this commitment been used?\"), nullifier collision detection, and vault capacity monitoring. Essential infrastructure monitoring for anyone operating or auditing Agentic Finance's privacy layer.",
+    description: "X-ray vision into ShieldVaultV2's zero-knowledge infrastructure on Tempo L1. Reads the vault's complete on-chain state — total deposited TVL, active commitments, nullifier registry status, PLONK verifier health, and per-commitment lifecycle tracking. Web3: Privacy-preserving reports that reveal vault health without compromising individual privacy. Supports commitment existence checks and nullifier collision detection. Web2: Infrastructure monitoring suite — generates real-time health dashboards with SLA tracking, creates capacity planning reports, produces security incident response playbooks, builds automated uptime monitoring with PagerDuty/OpsGenie integration, and exports infrastructure metrics to Grafana/Datadog. Essential monitoring for privacy infrastructure operators.",
     category: "privacy",
-    skills: JSON.stringify(["vault", "inspect", "shield", "zk-state", "commitment", "nullifier-detection", "tvl-monitoring", "verifier-health", "privacy-preserving-reports", "on-chain"]),
+    skills: JSON.stringify(["vault", "inspect", "shield", "zk-state", "commitment", "health-dashboards", "sla-tracking", "capacity-planning", "incident-playbooks", "pagerduty-integration", "grafana-export", "infrastructure-monitoring", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "vault-inspector",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🕵️",
-    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Vault-Inspector&backgroundColor=0d2b1f",
+    avatarUrl: "https://api.dicebear.com/9.x/adventurer/svg?seed=Vault-Detective&backgroundColor=0d2b1f",
     isVerified: true,
     totalJobs: 134,
     successRate: 99.92,
@@ -433,16 +485,18 @@ const agents = [
     ratingCount: 98,
     responseTime: 4,
   },
+
+  // ── 26. GAS PROFILER ──────────────────────────────────────────
   {
     name: "Gas Profiler",
-    description: "Precision gas metering instrument for every Agentic Finance operation on Tempo L1. Executes real transactions and measures exact gas consumption with wei-level accuracy — token transfers, escrow creation/settlement, MultisendV2 batch sends (scaling by recipient count), StreamV1 milestone operations, ShieldVaultV2 deposits, and AIProofRegistry commits. AI generates optimization reports comparing gas costs across different transaction patterns: \"Batching 10 payments via MultisendV2 costs 47% less gas than 10 individual transfers.\" Includes historical gas trend analysis, per-operation cost rankings, and recommendations for gas-optimal transaction sequencing. Supports TIP-20 precompile token profiling (which uses 5-6x more gas than standard ERC20). The cost intelligence layer for high-volume Agentic Finance operators.",
+    description: "Precision gas metering instrument for every Agentic Finance operation on Tempo L1. Executes real transactions and measures exact gas consumption with wei-level accuracy across all operations. Web3: Token transfers, escrow operations, batch sends, milestone operations, vault deposits, and proof commits. Historical gas trend analysis and recommendations for gas-optimal sequencing. Supports TIP-20 precompile profiling. Web2: Full cost intelligence platform — generates interactive cost comparison charts, produces ROI calculators for migration to Tempo L1, creates departmental cost allocation reports, builds real-time gas price feeds with historical backtesting, and exports optimization recommendations as actionable playbooks. The cost intelligence layer for high-volume operators.",
     category: "analytics",
-    skills: JSON.stringify(["gas", "profiler", "cost", "benchmark", "optimization", "tip20-profiling", "trend-analysis", "cost-ranking", "batch-comparison", "on-chain"]),
+    skills: JSON.stringify(["gas", "profiler", "cost", "benchmark", "optimization", "cost-comparison-charts", "roi-calculators", "cost-allocation", "gas-price-feeds", "backtesting", "optimization-playbooks", "department-reporting", "on-chain"]),
     basePrice: 3,
     nativeAgentId: "gas-profiler",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "⛽",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Gas-Profiler&backgroundColor=2d1f0d",
+    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Gas-Meter&backgroundColor=2d1f0d",
     isVerified: true,
     totalJobs: 89,
     successRate: 99.66,
@@ -450,16 +504,18 @@ const agents = [
     ratingCount: 67,
     responseTime: 12,
   },
+
+  // ── 27. RECURRING PAYMENT ─────────────────────────────────────
   {
     name: "Recurring Payment",
-    description: "Automated subscription and recurring payment infrastructure on Tempo L1. Converts any payment schedule into on-chain milestone streams via Agentic FinanceStreamV1 — \"pay contractor $2,000 monthly for 6 months\" becomes a 6-milestone stream with monthly release dates and automatic fund disbursement. AI parses complex schedules from natural language: weekly retainers, bi-weekly salaries, monthly subscriptions, quarterly royalties, or custom intervals. Each payment period is an individual milestone with its own proof-of-delivery requirement, enabling conditional recurring payments (pay only if work is delivered). Supports multi-recipient recurring schedules, automatic renewal streams, and payment calendars with holiday-aware scheduling. The bridge between traditional payroll and on-chain programmable money.",
+    description: "Automated subscription and recurring payment infrastructure on Tempo L1. Converts any payment schedule into on-chain milestone streams via StreamV1 — 'pay contractor $2,000 monthly for 6 months' becomes a 6-milestone stream with monthly release dates. Web3: Each payment period is an individual milestone with proof-of-delivery requirements. Supports multi-recipient recurring schedules and automatic renewal streams. Web2: Full billing platform — generates subscription management interfaces, creates invoice reminders with payment links, produces billing cycle calendars with holiday-aware scheduling, builds dunning workflows for failed payments, integrates with Stripe/PayPal for hybrid on-chain/off-chain billing, and exports subscription analytics. The bridge between traditional SaaS billing and on-chain programmable money.",
     category: "payments",
-    skills: JSON.stringify(["recurring", "schedule", "stream", "subscription", "automated", "conditional-payment", "multi-recipient", "auto-renewal", "calendar-scheduling", "on-chain"]),
+    skills: JSON.stringify(["recurring", "schedule", "stream", "subscription", "automated", "billing-platform", "invoice-reminders", "dunning-workflows", "stripe-integration", "subscription-analytics", "calendar-scheduling", "hybrid-billing", "on-chain"]),
     basePrice: 10,
     nativeAgentId: "recurring-payment",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🔁",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Recurring-Payment&backgroundColor=1a1b4d",
+    avatarUrl: "https://api.dicebear.com/9.x/micah/svg?seed=Recurring-Cycle&backgroundColor=1a1b4d",
     isVerified: true,
     totalJobs: 178,
     successRate: 99.43,
@@ -467,16 +523,18 @@ const agents = [
     ratingCount: 134,
     responseTime: 15,
   },
+
+  // ── 28. CONTRACT READER ───────────────────────────────────────
   {
     name: "Contract Reader",
-    description: "Universal on-chain state reader for the entire Agentic Finance smart contract suite on Tempo L1. Queries live data from all 9 verified contracts simultaneously — NexusV2 job states and escrow balances, MultisendV2 batch histories and recipient logs, StreamV1 milestone progress and payment schedules, ShieldVaultV2 deposit totals and commitment counts, AIProofRegistry commitment/verification stats, and PlonkVerifierV2 proof validation records. AI synthesizes raw contract data into actionable intelligence: \"NexusV2 has 47 active escrows worth $23,400 total, 3 approaching timeout in the next 24 hours.\" Supports filtered queries by wallet address, time range, or contract. The fastest read-only agent in the marketplace — pure view calls with zero gas cost and sub-5-second response times.",
+    description: "Universal on-chain state reader for the entire Agentic Finance smart contract suite on Tempo L1. Queries live data from all 9 verified contracts simultaneously — NexusV2 escrow states, MultisendV2 batch histories, StreamV1 milestone progress, ShieldVaultV2 deposit totals, AIProofRegistry stats, and more. Web3: Synthesizes raw contract data into actionable intelligence. Pure view calls with zero gas cost and sub-5-second response times. Web2: Full data integration platform — generates REST API responses in any format (JSON, XML, GraphQL), creates real-time data feeds with WebSocket support, produces automated monitoring alerts, builds custom dashboards with embeddable widgets, and exports structured data to databases (PostgreSQL, MongoDB, BigQuery). The universal adapter between on-chain data and any application.",
     category: "analytics",
-    skills: JSON.stringify(["contract", "read", "state", "jobs", "batches", "cross-contract", "filtered-queries", "zero-gas", "real-time-synthesis", "on-chain"]),
+    skills: JSON.stringify(["contract", "read", "state", "jobs", "batches", "rest-api-generation", "graphql-support", "websocket-feeds", "monitoring-alerts", "embeddable-widgets", "database-export", "data-integration", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "contract-reader",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "📖",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Contract-Reader&backgroundColor=152535",
+    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Chain-Reader&backgroundColor=152535",
     isVerified: true,
     totalJobs: 567,
     successRate: 99.93,
@@ -484,16 +542,18 @@ const agents = [
     ratingCount: 423,
     responseTime: 3,
   },
+
+  // ── 29. WALLET SWEEPER ────────────────────────────────────────
   {
     name: "Wallet Sweeper",
-    description: "Emergency response agent for rapid asset evacuation. When a wallet is compromised or needs migration, this agent scans all four Tempo stablecoins (AlphaUSD, pathUSD, BetaUSD, ThetaUSD), identifies non-zero balances, and executes sequential transfers to your designated safe address — all in a single operation. Designed for speed: no confirmation delays, no approval prompts, just immediate on-chain transfers. Critical infrastructure for key rotation, wallet migration, and incident response scenarios.",
+    description: "Emergency response agent for rapid asset evacuation on Tempo L1. When a wallet is compromised or needs migration, this agent scans all Tempo stablecoins, identifies non-zero balances, and executes sequential transfers to your safe address — all in a single operation. Web3: Designed for speed — no confirmation delays, immediate on-chain transfers with atomic execution. Critical for key rotation and incident response. Web2: Full incident response toolkit — generates post-incident reports with timeline reconstruction, creates wallet migration checklists, produces security audit documentation, builds automated monitoring rules to prevent future compromises, integrates with security platforms (Forta, OpenZeppelin Defender), and sends multi-channel emergency alerts (email, SMS, Telegram). Your digital fire extinguisher.",
     category: "security",
-    skills: JSON.stringify(["sweep", "emergency", "recovery", "migration", "incident-response", "key-rotation", "multi-token-evacuation", "rapid-execution", "asset-protection", "on-chain"]),
+    skills: JSON.stringify(["sweep", "emergency", "recovery", "migration", "incident-response", "post-incident-reports", "migration-checklists", "security-documentation", "forta-integration", "emergency-alerts", "monitoring-rules", "key-rotation", "on-chain"]),
     basePrice: 5,
     nativeAgentId: "wallet-sweeper",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🧹",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Wallet-Sweeper&backgroundColor=2d0d0d",
+    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Emergency-Sweep&backgroundColor=2d0d0d",
     isVerified: true,
     totalJobs: 0,
     successRate: 100,
@@ -501,16 +561,18 @@ const agents = [
     ratingCount: 0,
     responseTime: 15,
   },
+
+  // ── 30. ESCROW BATCH SETTLER ──────────────────────────────────
   {
     name: "Escrow Batch Settler",
-    description: "High-throughput settlement engine for NexusV2 escrow jobs on Tempo L1. When an organization has dozens of completed escrows awaiting finalization, this agent processes up to 20 settlements or refunds in a single coordinated operation. AI parses batch instructions — \"settle jobs #1-#15 and refund jobs #16-#18\" — validates each job's completion status, calculates platform fees per settlement, and executes on-chain transactions sequentially with per-job status reporting. Supports mixed operations (some settle, some refund) in the same batch, automatic fee deduction, and post-settlement proof commits to AIProofRegistry. If any individual settlement fails (e.g., job not in settleable state), the agent continues processing remaining jobs and reports failures separately. The end-of-sprint cleanup tool for A2A orchestration workflows.",
+    description: "High-throughput settlement engine for NexusV2 escrow jobs on Tempo L1. Processes up to 20 settlements or refunds in a single coordinated operation. AI parses batch instructions, validates each job's completion status, calculates platform fees, and executes on-chain transactions with per-job status reporting. Web3: Mixed operations (some settle, some refund), automatic fee deduction, fault-tolerant (continues if individual settlements fail). Web2: Full reconciliation suite — generates settlement manifests with per-job breakdowns, creates accounts receivable/payable reports, produces bank-style transaction confirmations, builds reconciliation dashboards matching on-chain settlements to off-chain invoices, and exports data to accounting systems (QuickBooks, Sage, NetSuite). The end-of-sprint cleanup tool for finance teams.",
     category: "escrow",
-    skills: JSON.stringify(["batch-settle", "batch-refund", "multi-escrow", "bulk", "settlement", "mixed-operations", "fee-calculation", "status-reporting", "fault-tolerant", "on-chain"]),
+    skills: JSON.stringify(["batch-settle", "batch-refund", "multi-escrow", "bulk", "settlement", "reconciliation-dashboards", "ar-ap-reports", "transaction-confirmations", "accounting-export", "invoice-matching", "netsuite-integration", "fault-tolerant", "on-chain"]),
     basePrice: 8,
     nativeAgentId: "escrow-batch-settler",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "📑",
-    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Escrow-Batch-Settler&backgroundColor=1a1b4d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts/svg?seed=Batch-Settle&backgroundColor=1a1b4d",
     isVerified: true,
     totalJobs: 56,
     successRate: 99.11,
@@ -518,16 +580,18 @@ const agents = [
     ratingCount: 41,
     responseTime: 14,
   },
+
+  // ── 31. TOKEN MINTER ──────────────────────────────────────────
   {
     name: "Token Minter",
-    description: "Precision ERC20 token factory for Tempo L1 with granular parameter control. Unlike Token Deployer's full-stack approach, Token Minter is optimized for speed when you know exactly what you want — \"mint 1 million MyToken with 18 decimals\" deploys in under 30 seconds. AI parses token specifications from natural language, validates parameter constraints (name length, symbol format, decimal range 0-18, supply limits), generates optimized Solidity bytecode, deploys with constructor injection, and returns the live contract address with block explorer link. Every minted token is immediately compatible with Agentic Finance's entire ecosystem — usable in escrows, streams, batch payments, and shielded transfers from block one. Supports re-minting additional supply for tokens with mint authority, and burning mechanisms for deflationary models.",
+    description: "Precision ERC20 token factory for Tempo L1 with granular parameter control. Optimized for speed when you know what you want — 'mint 1 million MyToken with 18 decimals' deploys in under 30 seconds. AI validates parameter constraints and generates optimized bytecode. Web3: Every minted token is immediately usable across all Agentic Finance infrastructure — escrows, streams, batch payments, and shielded transfers. Supports re-minting and burning mechanisms. Web2: Full tokenization platform — generates token brand packages (logo concepts, color palettes, typography), creates token economic models with supply simulations, produces whitepaper templates, builds token explorer pages, and exports tokenomics data for pitch decks. From concept to live asset with full marketing collateral.",
     category: "deployment",
-    skills: JSON.stringify(["mint", "deploy", "erc20", "custom-token", "create", "parameter-validation", "bytecode-optimization", "instant-deploy", "mint-authority", "on-chain"]),
+    skills: JSON.stringify(["mint", "deploy", "erc20", "custom-token", "create", "brand-packages", "economic-modeling", "supply-simulations", "whitepaper-templates", "token-explorer", "pitch-deck-data", "tokenization-platform", "on-chain"]),
     basePrice: 10,
     nativeAgentId: "token-minter",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "🏭",
-    avatarUrl: "https://api.dicebear.com/9.x/identicon/svg?seed=Token-Minter&backgroundColor=2d0d2a",
+    avatarUrl: "https://api.dicebear.com/9.x/shapes/svg?seed=Mint-Factory&backgroundColor=2d0d2a",
     isVerified: true,
     totalJobs: 123,
     successRate: 99.19,
@@ -535,16 +599,18 @@ const agents = [
     ratingCount: 92,
     responseTime: 22,
   },
+
+  // ── 32. CHAIN MONITOR ─────────────────────────────────────────
   {
     name: "Chain Monitor",
-    description: "24/7 infrastructure health sentinel for Tempo L1 (Chain 42431). Continuously monitors the blockchain's vital signs — current block height, average block time, transaction throughput (TPS), pending transaction pool size, and validator node connectivity. Cross-references chain activity with Agentic Finance-specific metrics: NexusV2 escrow creation rate, MultisendV2 batch volume, StreamV1 milestone submissions, ShieldVaultV2 deposit flow, and AIProofRegistry commit frequency. AI generates real-time health dashboards: \"Tempo L1 healthy — 2.1s blocks, 847 TPS, 23 Agentic Finance txs in last hour, all 9 contracts responsive.\" Includes anomaly detection for block delays, throughput drops, or unusual contract inactivity. Supports webhook alerts and threshold-based notifications. The operational awareness layer for Agentic Finance infrastructure teams.",
+    description: "24/7 infrastructure health sentinel for Tempo L1 (Chain 42431). Continuously monitors the blockchain's vital signs — block height, block time, TPS, pending pool size, and validator connectivity. Cross-references chain activity with Agentic Finance-specific metrics across all 9 contracts. Web3: Anomaly detection for block delays, throughput drops, or unusual contract inactivity. Supports webhook alerts and threshold-based notifications. Web2: Full DevOps observability — generates Grafana-compatible dashboards, creates PagerDuty/OpsGenie alerting rules, produces daily/weekly infrastructure health digests, builds uptime SLA reports for stakeholders, integrates with Slack/Teams for real-time ops channels, and exports metrics to Prometheus/Datadog/CloudWatch. The operational awareness layer for infrastructure teams.",
     category: "analytics",
-    skills: JSON.stringify(["monitor", "chain-health", "block-time", "throughput", "diagnostics", "anomaly-detection", "real-time-dashboard", "contract-activity", "alert-system", "on-chain"]),
+    skills: JSON.stringify(["monitor", "chain-health", "block-time", "throughput", "diagnostics", "grafana-dashboards", "pagerduty-integration", "health-digests", "sla-reports", "slack-ops-channel", "prometheus-export", "infrastructure-observability", "on-chain"]),
     basePrice: 2,
     nativeAgentId: "chain-monitor",
     ownerWallet: AGTFI_PLATFORM_WALLET,
     avatarEmoji: "📡",
-    avatarUrl: "https://api.dicebear.com/9.x/glass/svg?seed=Chain-Monitor&backgroundColor=0d2a2d",
+    avatarUrl: "https://api.dicebear.com/9.x/bottts-neutral/svg?seed=Radar-Sentinel&backgroundColor=0d2a2d",
     isVerified: true,
     totalJobs: 892,
     successRate: 99.97,
@@ -555,7 +621,7 @@ const agents = [
 ];
 
 async function main() {
-  console.log("🤖 Seeding Agent Marketplace (32 on-chain agents)...\n");
+  console.log("🤖 Seeding Agent Marketplace (32 Web2+Web3 hybrid agents)...\n");
 
   for (const agent of agents) {
     // Upsert by name - allows re-running seed to update existing agents

@@ -18,7 +18,7 @@ export const manifest: AgentDescriptor = {
   category:     'escrow',
   version:      '1.0.0',
   price:        8,
-  capabilities: ['batch-settle', 'batch-refund', 'multi-escrow', 'on-chain-execution'],
+  capabilities: ['batch-settlement', 'batch-refund', 'reconciliation-dashboards', 'accounting-export', 'invoice-matching', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Escrow Batch Settler. Parse the user's request to settle or refund multiple escrow jobs.

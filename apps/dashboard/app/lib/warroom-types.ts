@@ -84,3 +84,47 @@ export interface WarRoomData {
     auditEvents: AuditEvent[];
     threats: ThreatItem[];
 }
+
+// ── Sentinel Node Dashboard Types ──────────────────────────
+
+export type SentinelTab = 'overview' | 'trust' | 'staking' | 'risk';
+
+export interface LeaderboardAgent {
+    rank: number;
+    wallet: string;
+    name: string | null;
+    emoji: string | null;
+    compositeScore: number;       // 0-10000 raw
+    displayScore: number;         // 0-100
+    tier: number;                 // 0-4
+    tierLabel: string;
+    jobsCompleted: number;
+    jobsFailed: number;
+    proofMatchRate: number;       // 0-100
+    totalVolume: number;
+}
+
+export interface SentinelAction {
+    actionType: 'flag' | 'pause_vote' | 'slash_vote';
+    targetWallet: string;
+    reason: string;
+    senderWallet: string;
+}
+
+export interface NodeStatus {
+    uptime: number;               // percentage, e.g. 99.8
+    activeAgents: number;
+    totalAgents: number;
+    a2aVolume: number;
+    proofStats: {
+        totalCommitments: number;
+        totalVerified: number;
+        totalMatched: number;
+        totalSlashed: number;
+    };
+    vaultStats: {
+        totalDeposited: number;
+        insurancePool: number;
+        totalAgents: number;
+    };
+}

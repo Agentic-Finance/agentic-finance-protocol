@@ -131,7 +131,7 @@ app.post('/api/orchestrate', async (req, res) => {
               agentId: step.agentId,
               onChainJobId: step.escrow.onChainJobId ? Number(step.escrow.onChainJobId) : undefined,
               amount: escrowAmount,
-              explorerUrl: `https://explore.tempo.xyz/tx/${step.escrow.txHash}`,
+              explorerUrl: `https://explore.moderato.tempo.xyz/tx/${step.escrow.txHash}`,
             },
           });
         }

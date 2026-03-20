@@ -1,23 +1,19 @@
-import EmbeddedWallets from '../components/EmbeddedWallets';
-import SubPageNav from '../components/SubPageNav';
-import Link from 'next/link';
+'use client';
 
-export const metadata = {
-    title: 'Embedded Wallets',
-    description: 'Manage isolated wallets for agents and employees with AES-256-GCM encryption.',
-};
+import EmbeddedWallets from '../components/EmbeddedWallets';
+import { AppShell } from '../components/ui/AppShell';
+import Link from 'next/link';
 
 export default function WalletsPage() {
     return (
-        <div className="min-h-screen bg-[#111B2E]">
-            <SubPageNav />
+        <AppShell>
             {/* Header */}
-            <div className="border-b border-white/[0.08] pp-glass">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <div className="border-b border-white/[0.08] pp-glass -mx-6 -mt-6 px-6">
+                <div className="py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Link href="/cortex" className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-400">
+                            <Link href="/?app=1" className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.10] transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                 </svg>
                             </Link>
@@ -33,9 +29,9 @@ export default function WalletsPage() {
             </div>
 
             {/* Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+            <div className="py-6 sm:py-8">
                 <EmbeddedWallets />
             </div>
-        </div>
+        </AppShell>
     );
 }

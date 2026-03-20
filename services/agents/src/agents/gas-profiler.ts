@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        3,
-  capabilities: ['gas-profiling', 'cost-analysis', 'benchmarking', 'on-chain-execution'],
+  capabilities: ['gas-profiling', 'cost-optimization', 'cost-comparison-charts', 'roi-calculators', 'department-reporting', 'on-chain-execution'],
 };
 
 type ProfileOperation = 'transfer' | 'approve' | 'escrow-create' | 'proof-commit' | 'all';

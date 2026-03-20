@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'privacy',
   version:      '1.0.0',
   price:        5,
-  capabilities: ['vault-deposit', 'public-payout', 'shield-vault', 'on-chain-execution'],
+  capabilities: ['vault-deposit', 'vault-payout', 'commitment-generation', 'deposit-certificates', 'compliance-documentation', 'on-chain-execution'],
 };
 
 const SYSTEM_PROMPT = `You are a Agentic Finance Vault Depositor agent for ShieldVaultV2 on Tempo blockchain.

@@ -21,6 +21,8 @@ interface TerminalFooterProps {
     // Total amount preview
     totalAmount?: number;
     intentCount?: number;
+    // Loading state
+    isDeploying?: boolean;
 }
 
 function TerminalFooter({
@@ -28,7 +30,7 @@ function TerminalFooter({
     handleUploadClick, executePayroll, handleDiscoverAgents, resetTerminal,
     omniFileRef, processCSV, aiPrompt,
     onInvoiceClick, showConditionBuilder, onToggleConditions, hasConditions,
-    totalAmount, intentCount,
+    totalAmount, intentCount, isDeploying,
 }: TerminalFooterProps) {
     return (
         <div className="mt-6 pt-5 border-t border-white/[0.05] flex flex-wrap justify-between items-center gap-4">
@@ -100,19 +102,23 @@ function TerminalFooter({
                 {isPayroll && (
                     <button
                         type="button"
-                        disabled={!hasReadyIntents}
+                        disabled={!hasReadyIntents || isDeploying}
                         onClick={executePayroll}
                         className={`px-8 py-4 font-bold rounded-xl text-sm transition-all ${
-                            hasReadyIntents
-                                ? hasConditions
-                                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:scale-[1.02]'
-                                    : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-[1.02]'
-                                : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] cursor-not-allowed'
+                            isDeploying
+                                ? 'bg-gradient-to-r from-emerald-500/60 to-teal-500/60 text-slate-900 cursor-wait animate-pulse'
+                                : hasReadyIntents
+                                    ? hasConditions
+                                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:scale-[1.02]'
+                                        : 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:scale-[1.02]'
+                                    : 'bg-white/[0.04] text-slate-500 border border-white/[0.06] cursor-not-allowed'
                         }`}
                     >
-                        {hasConditions
-                            ? `Deploy Conditional${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
-                            : `Deploy Protocol${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
+                        {isDeploying
+                            ? 'Deploying...'
+                            : hasConditions
+                                ? `Deploy Conditional${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
+                                : `Deploy Protocol${totalAmount ? ` ($${totalAmount.toFixed(0)})` : ''}`
                         }
                     </button>
                 )}

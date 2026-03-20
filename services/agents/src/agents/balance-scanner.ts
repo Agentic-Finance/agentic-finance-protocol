@@ -22,7 +22,7 @@ export const manifest: AgentDescriptor = {
   category:     'analytics',
   version:      '1.0.0',
   price:        2,
-  capabilities: ['balance-check', 'portfolio-scan', 'multi-token', 'on-chain-read'],
+  capabilities: ['portfolio-scan', 'multi-token-balance', 'portfolio-charts', 'financial-statements', 'pdf-export', 'on-chain-execution'],
 };
 
 const TOKEN_LIST = [

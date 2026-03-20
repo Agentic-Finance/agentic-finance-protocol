@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { AppShell } from '../components/ui/AppShell';
+import { EmptyState } from '../components/ui/EmptyState';
 import JudgeDashboard from '../components/JudgeDashboard';
 import {
     ShieldCheckIcon,
@@ -323,7 +325,8 @@ export default function AgtFiAdminPage() {
     });
 
     return (
-        <div className="min-h-screen bg-[#111B2E] text-slate-200 font-sans flex">
+        <AppShell>
+        <div className="text-slate-200 font-sans flex -mx-6 -mt-6 min-h-[calc(100vh-3.5rem)]">
             {/* Mobile sidebar overlay */}
             {mobileSidebarOpen && (
                 <div className="fixed inset-0 bg-black/60 z-[55] md:hidden" onClick={() => setMobileSidebarOpen(false)} />
@@ -332,22 +335,22 @@ export default function AgtFiAdminPage() {
             {/* ════════════════════════════════════════════ */}
             {/* SIDEBAR                                      */}
             {/* ════════════════════════════════════════════ */}
-            <aside className={`fixed top-0 left-0 h-screen bg-[#141924] border-r border-white/[0.06] z-[60] flex flex-col transition-all duration-300
+            <aside className={`fixed top-0 left-0 h-screen bg-[var(--pp-bg-card)] border-r border-[var(--pp-border)] z-[60] flex flex-col transition-all duration-300
                 ${sidebarCollapsed ? 'w-[72px]' : 'w-[260px]'}
                 ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             `}>
                 {/* Logo */}
-                <div className={`h-20 flex items-center border-b border-white/[0.06] px-5 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+                <div className={`h-20 flex items-center border-b border-[var(--pp-border)] px-5 ${sidebarCollapsed ? 'justify-center' : ''}`}>
                     {sidebarCollapsed ? (
                         <button onClick={() => setSidebarCollapsed(false)} className="p-2 hover:bg-white/5 rounded-xl transition-colors">
                             <Image src="/logos/icon-v2.png" alt="Agentic Finance" width={32} height={32} className="w-8 h-8 object-contain" />
                         </button>
                     ) : (
                         <div className="flex items-center gap-3 w-full">
-                            <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="h-8 w-8 object-contain" /><span className="text-lg font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                            <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="h-8 w-8 object-contain" /><span className="text-lg font-extrabold text-[var(--pp-text-primary)] tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             <div className="ml-auto flex items-center gap-2">
                                 <span className="text-[9px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider">Admin</span>
-                                <button onClick={() => setSidebarCollapsed(true)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-white">
+                                <button onClick={() => setSidebarCollapsed(true)} className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-slate-500 hover:text-[var(--pp-text-primary)]">
                                     <ChevronRightIcon className="w-3.5 h-3.5 rotate-180" />
                                 </button>
                             </div>
@@ -374,7 +377,7 @@ export default function AgtFiAdminPage() {
                                     sidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'
                                 } ${
                                     isActive
-                                        ? 'bg-white/[0.06] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
+                                        ? 'bg-white/[0.06] text-[var(--pp-text-primary)] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]'
                                         : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.03]'
                                 }`}
                                 title={sidebarCollapsed ? item.label : undefined}
@@ -399,10 +402,10 @@ export default function AgtFiAdminPage() {
                 </nav>
 
                 {/* Bottom: Back to Dashboard */}
-                <div className="p-3 border-t border-white/[0.06]">
+                <div className="p-3 border-t border-[var(--pp-border)]">
                     <a
                         href="/"
-                        className={`w-full flex items-center gap-3 rounded-xl text-slate-500 hover:text-white hover:bg-white/[0.03] transition-all ${
+                        className={`w-full flex items-center gap-3 rounded-xl text-slate-500 hover:text-[var(--pp-text-primary)] hover:bg-white/[0.03] transition-all ${
                             sidebarCollapsed ? 'justify-center p-3' : 'px-4 py-3'
                         }`}
                     >
@@ -417,14 +420,14 @@ export default function AgtFiAdminPage() {
             {/* ════════════════════════════════════════════ */}
             <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'md:ml-[72px]' : 'md:ml-[260px]'}`}>
                 {/* Top Bar */}
-                <header className="h-20 border-b border-white/[0.06] bg-[#111B2E]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-4 md:px-8">
+                <header className="h-20 border-b border-[var(--pp-border)] bg-[var(--pp-bg-card)]/80 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-4 md:px-8">
                     <div className="flex items-center gap-3">
                         {/* Mobile menu button */}
                         <button onClick={() => setMobileSidebarOpen(true)} className="md:hidden p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400">
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
                         </button>
                         <div>
-                            <h1 className="text-lg font-bold text-white">
+                            <h1 className="text-lg font-bold text-[var(--pp-text-primary)]">
                                 {activeSection === 'overview' && 'Command Center'}
                                 {activeSection === 'conditional' && 'Conditional Rules'}
                                 {activeSection === 'arbitration' && 'Arbitration Node'}
@@ -446,7 +449,7 @@ export default function AgtFiAdminPage() {
                             <span className={`w-1.5 h-1.5 rounded-full ${healthChecks.tempo.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`}></span>
                             {healthChecks.tempo.status === 'online' ? `Tempo · ${healthChecks.tempo.latency}ms` : 'Tempo Offline'}
                         </span>
-                        <button onClick={refreshAll} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-white" title="Refresh all data">
+                        <button onClick={refreshAll} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-400 hover:text-[var(--pp-text-primary)]" title="Refresh all data">
                             <ArrowPathIcon className="w-4 h-4" />
                         </button>
                     </div>
@@ -506,9 +509,9 @@ export default function AgtFiAdminPage() {
                             {/* Quick Actions Row */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                                 {/* Recent Activity */}
-                                <div className="lg:col-span-2 bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
+                                <div className="lg:col-span-2 bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6">
                                     <div className="flex items-center justify-between mb-5">
-                                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-sm font-bold text-[var(--pp-text-primary)] flex items-center gap-2">
                                             <ClockIcon className="w-4 h-4 text-indigo-400" />
                                             Recent Transactions
                                         </h3>
@@ -517,9 +520,12 @@ export default function AgtFiAdminPage() {
                                         </button>
                                     </div>
                                     {transactions.length === 0 ? (
-                                        <div className="text-center py-10 text-slate-600 text-sm font-mono">
-                                            No transactions yet
-                                        </div>
+                                        <EmptyState
+                                            icon={<ClockIcon className="w-6 h-6 text-indigo-400" />}
+                                            title="No Transactions Yet"
+                                            description="Transactions will appear here once payments are processed through the platform."
+                                            action={{ label: "View All", onClick: () => setActiveSection('transactions') }}
+                                        />
                                     ) : (
                                         <div className="space-y-2">
                                             {transactions.slice(0, 6).map(tx => (
@@ -534,11 +540,11 @@ export default function AgtFiAdminPage() {
                                                         : <DocumentTextIcon className="w-4 h-4" />}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-sm font-medium text-white truncate">{tx.recipientName || 'Unknown'}</p>
+                                                        <p className="text-sm font-medium text-[var(--pp-text-primary)] truncate">{tx.recipientName || 'Unknown'}</p>
                                                         <p className="text-[10px] text-slate-500 font-mono truncate">{tx.recipientAddress}</p>
                                                     </div>
                                                     <div className="text-right shrink-0">
-                                                        <p className="text-sm font-bold text-white tabular-nums">{parseFloat(tx.amount).toFixed(2)}</p>
+                                                        <p className="text-sm font-bold text-[var(--pp-text-primary)] tabular-nums">{parseFloat(tx.amount).toFixed(2)}</p>
                                                         <p className="text-[10px] text-slate-500">{tx.token}</p>
                                                     </div>
                                                     <span className={`text-[9px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shrink-0 ${
@@ -555,9 +561,9 @@ export default function AgtFiAdminPage() {
                                 </div>
 
                                 {/* Conditional Rules Summary */}
-                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
+                                <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6">
                                     <div className="flex items-center justify-between mb-5">
-                                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                                        <h3 className="text-sm font-bold text-[var(--pp-text-primary)] flex items-center gap-2">
                                             <BoltIcon className="w-4 h-4 text-amber-400" />
                                             Active Rules
                                         </h3>
@@ -566,9 +572,12 @@ export default function AgtFiAdminPage() {
                                         </button>
                                     </div>
                                     {rules.length === 0 ? (
-                                        <div className="text-center py-10 text-slate-600 text-sm font-mono">
-                                            No rules configured
-                                        </div>
+                                        <EmptyState
+                                            icon={<BoltIcon className="w-6 h-6 text-amber-400" />}
+                                            title="No Rules Configured"
+                                            description="Set up conditional payment rules to automate transactions based on triggers."
+                                            action={{ label: "Manage Rules", onClick: () => setActiveSection('conditional') }}
+                                        />
                                     ) : (
                                         <div className="space-y-2.5">
                                             {rules.slice(0, 5).map(rule => (
@@ -580,7 +589,7 @@ export default function AgtFiAdminPage() {
                                                         : 'bg-rose-400'
                                                     }`}></span>
                                                     <div className="flex-1 min-w-0">
-                                                        <p className="text-xs font-medium text-white truncate">{rule.name}</p>
+                                                        <p className="text-xs font-medium text-[var(--pp-text-primary)] truncate">{rule.name}</p>
                                                         <p className="text-[10px] text-slate-600">{rule.conditions.length} condition{rule.conditions.length !== 1 ? 's' : ''} · {rule.conditionLogic}</p>
                                                     </div>
                                                     <span className={`text-[9px] font-bold uppercase tracking-wider ${
@@ -596,20 +605,22 @@ export default function AgtFiAdminPage() {
                             </div>
 
                             {/* Workspace Info */}
-                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
-                                <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
+                            <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6">
+                                <h3 className="text-sm font-bold text-[var(--pp-text-primary)] flex items-center gap-2 mb-5">
                                     <UsersIcon className="w-4 h-4 text-fuchsia-400" />
                                     Registered Workspaces
                                 </h3>
                                 {workspaces.length === 0 ? (
-                                    <div className="text-center py-8 text-slate-600 text-sm font-mono">
-                                        No workspaces found
-                                    </div>
+                                    <EmptyState
+                                        icon={<UsersIcon className="w-6 h-6 text-fuchsia-400" />}
+                                        title="No Workspaces Found"
+                                        description="Workspaces organize teams and manage access to payment infrastructure."
+                                    />
                                 ) : (
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-sm">
                                             <thead>
-                                                <tr className="border-b border-white/[0.06]">
+                                                <tr className="border-b border-[var(--pp-border)]">
                                                     <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-3 px-3">Name</th>
                                                     <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-3 px-3">Type</th>
                                                     <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-3 px-3">Admin Wallet</th>
@@ -619,7 +630,7 @@ export default function AgtFiAdminPage() {
                                             <tbody>
                                                 {workspaces.map((ws) => (
                                                     <tr key={ws.id} className="hover:bg-white/[0.02] transition-colors">
-                                                        <td className="py-3 px-3 font-medium text-white">{ws.name}</td>
+                                                        <td className="py-3 px-3 font-medium text-[var(--pp-text-primary)]">{ws.name}</td>
                                                         <td className="py-3 px-3">
                                                             <span className="text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-md">
                                                                 {ws.type}
@@ -653,9 +664,9 @@ export default function AgtFiAdminPage() {
 
                             {/* Rules Table */}
                             {rules.length === 0 ? (
-                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
+                                <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-12 text-center">
                                     <BoltIcon className="w-12 h-12 text-amber-500/30 mx-auto mb-4" />
-                                    <h3 className="text-lg font-bold text-white mb-2">No Conditional Rules Yet</h3>
+                                    <h3 className="text-lg font-bold text-[var(--pp-text-primary)] mb-2">No Conditional Rules Yet</h3>
                                     <p className="text-sm text-slate-500 max-w-md mx-auto mb-6">
                                         Create If-This-Then-Pay automation rules from the Cortex terminal.
                                         The daemon checks conditions every 60 seconds.
@@ -667,7 +678,7 @@ export default function AgtFiAdminPage() {
                             ) : (
                                 <div className="space-y-4">
                                     {rules.map(rule => (
-                                        <div key={rule.id} className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6 hover:border-amber-500/15 transition-all">
+                                        <div key={rule.id} className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6 hover:border-amber-500/15 transition-all">
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -684,7 +695,7 @@ export default function AgtFiAdminPage() {
                                                         }`} />
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-base font-bold text-white">{rule.name}</h4>
+                                                        <h4 className="text-base font-bold text-[var(--pp-text-primary)]">{rule.name}</h4>
                                                         <p className="text-[10px] text-slate-500 font-mono mt-0.5">
                                                             ID: {rule.id.slice(0, 8)}... · Created {timeAgo(rule.createdAt)}
                                                             {rule.triggeredAt && ` · Triggered ${timeAgo(rule.triggeredAt)}`}
@@ -711,12 +722,12 @@ export default function AgtFiAdminPage() {
                                                         {idx > 0 && (
                                                             <span className="text-[9px] font-black text-amber-500/50 self-center px-1">{rule.conditionLogic}</span>
                                                         )}
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#111B2E] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--pp-bg-card)] border border-white/[0.08] rounded-lg text-xs text-slate-300 font-mono">
                                                             <span className="text-amber-400/70">{cond.type}</span>
                                                             <span className="text-slate-600">|</span>
                                                             {cond.param && <span>{cond.param}</span>}
                                                             <span className="text-amber-400 font-bold">{cond.operator}</span>
-                                                            <span className="text-white font-medium">{cond.value}</span>
+                                                            <span className="text-[var(--pp-text-primary)] font-medium">{cond.value}</span>
                                                         </span>
                                                     </React.Fragment>
                                                 ))}
@@ -800,16 +811,16 @@ export default function AgtFiAdminPage() {
                                         placeholder="Search by name, address, or note..."
                                         value={txSearch}
                                         onChange={e => setTxSearch(e.target.value)}
-                                        className="w-full bg-[#141924] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500/40 transition-colors"
+                                        className="w-full bg-[var(--pp-bg-card)] border border-white/[0.08] rounded-xl pl-10 pr-4 py-2.5 text-sm text-[var(--pp-text-primary)] placeholder-slate-600 outline-none focus:border-indigo-500/40 transition-colors"
                                     />
                                 </div>
-                                <div className="flex items-center gap-1.5 bg-[#141924] border border-white/[0.08] rounded-xl p-1">
+                                <div className="flex items-center gap-1.5 bg-[var(--pp-bg-card)] border border-white/[0.08] rounded-xl p-1">
                                     {['all', 'Draft', 'PENDING', 'PROCESSING', 'COMPLETED'].map(f => (
                                         <button
                                             key={f}
                                             onClick={() => setTxFilter(f)}
                                             className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
-                                                txFilter === f ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-slate-500 hover:text-white'
+                                                txFilter === f ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' : 'text-slate-500 hover:text-[var(--pp-text-primary)]'
                                             }`}
                                         >
                                             {f === 'all' ? 'All' : f}
@@ -819,9 +830,9 @@ export default function AgtFiAdminPage() {
                             </div>
 
                             {filteredTransactions.length === 0 ? (
-                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-12 text-center">
+                                <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-12 text-center">
                                     <ClockIcon className="w-12 h-12 text-indigo-500/30 mx-auto mb-4" />
-                                    <h3 className="text-lg font-bold text-white mb-2">{transactions.length === 0 ? 'No Transactions' : 'No Matching Transactions'}</h3>
+                                    <h3 className="text-lg font-bold text-[var(--pp-text-primary)] mb-2">{transactions.length === 0 ? 'No Transactions' : 'No Matching Transactions'}</h3>
                                     <p className="text-sm text-slate-500 mb-6">
                                         {transactions.length === 0
                                             ? 'Submit payrolls from the Cortex terminal to see them here.'
@@ -834,11 +845,11 @@ export default function AgtFiAdminPage() {
                                     )}
                                 </div>
                             ) : (
-                                <div className="bg-[#141924] border border-white/[0.06] rounded-2xl overflow-hidden">
+                                <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl overflow-hidden">
                                     <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead>
-                                            <tr className="border-b border-white/[0.06] bg-white/[0.01]">
+                                            <tr className="border-b border-[var(--pp-border)] bg-white/[0.01]">
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Status</th>
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5">Recipient</th>
                                                 <th className="text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest py-4 px-5 hidden md:table-cell">Address</th>
@@ -863,9 +874,9 @@ export default function AgtFiAdminPage() {
                                                             {tx.status}
                                                         </span>
                                                     </td>
-                                                    <td className="py-3.5 px-5 font-medium text-white">{tx.recipientName || '-'}</td>
+                                                    <td className="py-3.5 px-5 font-medium text-[var(--pp-text-primary)]">{tx.recipientName || '-'}</td>
                                                     <td className="py-3.5 px-5 font-mono text-xs text-slate-400 hidden md:table-cell">{tx.recipientAddress ? `${tx.recipientAddress.slice(0, 8)}...${tx.recipientAddress.slice(-6)}` : '-'}</td>
-                                                    <td className="py-3.5 px-5 text-right font-mono font-bold text-white tabular-nums">{parseFloat(tx.amount).toFixed(2)}</td>
+                                                    <td className="py-3.5 px-5 text-right font-mono font-bold text-[var(--pp-text-primary)] tabular-nums">{parseFloat(tx.amount).toFixed(2)}</td>
                                                     <td className="py-3.5 px-5 text-xs text-slate-400">{tx.token}</td>
                                                     <td className="py-3.5 px-5 text-xs text-slate-500 truncate max-w-[200px] hidden lg:table-cell">{tx.note || '-'}</td>
                                                 </tr>
@@ -931,8 +942,8 @@ export default function AgtFiAdminPage() {
                             </div>
 
                             {/* API Endpoints */}
-                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
-                                <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
+                            <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6">
+                                <h3 className="text-sm font-bold text-[var(--pp-text-primary)] flex items-center gap-2 mb-5">
                                     <ServerStackIcon className="w-4 h-4 text-indigo-400" />
                                     API Endpoints
                                 </h3>
@@ -968,8 +979,8 @@ export default function AgtFiAdminPage() {
                             </div>
 
                             {/* Smart Contract Addresses */}
-                            <div className="bg-[#141924] border border-white/[0.06] rounded-2xl p-6">
-                                <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-5">
+                            <div className="bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-6">
+                                <h3 className="text-sm font-bold text-[var(--pp-text-primary)] flex items-center gap-2 mb-5">
                                     <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />
                                     Deployed Contracts (Tempo L1 · Chain 42431)
                                 </h3>
@@ -984,7 +995,7 @@ export default function AgtFiAdminPage() {
                                     ].map((c, idx) => (
                                         <div key={idx} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 p-3 rounded-xl hover:bg-white/[0.02] transition-colors">
                                             <span className="text-emerald-400 font-bold sm:min-w-[160px]">{c.name}</span>
-                                            <a href={`https://explore.tempo.xyz/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors truncate">
+                                            <a href={`https://explore.moderato.tempo.xyz/address/${c.addr}`} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-[var(--pp-text-primary)] transition-colors truncate">
                                                 {c.addr}
                                             </a>
                                         </div>
@@ -996,6 +1007,7 @@ export default function AgtFiAdminPage() {
                 </div>
             </main>
         </div>
+        </AppShell>
     );
 }
 
@@ -1014,14 +1026,14 @@ function KpiCard({ title, value, subtitle, icon, accent }: {
     };
     const c = colors[accent];
     return (
-        <div className={`bg-[#141924] border border-white/[0.06] rounded-2xl p-5 ${c.glow} hover:border-white/[0.1] transition-all`}>
+        <div className={`bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-5 ${c.glow} hover:border-white/[0.1] transition-all`}>
             <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{title}</span>
                 <div className={`w-9 h-9 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center ${c.text}`}>
                     {icon}
                 </div>
             </div>
-            <p className="text-2xl font-black text-white mb-1 tabular-nums">{value}</p>
+            <p className="text-2xl font-black text-[var(--pp-text-primary)] mb-1 tabular-nums">{value}</p>
             <p className="text-[11px] text-slate-500">{subtitle}</p>
         </div>
     );
@@ -1040,13 +1052,13 @@ function SystemCard({ title, status, detail, icon }: {
     };
     const s = statusConfig[status];
     return (
-        <div className={`bg-[#141924] border border-white/[0.06] rounded-2xl p-5 hover:border-white/[0.1] transition-all`}>
+        <div className={`bg-[var(--pp-bg-card)] border border-[var(--pp-border)] rounded-2xl p-5 hover:border-white/[0.1] transition-all`}>
             <div className="flex items-center gap-3 mb-4">
                 <div className={`w-10 h-10 rounded-xl ${s.bg} border ${s.border} flex items-center justify-center ${s.color}`}>
                     {icon}
                 </div>
                 <div className="flex-1">
-                    <p className="text-sm font-bold text-white">{title}</p>
+                    <p className="text-sm font-bold text-[var(--pp-text-primary)]">{title}</p>
                 </div>
                 <span className={`flex items-center gap-1.5 text-[9px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest ${s.bg} ${s.color} border ${s.border}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`}></span>

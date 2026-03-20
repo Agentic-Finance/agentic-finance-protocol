@@ -732,6 +732,25 @@ html.light .intent-wallet-input:not(:focus) {
   cursor: not-allowed;
 }
 
+/* ── Onboarding Checklist ── */
+.onboarding-slide-up {
+  animation: onboarding-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes onboarding-slide-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.onboarding-panel {
+  backdrop-filter: blur(12px);
+}
+@keyframes onboarding-celebrate {
+  0%   { background: linear-gradient(135deg, rgba(62,221,185,0.15), rgba(27,191,236,0.15)); opacity: 1; }
+  100% { background: linear-gradient(135deg, rgba(62,221,185,0), rgba(27,191,236,0)); opacity: 0; }
+}
+.onboarding-celebrate {
+  animation: onboarding-celebrate 2s ease-out forwards;
+}
+
 /* ── Respect user motion preferences ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -9,6 +9,7 @@ export interface OnboardingState {
     enableShield: boolean;
     exploreAgents: boolean;
     dismissed: boolean;
+    collapsed: boolean;
 }
 
 const STORAGE_KEY = 'agtfi_onboarding_';
@@ -20,6 +21,7 @@ const defaultState: OnboardingState = {
     enableShield: false,
     exploreAgents: false,
     dismissed: false,
+    collapsed: false,
 };
 
 export function useOnboarding(walletAddress: string | null, context?: {
@@ -79,6 +81,15 @@ export function useOnboarding(walletAddress: string | null, context?: {
         });
     }, [storageKey]);
 
+    const toggleCollapse = useCallback(() => {
+        if (!storageKey) return;
+        setState(prev => {
+            const updated = { ...prev, collapsed: !prev.collapsed };
+            localStorage.setItem(storageKey, JSON.stringify(updated));
+            return updated;
+        });
+    }, [storageKey]);
+
     const completedCount = useMemo(() => {
         const steps = [state.fundVault, state.addEmployees, state.firstPayout, state.enableShield, state.exploreAgents];
         return steps.filter(Boolean).length;
@@ -87,5 +98,5 @@ export function useOnboarding(walletAddress: string | null, context?: {
     const isComplete = completedCount === 5;
     const shouldShow = !!walletAddress && !state.dismissed && !isComplete;
 
-    return { state, completeStep, dismiss, completedCount, isComplete, shouldShow };
+    return { state, completeStep, dismiss, toggleCollapse, completedCount, isComplete, shouldShow };
 }

@@ -923,6 +923,64 @@ export default function Dashboard() {
                     )}
                 </>
             )}
+
+            {/* Onboarding Checklist — floating bottom-right */}
+            {onboarding.shouldShow && (
+                <OnboardingChecklist
+                    steps={[
+                        {
+                            key: 'fundVault',
+                            title: 'Fund Your Vault',
+                            description: 'Deposit USDC or alphaUSD to start transacting',
+                            completed: onboarding.state.fundVault,
+                            actionLabel: 'Deposit Now',
+                            action: () => { setShowFundInput(true); document.getElementById('main-content')?.scrollTo({ top: 0, behavior: 'smooth' }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+                            icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+                        },
+                        {
+                            key: 'addEmployees',
+                            title: 'Add Recipients',
+                            description: 'Add wallet addresses to your payroll or contacts',
+                            completed: onboarding.state.addEmployees,
+                            actionLabel: 'Add Recipients',
+                            action: () => { const el = document.getElementById('omni-terminal'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); },
+                            icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>,
+                        },
+                        {
+                            key: 'firstPayout',
+                            title: 'First Transfer',
+                            description: 'Send your first payment through Agentic Finance',
+                            completed: onboarding.state.firstPayout,
+                            actionLabel: 'Send Payment',
+                            action: () => { const el = document.getElementById('omni-terminal'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); },
+                            icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>,
+                        },
+                        {
+                            key: 'enableShield',
+                            title: 'Enable ZK Shield',
+                            description: 'Activate zero-knowledge privacy for transactions',
+                            completed: onboarding.state.enableShield,
+                            actionLabel: 'Enable Privacy',
+                            action: () => { if (boardroomRef.current) boardroomRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' }); },
+                            icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>,
+                        },
+                        {
+                            key: 'exploreAgents',
+                            title: 'Explore AI Agents',
+                            description: 'Set up automated payment rules and AI assistants',
+                            completed: onboarding.state.exploreAgents,
+                            actionLabel: 'View Agents',
+                            action: () => { onboarding.completeStep('exploreAgents'); if (autopilotRef.current) autopilotRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' }); },
+                            icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" /></svg>,
+                        },
+                    ]}
+                    completedCount={onboarding.completedCount}
+                    totalSteps={5}
+                    collapsed={onboarding.state.collapsed}
+                    onToggleCollapse={onboarding.toggleCollapse}
+                    onDismiss={onboarding.dismiss}
+                />
+            )}
         </div>
     );
 }

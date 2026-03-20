@@ -1,12 +1,12 @@
 /**
- * MPP Client — Machine Payments Protocol (Tempo + Stripe)
- * Allows Agentic Finance agents to pay for external services.
+ * MPP Client — Machine Payments Protocol
+ * Powered by Locus (paywithlocus.com) + Laso Finance
  *
- * MPP is an open standard co-authored by Stripe and Tempo for
- * machine-to-machine payments. It supports:
- *   - One-time charge intents (~500ms settlement)
+ * Capabilities:
+ *   - One-time USDC charge intents via Locus
  *   - Pay-as-you-go sessions with spending limits
- *   - Streamed micropayments over SSE
+ *   - Laso Finance: Prepaid Visa cards, Venmo/PayPal payments
+ *   - Pay-per-use API access (32+ providers)
  */
 import { type Address, type Hex } from 'viem';
 
@@ -21,6 +21,8 @@ export interface MppChargeIntent {
   status: 'pending' | 'authorized' | 'settled' | 'expired';
   createdAt: number;
   txHash?: Hex;
+  locusTxId?: string;
+  approvalUrl?: string;
 }
 
 export interface MppSession {
@@ -31,76 +33,114 @@ export interface MppSession {
   token: Address;
   expiresAt: number;
   status: 'active' | 'exhausted' | 'expired' | 'cancelled';
+  payments?: { amount: string; locusTxId?: string; timestamp: number }[];
 }
 
-// ── Charge Intents ────────────────────────────────────────
+// ── Client-side API calls ─────────────────────────────────
 
-/** Create a one-time charge intent (agent pays service) */
+/** Create a charge intent (calls backend which uses Locus) */
 export async function createChargeIntent(params: {
   serviceUrl: string;
-  amount: bigint;
-  token: Address;
+  amount: string;
+  token?: Address;
   memo?: string;
-}): Promise<MppChargeIntent> {
-  return {
-    intentId: `mpp_ci_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    serviceUrl: params.serviceUrl,
-    amount: params.amount,
-    token: params.token,
-    memo: params.memo || '',
-    status: 'pending',
-    createdAt: Date.now(),
-  };
+  recipientAddress?: string;
+}): Promise<{ success: boolean; intent?: any; error?: string }> {
+  const res = await fetch('/api/mpp/charge', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  return res.json();
 }
 
-/** Authorize a pending charge intent */
-export function authorizeIntent(intent: MppChargeIntent): MppChargeIntent {
-  return { ...intent, status: 'authorized' };
+/** List charge intents */
+export async function listChargeIntents(): Promise<{ success: boolean; intents: any[]; source?: string }> {
+  const res = await fetch('/api/mpp/charge');
+  return res.json();
 }
 
-/** Mark intent as settled with TX hash */
-export function settleIntent(intent: MppChargeIntent, txHash: Hex): MppChargeIntent {
-  return { ...intent, status: 'settled', txHash };
-}
-
-// ── Sessions (OAuth for Money) ────────────────────────────
-
-/** Create a pay-as-you-go session — authorize a spending limit upfront */
+/** Create a pay-as-you-go session */
 export async function createSession(params: {
   serviceUrl: string;
-  spendingLimit: bigint;
-  token: Address;
+  spendingLimit: string;
+  token?: Address;
   durationMs?: number;
-}): Promise<MppSession> {
-  return {
-    sessionId: `mpp_sess_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    serviceUrl: params.serviceUrl,
-    spendingLimit: params.spendingLimit,
-    spent: BigInt(0),
-    token: params.token,
-    expiresAt: Date.now() + (params.durationMs || 3600000),
-    status: 'active',
-  };
+  recipientAddress?: string;
+}): Promise<{ success: boolean; session?: any; error?: string }> {
+  const res = await fetch('/api/mpp/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  return res.json();
+}
+
+/** List sessions */
+export async function listSessions(): Promise<{ success: boolean; sessions: any[]; walletBalance?: string; source?: string }> {
+  const res = await fetch('/api/mpp/session');
+  return res.json();
 }
 
 /** Stream a micropayment within a session */
-export function streamPayment(session: MppSession, amount: bigint): {
-  session: MppSession;
-  remaining: bigint;
-} {
-  if (session.status !== 'active') throw new Error('Session not active');
-  if (Date.now() > session.expiresAt) throw new Error('Session expired');
+export async function streamPayment(sessionId: string, amount: string): Promise<{ success: boolean; session?: any; error?: string }> {
+  const res = await fetch('/api/mpp/session', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId, addSpent: amount }),
+  });
+  return res.json();
+}
 
-  const newSpent = session.spent + amount;
-  if (newSpent > session.spendingLimit) throw new Error('Spending limit exceeded');
+/** Cancel a session */
+export async function cancelSession(sessionId: string): Promise<{ success: boolean; session?: any; error?: string }> {
+  const res = await fetch('/api/mpp/session', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId, cancel: true }),
+  });
+  return res.json();
+}
 
-  const updated: MppSession = {
-    ...session,
-    spent: newSpent,
-    status: newSpent >= session.spendingLimit ? 'exhausted' : 'active',
-  };
+/** Get wallet balance */
+export async function getBalance(): Promise<{ success: boolean; balance: string; address?: string; source?: string }> {
+  const res = await fetch('/api/mpp/balance');
+  return res.json();
+}
 
-  return { session: updated, remaining: session.spendingLimit - newSpent };
+/** Laso Finance: Auth */
+export async function lasoAuth(): Promise<any> {
+  const res = await fetch('/api/mpp/laso', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'auth' }),
+  });
+  return res.json();
+}
+
+/** Laso Finance: Order prepaid Visa card */
+export async function lasoGetCard(amount: number, merchant?: string): Promise<any> {
+  const res = await fetch('/api/mpp/laso', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'card', amount, merchant }),
+  });
+  return res.json();
+}
+
+/** Laso Finance: Send Venmo/PayPal payment */
+export async function lasoSendPayment(params: {
+  method: 'venmo' | 'paypal';
+  recipient: string;
+  amount: number;
+  note?: string;
+}): Promise<any> {
+  const res = await fetch('/api/mpp/laso', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'pay', ...params }),
+  });
+  return res.json();
 }
 
 /** Check if a session can handle a payment */
@@ -108,9 +148,4 @@ export function canPay(session: MppSession, amount: bigint): boolean {
   if (session.status !== 'active') return false;
   if (Date.now() > session.expiresAt) return false;
   return (session.spent + amount) <= session.spendingLimit;
-}
-
-/** Cancel a session — remaining funds returned to payer */
-export function cancelSession(session: MppSession): MppSession {
-  return { ...session, status: 'cancelled' };
 }

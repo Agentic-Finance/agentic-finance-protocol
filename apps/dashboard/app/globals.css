@@ -644,6 +644,66 @@ input[type=number] { -moz-appearance: textfield; }
   outline: none;
 }
 
+/* ── MPP Protocol Styles ── */
+.mpp-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.8125rem;
+  font-family: var(--agt-font-mono);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: var(--pp-bg-elevated);
+  color: var(--pp-text-primary);
+  border: 1px solid var(--pp-border);
+}
+.mpp-input:focus {
+  border-color: var(--agt-blue);
+  box-shadow: 0 0 0 2px rgba(27, 191, 236, 0.12);
+}
+.mpp-input::placeholder {
+  color: var(--pp-text-muted);
+  opacity: 0.6;
+}
+.mpp-btn-primary {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s;
+  background: linear-gradient(135deg, var(--agt-blue), var(--agt-mint));
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.mpp-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px rgba(27, 191, 236, 0.25);
+}
+.mpp-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.mpp-btn-secondary {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s;
+  background: var(--pp-bg-elevated);
+  color: var(--pp-text-primary);
+  border: 1px solid var(--pp-border);
+  cursor: pointer;
+}
+.mpp-btn-secondary:hover:not(:disabled) {
+  background: var(--pp-bg-card);
+  border-color: var(--agt-blue);
+}
+.mpp-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ── Respect user motion preferences ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -10,6 +10,7 @@ import {
     CurrencyDollarIcon, WalletIcon, ClipboardIcon,
     WrenchScrewdriverIcon, CodeBracketIcon,
     ChevronLeftIcon, ChevronRightIcon, XMarkIcon,
+    ArrowsRightLeftIcon, CreditCardIcon, GlobeAltIcon,
 } from '../icons';
 
 interface NavSection { label: string; items: NavItem[]; }
@@ -33,6 +34,14 @@ const sections: NavSection[] = [
             { href: '/swarm', label: 'Swarm', icon: <BoltIcon className="w-[18px] h-[18px]" /> },
             { href: '/sentinel', label: 'Sentinel', icon: <ShieldIcon className="w-[18px] h-[18px]" /> },
             { href: '/analytics', label: 'Analytics', icon: <ChartBarIcon className="w-[18px] h-[18px]" /> },
+        ],
+    },
+    {
+        label: 'Payments',
+        items: [
+            { href: '/mpp', label: 'MPP Protocol', icon: <ArrowsRightLeftIcon className="w-[18px] h-[18px]" /> },
+            { href: '/mpp/catalog', label: 'API Catalog', icon: <GlobeAltIcon className="w-[18px] h-[18px]" /> },
+            { href: '/mpp/laso', label: 'Laso Finance', icon: <CreditCardIcon className="w-[18px] h-[18px]" /> },
         ],
     },
     {

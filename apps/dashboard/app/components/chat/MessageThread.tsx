@@ -73,7 +73,7 @@ function TransactionCard({ metadata, timestamp }: { metadata: any; timestamp: st
     const isSettled = metadata?.type === 'payment_settled';
 
     return (
-        <div className="bg-gradient-to-br from-[#141926] to-[#0f1420] border border-white/[0.08] rounded-xl overflow-hidden max-w-[320px]">
+        <div className="rounded-xl overflow-hidden max-w-[320px]" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
             {/* Top accent bar */}
             <div className={`h-0.5 ${status === 'confirmed' ? 'bg-emerald-500' : status === 'failed' ? 'bg-rose-500' : 'bg-amber-500'}`} />
 
@@ -85,10 +85,10 @@ function TransactionCard({ metadata, timestamp }: { metadata: any; timestamp: st
                             <span className="text-sm">{isEscrow ? '🔒' : isSettled ? '💰' : '💸'}</span>
                         </div>
                         <div>
-                            <span className="text-white font-semibold text-xs">
+                            <span className="font-semibold text-xs" style={{ color: 'var(--pp-text-primary)' }}>
                                 {isEscrow ? 'Escrow Locked' : isSettled ? 'Payment Settled' : 'Payment'}
                             </span>
-                            <p className="text-[9px] text-slate-500">{formatMessageTime(timestamp)}</p>
+                            <p className="text-[9px]" style={{ color: 'var(--pp-text-muted)' }}>{formatMessageTime(timestamp)}</p>
                         </div>
                     </div>
                     <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${s.bg} ${s.text}`}>
@@ -97,17 +97,17 @@ function TransactionCard({ metadata, timestamp }: { metadata: any; timestamp: st
                 </div>
 
                 {/* Amount */}
-                <div className="bg-black/30 rounded-lg p-2.5 mb-2">
+                <div className="rounded-lg p-2.5 mb-2" style={{ background: 'var(--pp-bg-elevated)' }}>
                     <div className="flex items-baseline justify-between">
-                        <span className="text-white font-bold text-lg tabular-nums">
+                        <span className="font-bold text-lg tabular-nums" style={{ color: 'var(--pp-text-primary)' }}>
                             ${metadata?.amount || '0'}
                         </span>
-                        <span className="text-slate-400 text-[11px] font-medium">
+                        <span className="text-[11px] font-medium" style={{ color: 'var(--pp-text-secondary)' }}>
                             {metadata?.token || 'AlphaUSD'}
                         </span>
                     </div>
                     {metadata?.recipientWallet && (
-                        <p className="text-[10px] text-slate-500 font-mono mt-1 truncate">
+                        <p className="text-[10px] font-mono mt-1 truncate" style={{ color: 'var(--pp-text-muted)' }}>
                             To: {metadata.recipientWallet}
                         </p>
                     )}
@@ -127,7 +127,7 @@ function TransactionCard({ metadata, timestamp }: { metadata: any; timestamp: st
                 )}
 
                 {metadata?.note && (
-                    <p className="text-[11px] text-slate-400 mt-1.5 italic">{metadata.note}</p>
+                    <p className="text-[11px] mt-1.5 italic" style={{ color: 'var(--pp-text-secondary)' }}>{metadata.note}</p>
                 )}
             </div>
         </div>
@@ -153,17 +153,17 @@ function AgentResultCard({ content, metadata, timestamp }: { content: string; me
                     </div>
                     <div className="flex items-center gap-2">
                         {metadata?.executionTime && (
-                            <span className="text-[9px] text-slate-500 font-mono tabular-nums">
+                            <span className="text-[9px] font-mono tabular-nums" style={{ color: 'var(--pp-text-muted)' }}>
                                 {metadata.executionTime}s
                             </span>
                         )}
-                        <span className="text-[9px] text-slate-500">{formatMessageTime(timestamp)}</span>
+                        <span className="text-[9px]" style={{ color: 'var(--pp-text-muted)' }}>{formatMessageTime(timestamp)}</span>
                     </div>
                 </div>
 
                 {/* Result content */}
-                <div className="bg-black/30 rounded-lg p-2.5 mb-2">
-                    <p className="text-slate-300 text-[12px] leading-relaxed whitespace-pre-wrap break-words">
+                <div className="rounded-lg p-2.5 mb-2" style={{ background: 'var(--pp-bg-elevated)' }}>
+                    <p className="text-[12px] leading-relaxed whitespace-pre-wrap break-words" style={{ color: 'var(--pp-text-secondary)' }}>
                         {isLong && !expanded ? content.slice(0, 300) + '...' : content}
                     </p>
                     {isLong && (
@@ -214,14 +214,14 @@ function SendCommandPreview({ parsed, onConfirm, onCancel }: {
         <div className="mx-3 mb-2 bg-gradient-to-r from-indigo-500/10 to-violet-500/10 border border-indigo-500/20 rounded-xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm">💸</span>
-                <span className="text-white font-semibold text-xs">Send Payment</span>
+                <span className="font-semibold text-xs" style={{ color: 'var(--pp-text-primary)' }}>Send Payment</span>
             </div>
-            <div className="bg-black/30 rounded-lg p-2.5 mb-2.5">
+            <div className="rounded-lg p-2.5 mb-2.5" style={{ background: 'var(--pp-bg-elevated)' }}>
                 <div className="flex items-baseline justify-between">
-                    <span className="text-white font-bold text-base tabular-nums">${parsed.amount}</span>
-                    <span className="text-slate-400 text-[11px]">{parsed.token}</span>
+                    <span className="font-bold text-base tabular-nums" style={{ color: 'var(--pp-text-primary)' }}>${parsed.amount}</span>
+                    <span className="text-[11px]" style={{ color: 'var(--pp-text-secondary)' }}>{parsed.token}</span>
                 </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-1 truncate">
+                <p className="text-[10px] font-mono mt-1 truncate" style={{ color: 'var(--pp-text-muted)' }}>
                     To: {parsed.to}
                 </p>
             </div>
@@ -234,7 +234,8 @@ function SendCommandPreview({ parsed, onConfirm, onCancel }: {
                 </button>
                 <button
                     onClick={onCancel}
-                    className="px-3 py-1.5 bg-white/[0.04] hover:bg-white/[0.08] text-slate-400 text-[11px] font-medium rounded-lg transition-all border border-white/[0.08]"
+                    className="px-3 py-1.5 bg-white/[0.04] hover:bg-white/[0.08] text-[11px] font-medium rounded-lg transition-all"
+                    style={{ color: 'var(--pp-text-secondary)', border: '1px solid var(--pp-border)' }}
                 >
                     Cancel
                 </button>
@@ -446,7 +447,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
         return (
             <>
                 <p className="whitespace-pre-wrap break-words">{msg.content}</p>
-                <div className={`flex items-center justify-end gap-1.5 mt-1 ${isMe ? 'text-white/50' : 'text-slate-500'}`}>
+                <div className={`flex items-center justify-end gap-1.5 mt-1 ${isMe ? 'text-white/50' : ''}`} style={!isMe ? { color: 'var(--pp-text-muted)' } : undefined}>
                     <span className="text-[9px] tabular-nums">{formatMessageTime(msg.createdAt)}</span>
                     {msg.isEdited && <span className="text-[9px] italic">edited</span>}
                     {isMe && !msg.id.startsWith('temp-') && (
@@ -482,9 +483,9 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-white/[0.06] flex items-center justify-center mb-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-400"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                                 </div>
-                                <p className="text-slate-500 text-xs">Send the first message</p>
+                                <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Send the first message</p>
                                 {channel.type === 'agent' && (
-                                    <p className="text-slate-600 text-[10px] mt-1">Agent will post updates here automatically</p>
+                                    <p className="text-[10px] mt-1" style={{ color: 'var(--pp-text-muted)' }}>Agent will post updates here automatically</p>
                                 )}
                             </div>
                         )}
@@ -494,7 +495,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                 {/* Date separator */}
                                 <div className="flex items-center gap-3 my-4">
                                     <div className="flex-1 h-px bg-white/[0.06]" />
-                                    <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+                                    <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)' }}>
                                         {formatDateSeparator(group.date)}
                                     </span>
                                     <div className="flex-1 h-px bg-white/[0.06]" />
@@ -512,7 +513,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                     if (isSystem) {
                                         return (
                                             <div key={msg.id} className="flex justify-center my-2">
-                                                <span className="text-[11px] text-slate-500 bg-white/[0.03] px-3 py-1 rounded-full max-w-[90%] truncate">
+                                                <span className="text-[11px] bg-white/[0.03] px-3 py-1 rounded-full max-w-[90%] truncate" style={{ color: 'var(--pp-text-muted)' }}>
                                                     {msg.content}
                                                 </span>
                                             </div>
@@ -522,7 +523,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                     if (msg.isDeleted) {
                                         return (
                                             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} my-1`}>
-                                                <span className="text-[11px] text-slate-600 italic px-3 py-1.5">
+                                                <span className="text-[11px] italic px-3 py-1.5" style={{ color: 'var(--pp-text-muted)' }}>
                                                     Message deleted
                                                 </span>
                                             </div>
@@ -549,7 +550,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                                 <div className="flex flex-col">
                                                     {/* Sender name */}
                                                     {!isMe && !isConsecutive && (
-                                                        <span className={`text-[10px] font-semibold mb-0.5 ml-1 ${isAgent ? 'text-emerald-400' : 'text-slate-400'}`}>
+                                                        <span className={`text-[10px] font-semibold mb-0.5 ml-1 ${isAgent ? 'text-emerald-400' : ''}`} style={!isAgent ? { color: 'var(--pp-text-secondary)' } : undefined}>
                                                             {getDisplayName(msg.senderWallet, contacts, channel.participants)}
                                                         </span>
                                                     )}
@@ -565,9 +566,10 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                                                                 isMe
                                                                     ? 'bg-indigo-500/90 text-white rounded-2xl rounded-br-md'
                                                                     : isAgent
-                                                                        ? 'bg-emerald-500/10 text-slate-200 border border-emerald-500/20 rounded-2xl rounded-bl-md'
-                                                                        : 'bg-white/[0.06] text-slate-200 rounded-2xl rounded-bl-md'
+                                                                        ? 'bg-emerald-500/10 border border-emerald-500/20 rounded-2xl rounded-bl-md'
+                                                                        : 'bg-white/[0.06] rounded-2xl rounded-bl-md'
                                                             } ${msg.id.startsWith('temp-') ? 'opacity-70' : ''}`}
+                                                            style={!isMe ? { color: 'var(--pp-text-primary)' } : undefined}
                                                         >
                                                             {renderMessageContent(msg, isMe)}
                                                         </div>
@@ -594,7 +596,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
             )}
 
             {/* Input area */}
-            <div className="border-t border-white/[0.06] p-3 bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl">
+            <div className="p-3 bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl" style={{ borderTop: '1px solid var(--pp-border)' }}>
                 <div className="flex items-end gap-2">
                     <div className="flex-1 relative">
                         <textarea
@@ -604,8 +606,8 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                             onKeyDown={handleKeyDown}
                             placeholder={channel.type === 'agent' ? "Message agent... (try /send 50 AlphaUSD to 0x...)" : "Type a message..."}
                             rows={1}
-                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/20 resize-none custom-scrollbar transition-all"
-                            style={{ maxHeight: '120px' }}
+                            className="w-full bg-white/[0.04] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500/40 focus:ring-1 focus:ring-indigo-500/20 resize-none custom-scrollbar transition-all"
+                            style={{ maxHeight: '120px', color: 'var(--pp-text-primary)', border: '1px solid var(--pp-border)' }}
                         />
                     </div>
                     <button
@@ -620,15 +622,15 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
                         )}
                     </button>
                 </div>
-                <p className="text-[10px] text-slate-600 mt-1.5 ml-1">
-                    <kbd className="px-1 py-0.5 bg-white/[0.04] rounded text-slate-500 text-[9px]">Enter</kbd> send
+                <p className="text-[10px] mt-1.5 ml-1" style={{ color: 'var(--pp-text-muted)' }}>
+                    <kbd className="px-1 py-0.5 bg-white/[0.04] rounded text-[9px]" style={{ color: 'var(--pp-text-muted)' }}>Enter</kbd> send
                     {' · '}
-                    <kbd className="px-1 py-0.5 bg-white/[0.04] rounded text-slate-500 text-[9px]">Shift+Enter</kbd> new line
+                    <kbd className="px-1 py-0.5 bg-white/[0.04] rounded text-[9px]" style={{ color: 'var(--pp-text-muted)' }}>Shift+Enter</kbd> new line
                     {channel.type === 'agent' && (
                         <>
                             {' · '}
                             <span className="text-indigo-400/50">/send</span>
-                            <span className="text-slate-600"> to pay</span>
+                            <span style={{ color: 'var(--pp-text-muted)' }}> to pay</span>
                         </>
                     )}
                 </p>

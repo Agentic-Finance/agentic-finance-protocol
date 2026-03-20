@@ -196,30 +196,31 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts, ta
             />
 
             {/* Chat Panel */}
-            <div className="relative w-full max-w-[440px] h-full bg-[var(--pp-bg-card)] border-l border-white/[0.08] shadow-2xl pointer-events-auto flex flex-col animate-slide-in-right">
+            <div className="relative w-full max-w-[440px] h-full bg-[var(--pp-bg-card)] shadow-2xl pointer-events-auto flex flex-col animate-slide-in-right" style={{ borderLeft: '1px solid var(--pp-border)' }}>
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl">
+                <div className="flex items-center justify-between px-5 py-4 bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl" style={{ borderBottom: '1px solid var(--pp-border)' }}>
                     <div className="flex items-center gap-3">
                         {activeChannel && (
                             <button
                                 onClick={handleBack}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-slate-400 hover:text-white"
+                                className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+                                style={{ color: 'var(--pp-text-secondary)' }}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                             </button>
                         )}
                         <div>
-                            <h2 className="text-white font-semibold text-base tracking-tight">
+                            <h2 className="font-semibold text-base tracking-tight" style={{ color: 'var(--pp-text-primary)' }}>
                                 {activeChannel ? (activeChannel.name || 'Direct Message') : 'Messages'}
                             </h2>
                             {!activeChannel && (
-                                <p className="text-[11px] text-slate-500 font-medium">
+                                <p className="text-[11px] font-medium" style={{ color: 'var(--pp-text-muted)' }}>
                                     {channels.length} conversation{channels.length !== 1 ? 's' : ''}
                                     {totalUnread > 0 && <span className="text-indigo-400 ml-1">({totalUnread} unread)</span>}
                                 </p>
                             )}
                             {activeChannel && (
-                                <p className="text-[11px] text-slate-500 font-medium">
+                                <p className="text-[11px] font-medium" style={{ color: 'var(--pp-text-muted)' }}>
                                     {activeChannel.type === 'agent' ? 'Agent Channel' :
                                      activeChannel.type === 'group' ? `${activeChannel.participants.length} members` :
                                      activeChannel.participants.find(p => p.wallet !== walletAddress.toLowerCase())?.displayName ||
@@ -240,7 +241,8 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts, ta
                         )}
                         <button
                             onClick={onClose}
-                            className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-slate-400 hover:text-white"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
+                            style={{ color: 'var(--pp-text-secondary)' }}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
                         </button>

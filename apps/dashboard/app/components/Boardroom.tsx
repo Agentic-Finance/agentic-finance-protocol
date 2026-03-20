@@ -35,7 +35,7 @@ function Boardroom(props: BoardroomProps) {
                 {/* HEADER */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 border-b border-white/[0.05] pb-6 relative z-10 gap-4">
                     <div>
-                        <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                        <h2 className="text-2xl font-bold flex items-center gap-3" style={{ color: 'var(--pp-text-primary)' }}>
                             <span className={`agt-icon-box ${isAgentMode ? 'agt-icon-box-pink' : 'agt-icon-box-orange'}`}>
                                 {isAgentMode ? <BankIcon className="w-5 h-5" /> : <ShieldCheckIcon className="w-5 h-5" />}
                             </span>
@@ -66,7 +66,7 @@ function Boardroom(props: BoardroomProps) {
                                 <ShieldKeyIcon className="w-5 h-5" />
                             </div>
                             <div>
-                                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                                <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                                     Phantom Shield
                                     <span className="agt-badge agt-badge-pink text-[11px] uppercase tracking-widest">Premium</span>
                                 </h4>
@@ -75,7 +75,7 @@ function Boardroom(props: BoardroomProps) {
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" className="sr-only peer" checked={props.usePhantomShield} onChange={() => { props.setUsePhantomShield(!props.usePhantomShield); }} />
-                            <div className="w-12 h-6 bg-black/60 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 peer-checked:after:bg-white after:border-slate-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600 border border-white/[0.1] shadow-inner"></div>
+                            <div className="w-12 h-6 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 peer-checked:after:bg-white after:border-slate-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600 shadow-inner" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)' }}></div>
                         </label>
                     </div>
                 )}
@@ -88,11 +88,11 @@ function Boardroom(props: BoardroomProps) {
                                 <BoltIcon className="w-5 h-5" />
                             </div>
                             <div>
-                                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                                <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                                     Gas Sponsorship
                                     <span className="agt-badge agt-badge-mint text-[11px] uppercase tracking-widest">Tempo</span>
                                 </h4>
-                                <p className="text-xs mt-0.5 text-slate-500">Platform pays gas fees for recipients. Zero-cost payroll delivery.</p>
+                                <p className="text-xs mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>Platform pays gas fees for recipients. Zero-cost payroll delivery.</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -106,7 +106,7 @@ function Boardroom(props: BoardroomProps) {
                 <div className="overflow-x-auto relative z-10 mb-8">
                     <table className="w-full text-left border-collapse" aria-label="Pending payroll transactions">
                         <thead>
-                            <tr className="text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-white/[0.08]">
+                            <tr className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)', borderBottom: '1px solid var(--pp-border)' }}>
                                 <th className="pb-4 pl-3">Recipient</th>
                                 <th className="pb-4">Tempo Wallet Address</th>
                                 <th className="pb-4 text-right pr-3">Amount</th>
@@ -121,7 +121,7 @@ function Boardroom(props: BoardroomProps) {
 
                                 return (
                                 <tr key={tx.id || i} className="hover:bg-white/[0.03] transition-colors group">
-                                    <td className="py-5 pl-3 text-sm font-semibold text-slate-200">
+                                    <td className="py-5 pl-3 text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>
                                         <div className="flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: isAgentMode ? 'var(--agt-pink)' : 'var(--agt-orange)' }}></span>
                                             {tx.name}
@@ -136,7 +136,7 @@ function Boardroom(props: BoardroomProps) {
                                         )}
                                     </td>
 
-                                    <td className="py-5 font-mono text-sm text-slate-400">
+                                    <td className="py-5 font-mono text-sm" style={{ color: 'var(--pp-text-secondary)' }}>
                                         {displayWallet}
                                     </td>
 
@@ -148,8 +148,8 @@ function Boardroom(props: BoardroomProps) {
                                             </div>
                                         ) : (
                                             <div className="animate-in fade-in duration-300">
-                                                <span className="text-sm font-bold text-white tabular-nums">{(parseFloat(tx.amount) || 0).toFixed(4)}</span>
-                                                <span className="text-[11px] text-slate-500 ml-1">{tx.token || 'AlphaUSD'}</span>
+                                                <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--pp-text-primary)' }}>{(parseFloat(tx.amount) || 0).toFixed(4)}</span>
+                                                <span className="text-[11px] ml-1" style={{ color: 'var(--pp-text-muted)' }}>{tx.token || 'AlphaUSD'}</span>
                                             </div>
                                         )}
                                     </td>
@@ -169,15 +169,15 @@ function Boardroom(props: BoardroomProps) {
 
                 {/* Footer Actions & Fees */}
                 <div className="relative z-10 pt-6 border-t border-white/[0.05] flex flex-col md:flex-row justify-between items-end gap-6">
-                    <div className="w-full md:w-auto bg-black/40 p-5 rounded-2xl border border-white/[0.05] min-w-[320px]">
+                    <div className="w-full md:w-auto p-5 rounded-2xl min-w-[320px]" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)' }}>
                         <div className="flex justify-between text-sm mb-2">
-                            <span className="text-slate-400">Total Payload:</span>
-                            <span className="text-white font-bold">{props.awaitingTotalAmountNum.toFixed(4)}</span>
+                            <span style={{ color: 'var(--pp-text-secondary)' }}>Total Payload:</span>
+                            <span className="font-bold" style={{ color: 'var(--pp-text-primary)' }}>{props.awaitingTotalAmountNum.toFixed(4)}</span>
                         </div>
 
                         {/* PROTOCOL FEE DISPLAY (0.2%, max $5) */}
                         <div className="flex justify-between text-sm mb-3">
-                            <span className="text-slate-400 flex items-center gap-1.5">
+                            <span className="flex items-center gap-1.5" style={{ color: 'var(--pp-text-secondary)' }}>
                                 <span className="w-1.5 h-1.5 rounded-full" style={{ background: isAgentMode ? 'var(--agt-pink)' : 'var(--agt-blue)' }}></span>
                                 Protocol Fee (0.2%):
                             </span>
@@ -186,15 +186,15 @@ function Boardroom(props: BoardroomProps) {
 
                         {props.usePhantomShield && (
                             <div className="flex justify-between text-sm mb-3 animate-in slide-in-from-top-2 fade-in duration-300">
-                                <span className="text-slate-400 flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--agt-pink)' }}></span>Shield Premium:</span>
+                                <span className="flex items-center gap-1.5" style={{ color: 'var(--pp-text-secondary)' }}><span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: 'var(--agt-pink)' }}></span>Shield Premium:</span>
                                 <span className="font-bold" style={{ color: 'var(--agt-pink)' }}>+{props.shieldFeeNum.toFixed(4)}</span>
                             </div>
                         )}
 
                         <div className="border-b border-white/[0.05] mb-3 pb-1"></div>
                         <div className="flex justify-between text-base">
-                            <span className="text-slate-300 font-bold">Total Deduction:</span>
-                            <span className="text-white font-black">{finalTotalDeduction.toFixed(4)} {props.activeVaultToken.symbol}</span>
+                            <span className="font-bold" style={{ color: 'var(--pp-text-secondary)' }}>Total Deduction:</span>
+                            <span className="font-black" style={{ color: 'var(--pp-text-primary)' }}>{finalTotalDeduction.toFixed(4)} {props.activeVaultToken.symbol}</span>
                         </div>
                     </div>
 
@@ -214,7 +214,7 @@ function Boardroom(props: BoardroomProps) {
                             )}
                         </button>
                     ) : (
-                        <div className="w-full md:w-auto px-8 py-4 bg-black/40 border border-white/[0.05] text-slate-500 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 cursor-not-allowed">
+                        <div className="w-full md:w-auto px-8 py-4 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 cursor-not-allowed" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>
                             <LockIcon className="w-4 h-4" /> Awaiting Administrator Signature
                         </div>
                     )}

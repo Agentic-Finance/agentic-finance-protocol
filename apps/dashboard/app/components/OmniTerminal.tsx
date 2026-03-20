@@ -728,7 +728,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         {/* Header */}
                         <div className="flex flex-wrap justify-between items-center mb-6 sm:mb-8 gap-2 sm:gap-4 pb-5" style={{ borderBottom: '1px solid var(--pp-border)' }}>
                             <div className="flex flex-col gap-1">
-                                <h2 className="text-lg font-semibold text-white transition-colors duration-500">
+                                <h2 className="text-lg font-semibold transition-colors duration-500" style={{ color: 'var(--pp-text-primary)' }}>
                                     {isPayroll ? 'Mass Disbursal' : 'Agent Marketplace'}
                                 </h2>
                                 <span className="text-sm" style={{ color: 'var(--pp-text-muted)' }}>
@@ -742,8 +742,9 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                                         isPayroll
                                             ? 'bg-emerald-500/10 text-emerald-400'
-                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
+                                            : 'hover:bg-white/[0.04]'
                                     }`}
+                                    style={!isPayroll ? { color: 'var(--pp-text-muted)' } : undefined}
                                 >
                                     <CommandLineIcon className="w-4 h-4"/>
                                     Payroll
@@ -753,8 +754,9 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                                         !isPayroll
                                             ? 'bg-indigo-500/10 text-indigo-400'
-                                            : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
+                                            : 'hover:bg-white/[0.04]'
                                     }`}
+                                    style={isPayroll ? { color: 'var(--pp-text-muted)' } : undefined}
                                 >
                                     <CpuChipIcon className="w-4 h-4"/>
                                     Agents
@@ -768,7 +770,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             <div className="relative w-full min-h-[120px]">
                                 {!aiPrompt && (
                                     <div className="absolute top-1.5 left-0 pointer-events-none opacity-60">
-                                        <span className="text-slate-400 font-sans text-xl font-medium tracking-wide">
+                                        <span className="font-sans text-xl font-medium tracking-wide" style={{ color: 'var(--pp-text-muted)' }}>
                                             {isPayroll ? 'Try: "Pay Alice 500 AlphaUSD" or "Pay Alice 100 and Bob 200 AlphaUSD"' : 'e.g. "Audit my Solidity contract for reentrancy bugs"'}
                                         </span>
                                     </div>
@@ -788,7 +790,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         {/* Chat Answer (Payroll) */}
                         {chatAnswer && (
                             <div className="mt-4 p-5 rounded-2xl border border-indigo-500/30 animate-in fade-in slide-in-from-top-4 stat-card-bg">
-                                <div className="text-slate-200 font-sans text-lg leading-relaxed whitespace-pre-wrap">{chatAnswer}</div>
+                                <div className="font-sans text-lg leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--pp-text-primary)' }}>{chatAnswer}</div>
                             </div>
                         )}
 
@@ -802,9 +804,9 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 <div className="space-y-3">
                                     {guideData.steps.map((step, i) => (
                                         <div key={i} className="flex items-start gap-3 group/step">
-                                            <span className="text-base shrink-0 mt-0.5 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">{step.icon}</span>
+                                            <span className="text-base shrink-0 mt-0.5 w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)' }}>{step.icon}</span>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-slate-300 text-sm leading-relaxed">{step.text}</p>
+                                                <p className="text-sm leading-relaxed" style={{ color: 'var(--pp-text-secondary)' }}>{step.text}</p>
                                                 {step.action && (
                                                     <button
                                                         onClick={() => handleGuideAction(step.action!)}
@@ -820,7 +822,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 </div>
                                 {guideData.tip && (
                                     <div className="mt-4 pt-3 border-t border-cyan-500/10">
-                                        <p className="text-[11px] text-slate-500 leading-relaxed"><span className="text-cyan-500/60 font-bold">TIP</span> — {guideData.tip}</p>
+                                        <p className="text-[11px] leading-relaxed" style={{ color: 'var(--pp-text-muted)' }}><span className="text-cyan-500/60 font-bold">TIP</span> — {guideData.tip}</p>
                                     </div>
                                 )}
                             </div>
@@ -860,7 +862,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 {liveIntents.length > 0 && !chatAnswer && (
                                     <div className="mt-1 flex items-center justify-between p-3 bg-emerald-500/[0.03] border border-emerald-500/10 rounded-xl animate-in fade-in duration-300">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--pp-text-muted)' }}>
                                                 {liveIntents.length} recipient{liveIntents.length > 1 ? 's' : ''}
                                             </span>
                                             {liveIntents.some(i => !i.wallet || i.wallet === '0x00...00') && (

@@ -96,13 +96,14 @@ export function Sidebar() {
                 <Link href="/" className="flex items-center gap-2.5 px-3 py-4 group">
                     <Image src="/logo.png" alt="Agentic Finance" width={32} height={32} className="flex-shrink-0 rounded-full" />
                     {!collapsed && (
-                        <span className="text-sm font-bold text-white tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)' }}>
+                        <span className="text-sm font-bold tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>
                             Agentic Finance
                         </span>
                     )}
                 </Link>
                 <button onClick={() => setMobileOpen(false)}
-                    className="lg:hidden mr-3 p-1.5 rounded-lg hover:bg-white/[0.06] text-slate-400 hover:text-white transition-colors"
+                    className="lg:hidden mr-3 p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors"
+                    style={{ color: 'var(--pp-text-secondary)' }}
                     aria-label="Close sidebar"
                 >
                     <XMarkIcon className="w-4 h-4" />
@@ -113,7 +114,7 @@ export function Sidebar() {
             <nav className="flex-1 overflow-y-auto px-2 py-1 space-y-1" aria-label="Sidebar navigation">
                 {sections.map((section, idx) => (
                     <div key={section.label}>
-                        {idx > 0 && <div className="my-2" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }} />}
+                        {idx > 0 && <div className="my-2" style={{ borderTop: '1px solid var(--pp-border)' }} />}
                         {!collapsed && (
                             <div className="text-[10px] uppercase tracking-widest px-4 mb-1 mt-2" style={{ color: 'var(--pp-text-muted)' }}>
                                 {section.label}
@@ -132,9 +133,10 @@ export function Sidebar() {
             </nav>
 
             {/* Collapse toggle */}
-            <div className="p-2 space-y-1" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
+            <div className="p-2 space-y-1" style={{ borderTop: '1px solid var(--pp-border)' }}>
                 <button onClick={() => setCollapsed(!collapsed)}
-                    className="hidden lg:flex w-full items-center justify-center gap-2 px-3 py-2 rounded-lg text-slate-500 hover:text-white hover:bg-white/[0.04] transition-all text-xs"
+                    className="hidden lg:flex w-full items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-white/[0.04] transition-all text-xs"
+                    style={{ color: 'var(--pp-text-muted)' }}
                     aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
                     {collapsed

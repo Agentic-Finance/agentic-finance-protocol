@@ -114,6 +114,8 @@ html.light .text-white\/30 { color: #5A6B7E !important; }
 html.light .text-white\/25 { color: #6B7C8F !important; }
 html.light .text-white\/20 { color: #7B8C9F !important; }
 html.light .text-white\/15 { color: #8B9CAF !important; }
+html.light .text-white\/10 { color: #9BADBF !important; }
+html.light .text-white\/5 { color: #ABBECC !important; }
 
 /* Slate text adjustments — much darker for light mode */
 html.light .text-slate-200 { color: #1E293B !important; }

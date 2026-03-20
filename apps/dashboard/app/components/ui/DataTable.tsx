@@ -112,7 +112,8 @@ function DataTableInner<T extends Record<string, any>>({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className={`text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-white/[0.06] py-2.5 px-3 ${ALIGN_CLASS[col.align ?? 'left']} ${col.sortable ? 'cursor-pointer select-none hover:text-slate-300 transition-colors' : ''}`}
+                  className={`text-[10px] uppercase tracking-wider font-bold py-2.5 px-3 ${ALIGN_CLASS[col.align ?? 'left']} ${col.sortable ? 'cursor-pointer select-none transition-colors' : ''}`}
+                  style={{ color: 'var(--pp-text-muted)', borderBottom: '1px solid var(--pp-border)' }}
                   onClick={col.sortable ? () => toggleSort(col.key) : undefined}
                 >
                   <span className="inline-flex items-center gap-1">
@@ -132,13 +133,15 @@ function DataTableInner<T extends Record<string, any>>({
               return (
                 <tr
                   key={key}
-                  className={`pp-row-hover ${onRowClick ? 'cursor-pointer' : ''} ${rowIdx % 2 === 1 ? 'bg-white/[0.01]' : ''}`}
+                  className={`pp-row-hover ${onRowClick ? 'cursor-pointer' : ''}`}
+                  style={rowIdx % 2 === 1 ? { background: 'var(--pp-bg-elevated)', opacity: 0.5 } : undefined}
                   onClick={onRowClick ? () => onRowClick(row) : undefined}
                 >
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className={`py-3 px-3 text-sm text-slate-300 border-b border-white/[0.02] ${ALIGN_CLASS[col.align ?? 'left']}`}
+                      className={`py-3 px-3 text-sm ${ALIGN_CLASS[col.align ?? 'left']}`}
+                      style={{ color: 'var(--pp-text-secondary)', borderBottom: '1px solid var(--pp-border)' }}
                     >
                       {col.render ? col.render(row, globalIdx) : (row[col.key] ?? '\u2014')}
                     </td>
@@ -152,15 +155,16 @@ function DataTableInner<T extends Record<string, any>>({
 
       {/* ── Pagination Bar ── */}
       {pageSize > 0 && totalPages > 1 && (
-        <div className="flex justify-between items-center pt-4 border-t border-white/[0.06]">
-          <span className="text-[11px] text-slate-500">
+        <div className="flex justify-between items-center pt-4" style={{ borderTop: '1px solid var(--pp-border)' }}>
+          <span className="text-[11px]" style={{ color: 'var(--pp-text-muted)' }}>
             {page * pageSize + 1}\u2013{Math.min((page + 1) * pageSize, data.length)} of {data.length}
           </span>
           <div className="flex items-center gap-1">
             <button
               disabled={page === 0}
               onClick={() => setPage((p) => p - 1)}
-              className="px-2 py-1 text-xs text-slate-400 rounded hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="px-2 py-1 text-xs rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer hover:bg-black/[0.04]"
+              style={{ color: 'var(--pp-text-secondary)' }}
             >
               Prev
             </button>
@@ -168,7 +172,11 @@ function DataTableInner<T extends Record<string, any>>({
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`w-7 h-7 text-xs rounded transition-colors cursor-pointer ${p === page ? 'bg-indigo-500/20 text-indigo-300 font-bold' : 'text-slate-500 hover:bg-white/[0.06]'}`}
+                className={`w-7 h-7 text-xs rounded transition-colors cursor-pointer ${p === page ? 'font-bold' : ''}`}
+                style={p === page
+                  ? { background: 'rgba(27, 191, 236, 0.15)', color: 'var(--agt-blue)' }
+                  : { color: 'var(--pp-text-muted)' }
+                }
               >
                 {p + 1}
               </button>
@@ -176,7 +184,8 @@ function DataTableInner<T extends Record<string, any>>({
             <button
               disabled={page >= totalPages - 1}
               onClick={() => setPage((p) => p + 1)}
-              className="px-2 py-1 text-xs text-slate-400 rounded hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              className="px-2 py-1 text-xs rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer hover:bg-black/[0.04]"
+              style={{ color: 'var(--pp-text-secondary)' }}
             >
               Next
             </button>

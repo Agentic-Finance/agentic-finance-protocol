@@ -94,20 +94,20 @@ function Navbar({
                             >
                                 {mobileMenuOpen
                                     ? <XMarkIcon className="w-4 h-4" />
-                                    : <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-300"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+                                    : <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4" style={{ color: 'var(--pp-text-secondary)' }}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
                                 }
                             </button>
                         )}
 
                         <Link href="/" className="flex items-center gap-2 group">
                             <Image src="/logo-v2.png" alt="Agentic Finance" width={28} height={28} className="h-7 w-7 object-contain" priority />
-                            <span className="text-[17px] font-extrabold text-white tracking-tight hidden sm:inline" style={{ fontFamily: 'var(--agt-font-display)' }}>
+                            <span className="text-[17px] font-extrabold tracking-tight hidden sm:inline" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>
                                 Agentic Finance
                             </span>
                         </Link>
 
                         {currentWorkspace && (
-                            <div className="agt-badge flex items-center gap-1.5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', color: 'var(--pp-text-secondary)' }}>
+                            <div className="agt-badge flex items-center gap-1.5" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-secondary)' }}>
                                 {currentWorkspace.type === 'Organization'
                                     ? <BriefcaseIcon className="w-3 h-3" />
                                     : <UsersIcon className="w-3 h-3" />
@@ -119,12 +119,13 @@ function Navbar({
 
                     {/* CENTER: Desktop Nav */}
                     {walletAddress && (
-                        <div className="hidden lg:flex items-center bg-white/[0.03] rounded-xl px-1 py-0.5 gap-0.5" style={{ border: '1px solid var(--pp-border)' }}>
+                        <div className="hidden lg:flex items-center rounded-xl px-1 py-0.5 gap-0.5" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)' }}>
                             {navLinks.map((link) => {
                                 const isActive = pathname === link.href;
                                 return (
                                     <Link key={link.href} href={link.href}
-                                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all uppercase tracking-wider ${isActive ? 'text-white bg-white/[0.08]' : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'}`}
+                                        className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all uppercase tracking-wider ${isActive ? 'bg-white/[0.08]' : 'hover:bg-white/[0.04]'}`}
+                                        style={{ color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-secondary)' }}
                                     >
                                         {link.icon}
                                         {link.label}
@@ -152,16 +153,16 @@ function Navbar({
 
                         {walletAddress ? (
                             <div className="relative" ref={accountRef}>
-                                <div className="flex items-center bg-white/[0.03] rounded-xl overflow-hidden transition-all hover:border-white/[0.12] cursor-pointer" style={{ border: '1px solid rgba(255,255,255,0.06)' }} onClick={() => setAccountOpen(!accountOpen)}>
-                                    <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 border-r border-white/[0.06]">
-                                        <p className="text-[11px] font-bold text-white tabular-nums leading-none">
+                                <div className="flex items-center rounded-xl overflow-hidden transition-all cursor-pointer" style={{ background: 'var(--pp-bg-elevated)', border: '1px solid var(--pp-border)' }} onClick={() => setAccountOpen(!accountOpen)}>
+                                    <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5" style={{ borderRight: '1px solid var(--pp-border)' }}>
+                                        <p className="text-[11px] font-bold tabular-nums leading-none" style={{ color: 'var(--pp-text-primary)' }}>
                                             {Number(userBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         </p>
-                                        <span className="text-[9px] text-slate-500 font-semibold">{activeVaultToken.symbol}</span>
+                                        <span className="text-[9px] font-semibold" style={{ color: 'var(--pp-text-muted)' }}>{activeVaultToken.symbol}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 px-2.5 py-1.5 hover:bg-white/[0.04] transition-colors group">
                                         <div className="w-2 h-2 rounded-full" style={{ background: 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))', boxShadow: '0 0 6px rgba(255,45,135,0.4)' }} />
-                                        <span className="text-xs font-mono text-slate-300 group-hover:text-white transition-colors">{truncateAddress(walletAddress)}</span>
+                                        <span className="text-xs font-mono transition-colors" style={{ color: 'var(--pp-text-secondary)' }}>{truncateAddress(walletAddress)}</span>
                                         {isAdmin && <span className="agt-badge-pink text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Admin</span>}
                                     </div>
                                 </div>
@@ -246,7 +247,8 @@ function Navbar({
                                 const isActive = pathname === link.href;
                                 return (
                                     <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)}
-                                        className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive ? 'text-white bg-white/[0.08]' : 'text-slate-400 hover:text-white hover:bg-white/[0.06]'}`}
+                                        className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${isActive ? 'bg-white/[0.08]' : 'hover:bg-white/[0.06]'}`}
+                                        style={{ color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-secondary)' }}
                                     >
                                         {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 rounded-full" style={{ background: 'var(--agt-pink)' }} />}
                                         {link.icon}
@@ -254,9 +256,9 @@ function Navbar({
                                     </Link>
                                 );
                             })}
-                            <div className="sm:hidden flex items-center gap-2 px-4 py-3 border-t border-white/[0.06] mt-2 pt-3">
-                                <span className="text-sm font-bold text-white tabular-nums">{Number(userBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                <span className="text-xs text-slate-500">{activeVaultToken.symbol}</span>
+                            <div className="sm:hidden flex items-center gap-2 px-4 py-3 mt-2 pt-3" style={{ borderTop: '1px solid var(--pp-border)' }}>
+                                <span className="text-sm font-bold tabular-nums" style={{ color: 'var(--pp-text-primary)' }}>{Number(userBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>{activeVaultToken.symbol}</span>
                             </div>
                         </div>
                     </div>

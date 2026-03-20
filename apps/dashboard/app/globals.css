@@ -644,6 +644,32 @@ input[type=number] { -moz-appearance: textfield; }
   outline: none;
 }
 
+/* ── Intent Card Wallet Input Glow ── */
+.intent-wallet-input:not(:focus) {
+  animation: wallet-glow 2s ease-in-out infinite;
+}
+@keyframes wallet-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.15), 0 0 0 1px rgba(245, 158, 11, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.35), 0 0 0 2px rgba(245, 158, 11, 0.25);
+  }
+}
+html.light .intent-wallet-input:not(:focus) {
+  animation: wallet-glow-light 2s ease-in-out infinite;
+}
+@keyframes wallet-glow-light {
+  0%, 100% {
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.2), 0 0 0 1px rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), 0 0 0 2px rgba(245, 158, 11, 0.35);
+    border-color: rgba(245, 158, 11, 0.6);
+  }
+}
+
 /* ── MPP Protocol Styles ── */
 .mpp-input {
   width: 100%;

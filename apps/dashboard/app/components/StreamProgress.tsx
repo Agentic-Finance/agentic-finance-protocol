@@ -78,7 +78,7 @@ function StreamProgress({ stream, walletAddress, onRefresh }: StreamProgressProp
 
     return (
         <div className="rounded-2xl border border-white/[0.06] overflow-hidden"
-            style={{ background: 'radial-gradient(ellipse at top, rgba(17,27,46,0.98) 0%, rgba(15,23,36,1) 100%)' }}>
+            style={{ background: 'var(--pp-bg-card)' }}>
 
             {/* Section Header */}
             <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between"

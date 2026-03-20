@@ -40,7 +40,7 @@ function TopStatsCards(props: TopStatsProps) {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
 
             {/* TOTAL VOLUME */}
-            <div className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-5 hover:bg-white/[0.04] transition-colors">
+            <div className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-medium text-white/40 uppercase tracking-wide">Volume</span>
                     <span className="text-[10px] font-mono text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">
@@ -56,7 +56,7 @@ function TopStatsCards(props: TopStatsProps) {
             </div>
 
             {/* VAULT BALANCE */}
-            <div className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-5 hover:bg-white/[0.04] transition-colors">
+            <div className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-medium text-white/40 uppercase tracking-wide">Platform Vault</span>
                     <span className="text-[10px] font-mono text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">shared</span>
@@ -97,7 +97,7 @@ function TopStatsCards(props: TopStatsProps) {
             </div>
 
             {/* ACTIVE AGENTS */}
-            <div className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-5 hover:bg-white/[0.04] transition-colors">
+            <div className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-medium text-white/40 uppercase tracking-wide">Agents</span>
                     <span className="text-[10px] font-mono text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">autopilot</span>
@@ -109,7 +109,7 @@ function TopStatsCards(props: TopStatsProps) {
             </div>
 
             {/* DAEMON ENGINE */}
-            <div className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-5 hover:bg-white/[0.04] transition-colors">
+            <div className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-medium text-white/40 uppercase tracking-wide">Daemon</span>
                     <div className="flex items-center gap-1.5">

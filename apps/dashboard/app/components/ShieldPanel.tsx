@@ -268,7 +268,7 @@ export default function ShieldPanel({ walletAddress }: { walletAddress?: string 
         {/* Execution Form */}
         <div className="lg:sticky lg:top-20 lg:self-start">
           <div className="rounded-2xl border border-indigo-500/20 overflow-hidden"
-            style={{ background: 'radial-gradient(ellipse at top, rgba(99,102,241,0.06), rgba(15,23,36,1) 70%)' }}>
+            style={{ background: 'radial-gradient(ellipse at top, rgba(99,102,241,0.06), var(--pp-bg-card) 70%)' }}>
             {/* Form Header */}
             <div className="px-6 py-4 border-b border-white/[0.06] flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-indigo-500/15 flex items-center justify-center border border-indigo-500/25">

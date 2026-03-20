@@ -49,7 +49,7 @@ function MppDashboard() {
     const hasData = intents.length > 0 || sessions.length > 0;
 
     return (
-        <div className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-4">
+        <div className="rounded-xl border p-4" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
             <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-bold text-white flex items-center gap-2">
                     <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>

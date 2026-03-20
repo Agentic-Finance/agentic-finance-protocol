@@ -62,6 +62,32 @@ export default function Dashboard() {
         // Also skip landing if user has an active session (wallet connected previously)
         const hasActiveSession = !!sessionStorage.getItem('agtfi_session_active');
         const skipLanding = params.get('app') === '1' || oauthPending || privyOAuthRedirect || hasActiveSession;
+
+        // Also check if wallet is already connected (user coming from sub-page like /stream)
+        const checkWalletAndSkip = async () => {
+            let shouldSkip = skipLanding;
+            if (!shouldSkip && typeof window !== 'undefined' && (window as any).ethereum) {
+                try {
+                    const accounts = await (window as any).ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        shouldSkip = true;
+                        sessionStorage.setItem('agtfi_session_active', 'true');
+                    }
+                } catch (e) { /* ignore */ }
+            }
+            if (shouldSkip) {
+                setShowLanding(false);
+                // Auto-reconnect wallet silently (eth_accounts doesn't prompt)
+                if (typeof window !== 'undefined' && (window as any).ethereum) {
+                    (window as any).ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+                        if (accounts.length > 0) {
+                            initializeSession(accounts[0]);
+                        }
+                    }).catch((e: Error) => console.warn('[Auto-reconnect]', e.message));
+                }
+            }
+        };
+
         if (skipLanding) {
             setShowLanding(false);
             // Auto-reconnect wallet silently (eth_accounts doesn't prompt)
@@ -72,31 +98,36 @@ export default function Dashboard() {
                     }
                 }).catch((e: Error) => console.warn('[Auto-reconnect]', e.message));
             }
-            // Check for ?chat=jobId or ?openChat=1 to auto-open chat panel
-            const chatJobId = params.get('chat');
-            const openChat = params.get('openChat');
-            if (chatJobId || openChat) {
-                if (chatJobId) setChatTargetJobId(chatJobId);
-                setIsChatOpen(true);
-            }
-            // Check for ?scrollTo=section to scroll to a specific section
-            const scrollTo = params.get('scrollTo');
-            if (scrollTo) {
-                // Delay to let lazy components render
-                setTimeout(() => {
-                    const el = document.getElementById(`section-${scrollTo}`);
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 500);
-            }
-            // Clean up URL params
-            if (chatJobId || openChat || scrollTo) {
-                const url = new URL(window.location.href);
-                url.searchParams.delete('chat');
-                url.searchParams.delete('openChat');
-                url.searchParams.delete('scrollTo');
-                window.history.replaceState({}, '', url.toString());
-            }
+        } else {
+            // Check wallet connection before showing landing
+            checkWalletAndSkip();
         }
+
+        // Check for ?chat=jobId or ?openChat=1 to auto-open chat panel
+        const chatJobId = params.get('chat');
+        const openChat = params.get('openChat');
+        if (chatJobId || openChat) {
+            if (chatJobId) setChatTargetJobId(chatJobId);
+            setIsChatOpen(true);
+        }
+        // Check for ?scrollTo=section to scroll to a specific section
+        const scrollTo = params.get('scrollTo');
+        if (scrollTo) {
+            // Delay to let lazy components render
+            setTimeout(() => {
+                const el = document.getElementById(`section-${scrollTo}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        }
+        // Clean up URL params
+        if (chatJobId || openChat || scrollTo) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('chat');
+            url.searchParams.delete('openChat');
+            url.searchParams.delete('scrollTo');
+            window.history.replaceState({}, '', url.toString());
+        }
+
         setIsReady(true);
     }, []);
 

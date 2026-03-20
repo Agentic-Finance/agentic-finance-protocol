@@ -55,7 +55,7 @@ function NetworkChart() {
                     
                     {/* Hover state Tooltip */}
                     <Tooltip 
-                        contentStyle={{ backgroundColor: '#11141D', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                        contentStyle={{ backgroundColor: 'var(--pp-bg-elevated)', borderColor: 'var(--pp-border)', borderRadius: '12px', color: 'var(--pp-text-primary)' }}
                         itemStyle={{ color: '#d946ef', fontWeight: 'bold' }}
                     />
                     

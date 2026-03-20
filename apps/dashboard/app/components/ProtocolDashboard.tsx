@@ -133,7 +133,7 @@ function ProofGauge({ matchRate, totalVerified, totalCommitments, totalSlashed }
                         background: `conic-gradient(${gaugeColor} ${percent * 3.6}deg, rgba(255,255,255,0.06) 0deg)`,
                     }} />
                 <div className="absolute inset-[3px] rounded-full flex items-center justify-center"
-                    style={{ background: '#0d0d18' }}>
+                    style={{ background: 'var(--pp-bg-card)' }}>
                     <span className="text-sm font-black font-mono" style={{ color: gaugeColor }}>{matchRate}</span>
                 </div>
             </div>

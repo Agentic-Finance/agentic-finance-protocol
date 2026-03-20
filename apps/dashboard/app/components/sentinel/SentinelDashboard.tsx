@@ -125,7 +125,7 @@ export default function SentinelDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
             <div
               className="lg:col-span-8 rounded-2xl border border-white/[0.06] overflow-hidden relative"
-              style={{ background: 'radial-gradient(ellipse at center, #101828 0%, #0a0f1a 100%)', minHeight: '360px', aspectRatio: '16/10' }}
+              style={{ background: 'radial-gradient(ellipse at center, var(--pp-bg-elevated) 0%, var(--pp-bg-primary) 100%)', minHeight: '360px', aspectRatio: '16/10' }}
             >
               <GlobeScene
                 agents={agents}

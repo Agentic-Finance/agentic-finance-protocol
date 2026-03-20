@@ -165,25 +165,26 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                 <button
                                     key={idx}
                                     onClick={() => applyPreset(preset)}
-                                    className="group text-left p-3.5 rounded-xl bg-[var(--pp-bg-card)]/60 border border-white/5 hover:border-amber-500/25 hover:bg-amber-500/[0.04] transition-all duration-200"
+                                    className="group text-left p-3.5 rounded-xl border hover:border-amber-500/25 hover:bg-amber-500/[0.04] transition-all duration-200"
+                                    style={{ background: 'color-mix(in srgb, var(--pp-bg-card) 60%, transparent)', borderColor: 'var(--pp-border)' }}
                                 >
                                     <div className="flex items-start gap-2.5">
                                         <span className="text-lg shrink-0 mt-0.5">{preset.icon}</span>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center justify-between gap-2">
-                                                <p className="text-xs font-bold text-slate-200 group-hover:text-amber-300 transition-colors truncate">{preset.title}</p>
-                                                <ChevronRightIcon className="w-3 h-3 text-slate-600 group-hover:text-amber-400 shrink-0 transition-colors" />
+                                                <p className="text-xs font-bold text-[var(--pp-text-secondary)] group-hover:text-amber-300 transition-colors truncate">{preset.title}</p>
+                                                <ChevronRightIcon className="w-3 h-3 text-[var(--pp-text-muted)] group-hover:text-amber-400 shrink-0 transition-colors" />
                                             </div>
-                                            <p className="text-[10px] text-slate-500 mt-1 leading-relaxed line-clamp-2">{preset.description}</p>
+                                            <p className="text-[10px] text-[var(--pp-text-muted)] mt-1 leading-relaxed line-clamp-2">{preset.description}</p>
                                         </div>
                                     </div>
                                 </button>
                             ))}
                         </div>
                         <div className="flex items-center gap-3 mt-3">
-                            <div className="flex-1 h-px bg-white/5"></div>
-                            <span className="text-[9px] text-slate-600 font-mono uppercase tracking-widest">or customize below</span>
-                            <div className="flex-1 h-px bg-white/5"></div>
+                            <div className="flex-1 h-px" style={{ background: 'var(--pp-border)' }}></div>
+                            <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: 'var(--pp-text-muted)' }}>or customize below</span>
+                            <div className="flex-1 h-px" style={{ background: 'var(--pp-border)' }}></div>
                         </div>
                     </div>
                 )}

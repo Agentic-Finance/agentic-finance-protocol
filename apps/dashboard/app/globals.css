@@ -25,25 +25,25 @@
   --agt-grad-cool:     linear-gradient(135deg, #1BBFEC, #3EDDB9);
 
   /* ── Background Surfaces (softer dark) ── */
-  --pp-bg-primary: #12141D;    /* App background — softer than pure black */
-  --pp-bg-secondary: #191C28;
-  --pp-bg-card: #191C28;       /* Card background */
-  --pp-bg-elevated: #1F2233;   /* Elevated surface */
+  --pp-bg-primary: #151822;    /* App background — warm dark, not harsh */
+  --pp-bg-secondary: #1C2030;
+  --pp-bg-card: #1C2030;       /* Card background */
+  --pp-bg-elevated: #232838;   /* Elevated surface */
 
   /* Surface overlays */
-  --pp-surface-1: rgba(255, 255, 255, 0.05);
-  --pp-surface-2: rgba(255, 255, 255, 0.08);
-  --pp-surface-3: rgba(255, 255, 255, 0.12);
+  --pp-surface-1: rgba(255, 255, 255, 0.06);
+  --pp-surface-2: rgba(255, 255, 255, 0.10);
+  --pp-surface-3: rgba(255, 255, 255, 0.14);
 
   /* Borders */
-  --pp-border: rgba(255, 255, 255, 0.10);
-  --pp-border-hover: rgba(255, 255, 255, 0.18);
+  --pp-border: rgba(255, 255, 255, 0.12);
+  --pp-border-hover: rgba(255, 255, 255, 0.22);
   --agt-border-pink: rgba(255, 45, 135, 0.3);
 
   /* Text */
-  --pp-text-primary: #F1F5F9;
-  --pp-text-secondary: #CBD5E1;
-  --pp-text-muted: #7C8BA5;
+  --pp-text-primary: #F8FAFC;
+  --pp-text-secondary: #D4DEE8;
+  --pp-text-muted: #8D9BB0;
 
   /* Accent colors — mapped to brand */
   --pp-accent: #FF2D87;        /* Spectrum Pink as primary accent */
@@ -65,24 +65,24 @@
   --agt-font-mono:    var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Default: dark */
-  --background: #12141D;
-  --foreground: #F1F5F9;
+  --background: #151822;
+  --foreground: #F8FAFC;
 }
 
 /* ── Light Mode (clean, high contrast, strong borders) ── */
 html.light {
-  --pp-bg-primary: #F8FAFC;
+  --pp-bg-primary: #F5F7FA;
   --pp-bg-secondary: #FFFFFF;
   --pp-bg-card: #FFFFFF;
-  --pp-bg-elevated: #F1F5F9;
-  --pp-surface-1: rgba(0, 0, 0, 0.05);
-  --pp-surface-2: rgba(0, 0, 0, 0.08);
-  --pp-surface-3: rgba(0, 0, 0, 0.12);
-  --pp-border: rgba(0, 0, 0, 0.18);
-  --pp-border-hover: rgba(0, 0, 0, 0.30);
-  --pp-text-primary: #0A0F1E;
-  --pp-text-secondary: #334155;
-  --pp-text-muted: #546478;
+  --pp-bg-elevated: #EDF0F5;
+  --pp-surface-1: rgba(0, 0, 0, 0.06);
+  --pp-surface-2: rgba(0, 0, 0, 0.10);
+  --pp-surface-3: rgba(0, 0, 0, 0.14);
+  --pp-border: rgba(0, 0, 0, 0.22);
+  --pp-border-hover: rgba(0, 0, 0, 0.35);
+  --pp-text-primary: #070B16;
+  --pp-text-secondary: #1E293B;
+  --pp-text-muted: #3D4F63;
   --pp-accent: #D6166B;
   --pp-success: #0D9473;
   --pp-warning: #C85A1F;
@@ -91,8 +91,8 @@ html.light {
   --agt-blue: #0F7FA3;
   --agt-mint: #0D9473;
   --agt-orange: #C85A1F;
-  --background: #FAFBFC;
-  --foreground: #0F172A;
+  --background: #F5F7FA;
+  --foreground: #070B16;
 }
 
 /* ═══ Light Mode Component Overrides ═══ */
@@ -105,20 +105,22 @@ html.light body {
 
 /* All white text → dark text in light mode */
 html.light .text-white { color: var(--pp-text-primary) !important; }
-html.light .text-white\/80 { color: var(--pp-text-secondary) !important; }
+html.light .text-white\/80 { color: var(--pp-text-primary) !important; }
 html.light .text-white\/70 { color: var(--pp-text-secondary) !important; }
 html.light .text-white\/60 { color: var(--pp-text-secondary) !important; }
 html.light .text-white\/50 { color: var(--pp-text-muted) !important; }
-html.light .text-white\/40 { color: #78859A !important; }
-html.light .text-white\/30 { color: #8896A8 !important; }
-html.light .text-white\/25 { color: #94A3B8 !important; }
-html.light .text-white\/20 { color: #94A3B8 !important; }
-html.light .text-white\/15 { color: #A0AEC0 !important; }
+html.light .text-white\/40 { color: #4B5C6F !important; }
+html.light .text-white\/30 { color: #5A6B7E !important; }
+html.light .text-white\/25 { color: #6B7C8F !important; }
+html.light .text-white\/20 { color: #7B8C9F !important; }
+html.light .text-white\/15 { color: #8B9CAF !important; }
 
-/* Slate text adjustments */
-html.light .text-slate-400 { color: #6B7280 !important; }
-html.light .text-slate-500 { color: #64748B !important; }
-html.light .text-slate-600 { color: #475569 !important; }
+/* Slate text adjustments — much darker for light mode */
+html.light .text-slate-200 { color: #1E293B !important; }
+html.light .text-slate-300 { color: #334155 !important; }
+html.light .text-slate-400 { color: #475569 !important; }
+html.light .text-slate-500 { color: #3D4F63 !important; }
+html.light .text-slate-600 { color: #334155 !important; }
 
 /* Background overrides — rgba(255,255,255,x) → rgba(0,0,0,x) */
 html.light [class*="bg-white\\/\\[0\\.0"] { background-color: rgba(0,0,0,0.03) !important; }
@@ -140,13 +142,13 @@ html.light .hover\:bg-white\/\[0\.08\]:hover { background-color: rgba(0,0,0,0.06
 html.light .hover\:bg-white\/\[0\.10\]:hover { background-color: rgba(0,0,0,0.07) !important; }
 
 /* Border overrides — stronger borders for light mode */
-html.light .border-white\/\[0\.04\] { border-color: rgba(0,0,0,0.10) !important; }
-html.light .border-white\/\[0\.05\] { border-color: rgba(0,0,0,0.12) !important; }
-html.light .border-white\/\[0\.06\] { border-color: rgba(0,0,0,0.12) !important; }
-html.light .border-white\/\[0\.08\] { border-color: rgba(0,0,0,0.15) !important; }
-html.light .border-white\/\[0\.10\] { border-color: rgba(0,0,0,0.18) !important; }
-html.light .border-white\/5 { border-color: rgba(0,0,0,0.10) !important; }
-html.light .border-white\/10 { border-color: rgba(0,0,0,0.15) !important; }
+html.light .border-white\/\[0\.04\] { border-color: rgba(0,0,0,0.15) !important; }
+html.light .border-white\/\[0\.05\] { border-color: rgba(0,0,0,0.18) !important; }
+html.light .border-white\/\[0\.06\] { border-color: rgba(0,0,0,0.18) !important; }
+html.light .border-white\/\[0\.08\] { border-color: rgba(0,0,0,0.22) !important; }
+html.light .border-white\/\[0\.10\] { border-color: rgba(0,0,0,0.25) !important; }
+html.light .border-white\/5 { border-color: rgba(0,0,0,0.15) !important; }
+html.light .border-white\/10 { border-color: rgba(0,0,0,0.22) !important; }
 
 /* Black backgrounds → light gray */
 html.light .bg-black\/30 { background-color: rgba(0,0,0,0.04) !important; }
@@ -162,17 +164,20 @@ html.light .bg-\[\#06080C\] { background-color: #F1F5F9 !important; }
 html.light .bg-\[\#0a0e1a\] { background-color: #FFFFFF !important; }
 html.light .bg-\[\#0a0e1a\]\/95 { background-color: rgba(255,255,255,0.95) !important; }
 html.light .bg-\[\#12141D\] { background-color: var(--pp-bg-primary) !important; }
+html.light .bg-\[\#151822\] { background-color: var(--pp-bg-primary) !important; }
 html.light .bg-\[\#191C28\] { background-color: var(--pp-bg-card) !important; }
+html.light .bg-\[\#1C2030\] { background-color: var(--pp-bg-card) !important; }
 html.light .bg-\[\#1F2233\] { background-color: var(--pp-bg-elevated) !important; }
+html.light .bg-\[\#232838\] { background-color: var(--pp-bg-elevated) !important; }
 
 /* Stat cards — TopStatsCards uses rounded-xl bg-white/[0.025] */
 html.light .rounded-xl.bg-white\/\[0\.025\] {
   background: #FFFFFF !important;
-  border-color: rgba(0,0,0,0.12) !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.18) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06) !important;
 }
 html.light .rounded-xl.bg-white\/\[0\.025\]:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.08) !important;
 }
 
 /* Navbar */
@@ -200,11 +205,11 @@ html.light [style*="#0A0A0F"] {
 /* agt-card in light mode */
 html.light .agt-card {
   background: #FFFFFF !important;
-  border-color: rgba(0,0,0,0.08) !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.15) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
 }
 html.light .agt-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
 }
 
 /* All rounded cards/sections with dark inline styles */
@@ -222,10 +227,14 @@ html.light [style*="background: rgba(255,255,255,0.04"] {
   background: rgba(0,0,0,0.03) !important;
 }
 
+/* Placeholder text — much darker in light mode */
+html.light ::placeholder { color: #475569 !important; opacity: 1 !important; }
+html.light .placeholder-slate-600::placeholder { color: #334155 !important; }
+
 /* Scrollbar */
-html.light ::-webkit-scrollbar-track { background: #F0F1F3; }
-html.light ::-webkit-scrollbar-thumb { background: #C0C0C8; }
-html.light ::-webkit-scrollbar-thumb:hover { background: #A0A0A8; }
+html.light ::-webkit-scrollbar-track { background: #E8EBF0; }
+html.light ::-webkit-scrollbar-thumb { background: #B0B8C8; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #8896A8; }
 
 /* Skeleton loading */
 html.light .pp-skeleton { background: linear-gradient(90deg, #E8E8EC, #F0F0F4, #E8E8EC) !important; }
@@ -253,15 +262,15 @@ html.light nav, html.light header {
 /* All rounded-2xl sections (OmniTerminal, Settled Batches, etc.) */
 html.light .rounded-2xl {
   background-color: #FFFFFF !important;
-  border-color: rgba(0,0,0,0.08) !important;
+  border-color: rgba(0,0,0,0.15) !important;
 }
 html.light .rounded-2xl .rounded-2xl {
-  background-color: rgba(0,0,0,0.02) !important;
+  background-color: rgba(0,0,0,0.03) !important;
 }
 
 /* OmniTerminal specific */
 html.light .rounded-xl {
-  border-color: rgba(0,0,0,0.08) !important;
+  border-color: rgba(0,0,0,0.15) !important;
 }
 
 /* Emerald/colored accents — slightly darker for light bg */

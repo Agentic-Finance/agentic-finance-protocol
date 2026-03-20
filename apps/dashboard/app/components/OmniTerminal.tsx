@@ -723,20 +723,20 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
             <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700" data-section="omni-terminal">
                 <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''} ${isDraggingTerminal ? 'ring-2 ring-emerald-500/40 ring-offset-2 ring-offset-[#0C1017]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
-                    <div className="p-4 sm:p-8 md:p-10 flex flex-col border border-white/[0.08] rounded-2xl bg-[#0C1017]">
+                    <div className="p-4 sm:p-8 md:p-10 flex flex-col rounded-2xl" style={{ border: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
 
                         {/* Header */}
-                        <div className="flex flex-wrap justify-between items-center mb-6 sm:mb-8 gap-2 sm:gap-4 border-b border-white/[0.05] pb-5">
+                        <div className="flex flex-wrap justify-between items-center mb-6 sm:mb-8 gap-2 sm:gap-4 pb-5" style={{ borderBottom: '1px solid var(--pp-border)' }}>
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-lg font-semibold text-white transition-colors duration-500">
                                     {isPayroll ? 'Mass Disbursal' : 'Agent Marketplace'}
                                 </h2>
-                                <span className="text-sm text-slate-500">
+                                <span className="text-sm" style={{ color: 'var(--pp-text-muted)' }}>
                                     {isPayroll ? 'Type naturally or ask a question — we parse the intent.' : 'Describe your task — AI discovers the best agent.'}
                                 </span>
                             </div>
 
-                            <div className="flex bg-white/[0.03] border border-white/[0.10] rounded-xl p-1 gap-1">
+                            <div className="flex rounded-xl p-1 gap-1" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
                                 <button
                                     onClick={() => { setActiveTab('payroll'); resetTerminal(true); }}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
@@ -767,8 +767,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             <span className={`font-mono font-black text-2xl sm:text-3xl mt-0.5 shrink-0 transition-colors duration-500 ${chatAnswer ? 'text-indigo-500' : isPayroll ? 'text-emerald-500' : 'text-indigo-500'}`}>{'❯'}</span>
                             <div className="relative w-full min-h-[120px]">
                                 {!aiPrompt && (
-                                    <div className="absolute top-1.5 left-0 pointer-events-none opacity-35">
-                                        <span className="text-slate-300 font-sans text-xl font-medium tracking-wide">
+                                    <div className="absolute top-1.5 left-0 pointer-events-none opacity-60">
+                                        <span className="text-slate-400 font-sans text-xl font-medium tracking-wide">
                                             {isPayroll ? 'Try: "Pay Alice 500 AlphaUSD" or "Pay Alice 100 and Bob 200 AlphaUSD"' : 'e.g. "Audit my Solidity contract for reentrancy bugs"'}
                                         </span>
                                     </div>
@@ -778,7 +778,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     onChange={(e) => setAiPrompt(e.target.value)}
                                     onKeyDown={handleKeyDownToDeploy}
                                     disabled={isA2aActive && !isPayroll}
-                                    className={`relative z-10 text-white caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-words w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide ${isA2aActive && !isPayroll ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`relative z-10 caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-words w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide ${isA2aActive && !isPayroll ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    style={{ color: 'var(--pp-text-primary)' }}
                                     spellCheck={false}
                                 />
                             </div>

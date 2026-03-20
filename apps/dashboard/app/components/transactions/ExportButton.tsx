@@ -87,7 +87,7 @@ export function ExportButton({ transactions }: { transactions: Transaction[] }) 
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-40 bg-[#111118] border border-white/[0.06] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
+        <div className="absolute right-0 top-full mt-1 w-40 bg-[var(--pp-bg-card)] border border-white/[0.06] rounded-xl shadow-2xl shadow-black/40 z-50 overflow-hidden">
           <button
             onClick={() => { exportCSV(transactions); setOpen(false); }}
             className="flex items-center gap-2 w-full px-3 py-2.5 text-xs text-slate-300 hover:bg-white/[0.04] transition-colors"

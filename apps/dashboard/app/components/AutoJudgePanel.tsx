@@ -225,7 +225,7 @@ export default function AutoJudgePanel() {
   if (isLoading) {
     return (
       <div className="relative z-20 mb-10">
-        <div className="p-8 border border-white/5 rounded-3xl bg-[#061014]/90">
+        <div className="p-8 border border-white/5 rounded-3xl bg-[var(--pp-bg-primary)]/90">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 pp-skeleton rounded-xl" />
             <div className="w-48 h-6 pp-skeleton rounded-lg" />
@@ -244,7 +244,7 @@ export default function AutoJudgePanel() {
     <div className="relative z-20 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="absolute -inset-[1px] bg-gradient-to-r from-violet-500/40 via-cyan-500/20 to-violet-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none" />
 
-      <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#061014]/90 shadow-inner backdrop-blur-3xl overflow-hidden">
+      <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[var(--pp-bg-primary)]/90 shadow-inner backdrop-blur-3xl overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-violet-500/5 blur-[80px] pointer-events-none" />
 
         {/* Header */}
@@ -340,7 +340,7 @@ export default function AutoJudgePanel() {
               return (
                 <div
                   key={v.id}
-                  className={`bg-[#0A161A] border rounded-xl p-4 transition-all cursor-pointer hover:border-violet-500/30 ${isExpanded ? 'border-violet-500/40' : 'border-white/5'}`}
+                  className={`bg-[var(--pp-bg-elevated)] border rounded-xl p-4 transition-all cursor-pointer hover:border-violet-500/30 ${isExpanded ? 'border-violet-500/40' : 'border-white/5'}`}
                   onClick={() => setExpandedId(isExpanded ? null : v.id)}
                 >
                   <div className="flex items-center justify-between">

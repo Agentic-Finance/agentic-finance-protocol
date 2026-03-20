@@ -353,7 +353,7 @@ export default function FiatCheckout({ amount: initialAmount, userWallet, agentJ
   // ── Full Mode ──────────────────────────────────────────
 
   return (
-    <div className="bg-[#0B1215] border border-white/10 rounded-2xl p-6 max-w-md">
+    <div className="bg-[var(--pp-bg-card)] border border-white/10 rounded-2xl p-6 max-w-md">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/30">

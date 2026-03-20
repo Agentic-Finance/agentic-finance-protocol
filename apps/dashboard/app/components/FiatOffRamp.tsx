@@ -221,7 +221,7 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
 
   if (isLoading) {
     return (
-      <div className="p-8 border border-white/5 rounded-3xl bg-[#061014]/90">
+      <div className="p-8 border border-white/5 rounded-3xl bg-[var(--pp-bg-primary)]/90">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 pp-skeleton rounded-xl" />
           <div className="w-48 h-6 pp-skeleton rounded-lg" />
@@ -589,7 +589,7 @@ export default function FiatOffRamp({ walletAddress }: { walletAddress: string }
               return (
                 <div key={w.id} className="group">
                   <div
-                    className={`flex items-center justify-between p-3 bg-[#0A161A] border rounded-xl transition-all cursor-pointer ${
+                    className={`flex items-center justify-between p-3 bg-[var(--pp-bg-elevated)] border rounded-xl transition-all cursor-pointer ${
                       isFailed ? 'border-rose-500/15 hover:border-rose-500/30' :
                       isProcessing ? 'border-cyan-500/15 hover:border-cyan-500/30' :
                       'border-white/5 hover:border-emerald-500/20'

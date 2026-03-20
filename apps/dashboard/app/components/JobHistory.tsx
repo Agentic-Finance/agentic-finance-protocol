@@ -84,7 +84,7 @@ function JobHistory({ walletAddress }: JobHistoryProps) {
         .reduce((sum, j) => sum + (j.negotiatedPrice || j.budget || 0), 0);
 
     return (
-        <div className="border border-white/[0.08] rounded-2xl bg-[#0C1017] overflow-hidden">
+        <div className="border border-white/[0.08] rounded-2xl bg-[var(--pp-bg-card)] overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-3">
@@ -107,15 +107,15 @@ function JobHistory({ walletAddress }: JobHistoryProps) {
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-px bg-white/[0.04]">
-                <div className="bg-[#0C1017] px-4 py-3">
+                <div className="bg-[var(--pp-bg-card)] px-4 py-3">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Total Jobs</p>
                     <p className="text-lg font-bold text-white">{totalJobs}</p>
                 </div>
-                <div className="bg-[#0C1017] px-4 py-3">
+                <div className="bg-[var(--pp-bg-card)] px-4 py-3">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Completed</p>
                     <p className="text-lg font-bold text-emerald-400">{completedJobs}</p>
                 </div>
-                <div className="bg-[#0C1017] px-4 py-3">
+                <div className="bg-[var(--pp-bg-card)] px-4 py-3">
                     <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Total Spent</p>
                     <p className="text-lg font-bold text-white">{totalSpent.toFixed(1)} <span className="text-xs text-slate-500">alphaUSD</span></p>
                 </div>

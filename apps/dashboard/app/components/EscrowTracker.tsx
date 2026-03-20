@@ -127,7 +127,7 @@ function ActiveEscrowCard({ item, isExpanded, onToggle, now }: {
 
     return (
         <div
-            className="bg-[#0f1522]/90 border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-emerald-500/20"
+            className="bg-[var(--pp-bg-elevated)]/90 border border-white/5 rounded-2xl overflow-hidden transition-all duration-300 hover:border-emerald-500/20"
         >
             {/* Header - always visible, clickable */}
             <button
@@ -281,7 +281,7 @@ function RecentCard({ item }: { item: TrackerItem }) {
     const isSettled = item.status === 'SETTLED';
 
     return (
-        <div className="flex items-center gap-3 p-3 bg-[#0f1522]/60 rounded-xl border border-white/5">
+        <div className="flex items-center gap-3 p-3 bg-[var(--pp-bg-elevated)]/60 rounded-xl border border-white/5">
             <span className="text-lg flex-shrink-0">{item.agentEmoji}</span>
             <div className="flex-1 min-w-0">
                 <p className="text-xs text-white/80 font-semibold truncate">{item.agentName}</p>

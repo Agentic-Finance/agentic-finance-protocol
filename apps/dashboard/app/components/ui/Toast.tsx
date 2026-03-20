@@ -43,7 +43,7 @@ function ToastItem({ toast: t, onRemove }: { toast: Toast; onRemove: (id: string
 
   return (
     <div
-      className={`flex items-start gap-3 px-4 py-3 bg-[#111118] border border-white/[0.06] border-l-2 ${BORDER_COLORS[t.type]} rounded-xl shadow-2xl shadow-black/40 backdrop-blur-xl animate-fade-in-up max-w-sm`}
+      className={`flex items-start gap-3 px-4 py-3 bg-[var(--pp-bg-card)] border border-white/[0.06] border-l-2 ${BORDER_COLORS[t.type]} rounded-xl shadow-2xl shadow-black/40 backdrop-blur-xl animate-fade-in-up max-w-sm`}
     >
       <span className="mt-0.5 flex-shrink-0">{ICONS[t.type]}</span>
       <div className="flex-1 min-w-0">

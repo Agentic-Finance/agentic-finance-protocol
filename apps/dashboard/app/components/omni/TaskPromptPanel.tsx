@@ -61,7 +61,7 @@ function TaskPromptPanel({ agent, onSubmit, onBack }: TaskPromptPanelProps) {
     };
 
     return (
-        <div className="mt-4 bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mt-4 bg-[var(--pp-bg-elevated)] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500" />
 
             {/* ── Agent Header ── */}

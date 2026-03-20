@@ -196,9 +196,9 @@ export default function ChatPanel({ walletAddress, isOpen, onClose, contacts, ta
             />
 
             {/* Chat Panel */}
-            <div className="relative w-full max-w-[440px] h-full bg-[#0a0e1a] border-l border-white/[0.08] shadow-2xl pointer-events-auto flex flex-col animate-slide-in-right">
+            <div className="relative w-full max-w-[440px] h-full bg-[var(--pp-bg-card)] border-l border-white/[0.08] shadow-2xl pointer-events-auto flex flex-col animate-slide-in-right">
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] bg-[#0d1120]/90 backdrop-blur-xl">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06] bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl">
                     <div className="flex items-center gap-3">
                         {activeChannel && (
                             <button

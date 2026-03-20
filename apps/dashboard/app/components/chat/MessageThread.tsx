@@ -594,7 +594,7 @@ export default function MessageThread({ channel, walletAddress, contacts }: Mess
             )}
 
             {/* Input area */}
-            <div className="border-t border-white/[0.06] p-3 bg-[#0d1120]/90 backdrop-blur-xl">
+            <div className="border-t border-white/[0.06] p-3 bg-[var(--pp-bg-elevated)]/90 backdrop-blur-xl">
                 <div className="flex items-end gap-2">
                     <div className="flex-1 relative">
                         <textarea

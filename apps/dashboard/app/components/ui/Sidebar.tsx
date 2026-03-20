@@ -19,7 +19,7 @@ const sections: NavSection[] = [
     {
         label: 'Main',
         items: [
-            { href: '/?app=1', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
+            { href: '/', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
             { href: '/chat', label: 'Chat', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
             { href: '/portfolio', label: 'Portfolio', icon: <BriefcaseIcon className="w-[18px] h-[18px]" /> },
             { href: '/live', label: 'Live Feed', icon: <ActivityIcon className="w-[18px] h-[18px]" /> },
@@ -60,11 +60,15 @@ function NavItemLink({ item, collapsed, isActive, onClick }: {
         <Link href={item.href} onClick={onClick} title={collapsed ? item.label : undefined}
             className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all relative
                 ${collapsed ? 'justify-center' : ''}
+                border-l-2
                 ${isActive
-                    ? 'text-white bg-white/[0.06] border-l-2'
-                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04] border-l-2 border-transparent'
+                    ? 'bg-white/[0.06]'
+                    : 'hover:bg-white/[0.04] border-transparent'
                 }`}
-            style={isActive ? { borderLeftColor: 'var(--agt-pink)' } : undefined}
+            style={{
+                color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-muted)',
+                ...(isActive ? { borderLeftColor: 'var(--agt-pink)' } : {}),
+            }}
         >
             <span className="flex-shrink-0">{item.icon}</span>
             {!collapsed && <span className="truncate">{item.label}</span>}
@@ -80,7 +84,7 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center justify-between">
-                <Link href="/?app=1" className="flex items-center gap-2.5 px-3 py-4 group">
+                <Link href="/" className="flex items-center gap-2.5 px-3 py-4 group">
                     <Image src="/logo.png" alt="Agentic Finance" width={32} height={32} className="flex-shrink-0 rounded-full" />
                     {!collapsed && (
                         <span className="text-sm font-bold text-white tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)' }}>
@@ -109,7 +113,7 @@ export function Sidebar() {
                         <div className="space-y-0.5">
                             {section.items.map((item) => (
                                 <NavItemLink key={item.href + item.label} item={item} collapsed={collapsed}
-                                    isActive={item.href.startsWith('/?') ? pathname === '/' : pathname.startsWith(item.href)}
+                                    isActive={item.href === '/' ? pathname === '/' : pathname.startsWith(item.href)}
                                     onClick={() => setMobileOpen(false)}
                                 />
                             ))}

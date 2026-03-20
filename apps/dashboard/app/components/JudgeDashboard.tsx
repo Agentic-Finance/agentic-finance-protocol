@@ -218,7 +218,7 @@ export default function JudgeDashboard({ isAgtfiArbitrator = false, walletAddres
         <div className="relative z-20 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-teal-500/40 via-cyan-500/20 to-teal-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
 
-            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[#061014]/90 shadow-inner backdrop-blur-3xl overflow-hidden max-w-4xl mx-auto">
+            <div className="p-4 sm:p-8 flex flex-col border border-white/5 rounded-3xl relative z-10 bg-[var(--pp-bg-primary)]/90 shadow-inner backdrop-blur-3xl overflow-hidden max-w-4xl mx-auto">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-32 bg-teal-500/5 blur-[80px] pointer-events-none"></div>
 
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 border-b border-white/[0.05] pb-6 relative z-10">
@@ -275,10 +275,10 @@ export default function JudgeDashboard({ isAgtfiArbitrator = false, walletAddres
                             if (timedOut && !isResolved) borderClass = 'border-orange-500/40';
 
                             return (
-                            <div key={escrow.id} className={`bg-[#0A161A] border rounded-2xl p-6 flex flex-col hover:border-teal-500/50 hover:opacity-100 transition-all shadow-lg relative overflow-hidden ${borderClass}`}>
+                            <div key={escrow.id} className={`bg-[var(--pp-bg-elevated)] border rounded-2xl p-6 flex flex-col hover:border-teal-500/50 hover:opacity-100 transition-all shadow-lg relative overflow-hidden ${borderClass}`}>
 
                                 {cardMessage?.id === escrow.id && cardMessage.type !== 'error' && (
-                                    <div className="absolute inset-0 z-50 bg-[#061014]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-300">
+                                    <div className="absolute inset-0 z-50 bg-[var(--pp-bg-primary)]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-in zoom-in-95 duration-300">
                                         <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-3 ${cardMessage.type === 'review' ? 'bg-amber-500/20 text-amber-400 animate-pulse' : 'bg-emerald-500/20 text-emerald-400'}`}>
                                             {cardMessage.type === 'review' ? <ScaleIcon className="w-7 h-7" /> : <DocumentCheckIcon className="w-7 h-7" />}
                                         </div>

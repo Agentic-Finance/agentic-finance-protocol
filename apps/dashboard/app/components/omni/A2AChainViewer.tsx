@@ -383,7 +383,7 @@ function A2AChainViewer({
     // Show loading skeleton during task decomposition
     if (phase === 'decomposing') {
         return (
-            <div className="mt-4 bg-[#141926] border border-violet-500/20 rounded-2xl overflow-hidden animate-in fade-in duration-500">
+            <div className="mt-4 bg-[var(--pp-bg-elevated)] border border-violet-500/20 rounded-2xl overflow-hidden animate-in fade-in duration-500">
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.04]">
                     <CpuChipIcon className="w-5 h-5 text-violet-400 animate-pulse" />
                     <div>
@@ -423,7 +423,7 @@ function A2AChainViewer({
     const percentComplete = progress?.percentComplete ?? 0;
 
     return (
-        <div className={`mt-4 bg-[#141926] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all ${
+        <div className={`mt-4 bg-[var(--pp-bg-elevated)] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 transition-all ${
             isReviewing
                 ? 'border-2 border-violet-500/50 shadow-[0_0_30px_rgba(139,92,246,0.15)]'
                 : 'border border-white/[0.10]'

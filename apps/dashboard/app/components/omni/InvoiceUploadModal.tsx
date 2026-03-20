@@ -93,7 +93,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
 
     return createPortal(
         <div style={{ zIndex: 2147483647, background: 'rgba(15,19,25,0.88)' }} className="fixed inset-0 flex items-center justify-center animate-in fade-in duration-200">
-            <div className="bg-[#151B27] border border-cyan-500/20 shadow-[0_0_100px_rgba(6,182,212,0.08)] rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 relative">
+            <div className="bg-[var(--pp-bg-card)] border border-cyan-500/20 shadow-[0_0_100px_rgba(6,182,212,0.08)] rounded-3xl p-6 sm:p-8 max-w-lg w-full mx-4 relative">
                 {/* Close */}
                 <button onClick={handleClose} className="absolute top-6 right-6 text-slate-500 hover:text-rose-400 transition-colors">
                     <XMarkIcon className="w-6 h-6" />
@@ -147,7 +147,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
                             ? 'border-cyan-400/60 bg-cyan-500/[0.05]'
                             : attachedFile
                                 ? 'border-emerald-500/40 bg-emerald-500/[0.03]'
-                                : 'border-white/10 bg-[#06080C] hover:border-cyan-500/30 hover:bg-cyan-500/[0.02]'
+                                : 'border-white/10 bg-[var(--pp-bg-primary)] hover:border-cyan-500/30 hover:bg-cyan-500/[0.02]'
                     }`}
                 >
                     <input
@@ -203,7 +203,7 @@ function InvoiceUploadModal({ isOpen, onClose, onParsed, showToast }: InvoiceUpl
                     onChange={(e) => { setInvoiceText(e.target.value); setAttachedFile(null); }}
                     placeholder={`Paste invoice content here...\n\ne.g.\nInvoice #INV-2026-042\nFrom: Acme Corp\n\n1. Web Development - $5,000 - 0xA1b2...\n2. Smart Contract Audit - $3,000 - 0xC3d4...\n3. UI/UX Design - $2,500 - 0xE5f6...`}
                     disabled={!!attachedFile}
-                    className={`w-full h-36 bg-[#06080C] border border-white/10 rounded-xl p-4 text-sm text-white font-mono resize-none focus:outline-none focus:border-cyan-500/30 placeholder:text-slate-700 transition-all leading-relaxed ${attachedFile ? 'opacity-30 cursor-not-allowed' : ''}`}
+                    className={`w-full h-36 bg-[var(--pp-bg-primary)] border border-white/10 rounded-xl p-4 text-sm text-white font-mono resize-none focus:outline-none focus:border-cyan-500/30 placeholder:text-slate-700 transition-all leading-relaxed ${attachedFile ? 'opacity-30 cursor-not-allowed' : ''}`}
                 />
 
                 {/* Actions */}

@@ -215,7 +215,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                     <select
                                         value={cond.type}
                                         onChange={(e) => updateCondition(cond.id, 'type', e.target.value)}
-                                        className="bg-[#06080C] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 cursor-pointer appearance-none min-w-[150px]"
+                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 cursor-pointer appearance-none min-w-[150px]"
                                     >
                                         {CONDITION_TYPES.map(t => (
                                             <option key={t.value} value={t.value}>{t.icon} {t.label}</option>
@@ -228,7 +228,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                         value={cond.param}
                                         onChange={(e) => updateCondition(cond.id, 'param', e.target.value)}
                                         placeholder={typeInfo?.placeholder || 'Parameter...'}
-                                        className="bg-[#06080C] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 flex-1 min-w-[120px] placeholder:text-slate-600"
+                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 flex-1 min-w-[120px] placeholder:text-slate-600"
                                     />
 
                                     {/* Operator - hide for webhook and date types */}
@@ -236,7 +236,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                         <select
                                             value={cond.operator}
                                             onChange={(e) => updateCondition(cond.id, 'operator', e.target.value)}
-                                            className="bg-[#06080C] border border-white/10 rounded-lg px-2 py-2 text-xs text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/30 w-[52px] text-center cursor-pointer appearance-none"
+                                            className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2 py-2 text-xs text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/30 w-[52px] text-center cursor-pointer appearance-none"
                                         >
                                             {cond.type === 'date_time'
                                                 ? [{ value: '>=', label: '≥ After' }, { value: '==', label: '= On' }].map(o => (
@@ -261,7 +261,7 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                                             : cond.type === 'tvl_threshold' ? '$10,000,000'
                                             : '$5,000'
                                         }
-                                        className="bg-[#06080C] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 w-[130px] placeholder:text-slate-600"
+                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 w-[130px] placeholder:text-slate-600"
                                     />
 
                                     {/* Remove button */}

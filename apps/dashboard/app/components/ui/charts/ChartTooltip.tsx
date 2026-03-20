@@ -18,7 +18,7 @@ function ChartTooltipContentInner({ active, payload, label, formatter }: ChartTo
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="bg-[#11141D] border border-white/10 rounded-xl p-3 shadow-xl min-w-[120px]">
+    <div className="bg-[var(--pp-bg-card)] border border-white/10 rounded-xl p-3 shadow-xl min-w-[120px]">
       {label != null && (
         <p className="text-[10px] text-slate-400 mb-1">{label}</p>
       )}

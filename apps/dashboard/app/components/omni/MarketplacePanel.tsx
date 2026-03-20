@@ -99,7 +99,7 @@ function MarketplacePanel({
         );
 
         return (
-            <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
+            <div className="mt-4 bg-[var(--pp-bg-elevated)] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
 
                 {/* Header Bar */}
                 <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">
@@ -289,7 +289,7 @@ function MarketplacePanel({
     // ── ANALYZING ──
     if (phase === 'analyzing') {
         return (
-            <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
+            <div className="mt-4 bg-[var(--pp-bg-elevated)] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in duration-500">
                 <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.04]">
                     <MagnifyingGlassIcon className="w-5 h-5 text-indigo-400 animate-pulse" />
                     <div>
@@ -408,7 +408,7 @@ function MarketplacePanel({
                 )}
 
                 {/* ── SINGLE AGENT RESULTS ── */}
-                <div className="bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden">
+                <div className="bg-[var(--pp-bg-elevated)] border border-indigo-500/20 rounded-2xl overflow-hidden">
 
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.04]">

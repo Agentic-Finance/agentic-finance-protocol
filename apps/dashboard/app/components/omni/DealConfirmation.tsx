@@ -71,7 +71,7 @@ function DealConfirmation({ negotiation, selectedAgent, onConfirm, onReject, con
     return (
         <div
             ref={confirmationRef}
-            className="mt-6 max-w-xl mx-auto w-full bg-[#141926] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
+            className="mt-6 max-w-xl mx-auto w-full bg-[var(--pp-bg-elevated)] border border-indigo-500/20 rounded-2xl overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500"
         >
             {/* Accent line */}
             <div className="h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500"></div>

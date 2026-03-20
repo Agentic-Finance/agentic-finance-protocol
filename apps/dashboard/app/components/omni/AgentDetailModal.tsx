@@ -73,7 +73,7 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
             <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className="relative bg-[#0C1017] border border-white/[0.08] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col">
+            <div className="relative bg-[var(--pp-bg-card)] border border-white/[0.08] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col">
                 {/* Close */}
                 <button
                     onClick={onClose}

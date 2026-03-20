@@ -75,7 +75,7 @@ function IntentCards({
                 const dotColor = needsWallet && !isWalletLocked ? 'bg-amber-400' : 'bg-emerald-500';
 
                 return (
-                    <div key={intent.indexId} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[#0F1319] flex flex-col bg-[#061214]/90 shadow-lg ${cardBorderClass} group/card`}>
+                    <div key={intent.indexId} className={`relative min-w-[340px] p-5 rounded-2xl border bg-[var(--pp-bg-card)] flex flex-col bg-[var(--pp-bg-elevated)]/90 shadow-lg ${cardBorderClass} group/card`}>
                         {/* Delete button */}
                         {handleDeleteIntent && (
                             <button

@@ -244,7 +244,7 @@ export default function GatewayScreen(props: GatewayProps) {
                         <p className="text-gray-500 dark:text-slate-400 text-sm">Welcome to Agentic Finance. Please select your operational protocol.</p>
                     </div>
 
-                    <div className="bg-white/95 dark:bg-[#151B27]/95 border border-gray-200 dark:border-white/[0.08] rounded-3xl p-5 sm:p-8 shadow-2xl transition-all duration-300">
+                    <div className="rounded-3xl p-5 sm:p-8 shadow-2xl transition-all duration-300" style={{ background: 'color-mix(in srgb, var(--pp-bg-card) 95%, transparent)', border: '1px solid var(--pp-border)' }}>
                         {props.gatewayMode === 'Select' && (
                             <div className="animate-in fade-in zoom-in-95">
                                 <div className="grid grid-cols-2 gap-3 sm:gap-5 mb-6">

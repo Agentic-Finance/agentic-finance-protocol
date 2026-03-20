@@ -53,7 +53,7 @@ export function TerminalSkeleton() {
 export function ChartSkeleton() {
     return (
         <div className="relative z-20 mb-10">
-            <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl bg-[#151B27]/95">
+            <div className="p-4 sm:p-8 flex flex-col border border-white/[0.08] rounded-3xl bg-[var(--pp-bg-card)]/95">
                 <div className="flex justify-between items-center pb-6 mb-6 border-b border-white/5">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl pp-skeleton" />

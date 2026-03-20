@@ -111,7 +111,7 @@ export default function NewChannelModal({ walletAddress, contacts, onClose, onCr
     }, [selectedContacts, mode, groupName, walletAddress, contacts, onCreated]);
 
     return (
-        <div className="absolute inset-0 z-50 bg-[#0a0e1a]/95 backdrop-blur-xl flex flex-col">
+        <div className="absolute inset-0 z-50 bg-[var(--pp-bg-card)]/95 backdrop-blur-xl flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
                 <div>

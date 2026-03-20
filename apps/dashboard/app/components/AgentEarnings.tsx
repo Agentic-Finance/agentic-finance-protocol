@@ -217,7 +217,7 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
     const platformRevenue = globalEarnings ? globalEarnings.totalEarnings * platformFeeRate : 0;
 
     return (
-        <div className="border border-white/[0.08] rounded-2xl bg-[#0C1017] overflow-hidden">
+        <div className="border border-white/[0.08] rounded-2xl bg-[var(--pp-bg-card)] overflow-hidden">
             {/* Header */}
             <div
                 className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]"
@@ -387,7 +387,7 @@ function AgentEarnings({ walletAddress }: AgentEarningsProps) {
 
 function StatCell({ label, value, unit, color }: { label: string; value: string; unit?: string; color: string }) {
     return (
-        <div className="bg-[#0C1017] px-4 py-3.5">
+        <div className="bg-[var(--pp-bg-card)] px-4 py-3.5">
             <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500 mb-1">{label}</p>
             <p className={`text-lg font-bold tabular-nums ${color}`}>
                 {value}

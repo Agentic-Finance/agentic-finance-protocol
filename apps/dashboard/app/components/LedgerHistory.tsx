@@ -47,7 +47,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                         const isShieldedBatch = tx.isShielded || (tx.breakdown && tx.breakdown.some((b: any) => b.isShielded || (b.note && b.note.includes('Shielded'))));
 
                         return (
-                            <div key={tx.hash || i} className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'bg-black/60 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.05)]' : 'bg-[#0f1522] border-white/5 hover:border-white/10'}`}>
+                            <div key={tx.hash || i} className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'bg-black/60 border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.05)]' : 'bg-[var(--pp-bg-elevated)] border-white/5 hover:border-white/10'}`}>
                                 
                                 {/* 🌟 BATCH SUMMARY ROW */}
                                 <button
@@ -91,7 +91,7 @@ function LedgerHistory({ pendingTxs, history, exportLedgerToCSV, expandedTx, set
                                 </button>
 
                                 {/* DETAILED BREAKDOWN ACCORDION */}
-                                <div className={`transition-all duration-500 ease-in-out bg-[#070a0f] ${isExpanded ? 'max-h-[800px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+                                <div className={`transition-all duration-500 ease-in-out bg-[var(--pp-bg-primary)] ${isExpanded ? 'max-h-[800px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                                     <div className="p-6 overflow-y-auto max-h-[600px] scrollbar-hide">
                                         <div className="overflow-x-auto -mx-2 px-2">
                                         <div className="min-w-[600px]">

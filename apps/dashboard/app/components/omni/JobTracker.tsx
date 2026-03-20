@@ -60,7 +60,7 @@ function JobTracker({ phase, job, onExecute, onShowReview, onReset, onCancel, on
     const finalLabel = phase === 'failed' ? 'Failed' : 'Done';
 
     return (
-        <div className="mt-4 bg-[#141926] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="mt-4 bg-[var(--pp-bg-elevated)] border border-white/[0.10] rounded-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
 
             {/* Agent Header */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.04]">

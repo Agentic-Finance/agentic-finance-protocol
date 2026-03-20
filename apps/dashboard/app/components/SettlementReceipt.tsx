@@ -118,7 +118,7 @@ function BatchCard({ batch, isExpanded, onToggle }: {
         <div className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
             batch.isJustSettled
                 ? 'animate-[pulse_2s_ease-in-out_3]'
-                : 'border-white/5 bg-[#0f1522]/80'
+                : 'border-white/5 bg-[var(--pp-bg-elevated)]/80'
         }`} style={batch.isJustSettled ? {
             borderColor: `color-mix(in srgb, ${accentVar} 40%, transparent)`,
             backgroundColor: `color-mix(in srgb, ${accentVar} 3%, transparent)`,
@@ -179,7 +179,7 @@ function BatchCard({ batch, isExpanded, onToggle }: {
             </button>
 
             {/* ── Expanded Detail Panel ────────────── */}
-            <div className={`transition-all duration-500 ease-in-out bg-[#070a0f] ${isExpanded ? 'max-h-[1200px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            <div className={`transition-all duration-500 ease-in-out bg-[var(--pp-bg-primary)] ${isExpanded ? 'max-h-[1200px] opacity-100 border-t border-white/5' : 'max-h-0 opacity-0 overflow-hidden'}`}>
                 <div className="p-6">
 
                     {/* Fund Flow Timeline */}

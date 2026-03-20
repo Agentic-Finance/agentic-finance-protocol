@@ -24,7 +24,7 @@ export default function NegotiationLog({ logs, budget, finalPrice, fee, token }:
     const progress = Math.min((logs.length / totalRounds) * 100, 100);
 
     return (
-        <div className="bg-[#06080C] border border-white/[0.06] rounded-2xl overflow-hidden font-mono text-xs w-full animate-in fade-in duration-300 mt-4">
+        <div className="bg-[var(--pp-bg-primary)] border border-white/[0.06] rounded-2xl overflow-hidden font-mono text-xs w-full animate-in fade-in duration-300 mt-4">
 
             {/* Header */}
             <div className="flex justify-between items-center px-5 py-3 border-b border-white/[0.04]">

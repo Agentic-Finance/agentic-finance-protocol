@@ -10,13 +10,14 @@ import TopStatsCards from './components/TopStatsCards';
 import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
 import { FeatureErrorBoundary } from './components/FeatureErrorBoundary';
 import { usePollingEngine } from './hooks/usePollingEngine';
+import { usePrivy } from '@privy-io/react-auth';
 
 // Lazy load heavy / conditionally-rendered components (Phase 3)
 const LandingPage = lazy(() => import('./components/LandingPage'));
 const GatewayScreen = lazy(() => import('./components/GatewayScreen'));
 const OmniTerminal = lazy(() => import('./components/OmniTerminal'));
 const NetworkChart = lazy(() => import('./components/NetworkChart'));
-const ProtocolDashboard = lazy(() => import('./components/ProtocolDashboard'));
+const DashboardTabs = lazy(() => import('./components/DashboardTabs'));
 const Boardroom = lazy(() => import('./components/Boardroom'));
 const ActiveAgents = lazy(() => import('./components/ActiveAgents'));
 const TimeVault = lazy(() => import('./components/TimeVault'));
@@ -27,6 +28,12 @@ const FiatOffRamp = lazy(() => import('./components/FiatOffRamp'));
 const SettlementReceipt = lazy(() => import('./components/SettlementReceipt'));
 const JobHistory = lazy(() => import('./components/JobHistory'));
 const AgentEarnings = lazy(() => import('./components/AgentEarnings'));
+const EmployeeDirectory = lazy(() => import('./components/EmployeeDirectory'));
+const StreamingPayroll = lazy(() => import('./components/StreamingPayroll'));
+const MppDashboard = lazy(() => import('./components/MppDashboard'));
+const EmployeePortal = lazy(() => import('./components/EmployeePortal'));
+import OnboardingChecklist from './components/onboarding/OnboardingChecklist';
+import { useOnboarding } from './hooks/useOnboarding';
 
 // Chat components (lazy loaded — not needed at initial render)
 const ChatPanel = lazy(() => import('./components/chat/ChatPanel'));
@@ -35,7 +42,7 @@ import ChatButton from './components/chat/ChatButton';
 // Minimal loading fallback for lazy components
 const LazyFallback = () => (
     <div className="animate-pulse bg-white/[0.02] rounded-3xl border border-white/5 min-h-[200px] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(255,125,44,0.3)', borderTopColor: 'var(--agt-orange)' }}></div>
     </div>
 );
 
@@ -46,7 +53,12 @@ export default function Dashboard() {
     // After hydration, check ?app=1 query param to skip landing & auto-reconnect wallet
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        if (params.get('app') === '1') {
+        // Skip landing if ?app=1 OR returning from OAuth redirect (sessionStorage flag OR Privy URL params)
+        const oauthPending = sessionStorage.getItem('agtfi_oauth_pending') === 'true';
+        if (oauthPending) sessionStorage.removeItem('agtfi_oauth_pending');
+        const privyOAuthRedirect = !!params.get('privy_oauth_code') || !!params.get('privy_oauth_provider');
+        const skipLanding = params.get('app') === '1' || oauthPending || privyOAuthRedirect;
+        if (skipLanding) {
             setShowLanding(false);
             // Auto-reconnect wallet silently (eth_accounts doesn't prompt)
             if (typeof window !== 'undefined' && (window as any).ethereum) {
@@ -83,6 +95,9 @@ export default function Dashboard() {
         }
         setIsReady(true);
     }, []);
+
+    // Privy hook — must be at top level (React rules of hooks)
+    const { authenticated: privyAuthenticated, user: privyUser, ready: privyReady } = usePrivy();
 
     // Listen for notification clicks to open chat panel (same-page navigation)
     useEffect(() => {
@@ -138,6 +153,9 @@ export default function Dashboard() {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [chatTargetJobId, setChatTargetJobId] = useState<string | null>(null);
 
+    // Privy: auto-detect after Google/social OAuth redirect (moved below initializeSession)
+    const privyAutoConnectRef = useRef(false);
+
     const boardroomRef = useRef<HTMLDivElement>(null);
     const autopilotRef = useRef<HTMLDivElement>(null);
     const historyRef = useRef<HTMLDivElement>(null);
@@ -157,7 +175,7 @@ export default function Dashboard() {
     // ==========================================
     // WALLET & SESSION FUNCTIONS
     // ==========================================
-    const fetchOnChainBalances = useCallback(async (currentUserAddress: string | null = walletAddress, currentToken = activeVaultToken) => { try { const cleanVaultAddress = AGTFI_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: currentToken.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); if (currentUserAddress && !currentUserAddress.includes('...')) { const cleanUserAddress = currentUserAddress.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: currentToken.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** currentToken.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
+    const fetchOnChainBalances = useCallback(async (currentUserAddress?: string | null, currentToken?: any) => { const addr = currentUserAddress ?? walletAddress; const tkn = currentToken ?? activeVaultToken; try { const cleanVaultAddress = AGTFI_SHIELD_ADDRESS.toLowerCase().replace('0x', '').padStart(64, '0'); const vaultPayload = `0x70a08231${cleanVaultAddress}`; const vaultRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: tkn.address, data: vaultPayload }, "latest"] }) }); const vaultJson = await vaultRes.json(); if (vaultJson.result && vaultJson.result !== "0x") setVaultBalance((parseInt(vaultJson.result, 16) / (10 ** tkn.decimals)).toFixed(2)); if (addr && !addr.includes('...')) { const cleanUserAddress = addr.toLowerCase().replace('0x', '').padStart(64, '0'); const userPayload = `0x70a08231${cleanUserAddress}`; const userRes = await fetch(RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "eth_call", params: [{ to: tkn.address, data: userPayload }, "latest"] }) }); const userJson = await userRes.json(); if (userJson.result && userJson.result !== "0x") setUserBalance((parseInt(userJson.result, 16) / (10 ** tkn.decimals)).toFixed(2)); } } catch (e) { console.error("RPC sync failed"); } }, [walletAddress, activeVaultToken]);
 
     // ==========================================
     // POLLING ENGINE (extracted to hook — Promise.allSettled, visibility-aware)
@@ -178,6 +196,28 @@ export default function Dashboard() {
         activeVaultToken,
         showToast,
     });
+
+    // ==========================================
+    // WORKSPACE STATS (per-workspace analytics)
+    // ==========================================
+    const [workspaceStats, setWorkspaceStats] = useState<any>(null);
+    const [wsRange, setWsRange] = useState('7d');
+    useEffect(() => {
+        if (!walletAddress) { setWorkspaceStats(null); return; }
+        let cancelled = false;
+        const fetchWsStats = async () => {
+            try {
+                const res = await fetch(`/api/workspace/stats?wallet=${walletAddress}&range=${wsRange}`);
+                if (res.ok && !cancelled) {
+                    const data = await res.json();
+                    if (data.success) setWorkspaceStats(data.stats);
+                }
+            } catch {}
+        };
+        fetchWsStats();
+        const interval = setInterval(() => { if (!document.hidden) fetchWsStats(); }, 15000);
+        return () => { cancelled = true; clearInterval(interval); };
+    }, [walletAddress, wsRange]);
 
     // ==========================================
     // MEMOIZED COMPUTED VALUES (Phase 2.5)
@@ -202,6 +242,14 @@ export default function Dashboard() {
         (agentStatus === 'ACTIVE' ? 1 : 0) + autopilotRules.filter(r => r.status === 'Active').length,
         [agentStatus, autopilotRules]
     );
+
+    // Onboarding checklist
+    const onboarding = useOnboarding(walletAddress, {
+        vaultBalance: parseFloat(vaultBalance) || 0,
+        employeeCount: awaitingTxs.length + pendingTxs.length,
+        historyCount: history.length,
+        hasShieldedPayout: history.some((h: any) => h.isShielded),
+    });
 
     const awaitingTotalAmountNum = useMemo(() =>
         awaitingTxs.reduce((sum, tx) => sum + parseFloat(tx.amount || 0), 0),
@@ -285,6 +333,19 @@ export default function Dashboard() {
     }, [localEscrow, history]);
 
     const initializeSession = async (wallet: string) => { setWalletAddress(wallet); try { const res = await fetch(`/api/workspace?wallet=${wallet}`); const data = await res.json(); if (data.workspace) { setCurrentWorkspace(data.workspace); if (data.workspace.daemonStatus) setAgentStatus(data.workspace.daemonStatus); localStorage.removeItem('agtfi_joined_workspace'); showToast('success', `Authenticated as Administrator for ${data.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { const joinedAdminWallet = localStorage.getItem('agtfi_joined_workspace'); if (joinedAdminWallet) { const joinRes = await fetch(`/api/workspace?wallet=${joinedAdminWallet}`); const joinData = await joinRes.json(); if (joinData.workspace) { setCurrentWorkspace(joinData.workspace); if (joinData.workspace.daemonStatus) setAgentStatus(joinData.workspace.daemonStatus); showToast('success', `Authenticated as Contributor for ${joinData.workspace.name}.`); fetchOnChainBalances(wallet, activeVaultToken); } else { localStorage.removeItem('agtfi_joined_workspace'); setCurrentWorkspace(null); } } else setCurrentWorkspace(null); } } catch (e) { showToast('error', 'Gateway connection failed.'); } };
+
+    // Privy: auto-connect wallet after authentication (only when not on landing page)
+    useEffect(() => {
+        if (privyReady && privyAuthenticated && privyUser && !walletAddress && !privyAutoConnectRef.current && !showLanding) {
+            privyAutoConnectRef.current = true;
+            const wallet = (privyUser.wallet as any)?.address
+                || (privyUser.linkedAccounts?.find((a: any) => a.type === 'wallet') as any)?.address;
+            if (wallet) {
+                initializeSession(wallet);
+            }
+        }
+    }, [privyReady, privyAuthenticated, privyUser, walletAddress, showLanding]);
+
     const ensureTempoNetwork = useCallback(async () => {
         const TEMPO_CHAIN_ID = '0xa5bf'; // 42431
         const TEMPO_CHAIN_CONFIG = {
@@ -292,7 +353,7 @@ export default function Dashboard() {
             chainName: 'Tempo Moderato Testnet',
             nativeCurrency: { name: 'TEMPO', symbol: 'TEMPO', decimals: 18 },
             rpcUrls: ['https://rpc.moderato.tempo.xyz'],
-            blockExplorerUrls: ['https://explore.tempo.xyz'],
+            blockExplorerUrls: ['https://explore.moderato.tempo.xyz'],
         };
         try {
             const currentChainId = await (window as any).ethereum.request({ method: 'eth_chainId' });
@@ -329,10 +390,10 @@ export default function Dashboard() {
         }
     }, [showToast, ensureTempoNetwork]);
     const disconnectWallet = useCallback(() => { setWalletAddress(null); setCurrentWorkspace(undefined); setUserBalance("0.00"); setShowLanding(true); showToast('success', 'Session disconnected.'); }, [showToast]);
-    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `AGENTIC FINANCE GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { setCurrentWorkspace(data.workspace); showToast('success', 'Smart Vault deployed successfully.'); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
+    const deployWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!walletAddress || !ack1 || !ack2 || !ack3) return showToast('error', 'Complete security checks first.'); setIsDeployingWorkspace(true); try { const signMessage = `AGENTIC FINANCE GENESIS INITIALIZATION\n\nEstablishing Workspace: "${setupName}".\n\nI acknowledge this wallet (${walletAddress}) will become the permanent Master Administrator.`; const signPromise = (window as any).ethereum.request({ method: 'personal_sign', params: [signMessage, walletAddress] }); const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Wallet signature timed out. Please try again.')), 60000)); await Promise.race([signPromise, timeoutPromise]); const res = await fetch('/api/workspace', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminWallet: walletAddress, name: setupName, type: setupType }) }); const data = await res.json(); if (res.ok) { showToast('success', 'Workspace created!'); setSetupStep(4); /* Show setup wizard (theme selector) before entering dashboard */ fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', data.error || 'Deployment failed.'); } catch (error: any) { console.error('Deploy workspace error:', error); showToast('error', error.code === 4001 || error.message?.includes('rejected') ? 'Signature rejected by wallet.' : error.message || 'Deployment failed.'); } finally { setIsDeployingWorkspace(false); } }, [walletAddress, ack1, ack2, ack3, setupName, setupType, showToast, fetchOnChainBalances, activeVaultToken]);
     const joinWorkspace = useCallback(async (e: React.FormEvent) => { e.preventDefault(); if (!joinAdminWallet.trim() || !joinAdminWallet.startsWith('0x')) return showToast('error', 'Invalid address format.'); try { const res = await fetch(`/api/workspace?wallet=${joinAdminWallet}`); const data = await res.json(); if (data.workspace) { localStorage.setItem('agtfi_joined_workspace', data.workspace.admin_wallet); setCurrentWorkspace(data.workspace); showToast('success', `Joined ${data.workspace.name} as Contributor.`); fetchOnChainBalances(walletAddress, activeVaultToken); } else showToast('error', 'Workspace not found.'); } catch (e) { showToast('error', 'Network error.'); } }, [joinAdminWallet, showToast, fetchOnChainBalances, walletAddress, activeVaultToken]);
     const executeFund = useCallback(async () => { if (!walletAddress || walletAddress.includes('...')) return showToast('error', 'Connect valid wallet first.'); if (!fundAmount || isNaN(Number(fundAmount)) || Number(fundAmount) <= 0) return showToast('error', 'Invalid amount.'); if (Number(fundAmount) > Number(userBalance)) return showToast('error', `Insufficient balance.`); setIsFunding(true); try { const amountHex = BigInt(Math.floor(parseFloat(fundAmount) * (10 ** activeVaultToken.decimals))).toString(16).padStart(64, '0'); const targetVault = usePhantomShield ? AGTFI_SHIELD_ADDRESS : AGTFI_MULTISEND_ADDRESS; const dataPayload = `0xa9059cbb${targetVault.toLowerCase().replace('0x', '').padStart(64, '0')}${amountHex}`; const txHash = await (window as any).ethereum.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: activeVaultToken.address, data: dataPayload }] }); showToast('success', `Funding broadcasted: ${txHash.slice(0, 10)}...`); setShowFundInput(false); setFundAmount(""); } catch (error: any) { showToast('error', error.message || 'Transaction rejected.'); } setIsFunding(false); }, [walletAddress, fundAmount, userBalance, activeVaultToken, usePhantomShield, showToast]);
-    const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; const prevState = agentStatus; setAgentStatus(newState); /* optimistic */ try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { setAgentStatus(prevState); /* rollback */ showToast('error', 'Failed to update daemon status.'); } } catch { setAgentStatus(prevState); /* rollback */ showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast, setAgentStatus]);
+    const toggleAgent = useCallback(async () => { if (!isAdmin || !walletAddress) return; setIsTogglingAgent(true); const newState = agentStatus === 'ACTIVE' ? 'OFFLINE' : 'ACTIVE'; const prevState = agentStatus; setAgentStatus(newState); /* optimistic */ try { const res = await fetch('/api/daemon-status', { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress }, body: JSON.stringify({ wallet: walletAddress, status: newState }) }); if (res.ok) { showToast('success', `Master Daemon ${newState === 'ACTIVE' ? 'Engaged' : 'Halted'}.`); } else { setAgentStatus(prevState); /* rollback */ showToast('error', 'Failed to update daemon status.'); } } catch { setAgentStatus(prevState); /* rollback */ showToast('error', 'Network error updating daemon.'); } finally { setIsTogglingAgent(false); } }, [isAdmin, walletAddress, agentStatus, showToast, setAgentStatus]);
 
     // ==========================================
     // ACTION HANDLERS (wrapped in useCallback)
@@ -622,15 +683,14 @@ export default function Dashboard() {
     // =========================================================================
     if (!isReady) { return <>{toastComponent}<LazyFallback /></>; }
     if (showLanding) { return <>{toastComponent}<Suspense fallback={<LazyFallback />}><LandingPage onLaunchApp={() => { setShowLanding(false); }} /></Suspense></>; }
-    if (!currentWorkspace) { return (<>{toastComponent}<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} /></Suspense></>); }
+    if (!currentWorkspace) { return (<>{toastComponent}<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} initializeSession={initializeSession} /></Suspense></>); }
 
     return (
-        <div className="min-h-screen bg-[#111B2E] text-slate-200 font-sans selection:bg-indigo-500/30 relative overflow-x-hidden pb-32">
+        <div className="min-h-screen font-sans relative overflow-x-hidden pb-32" style={{ background: 'var(--pp-bg-primary)', color: 'var(--pp-text-secondary)' }}>
             {/* Global styles moved to globals.css */}
 
-            <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.25)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
-            <div className="fixed bottom-[-10%] right-[-5%] w-[40%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(192,38,211,0.15)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
-            <div className="fixed top-[20%] right-[-5%] w-[30%] h-[40%] rounded-full bg-[radial-gradient(circle,_rgba(6,182,212,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
+            {/* Subtle ambient glow — matches dark blue theme */}
+            <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.04)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
 
             {toastComponent}
 
@@ -638,7 +698,38 @@ export default function Dashboard() {
 
             <main id="main-content" className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
-                <TopStatsCards totalDisbursed={totalDisbursed} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} />
+                {/* ── Welcome Header ──────────────────────── */}
+                <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <div className="agt-icon-box agt-icon-box-pink" style={{ width: 48, height: 48, borderRadius: 14 }}>
+                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" /></svg>
+                        </div>
+                        <div>
+                            <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                                {currentWorkspace?.name || 'Workspace'}
+                            </h1>
+                            <div className="flex items-center gap-3 mt-0.5">
+                                <span className="text-[11px] text-slate-500 font-mono">{walletAddress ? `${walletAddress.slice(0,6)}...${walletAddress.slice(-4)}` : ''}</span>
+                                {isAdmin && <span className="agt-badge agt-badge-pink">Admin</span>}
+                                <span className={`agt-badge ${agentStatus === 'ACTIVE' ? 'agt-badge-mint' : 'agt-badge-danger'}`}>
+                                    {agentStatus === 'ACTIVE' ? '● Live' : '○ Offline'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="text-[11px] font-mono text-slate-500 bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-1.5 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" title="Testnet" />
+                            <span className="text-slate-600">Moderato</span>
+                            <span className="w-px h-3 bg-white/[0.08]"></span>
+                            <span style={{ color: 'var(--agt-mint)' }}>42431</span>
+                            <span className="w-px h-3 bg-white/[0.08]"></span>
+                            <span className="text-amber-400/60 text-[9px]">TESTNET</span>
+                        </div>
+                    </div>
+                </div>
+
+                <TopStatsCards totalDisbursed={totalDisbursed} workspaceVolume={workspaceStats?.totalVolume != null ? workspaceStats.totalVolume.toLocaleString() : null} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} daemonJobsProcessed={workspaceStats?.daemonJobsProcessed} daemonLastSeen={workspaceStats?.lastActivityAt} />
 
                 <FeatureErrorBoundary feature="OmniTerminal">
                     <Suspense fallback={<TerminalSkeleton />}>
@@ -646,22 +737,23 @@ export default function Dashboard() {
                     </Suspense>
                 </FeatureErrorBoundary>
 
-                <div className="relative z-20 mb-10">
-                    <div className="absolute -inset-[1px] bg-gradient-to-r from-fuchsia-500/40 via-amber-500/20 to-indigo-500/40 rounded-[1.9rem] opacity-100 blur-[2px] pointer-events-none"></div>
-                    <div className="absolute -top-1 -left-1 w-10 h-10 border-t-2 border-l-2 border-fuchsia-400/80 rounded-tl-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -right-1 w-10 h-10 border-b-2 border-r-2 border-amber-400/80 rounded-br-xl z-10 pointer-events-none"></div><div className="absolute -top-1 -right-1 w-10 h-10 border-t-2 border-r-2 border-amber-400/80 rounded-tr-xl z-10 pointer-events-none"></div><div className="absolute -bottom-1 -left-1 w-10 h-10 border-b-2 border-l-2 border-fuchsia-400/80 rounded-bl-xl z-10 pointer-events-none"></div>
-                    <div className="flex flex-col border border-white/[0.08] rounded-3xl relative z-10 bg-[#0d0d18]/95 shadow-inner overflow-hidden">
-                        <div className="absolute top-0 left-0 w-[40%] h-32 bg-fuchsia-500/8 blur-[80px] pointer-events-none"></div>
-                        <div className="absolute bottom-0 right-0 w-[40%] h-32 bg-amber-500/8 blur-[80px] pointer-events-none"></div>
-                        <div className="relative z-10 w-full">
-                            <Suspense fallback={<ChartSkeleton />}>
-                                <ProtocolDashboard />
-                            </Suspense>
-                        </div>
-                    </div>
+                {/* Streaming Payroll */}
+                {walletAddress && (
+                    <FeatureErrorBoundary feature="StreamingPayroll">
+                        <Suspense fallback={null}>
+                            <StreamingPayroll walletAddress={walletAddress} />
+                        </Suspense>
+                    </FeatureErrorBoundary>
+                )}
+
+                <div className="agt-card agt-card-accent-pink mb-6 overflow-hidden">
+                    <Suspense fallback={<ChartSkeleton />}>
+                        <DashboardTabs walletAddress={walletAddress} workspaceStats={workspaceStats} agentStatus={agentStatus} onRangeChange={setWsRange} activeRange={wsRange} />
+                    </Suspense>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
-                    <div className="lg:col-span-8 space-y-6 sm:space-y-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div className="lg:col-span-8 space-y-6">
                         {isAdmin && (
                             <FeatureErrorBoundary feature="Boardroom">
                                 <Suspense fallback={<BoardroomSkeleton />}>
@@ -670,13 +762,30 @@ export default function Dashboard() {
                             </FeatureErrorBoundary>
                         )}
 
-                        {history.length > 0 && (
-                            <FeatureErrorBoundary feature="Settlement Receipt">
+                        {isAdmin && (
+                            <div id="section-employees" className="scroll-mt-20">
+                                <FeatureErrorBoundary feature="Employee Directory">
+                                    <Suspense fallback={<SectionSkeleton />}>
+                                        <EmployeeDirectory walletAddress={walletAddress} isAdmin={isAdmin} showToast={showToast} onPayEmployee={(emps) => { fetch('/api/employees', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' }, body: JSON.stringify({ intents: emps.map(e => ({ name: e.name, wallet: e.wallet, amount: e.amount, token: e.token, note: e.note })) }) }).then(() => fetchData()); }} />
+                                    </Suspense>
+                                </FeatureErrorBoundary>
+                            </div>
+                        )}
+
+                        {/* Employee Portal — visible to all users (employees see their pay history) */}
+                        {walletAddress && !isAdmin && (
+                            <FeatureErrorBoundary feature="Employee Portal">
                                 <Suspense fallback={<SectionSkeleton />}>
-                                    <SettlementReceipt settlements={history} settlementRef={settlementRef} />
+                                    <EmployeePortal walletAddress={walletAddress} />
                                 </Suspense>
                             </FeatureErrorBoundary>
                         )}
+
+                        <FeatureErrorBoundary feature="Settlement Receipt">
+                            <Suspense fallback={<SectionSkeleton />}>
+                                <SettlementReceipt settlements={history} settlementRef={settlementRef} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
 
                         <div id="section-jobs" className="scroll-mt-20">
                             <FeatureErrorBoundary feature="Job History">
@@ -701,6 +810,7 @@ export default function Dashboard() {
                                 </Suspense>
                             </FeatureErrorBoundary>
                         </div>
+
                     </div>
 
                     <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
@@ -719,6 +829,13 @@ export default function Dashboard() {
                         <FeatureErrorBoundary feature="Agent Earnings" compact>
                             <Suspense fallback={<SidebarSkeleton />}>
                                 <AgentEarnings walletAddress={walletAddress} />
+                            </Suspense>
+                        </FeatureErrorBoundary>
+
+                        {/* MPP Protocol */}
+                        <FeatureErrorBoundary feature="MPP Dashboard" compact>
+                            <Suspense fallback={null}>
+                                <MppDashboard />
                             </Suspense>
                         </FeatureErrorBoundary>
                     </div>

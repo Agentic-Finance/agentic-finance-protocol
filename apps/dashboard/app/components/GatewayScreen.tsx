@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
+import { useLoginWithOAuth } from '@privy-io/react-auth';
+import { ThemeSelector } from './ThemeToggle';
 
 interface GatewayProps {
     walletAddress: string | null;
@@ -22,12 +24,179 @@ interface GatewayProps {
     joinWorkspace: (e: React.FormEvent) => void;
     connectWallet: () => void;
     disconnectWallet: () => void;
+    initializeSession?: (wallet: string) => void;
+}
+
+function NotificationSetup({ walletAddress, workspaceName, onContinue }: { walletAddress: string | null; workspaceName: string; onContinue: () => void }) {
+    const [email, setEmail] = useState('');
+    const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
+
+    const handleSave = async () => {
+        if (!email || !email.includes('@')) return;
+        setSaving(true);
+        try {
+            // Save email preference
+            if (walletAddress) {
+                localStorage.setItem(`agtfi_notify_email_${walletAddress.toLowerCase()}`, email);
+            }
+            // Send welcome email
+            await fetch('/api/notifications/email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    to: email,
+                    type: 'workspace_created',
+                    workspaceName: workspaceName || 'My Workspace',
+                    data: {},
+                }),
+            });
+            setSaved(true);
+        } catch { /* ignore */ }
+        setSaving(false);
+    };
+
+    return (
+        <div className="animate-in fade-in slide-in-from-right-8">
+            <div className="text-center mb-6">
+                <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style={{ background: 'color-mix(in srgb, var(--agt-blue) 15%, transparent)' }}>
+                    <svg className="w-8 h-8" style={{ color: 'var(--agt-blue)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                </div>
+                <h3 className="text-xl font-bold" style={{ color: 'var(--pp-text-primary)' }}>Stay Informed</h3>
+                <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Get notified about payroll events</p>
+            </div>
+
+            {/* Email input */}
+            <div className="mb-4 p-4 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                <div className="flex items-center gap-3 mb-3">
+                    <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--agt-blue)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    <div>
+                        <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>Email Notifications</p>
+                        <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Payout confirmations, low balance alerts</p>
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        disabled={saved}
+                        className="flex-1 px-3 py-2.5 rounded-lg text-sm outline-none transition-all"
+                        style={{
+                            background: 'var(--pp-bg-primary)',
+                            border: '1px solid var(--pp-border)',
+                            color: 'var(--pp-text-primary)',
+                        }}
+                    />
+                    <button
+                        onClick={handleSave}
+                        disabled={saving || saved || !email.includes('@')}
+                        className="px-4 py-2.5 rounded-lg text-xs font-bold transition-all disabled:opacity-40"
+                        style={{
+                            background: saved ? 'color-mix(in srgb, var(--agt-mint) 15%, transparent)' : 'var(--pp-text-primary)',
+                            color: saved ? 'var(--agt-mint)' : 'var(--pp-bg-primary)',
+                        }}
+                    >
+                        {saved ? 'Saved' : saving ? '...' : 'Enable'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Telegram — real bot */}
+            <div className="mb-4 p-4 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                <div className="flex items-center gap-3 mb-3">
+                    <svg className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--agt-blue)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    <div>
+                        <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>Telegram Bot</p>
+                        <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Real-time alerts via @AgenticFinance_bot</p>
+                    </div>
+                </div>
+                <a
+                    href={`https://t.me/AgenticFinance_bot?start=${walletAddress || ''}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block w-full text-center text-xs font-bold py-2.5 rounded-lg transition-all"
+                    style={{ background: 'color-mix(in srgb, var(--agt-blue) 10%, transparent)', color: 'var(--agt-blue)', border: '1px solid color-mix(in srgb, var(--agt-blue) 20%, transparent)' }}
+                >
+                    Connect Telegram
+                </a>
+            </div>
+
+            {/* In-app */}
+            <div className="mb-6 p-4 rounded-xl flex items-center justify-between" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                    <div>
+                        <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>In-App Notifications</p>
+                        <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Bell icon in dashboard header</p>
+                    </div>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-1 rounded-full" style={{ background: 'color-mix(in srgb, var(--agt-mint) 10%, transparent)', color: 'var(--agt-mint)' }}>active</span>
+            </div>
+
+            <button onClick={onContinue} className="w-full py-4 text-sm font-bold rounded-xl transition-all" style={{ background: 'var(--pp-text-primary)', color: 'var(--pp-bg-primary)' }}>
+                Continue
+            </button>
+            <button onClick={onContinue} className="w-full py-2 mt-2 text-xs text-center transition-colors" style={{ color: 'var(--pp-text-muted)' }}>
+                Skip for now
+            </button>
+        </div>
+    );
 }
 
 export default function GatewayScreen(props: GatewayProps) {
+    const { initOAuth, loading: oauthLoading } = useLoginWithOAuth();
+
+    const handleGoogleLogin = useCallback(async () => {
+        try {
+            sessionStorage.setItem('agtfi_oauth_pending', 'true');
+            await initOAuth({ provider: 'google' });
+        } catch (e) { console.warn('[Privy] Google OAuth error:', e); }
+    }, [initOAuth]);
+
+    // No auto-connect here — wallet connection only happens via explicit user action
+    // (clicking Google/Wallet buttons above) or via page.tsx OAuth redirect detection
+
+    // Always show Connect screen first if wallet is not connected
+    if (!props.walletAddress) {
+        return (
+            <div className="min-h-screen bg-[var(--pp-bg-card)] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
+                <div className="relative z-10 text-center w-full px-4 sm:px-8 max-w-lg mx-auto">
+                    <div className="flex flex-col items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
+                        <Image src="/logo-v2.png" alt="Agentic Finance" width={120} height={120} className="h-20 md:h-24 w-auto object-contain mb-6 drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" priority />
+                        <span className="text-4xl md:text-5xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+                    </div>
+                    <p className="text-white/40 text-sm font-medium tracking-wide mb-10 animate-in slide-in-from-bottom-6 duration-1000">The Financial OS for the Agentic Economy</p>
+                    <div className="flex flex-col gap-3 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
+                        <button onClick={handleGoogleLogin} disabled={oauthLoading} className="w-full px-6 py-4 bg-white hover:bg-white/90 text-black text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
+                            {oauthLoading ? (
+                                <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                            ) : (
+                                <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                            )}
+                            {oauthLoading ? 'Redirecting...' : 'Continue with Google'}
+                        </button>
+                        <div className="flex items-center gap-3 text-white/20 text-xs my-1"><span className="h-px flex-1 bg-white/[0.06]" /><span>or</span><span className="h-px flex-1 bg-white/[0.06]" /></div>
+                        <button onClick={props.connectWallet} className="w-full px-6 py-4 bg-white/[0.04] hover:bg-white/[0.08] text-white text-sm font-bold rounded-xl transition-all border border-white/[0.08] hover:border-white/[0.15] flex items-center justify-center gap-3">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a2.25 2.25 0 00-2.25-2.25H15a3 3 0 11-6 0H5.25A2.25 2.25 0 003 12m18 0v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6m18 0V9M3 12V9m18 0a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 013 9m18 0V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 013 6v3" /></svg>
+                            Connect Web3 Wallet
+                        </button>
+                        <button onClick={() => { alert('Passkey authentication coming soon! Uses Face ID / Touch ID via WebAuthn P256 on Tempo L1.'); }} className="w-full px-6 py-3 bg-transparent hover:bg-white/[0.03] text-white/30 hover:text-white/50 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 11V7a5 5 0 0110 0v4M5 11h14a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7a2 2 0 012-2z" /></svg>
+                            Sign in with Passkey
+                        </button>
+                    </div>
+                    <p className="text-[10px] text-white/15 mt-8">By continuing, you agree to the Terms of Service and Privacy Policy</p>
+                </div>
+            </div>
+        );
+    }
+
     if (props.currentWorkspace === null && props.walletAddress) {
         return (
-            <div className="min-h-screen bg-[#111B2E] flex flex-col items-center justify-center relative overflow-hidden font-sans">
+            <div className="min-h-screen bg-[var(--pp-bg-card)] flex flex-col items-center justify-center relative overflow-hidden font-sans">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
 
                 <div className="relative z-10 w-full max-w-2xl px-4 sm:px-8">
@@ -107,10 +276,88 @@ export default function GatewayScreen(props: GatewayProps) {
                             </form>
                         )}
 
+                        {/* Step 4: Post-creation Setup (Theme + Welcome) — shown after workspace deployed */}
+                        {props.gatewayMode === 'Create' && props.setupStep === 4 && (
+                            <div className="animate-in fade-in slide-in-from-right-8">
+                                <div className="text-center mb-6">
+                                    <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4" style={{ background: 'color-mix(in srgb, var(--agt-mint) 15%, transparent)' }}>
+                                        <svg className="w-8 h-8" style={{ color: 'var(--agt-mint)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                    </div>
+                                    <h3 className="text-xl font-bold" style={{ color: 'var(--pp-text-primary)' }}>Workspace Created</h3>
+                                    <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>One more step before you start</p>
+                                </div>
+
+                                <div className="mb-6 p-4 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <ThemeSelector />
+                                </div>
+
+                                <button
+                                    onClick={() => props.setSetupStep(5)}
+                                    className="w-full py-4 text-sm font-bold rounded-xl transition-all"
+                                    style={{ background: 'var(--pp-text-primary)', color: 'var(--pp-bg-primary)' }}
+                                >
+                                    Continue
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Step 5: Notifications — real email input */}
+                        {props.gatewayMode === 'Create' && props.setupStep === 5 && (
+                            <NotificationSetup
+                                walletAddress={props.walletAddress}
+                                workspaceName={props.setupName}
+                                onContinue={() => props.setSetupStep(6)}
+                            />
+                        )}
+
+                        {/* Step 6: Ready! */}
+                        {props.gatewayMode === 'Create' && props.setupStep === 6 && (
+                            <div className="animate-in fade-in slide-in-from-right-8 text-center">
+                                <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6" style={{ background: 'color-mix(in srgb, var(--agt-mint) 15%, transparent)' }}>
+                                    <svg className="w-10 h-10" style={{ color: 'var(--agt-mint)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+
+                                <h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--pp-text-primary)' }}>You're all set!</h3>
+                                <p className="text-sm mb-8" style={{ color: 'var(--pp-text-muted)' }}>
+                                    Your workspace is ready. Start managing payroll, deploying agents, and streaming payments.
+                                </p>
+
+                                <div className="rounded-xl p-4 mb-6 text-left space-y-3" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Workspace</span>
+                                        <span className="text-sm font-bold" style={{ color: 'var(--pp-text-primary)' }}>{props.setupName || 'My Workspace'}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Admin Wallet</span>
+                                        <span className="text-xs font-mono" style={{ color: 'var(--pp-text-secondary)' }}>{props.walletAddress?.slice(0, 10)}...{props.walletAddress?.slice(-6)}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Network</span>
+                                        <span className="text-xs font-mono" style={{ color: 'var(--agt-mint)' }}>Tempo Moderato (42431)</span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        if (props.walletAddress) {
+                                            localStorage.setItem(`agtfi_setup_done_${props.walletAddress.toLowerCase()}`, 'true');
+                                        }
+                                        window.location.href = '/?app=1';
+                                    }}
+                                    className="w-full py-4 text-sm font-bold rounded-xl transition-all"
+                                    style={{ background: 'var(--agt-mint)', color: '#000' }}
+                                >
+                                    Enter Dashboard
+                                </button>
+                            </div>
+                        )}
+
                         {props.gatewayMode === 'Create' && props.setupStep === 3 && (
                             <form onSubmit={props.deployWorkspace} className="animate-in fade-in slide-in-from-right-8">
                                 <div className="flex items-center gap-3 mb-2">
-                                    <span className="w-10 h-10 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center text-xl">🚨</span>
+                                    <span className="w-10 h-10 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+                                    </span>
                                     <h3 className="text-xl font-bold text-rose-400">Critical Security Notice</h3>
                                 </div>
                                 <p className="text-sm text-slate-400 mb-6 pl-13 leading-relaxed">
@@ -151,29 +398,6 @@ export default function GatewayScreen(props: GatewayProps) {
                                 </div>
                             </form>
                         )}
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Connect Screen
-    if (props.currentWorkspace === undefined && props.walletAddress === null) {
-        return (
-            <div className="min-h-screen bg-[#111B2E] flex flex-col items-center justify-center relative overflow-hidden font-sans">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.10)_0%,_transparent_70%)] pointer-events-none mix-blend-screen"></div>
-                <div className="relative z-10 text-center w-full px-4 sm:px-8">
-                    <div className="flex flex-col items-center mb-8 animate-in slide-in-from-bottom-4 duration-700">
-                        <Image src="/logo-v2.png" alt="Agentic Finance" width={120} height={120} className="h-24 md:h-32 w-auto object-contain mb-6 drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" priority />
-                        <span className="text-5xl md:text-7xl font-extrabold text-white tracking-tight drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
-                    </div>
-                    <p className="text-indigo-100/90 text-sm md:text-2xl font-bold tracking-[0.15em] uppercase mb-16 animate-in slide-in-from-bottom-6 duration-1000 w-full md:whitespace-nowrap mx-auto leading-normal drop-shadow-lg text-center">
-                        The Financial OS for the Agentic Economy.
-                    </p>
-                    <div className="flex justify-center">
-                        <button onClick={props.connectWallet} className="px-8 sm:px-12 py-5 sm:py-6 bg-white/[0.05] hover:bg-white/[0.1] text-white text-lg sm:text-xl font-bold rounded-3xl transition-all duration-300 border border-white/[0.1] shadow-2xl hover:shadow-[0_0_50px_rgba(99,102,241,0.4)] hover:-translate-y-1 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
-                            Connect Web3 Wallet →
-                        </button>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BankIcon, ShieldCheckIcon, ShieldKeyIcon, LockIcon, XMarkIcon, ClockIcon, BoltIcon } from './icons';
+import InfoTooltip from './ui/InfoTooltip';
 
 interface BoardroomProps {
     boardroomRef: React.RefObject<HTMLDivElement | null>;
@@ -68,6 +69,7 @@ function Boardroom(props: BoardroomProps) {
                             <div>
                                 <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                                     Phantom Shield
+                                    <InfoTooltip text="ZK-SNARK PLONK proofs hide transaction amounts on-chain. Recipients receive funds, but the amounts and sender stay private. Uses Circom V2 + Poseidon hash." />
                                     <span className="agt-badge agt-badge-pink text-[11px] uppercase tracking-widest">Premium</span>
                                 </h4>
                                 <p className="text-xs mt-0.5" style={{ color: 'rgba(216,180,254,0.6)' }}>Mask transaction amounts via ZK-Rollups.</p>
@@ -90,6 +92,7 @@ function Boardroom(props: BoardroomProps) {
                             <div>
                                 <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                                     Gas Sponsorship
+                                    <InfoTooltip text="Tempo L1 provides free gas on testnet. The platform covers transaction fees so your recipients pay zero gas — they just receive funds." />
                                     <span className="agt-badge agt-badge-mint text-[11px] uppercase tracking-widest">Tempo</span>
                                 </h4>
                                 <p className="text-xs mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>Platform pays gas fees for recipients. Zero-cost payroll delivery.</p>

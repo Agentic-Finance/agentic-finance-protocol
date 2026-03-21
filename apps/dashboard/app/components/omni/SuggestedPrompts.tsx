@@ -5,6 +5,8 @@ import React, { useMemo } from 'react';
 interface SuggestedPromptsProps {
     onSelect: (prompt: string) => void;
     variant?: 'agent' | 'payroll';
+    /** Pass true for brand-new users who haven't transacted yet */
+    isNewUser?: boolean;
 }
 
 const AGENT_PROMPTS = [
@@ -31,34 +33,52 @@ const PAYROLL_PROMPTS = [
     { text: 'How do I set up ZK shielded payroll?', emoji: '🔐' },
 ];
 
-function SuggestedPrompts({ onSelect, variant = 'agent' }: SuggestedPromptsProps) {
+/** Contextual first-time prompts — guide new users step by step */
+const NEW_USER_PROMPTS = [
+    { text: 'Pay Alice 10 AlphaUSD', emoji: '👋', hint: 'Try your first transfer' },
+    { text: 'How does ZK Shield work?', emoji: '🔐', hint: 'Learn about privacy' },
+    { text: 'Send 50 AlphaUSD to 0x33F7...0793', emoji: '📤', hint: 'Pay a wallet address' },
+    { text: 'Upload payroll CSV file', emoji: '📋', hint: 'Bulk import recipients' },
+];
+
+function SuggestedPrompts({ onSelect, variant = 'agent', isNewUser = false }: SuggestedPromptsProps) {
     const prompts = variant === 'payroll' ? PAYROLL_PROMPTS : AGENT_PROMPTS;
 
     // Random rotate: pick 4 from the pool, stable per mount
     const displayed = useMemo(() => {
+        if (isNewUser && variant === 'payroll') return NEW_USER_PROMPTS;
         const shuffled = [...prompts].sort(() => Math.random() - 0.5);
         return shuffled.slice(0, 4);
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isNewUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const isPayroll = variant === 'payroll';
-    const hoverBorder = isPayroll ? 'hover:border-emerald-500/20' : 'hover:border-indigo-500/20';
-    const hoverBg = isPayroll ? 'hover:bg-emerald-500/[0.03]' : 'hover:bg-indigo-500/[0.03]';
-    const hoverText = isPayroll ? 'group-hover:text-emerald-300' : 'group-hover:text-indigo-300';
 
     return (
         <div className="mt-4 mb-2 animate-in fade-in duration-500">
-            <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mb-3 ml-0.5">
-                {variant === 'payroll' ? 'Quick actions' : 'Suggested tasks'}
+            <p className="text-xs font-medium uppercase tracking-wider mb-3 ml-0.5" style={{ color: 'var(--pp-text-muted)' }}>
+                {isNewUser ? 'Get started — try one of these' : (variant === 'payroll' ? 'Quick actions' : 'Suggested tasks')}
             </p>
             <div className="flex flex-wrap gap-2">
                 {displayed.map((prompt, idx) => (
                     <button
                         key={idx}
                         onClick={() => onSelect(prompt.text)}
-                        className={`group px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.05] ${hoverBorder} ${hoverBg} transition-all duration-150 text-left flex items-center gap-2`}
+                        className="group px-4 py-2.5 rounded-xl transition-all duration-150 text-left flex items-center gap-2"
+                        style={{
+                            background: isNewUser ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)',
+                            border: `1px solid ${isNewUser ? 'var(--agt-blue)' : 'var(--pp-border)'}`,
+                            borderColor: isNewUser ? 'rgba(27,191,236,0.25)' : 'var(--pp-border)',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = isPayroll ? 'var(--agt-mint)' : 'var(--agt-blue)'; e.currentTarget.style.background = 'var(--pp-surface-2)'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = isNewUser ? 'rgba(27,191,236,0.25)' : 'var(--pp-border)'; e.currentTarget.style.background = isNewUser ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)'; }}
                     >
                         <span className="text-base shrink-0">{prompt.emoji}</span>
-                        <span className={`text-xs text-slate-500 ${hoverText} transition-colors`}>{prompt.text}</span>
+                        <div>
+                            <span className="text-xs transition-colors" style={{ color: 'var(--pp-text-secondary)' }}>{prompt.text}</span>
+                            {'hint' in prompt && prompt.hint && (
+                                <span className="block text-[10px] mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>{prompt.hint}</span>
+                            )}
+                        </div>
                     </button>
                 ))}
             </div>

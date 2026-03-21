@@ -881,7 +881,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
 
                         {/* Payroll: Suggested Prompts (show when empty input, no intents, no answer) */}
                         {isPayroll && !aiPrompt.trim() && liveIntents.length === 0 && !chatAnswer && !guideData && (
-                            <SuggestedPrompts variant="payroll" onSelect={(text) => setAiPrompt(text)} />
+                            <SuggestedPrompts variant="payroll" onSelect={(text) => setAiPrompt(text)} isNewUser={!history || history.length === 0} />
                         )}
 
                         {/* A2A: Suggested Prompts (show when browsing + empty input) */}

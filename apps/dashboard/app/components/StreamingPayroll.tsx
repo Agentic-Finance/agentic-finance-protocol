@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import InfoTooltip from './ui/InfoTooltip';
 
 interface Stream {
     id: string;
@@ -47,15 +48,16 @@ function StreamingPayroll({ walletAddress }: { walletAddress: string }) {
         return (
             <div id="section-streams" className="scroll-mt-20 rounded-xl border p-5 mb-6" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <h3 className="text-base font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                         <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                         Streaming Payroll
+                        <InfoTooltip text="Real-time salary streaming — funds flow per-second to recipients via on-chain StreamV1 contract. Recipients can claim accrued earnings anytime." />
                     </h3>
-                    <span className="text-[10px] font-mono text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">per-second</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ color: 'var(--pp-text-muted)', background: 'var(--pp-surface-1)' }}>per-second</span>
                 </div>
                 <div className="text-center py-8">
-                    <p className="text-sm text-white/30">No active salary streams</p>
-                    <p className="text-xs text-white/15 mt-1">Create a stream via OmniTerminal or API</p>
+                    <p className="text-sm" style={{ color: 'var(--pp-text-muted)' }}>No active salary streams</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--pp-text-muted)', opacity: 0.6 }}>Create a stream via OmniTerminal or API</p>
                 </div>
             </div>
         );
@@ -64,7 +66,7 @@ function StreamingPayroll({ walletAddress }: { walletAddress: string }) {
     return (
         <div id="section-streams" className="scroll-mt-20 rounded-xl border p-5 mb-6" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <h3 className="text-base font-bold flex items-center gap-2" style={{ color: 'var(--pp-text-primary)' }}>
                     <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                     Streaming Payroll
                 </h3>

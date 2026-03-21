@@ -56,7 +56,7 @@ function TopStatsCards(props: TopStatsProps) {
             </div>
 
             {/* VAULT BALANCE */}
-            <div className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
+            <div id="onboard-vault" className="rounded-xl border p-5 transition-colors" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
                 <div className="flex items-center justify-between mb-4">
                     <span className="text-xs font-medium text-white/40 uppercase tracking-wide">Platform Vault</span>
                     <span className="text-[10px] font-mono text-white/30 bg-white/[0.05] px-2 py-0.5 rounded-full">shared</span>

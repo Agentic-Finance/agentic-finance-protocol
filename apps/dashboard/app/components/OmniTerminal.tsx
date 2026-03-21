@@ -720,7 +720,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 </>
             )}
 
-            <div className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700" data-section="omni-terminal">
+            <div id="onboard-terminal" className="mb-10 relative z-[20] animate-in fade-in slide-in-from-top-4 duration-700" data-section="omni-terminal">
                 <div className={`rounded-2xl relative overflow-visible transition-all duration-500 ${isDeployingAnimation ? 'scale-[0.98] blur-[1px]' : ''} ${isDraggingTerminal ? 'ring-2 ring-emerald-500/40 ring-offset-2 ring-offset-[#0C1017]' : ''}`} onDragOver={handleTerminalDragOver} onDragLeave={handleTerminalDragLeave} onDrop={handleTerminalDrop}>
 
                     <div className="p-4 sm:p-8 md:p-10 flex flex-col rounded-2xl" style={{ border: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>

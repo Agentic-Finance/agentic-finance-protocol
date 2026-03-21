@@ -9,7 +9,7 @@ function ActiveAgents(props: ActiveAgentsProps) {
     if (props.autopilotRules.length === 0) return null;
 
     return (
-        <div ref={props.autopilotRef} className="relative z-20 mb-10 scroll-mt-20">
+        <div id="onboard-agents" ref={props.autopilotRef} className="relative z-20 mb-10 scroll-mt-20">
             <div className="agt-card agt-card-accent-pink p-4 sm:p-8 flex flex-col relative overflow-hidden">
                 <div className="flex items-center justify-between mb-6 border-b border-white/[0.05] pb-6 relative z-10">
                     <h2 className="text-2xl font-bold text-[var(--pp-text-primary)] flex items-center gap-3">

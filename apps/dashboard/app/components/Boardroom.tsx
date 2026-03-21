@@ -29,7 +29,7 @@ function Boardroom(props: BoardroomProps) {
     const finalTotalDeduction = props.awaitingTotalAmountNum + calculatedFee + (props.usePhantomShield ? props.shieldFeeNum : 0);
 
     return (
-        <div ref={props.boardroomRef} className="relative z-20 mb-10 scroll-mt-20">
+        <div id="onboard-boardroom" ref={props.boardroomRef} className="relative z-20 mb-10 scroll-mt-20">
             <div className={`agt-card ${isAgentMode ? 'agt-card-accent-pink' : ''} p-4 sm:p-8 flex flex-col relative overflow-hidden`}>
 
                 {/* HEADER */}

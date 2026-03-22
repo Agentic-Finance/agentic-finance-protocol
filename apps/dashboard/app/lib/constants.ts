@@ -40,6 +40,18 @@ export const COMPLIANCE_REGISTRY_ADDRESS = "0x85F64F80CF5a314d23C26B137FB85EAE70
 export const REPUTATION_VERIFIER_ADDRESS = "0x2e2C368afB20810AadA9e6BB2Fb51002614F7Da4";
 export const REPUTATION_REGISTRY_ADDRESS = "0xF3296984cb8785Ab236322658c13051801E58875";
 
+// Proof Chain Settlement — Incremental proof chaining for micropayments
+// 16 payments/batch, chained proofs, 90%+ gas savings vs individual verification
+// Deployed on Tempo Moderato (chain 42431)
+export const PROOF_CHAIN_VERIFIER_ADDRESS = "0xc5B22fE8a493441aAc5fD17B15D2C423E2587b42";
+export const PROOF_CHAIN_SETTLEMENT_ADDRESS = "0x0ED1D5cFDe33f05Ce377cB6e9a0A23570255060D";
+
+// LayerZero ZK DVN — Cross-chain ZK-verified messaging
+// Deployed on Tempo Moderato (chain 42431)
+export const AGTFI_ZK_DVN_ADDRESS = "0xff5E640b867858C30a673ff68e5c0D687f11E29e";
+export const CROSS_CHAIN_HUB_ADDRESS = "0x5794051787300d44379e4CF686C64EDc43ADf0C4";
+export const CROSS_CHAIN_SPOKE_ADDRESS = "0x7201B8Bdd76AC1696408FD7A429dd83BcBE8CFda";
+
 // Legacy ABI - kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 

@@ -2,19 +2,26 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/ReputationRegistry.sol";
+import "../src/ReputationVerifier.sol";
+import "../src/AgentReputationRegistry.sol";
 
 contract DeployReputation is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        address botWallet = vm.envAddress("BOT_WALLET");
 
         vm.startBroadcast(deployerPrivateKey);
 
-        ReputationRegistry reputation = new ReputationRegistry(
-            0x6A467Cd4156093bB528e448C04366586a1052Fab, // PayPolNexusV2
-            0x8fDB8E871c9eaF2955009566F41490Bbb128a014  // AIProofRegistry
+        // 1. Deploy ReputationVerifier (PLONK verifier for reputation circuit)
+        ReputationPlonkVerifier reputationVerifier = new ReputationPlonkVerifier();
+        console.log("ReputationVerifier deployed at:", address(reputationVerifier));
+
+        // 2. Deploy AgentReputationRegistry
+        AgentReputationRegistry registry = new AgentReputationRegistry(
+            address(reputationVerifier),
+            botWallet
         );
-        console.log("ReputationRegistry deployed at:", address(reputation));
+        console.log("AgentReputationRegistry deployed at:", address(registry));
 
         vm.stopBroadcast();
     }

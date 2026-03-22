@@ -155,7 +155,7 @@ contract ComplianceRegistry {
         // Validate public signals match current state
         require(
             proofSanctionsRoot == sanctionsRoot,
-            "ComplianceRegistry: sanctions root mismatch — use current root"
+            "ComplianceRegistry: sanctions root mismatch"
         );
         require(
             proofAmountThreshold == amountThreshold,

@@ -28,6 +28,18 @@ export const AI_PROOF_REGISTRY_ADDRESS = "0x8fDB8E871c9eaF2955009566F41490Bbb128
 // Deployed & verified on Tempo Moderato (chain 42431)
 export const STREAM_V1_ADDRESS = "0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C";
 
+// ZK Compliance Registry - "Private but Legal" compliance proofs
+// OFAC non-membership + AML amount/volume range proofs (PLONK)
+// Deployed on Tempo Moderato (chain 42431)
+export const COMPLIANCE_VERIFIER_ADDRESS = "0x4896f5797b59CC8EE5e942eBd0Ed6772af9131fF";
+export const COMPLIANCE_REGISTRY_ADDRESS = "0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14";
+
+// ZK Agent Reputation Registry - Anonymous credit score for AI agents
+// Hash chain accumulator + reputation proofs (PLONK)
+// Deployed on Tempo Moderato (chain 42431)
+export const REPUTATION_VERIFIER_ADDRESS = "0x2e2C368afB20810AadA9e6BB2Fb51002614F7Da4";
+export const REPUTATION_REGISTRY_ADDRESS = "0xF3296984cb8785Ab236322658c13051801E58875";
+
 // Legacy ABI - kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 

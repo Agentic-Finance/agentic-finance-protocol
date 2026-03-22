@@ -133,9 +133,7 @@ export const STREAM_V1_ABI = [
     "event StreamCancelled(uint256 indexed streamId, uint256 refundedAmount)",
 ] as const;
 
-// Reputation Registry - On-chain AI agent reputation scoring
-// Deployed & verified on Tempo Moderato (chain 42431)
-export const REPUTATION_REGISTRY_ADDRESS = "0x9332c1B2bb94C96DA2D729423f345c76dB3494D0";
+// Reputation Registry ABI (legacy — used for non-ZK reputation queries)
 
 export const REPUTATION_REGISTRY_ABI = [
     "function updateReputation(address _agent, uint256 _nexusRatingSum, uint256 _nexusRatingCount, uint256 _offChainRatingSum, uint256 _offChainRatingCount, uint256 _totalJobsCompleted, uint256 _totalJobsFailed, uint256 _proofCommitments, uint256 _proofVerified, uint256 _proofMatched, uint256 _proofSlashed) external",

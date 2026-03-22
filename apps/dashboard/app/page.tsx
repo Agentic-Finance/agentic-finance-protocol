@@ -33,6 +33,9 @@ const StreamingPayroll = lazy(() => import('./components/StreamingPayroll'));
 const MppDashboard = lazy(() => import('./components/MppDashboard'));
 const EmployeePortal = lazy(() => import('./components/EmployeePortal'));
 import OnboardingChecklist from './components/onboarding/OnboardingChecklist';
+import ComplianceStatus from './components/ComplianceStatus';
+import AgentReputationPanel from './components/AgentReputationPanel';
+import MppSessionKeys from './components/MppSessionKeys';
 import { useOnboarding } from './hooks/useOnboarding';
 
 // Chat components (lazy loaded — not needed at initial render)
@@ -897,6 +900,19 @@ export default function Dashboard() {
                             <Suspense fallback={null}>
                                 <MppDashboard />
                             </Suspense>
+                        </FeatureErrorBoundary>
+
+                        {/* MPP Session Keys */}
+                        <FeatureErrorBoundary feature="MPP Session Keys" compact>
+                            <MppSessionKeys walletAddress={walletAddress} />
+                        </FeatureErrorBoundary>
+
+                        {/* ZK Compliance + Reputation */}
+                        <FeatureErrorBoundary feature="ZK Compliance" compact>
+                            <ComplianceStatus />
+                        </FeatureErrorBoundary>
+                        <FeatureErrorBoundary feature="Agent Reputation" compact>
+                            <AgentReputationPanel />
                         </FeatureErrorBoundary>
                     </div>
                 </div>

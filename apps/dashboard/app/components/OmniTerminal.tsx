@@ -942,37 +942,126 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     onKeyDown={handleKeyDownToDeploy}
                                     disabled={isA2aActive && !isPayroll}
                                     className={`relative z-10 caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-words w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide ${isA2aActive && !isPayroll ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    style={{ color: 'var(--pp-text-primary)', ...(aiPrompt.startsWith('[') && aiPrompt.includes('/pay/') ? { display: 'none' } : {}) }}
+                                    style={{ color: 'var(--pp-text-primary)', ...(aiPrompt.startsWith('[') && (aiPrompt.includes('/pay/') || aiPrompt.includes('Split') || aiPrompt.includes('INV-') || aiPrompt.includes('Template') || aiPrompt.includes('Schedule Send') || aiPrompt.includes('request sent')) ? { display: 'none' } : {}) }}
                                     spellCheck={false}
                                 />
                             </div>
                         </div>
 
-                        {/* Payment Link Preview — show clickable link + QR */}
-                        {aiPrompt.startsWith('[') && aiPrompt.includes('http') && (
-                            <div className="mt-3 p-4 rounded-xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'var(--pp-border)' }}>
-                                {(() => {
-                                    // Extract only the payment link (not QR API link)
-                                    const payLinkMatch = aiPrompt.match(/(https?:\/\/[^\s,\]]+\/pay\/[^\s,\]]+)/);
-                                    const qrMatch = aiPrompt.match(/(https:\/\/api\.qrserver\.com\/[^\s,\]]+)/);
-                                    return (
-                                        <div className="flex items-center gap-5">
-                                            {qrMatch && <img src={qrMatch[1]} alt="QR Code" width={100} height={100} className="rounded-lg flex-shrink-0" />}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--pp-text-muted)' }}>Payment Link Created</p>
-                                                {payLinkMatch && (
-                                                    <a href={payLinkMatch[1]} target="_blank" rel="noopener noreferrer"
-                                                        className="font-mono text-[14px] font-semibold underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all"
-                                                        style={{ color: 'var(--agt-mint)' }}
-                                                    >{payLinkMatch[1]}</a>
-                                                )}
-                                                <p className="text-[11px] mt-2" style={{ color: 'var(--pp-text-muted)' }}>Share link or scan QR code. Copied to clipboard.</p>
+                        {/* ── Tool Visual Previews ── */}
+                        {aiPrompt.startsWith('[') && (() => {
+                            const payLinkMatch = aiPrompt.match(/(https?:\/\/[^\s,\]]+\/pay\/[^\s,\]]+)/);
+                            const qrMatch = aiPrompt.match(/(https:\/\/api\.qrserver\.com\/[^\s,\]]+)/);
+                            const isSplit = aiPrompt.includes('Split');
+                            const isInvoice = aiPrompt.includes('Invoice') && aiPrompt.includes('INV-');
+                            const isTemplate = aiPrompt.includes('Template');
+                            const isSchedule = aiPrompt.includes('Schedule Send');
+                            const isRequest = aiPrompt.includes('request sent');
+
+                            // Payment Link + QR
+                            if (payLinkMatch) return (
+                                <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'var(--pp-border)' }}>
+                                    <div className="flex items-center gap-5">
+                                        {qrMatch && <img src={qrMatch[1]} alt="QR Code" width={100} height={100} className="rounded-xl flex-shrink-0" />}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(62,221,185,0.15)' }}>
+                                                    <svg className="w-3.5 h-3.5" style={{ color: 'var(--agt-mint)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                                                </span>
+                                                <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--agt-mint)' }}>Payment Link Created</p>
                                             </div>
+                                            <a href={payLinkMatch[1]} target="_blank" rel="noopener noreferrer"
+                                                className="font-mono text-[14px] font-semibold underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all"
+                                                style={{ color: 'var(--agt-mint)' }}
+                                            >{payLinkMatch[1]}</a>
+                                            <p className="text-[11px] mt-2" style={{ color: 'var(--pp-text-muted)' }}>Share link or scan QR. Copied to clipboard.</p>
                                         </div>
-                                    );
-                                })()}
-                            </div>
-                        )}
+                                    </div>
+                                </div>
+                            );
+
+                            // Split Bill
+                            if (isSplit) return (
+                                <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'rgba(255,45,135,0.15)' }}>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,45,135,0.15)' }}>
+                                            <svg className="w-3.5 h-3.5" style={{ color: 'var(--agt-pink)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>
+                                        </span>
+                                        <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--agt-pink)' }}>Split Bill</p>
+                                    </div>
+                                    <p className="text-[13px]" style={{ color: 'var(--pp-text-secondary)' }}>
+                                        {aiPrompt.replace(/^\[|\]$/g, '')}
+                                    </p>
+                                    <p className="text-[10px] mt-2" style={{ color: 'var(--pp-text-muted)' }}>Type total + recipients above, then press Enter. Example: "Split 1000 between Alice, Bob, Charlie"</p>
+                                </div>
+                            );
+
+                            // Invoice
+                            if (isInvoice) {
+                                const invMatch = aiPrompt.match(/INV-[\d-]+/);
+                                return (
+                                    <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'rgba(27,191,236,0.15)' }}>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(27,191,236,0.15)' }}>
+                                                <svg className="w-3.5 h-3.5" style={{ color: 'var(--agt-blue)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                            </span>
+                                            <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--agt-blue)' }}>Invoice {invMatch?.[0]}</p>
+                                        </div>
+                                        <p className="text-[13px]" style={{ color: 'var(--pp-text-secondary)' }}>Type line items and recipient, then press Enter.</p>
+                                        <div className="mt-3 p-3 rounded-lg" style={{ background: 'var(--pp-bg-elevated)', border: '1px dashed var(--pp-border)' }}>
+                                            <p className="text-[11px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>Example: "Web design $2000, Hosting $500 to 0x33F7..."</p>
+                                        </div>
+                                    </div>
+                                );
+                            }
+
+                            // Batch Template
+                            if (isTemplate) return (
+                                <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'rgba(255,125,44,0.15)' }}>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,125,44,0.15)' }}>
+                                            <svg className="w-3.5 h-3.5" style={{ color: 'var(--agt-orange)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 00-9-9z" /></svg>
+                                        </span>
+                                        <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--agt-orange)' }}>Batch Template</p>
+                                    </div>
+                                    <p className="text-[13px]" style={{ color: 'var(--pp-text-secondary)' }}>
+                                        {aiPrompt.replace(/^\[|\]$/g, '')}
+                                    </p>
+                                </div>
+                            );
+
+                            // Schedule Send
+                            if (isSchedule) return (
+                                <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'rgba(167,139,250,0.15)' }}>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.15)' }}>
+                                            <svg className="w-3.5 h-3.5" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        </span>
+                                        <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#a78bfa' }}>Schedule Send</p>
+                                    </div>
+                                    <p className="text-[13px]" style={{ color: 'var(--pp-text-secondary)' }}>
+                                        {aiPrompt.replace(/^\[|\]$/g, '')}
+                                    </p>
+                                </div>
+                            );
+
+                            // Payment Request sent
+                            if (isRequest) return (
+                                <div className="mt-3 p-5 rounded-2xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'rgba(62,221,185,0.15)' }}>
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <span className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'rgba(62,221,185,0.15)' }}>
+                                            <svg className="w-3.5 h-3.5" style={{ color: 'var(--agt-mint)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                        </span>
+                                        <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--agt-mint)' }}>Request Sent</p>
+                                    </div>
+                                    <p className="text-[13px]" style={{ color: 'var(--pp-text-secondary)' }}>
+                                        {aiPrompt.replace(/^\[|\]$/g, '')}
+                                    </p>
+                                </div>
+                            );
+
+                            return null;
+                        })()}
 
                         {/* Chat Answer (Payroll) */}
                         {chatAnswer && (

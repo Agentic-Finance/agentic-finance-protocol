@@ -21,6 +21,7 @@ import InvoiceUploadModal from './omni/InvoiceUploadModal';
 import SuggestedPrompts from './omni/SuggestedPrompts';
 import AgentDetailModal from './omni/AgentDetailModal';
 import A2AChainViewer from './omni/A2AChainViewer';
+import AgentHub from './omni/AgentHub';
 import type { ParsedIntent } from './omni/types';
 import type { Condition } from './omni/ConditionBuilder';
 import type { DiscoveredAgent } from '../hooks/useAgentMarketplace';
@@ -1195,6 +1196,11 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 onOrchestrate={handleOrchestrate}
                                 isOrchestrating={orchestration.isLoading}
                             />
+                        )}
+
+                        {/* Agent Hub — Leaderboard, Arena, Live Feed, Analytics */}
+                        {!isPayroll && marketplace.phase === 'browsing' && (
+                            <AgentHub walletAddress={walletAddress} onSwitchToMarketplace={() => {}} />
                         )}
 
                         {/* A2A: Task Prompt (Hire from browse → describe task first) */}

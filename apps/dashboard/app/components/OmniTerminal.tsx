@@ -948,32 +948,28 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             </div>
                         </div>
 
-                        {/* Payment Link Preview — show clickable links when prompt contains URLs */}
+                        {/* Payment Link Preview — show clickable link + QR */}
                         {aiPrompt.startsWith('[') && aiPrompt.includes('http') && (
                             <div className="mt-3 p-4 rounded-xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'var(--pp-border)' }}>
-                                <div className="text-[13px] leading-relaxed" style={{ color: 'var(--pp-text-secondary)' }}>
-                                    {aiPrompt.replace(/^\[|\]$/g, '').split(/(https?:\/\/[^\s,\]]+)/g).map((part, i) =>
-                                        /^https?:\/\//.test(part) ? (
-                                            <a key={i} href={part} target="_blank" rel="noopener noreferrer"
-                                                className="font-mono font-semibold underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity"
-                                                style={{ color: 'var(--agt-mint)' }}
-                                                onClick={e => { e.preventDefault(); navigator.clipboard?.writeText(part); }}
-                                                title="Click to copy"
-                                            >{part.length > 60 ? part.slice(0, 40) + '...' + part.slice(-15) : part}</a>
-                                        ) : <span key={i}>{part}</span>
-                                    )}
-                                </div>
-                                {aiPrompt.includes('QR') && aiPrompt.includes('qrserver') && (() => {
+                                {(() => {
+                                    // Extract only the payment link (not QR API link)
+                                    const payLinkMatch = aiPrompt.match(/(https?:\/\/[^\s,\]]+\/pay\/[^\s,\]]+)/);
                                     const qrMatch = aiPrompt.match(/(https:\/\/api\.qrserver\.com\/[^\s,\]]+)/);
-                                    return qrMatch ? (
-                                        <div className="mt-3 flex items-center gap-4">
-                                            <img src={qrMatch[1]} alt="QR Code" width={100} height={100} className="rounded-lg" />
-                                            <div>
-                                                <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)' }}>Scan to pay</p>
-                                                <p className="text-[10px] mt-1" style={{ color: 'var(--pp-text-muted)' }}>Or share the link above</p>
+                                    return (
+                                        <div className="flex items-center gap-5">
+                                            {qrMatch && <img src={qrMatch[1]} alt="QR Code" width={100} height={100} className="rounded-lg flex-shrink-0" />}
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--pp-text-muted)' }}>Payment Link Created</p>
+                                                {payLinkMatch && (
+                                                    <a href={payLinkMatch[1]} target="_blank" rel="noopener noreferrer"
+                                                        className="font-mono text-[14px] font-semibold underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity break-all"
+                                                        style={{ color: 'var(--agt-mint)' }}
+                                                    >{payLinkMatch[1]}</a>
+                                                )}
+                                                <p className="text-[11px] mt-2" style={{ color: 'var(--pp-text-muted)' }}>Share link or scan QR code. Copied to clipboard.</p>
                                             </div>
                                         </div>
-                                    ) : null;
+                                    );
                                 })()}
                             </div>
                         )}

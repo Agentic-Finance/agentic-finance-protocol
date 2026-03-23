@@ -32,6 +32,7 @@ const EmployeeDirectory = lazy(() => import('./components/EmployeeDirectory'));
 const StreamingPayroll = lazy(() => import('./components/StreamingPayroll'));
 const MppDashboard = lazy(() => import('./components/MppDashboard'));
 const EmployeePortal = lazy(() => import('./components/EmployeePortal'));
+const PayrollAnalytics = lazy(() => import('./components/PayrollAnalytics'));
 import OnboardingChecklist from './components/onboarding/OnboardingChecklist';
 import ComplianceStatus from './components/ComplianceStatus';
 import AgentReputationPanel from './components/AgentReputationPanel';
@@ -833,6 +834,15 @@ export default function Dashboard() {
                                     </Suspense>
                                 </FeatureErrorBoundary>
                             </div>
+                        )}
+
+                        {/* Payroll Analytics — admin only */}
+                        {isAdmin && (
+                            <FeatureErrorBoundary feature="Payroll Analytics">
+                                <Suspense fallback={<SectionSkeleton />}>
+                                    <PayrollAnalytics walletAddress={walletAddress} isAdmin={isAdmin} />
+                                </Suspense>
+                            </FeatureErrorBoundary>
                         )}
 
                         {/* Employee Portal — visible to all users (employees see their pay history) */}

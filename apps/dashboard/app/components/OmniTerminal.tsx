@@ -438,6 +438,47 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     }, []);
 
     // ==========================================
+    // PAYMENT TOOLS: Handle Pay Tools actions
+    // ==========================================
+    const handlePayToolAction = useCallback((tool: string) => {
+        switch (tool) {
+            case 'payment-link': {
+                const linkId = crypto.randomUUID().slice(0, 8);
+                const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://agt.finance';
+                const link = `${baseUrl}/pay/${linkId}`;
+                navigator.clipboard?.writeText(link);
+                setAiPrompt(`[Payment Link generated: ${link} — Copied to clipboard! Share this link for anyone to pay you. Configure amount and token in the link settings.]`);
+                showToast('success', 'Payment link copied to clipboard!');
+                break;
+            }
+            case 'request-pay': {
+                setAiPrompt('[Request Payment mode — Type: "Request 500 AlphaUSD from 0x... for March consulting" and press Enter to send a payment request notification.]');
+                showToast('success', 'Request Payment mode active. Type your request below.');
+                break;
+            }
+            case 'split-pay': {
+                setAiPrompt('[Split Payment mode — Type: "Split 1000 AlphaUSD between Alice, Bob, Charlie equally" and press Enter to auto-calculate shares.]');
+                showToast('success', 'Split Payment mode active. Type the total and recipients below.');
+                break;
+            }
+            case 'subscription': {
+                setShowConditionBuilder(true);
+                setRecurringMode('monthly');
+                setConditions([{
+                    id: crypto.randomUUID(),
+                    type: 'date_time',
+                    param: '1st of month',
+                    operator: '>=',
+                    value: new Date().toISOString().split('T')[0],
+                }]);
+                setAiPrompt('[Subscription mode — Set up recurring payment. Add recipients above, configure frequency below, then Deploy.]');
+                showToast('success', 'Subscription mode — configure recurring payment below.');
+                break;
+            }
+        }
+    }, [showToast]);
+
+    // ==========================================
     // EXECUTION - PAYROLL (handles both standard and conditional)
     // ==========================================
     // Delete individual intent
@@ -1019,7 +1060,10 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             omniFileRef={omniFileRef}
                             processCSV={processCSV}
                             aiPrompt={aiPrompt}
-                            onInvoiceClick={() => setShowInvoiceModal(true)}
+                            onPaymentLinkClick={() => handlePayToolAction('payment-link')}
+                            onRequestPayClick={() => handlePayToolAction('request-pay')}
+                            onSplitPayClick={() => handlePayToolAction('split-pay')}
+                            onSubscriptionClick={() => handlePayToolAction('subscription')}
                             showConditionBuilder={showConditionBuilder}
                             onToggleConditions={() => {
                                 if (showConditionBuilder) {

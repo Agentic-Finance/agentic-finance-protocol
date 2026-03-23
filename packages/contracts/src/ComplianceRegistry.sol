@@ -53,6 +53,12 @@ contract ComplianceRegistry {
     /// @notice Maximum age of a compliance certificate (seconds)
     uint256 public certificateMaxAge;
 
+    /// @notice Fee per proof verification (in wei, 0 = free)
+    uint256 public proofFee;
+
+    /// @notice Total fees collected
+    uint256 public totalFeesCollected;
+
     /// @notice Compliance certificate for a commitment
     struct ComplianceCertificate {
         uint256 sanctionsRoot;       // Which sanctions root was used
@@ -146,7 +152,10 @@ contract ComplianceRegistry {
     function verifyCertify(
         uint256[24] calldata _proof,
         uint256[4] calldata _pubSignals
-    ) external returns (bool certificateValid) {
+    ) external payable returns (bool certificateValid) {
+        require(msg.value >= proofFee, "ComplianceRegistry: insufficient fee");
+        if (msg.value > 0) totalFeesCollected += msg.value;
+
         uint256 proofSanctionsRoot = _pubSignals[0];
         uint256 commitment = _pubSignals[1];
         uint256 proofAmountThreshold = _pubSignals[2];
@@ -296,6 +305,23 @@ contract ComplianceRegistry {
         require(newOwner != address(0), "ComplianceRegistry: zero address");
         emit OwnershipTransferred(owner, newOwner);
         owner = newOwner;
+    }
+
+    /**
+     * @notice Set proof verification fee
+     * @param _fee Fee in wei per proof verification
+     */
+    function setProofFee(uint256 _fee) external onlyOwner {
+        proofFee = _fee;
+    }
+
+    /**
+     * @notice Withdraw collected fees
+     */
+    function withdrawFees() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "ComplianceRegistry: no fees to withdraw");
+        payable(owner).transfer(balance);
     }
 
 

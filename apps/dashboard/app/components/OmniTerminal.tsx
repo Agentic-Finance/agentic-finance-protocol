@@ -948,6 +948,36 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             </div>
                         </div>
 
+                        {/* Payment Link Preview — show clickable links when prompt contains URLs */}
+                        {aiPrompt.startsWith('[') && aiPrompt.includes('http') && (
+                            <div className="mt-3 p-4 rounded-xl border animate-in fade-in slide-in-from-top-2" style={{ background: 'var(--pp-surface-1)', borderColor: 'var(--pp-border)' }}>
+                                <div className="text-[13px] leading-relaxed" style={{ color: 'var(--pp-text-secondary)' }}>
+                                    {aiPrompt.replace(/^\[|\]$/g, '').split(/(https?:\/\/[^\s,\]]+)/g).map((part, i) =>
+                                        /^https?:\/\//.test(part) ? (
+                                            <a key={i} href={part} target="_blank" rel="noopener noreferrer"
+                                                className="font-mono font-semibold underline underline-offset-2 decoration-1 hover:opacity-80 transition-opacity"
+                                                style={{ color: 'var(--agt-mint)' }}
+                                                onClick={e => { e.preventDefault(); navigator.clipboard?.writeText(part); }}
+                                                title="Click to copy"
+                                            >{part.length > 60 ? part.slice(0, 40) + '...' + part.slice(-15) : part}</a>
+                                        ) : <span key={i}>{part}</span>
+                                    )}
+                                </div>
+                                {aiPrompt.includes('QR') && aiPrompt.includes('qrserver') && (() => {
+                                    const qrMatch = aiPrompt.match(/(https:\/\/api\.qrserver\.com\/[^\s,\]]+)/);
+                                    return qrMatch ? (
+                                        <div className="mt-3 flex items-center gap-4">
+                                            <img src={qrMatch[1]} alt="QR Code" width={100} height={100} className="rounded-lg" />
+                                            <div>
+                                                <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)' }}>Scan to pay</p>
+                                                <p className="text-[10px] mt-1" style={{ color: 'var(--pp-text-muted)' }}>Or share the link above</p>
+                                            </div>
+                                        </div>
+                                    ) : null;
+                                })()}
+                            </div>
+                        )}
+
                         {/* Chat Answer (Payroll) */}
                         {chatAnswer && (
                             <div className="mt-4 p-5 rounded-2xl border border-indigo-500/30 animate-in fade-in slide-in-from-top-4 stat-card-bg">

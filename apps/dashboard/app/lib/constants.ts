@@ -52,6 +52,12 @@ export const AGTFI_ZK_DVN_ADDRESS = "0xff5E640b867858C30a673ff68e5c0D687f11E29e"
 export const CROSS_CHAIN_HUB_ADDRESS = "0x5794051787300d44379e4CF686C64EDc43ADf0C4";
 export const CROSS_CHAIN_SPOKE_ADDRESS = "0x7201B8Bdd76AC1696408FD7A429dd83BcBE8CFda";
 
+// MPP Compliance Gateway — session keys bound to ZK compliance
+export const MPP_COMPLIANCE_GATEWAY_ADDRESS = "0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d";
+
+// Agent Discovery Registry — privacy-preserving agent marketplace
+export const AGENT_DISCOVERY_REGISTRY_ADDRESS = "0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47";
+
 // Legacy ABI - kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 

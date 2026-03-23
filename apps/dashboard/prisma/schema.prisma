@@ -126,6 +126,46 @@ model PayrollTemplate {
   @@index([workspaceId])
 }
 
+// 🔗 Payment Links (shareable pay links like Stripe Payment Links)
+model PaymentLink {
+  id              String   @id @default(uuid())
+  shortId         String   @unique  // 8-char ID for URL: /pay/abc12345
+  creatorWallet   String             // Who created this link
+  amount          Float?             // null = payer decides amount
+  token           String   @default("AlphaUSD")
+  note            String?            // Description/memo
+  recipientWallet String             // Where payment goes
+  recipientName   String?            // Display name
+  maxUses         Int      @default(0) // 0 = unlimited
+  useCount        Int      @default(0)
+  expiresAt       DateTime?          // null = never expires
+  status          String   @default("active") // active, paused, expired
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@index([shortId])
+  @@index([creatorWallet])
+  @@index([status])
+}
+
+// 📩 Payment Requests (request money from another wallet)
+model PaymentRequest {
+  id              String   @id @default(uuid())
+  fromWallet      String   // Who is requesting (requester)
+  toWallet        String   // Who should pay (payer)
+  amount          Float
+  token           String   @default("AlphaUSD")
+  note            String?
+  status          String   @default("pending") // pending, paid, declined, expired
+  paidAt          DateTime?
+  paidTxHash      String?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+
+  @@index([fromWallet])
+  @@index([toWallet, status])
+}
+
 // 📝 Boardroom Queue (OmniTerminal Intents)
 // Stores temporary transactions before Admin signs the Escrow
 model EmployeeTx {

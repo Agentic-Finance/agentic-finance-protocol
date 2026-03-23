@@ -227,6 +227,57 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 const { SUPPORTED_TOKENS: currentTokens, contacts: currentContacts, history: currentHistory } = latestDataRef.current;
                 const safeContacts = currentContacts.length > 0 ? currentContacts : [{ name: 'Tony', wallet: '0xe89b...' }];
 
+                // ── Request Payment detection ──
+                const requestMatch = debouncedPrompt.match(/request\s+(\d+[\d,.]*)\s*(\w+)?\s+from\s+(0x[a-fA-F0-9]{40}|\w+)/i);
+                if (requestMatch) {
+                    const amount = requestMatch[1].replace(/,/g, '');
+                    const token = requestMatch[2] || 'AlphaUSD';
+                    const target = requestMatch[3];
+                    const targetWallet = /^0x[a-fA-F0-9]{40}$/i.test(target) ? target : (safeContacts.find(c => c.name.toLowerCase() === target.toLowerCase())?.wallet || target);
+                    const noteMatch = debouncedPrompt.match(/for\s+(.+)$/i);
+                    try {
+                        const res = await fetch('/api/payment-request', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ fromWallet: walletAddress, toWallet: targetWallet, amount, token, note: noteMatch?.[1] || null }),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            setAiPrompt(`[Payment request sent! ${amount} ${token} requested from ${targetWallet.slice(0, 10)}...${noteMatch?.[1] ? ' for ' + noteMatch[1] : ''}]`);
+                            showToast('success', `Payment request sent to ${targetWallet.slice(0, 10)}...`);
+                        } else {
+                            showToast('error', data.error || 'Failed to send request.');
+                        }
+                    } catch { showToast('error', 'Network error sending request.'); }
+                    setIsAiParsing(false);
+                    return;
+                }
+
+                // ── Split Payment detection ──
+                const splitMatch = debouncedPrompt.match(/split\s+(\d+[\d,.]*)\s*(\w+)?\s+(?:between|among)\s+(.+?)(?:\s+equally)?$/i);
+                if (splitMatch) {
+                    const totalAmount = parseFloat(splitMatch[1].replace(/,/g, ''));
+                    const token = splitMatch[2] || 'AlphaUSD';
+                    const namesStr = splitMatch[3];
+                    const names = namesStr.split(/[,&]|\band\b/i).map(n => n.trim()).filter(Boolean);
+                    if (names.length > 0) {
+                        const perPerson = Math.round((totalAmount / names.length) * 100) / 100;
+                        let indexCounter = 0;
+                        const splitIntents: ParsedIntent[] = names.map(name => {
+                            const contact = safeContacts.find(c => c.name.toLowerCase() === name.toLowerCase());
+                            return {
+                                name, wallet: contact?.wallet || '0x00...00', isRawWallet: false,
+                                amount: perPerson.toString(), token, note: `Split ${names.length} ways from ${totalAmount} ${token}`,
+                                indexId: indexCounter++,
+                            };
+                        });
+                        setLiveIntents(splitIntents);
+                        setAiPrompt(`[Split: ${totalAmount} ${token} ÷ ${names.length} = ${perPerson} ${token} each. Review and Deploy.]`);
+                        setIsAiParsing(false);
+                        return;
+                    }
+                }
+
                 const response = await fetch('/api/ai-parse', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793' },
@@ -440,24 +491,44 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
     // ==========================================
     // PAYMENT TOOLS: Handle Pay Tools actions
     // ==========================================
-    const handlePayToolAction = useCallback((tool: string) => {
+    const handlePayToolAction = useCallback(async (tool: string) => {
         switch (tool) {
             case 'payment-link': {
-                const linkId = crypto.randomUUID().slice(0, 8);
-                const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://agt.finance';
-                const link = `${baseUrl}/pay/${linkId}`;
-                navigator.clipboard?.writeText(link);
-                setAiPrompt(`[Payment Link generated: ${link} — Copied to clipboard! Share this link for anyone to pay you. Configure amount and token in the link settings.]`);
-                showToast('success', 'Payment link copied to clipboard!');
+                // Create REAL payment link in DB
+                try {
+                    const res = await fetch('/api/payment-link', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            creatorWallet: walletAddress,
+                            recipientWallet: walletAddress,
+                            recipientName: 'Payment Link',
+                            token: 'AlphaUSD',
+                            note: 'Created from OmniTerminal',
+                        }),
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://agt.finance';
+                        const fullUrl = `${baseUrl}${data.url}`;
+                        navigator.clipboard?.writeText(fullUrl);
+                        setAiPrompt(`[Payment Link created: ${fullUrl} — Copied! Share this link for anyone to pay you. Amount is flexible — payer decides how much to send.]`);
+                        showToast('success', 'Payment link created and copied!');
+                    } else {
+                        showToast('error', 'Failed to create payment link.');
+                    }
+                } catch {
+                    showToast('error', 'Network error creating payment link.');
+                }
                 break;
             }
             case 'request-pay': {
-                setAiPrompt('[Request Payment mode — Type: "Request 500 AlphaUSD from 0x... for March consulting" and press Enter to send a payment request notification.]');
+                setAiPrompt('[Request Payment — Type: "Request 500 AlphaUSD from 0x... for March consulting" then press Enter. A payment request notification will be sent to that wallet.]');
                 showToast('success', 'Request Payment mode active. Type your request below.');
                 break;
             }
             case 'split-pay': {
-                setAiPrompt('[Split Payment mode — Type: "Split 1000 AlphaUSD between Alice, Bob, Charlie equally" and press Enter to auto-calculate shares.]');
+                setAiPrompt('[Split Payment — Type: "Split 1000 AlphaUSD between Alice, Bob, Charlie equally" then press Enter. Shares will be auto-calculated and added as intent cards.]');
                 showToast('success', 'Split Payment mode active. Type the total and recipients below.');
                 break;
             }
@@ -471,12 +542,12 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                     operator: '>=',
                     value: new Date().toISOString().split('T')[0],
                 }]);
-                setAiPrompt('[Subscription mode — Set up recurring payment. Add recipients above, configure frequency below, then Deploy.]');
+                setAiPrompt('[Subscription mode — Add recipients above, configure frequency and conditions below, then click Deploy Conditional. The engine will auto-trigger payments on schedule.]');
                 showToast('success', 'Subscription mode — configure recurring payment below.');
                 break;
             }
         }
-    }, [showToast]);
+    }, [showToast, walletAddress]);
 
     // ==========================================
     // EXECUTION - PAYROLL (handles both standard and conditional)

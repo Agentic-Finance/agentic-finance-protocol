@@ -64,6 +64,8 @@ model Employee {
   amount        Float
   token         String   @default("AlphaUSD")
   note          String?
+  department    String?  // Engineering, Marketing, Operations, Finance, etc.
+  role          String?  // Developer, Designer, Manager, Contractor, etc.
   status        String   @default("Awaiting_Approval") // Awaiting_Approval, Pending, Vaulted, Cancel_Requested, Paid
   deletedAt     DateTime?
   createdAt     DateTime @default(now())
@@ -73,6 +75,7 @@ model Employee {
   @@index([status])
   @@index([walletAddress])
   @@index([workspaceId, status])
+  @@index([department])
 }
 
 // ZK Payroll Payout History

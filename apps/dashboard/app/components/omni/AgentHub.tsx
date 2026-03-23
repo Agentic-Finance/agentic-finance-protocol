@@ -84,6 +84,19 @@ function SkeletonRow() {
 }
 
 function AgentHub({ walletAddress, onSwitchToMarketplace }: AgentHubProps) {
+    const TAB_GRADIENTS: Record<HubTab, string> = {
+        leaderboard: 'linear-gradient(135deg, rgba(255,215,0,0.08), rgba(205,127,50,0.08))',
+        arena: 'linear-gradient(135deg, rgba(255,45,135,0.08), rgba(27,191,236,0.08))',
+        activity: 'linear-gradient(135deg, rgba(62,221,185,0.08), rgba(27,191,236,0.08))',
+        analytics: 'linear-gradient(135deg, rgba(255,125,44,0.08), rgba(255,45,135,0.08))',
+    };
+    const TAB_BORDER_COLORS: Record<HubTab, string> = {
+        leaderboard: 'rgba(255,215,0,0.3)',
+        arena: 'rgba(255,45,135,0.3)',
+        activity: 'rgba(62,221,185,0.3)',
+        analytics: 'rgba(255,125,44,0.3)',
+    };
+
     const [activeTab, setActiveTab] = useState<HubTab>('leaderboard');
     const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
     const [lbStats, setLbStats] = useState<any>(null);
@@ -185,27 +198,25 @@ function AgentHub({ walletAddress, onSwitchToMarketplace }: AgentHubProps) {
     return (
         <div className="space-y-3">
             {/* ─── Tab Navigation ─── */}
-            <div className="grid grid-cols-4 gap-1.5">
-                {TAB_CONFIG.map(tab => (
-                    <button
-                        key={tab.key}
-                        onClick={() => { setActiveTab(tab.key); setLbPage(1); setActPage(1); }}
-                        className="relative rounded-xl p-2.5 text-center transition-all group"
-                        style={{
-                            background: activeTab === tab.key ? 'var(--pp-bg-card)' : 'var(--pp-surface-1)',
-                            border: activeTab === tab.key ? '1px solid var(--agt-blue)' : '1px solid var(--pp-border)',
-                            boxShadow: activeTab === tab.key ? '0 0 12px rgba(27,191,236,0.1)' : 'none',
-                        }}
-                    >
-                        <span className="text-base block">{tab.icon}</span>
-                        <span className="text-[10px] font-semibold block mt-0.5" style={{ color: activeTab === tab.key ? 'var(--pp-text-primary)' : 'var(--pp-text-muted)' }}>
-                            {tab.label}
-                        </span>
-                        {activeTab === tab.key && (
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full" style={{ background: 'var(--agt-blue)' }} />
-                        )}
-                    </button>
-                ))}
+            <div className="flex items-center gap-2 p-1 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                {TAB_CONFIG.map(tab => {
+                    const isActive = activeTab === tab.key;
+                    return (
+                        <button
+                            key={tab.key}
+                            onClick={() => { setActiveTab(tab.key); setLbPage(1); setActPage(1); }}
+                            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-all flex-1 justify-center"
+                            style={{
+                                background: isActive ? TAB_GRADIENTS[tab.key] : 'transparent',
+                                border: isActive ? `1px solid ${TAB_BORDER_COLORS[tab.key]}` : '1px solid transparent',
+                                color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-muted)',
+                            }}
+                        >
+                            <span className="text-sm">{tab.icon}</span>
+                            <span>{tab.label}</span>
+                        </button>
+                    );
+                })}
             </div>
 
             {/* ═══ LEADERBOARD ═══ */}
@@ -268,9 +279,13 @@ function AgentHub({ walletAddress, onSwitchToMarketplace }: AgentHubProps) {
                                         </span>
 
                                         {/* Avatar */}
-                                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+                                        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
                                             style={{ background: 'var(--pp-surface-2)', border: '1px solid var(--pp-border)' }}>
-                                            {agent.avatar || '🤖'}
+                                            {(agent as any).avatarUrl ? (
+                                                <img src={(agent as any).avatarUrl} alt={agent.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="text-xl">{agent.avatar || '🤖'}</span>
+                                            )}
                                         </div>
 
                                         {/* Name + Category */}

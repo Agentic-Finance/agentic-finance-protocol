@@ -365,9 +365,27 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         if (finalName === 'Unknown' || /^0x[a-fA-F0-9]{6,}$/i.test(finalName)) finalName = 'Unknown Entity';
                         finalParsed.push({ name: finalName, wallet: resolvedWallet, isRawWallet: isRaw, amount: intent.amount || '0', token: intent.token || 'AlphaUSD', note: intent.note, indexId: indexCounter++ });
                     });
+                    // Smart validation: duplicate detection
+                    const walletCounts = new Map<string, number>();
+                    finalParsed.forEach(p => {
+                        if (p.wallet !== '0x00...00') {
+                            walletCounts.set(p.wallet.toLowerCase(), (walletCounts.get(p.wallet.toLowerCase()) || 0) + 1);
+                        }
+                    });
+                    const duplicates = [...walletCounts.entries()].filter(([, count]) => count > 1);
+                    if (duplicates.length > 0) {
+                        finalParsed = finalParsed.map(p => {
+                            if (p.wallet !== '0x00...00' && (walletCounts.get(p.wallet.toLowerCase()) || 0) > 1) {
+                                return { ...p, note: `${p.note || ''} [DUPLICATE WALLET]`.trim() };
+                            }
+                            return p;
+                        });
+                    }
+
                     setLiveIntents(finalParsed);
                     const resolvedCount = finalParsed.filter(i => i.wallet !== '0x00...00').length;
-                    setAiPrompt(`[Extracted ${finalParsed.length} recipients from ${file.name}. ${resolvedCount}/${finalParsed.length} wallets resolved. Review and Deploy.]`);
+                    const dupWarning = duplicates.length > 0 ? ` ⚠️ ${duplicates.length} duplicate wallet(s) detected.` : '';
+                    setAiPrompt(`[Extracted ${finalParsed.length} recipients from ${file.name}. ${resolvedCount}/${finalParsed.length} wallets resolved.${dupWarning} Review and Deploy.]`);
                 } else { showToast('error', "Could not extract payment data from this file. Make sure it has Name, Wallet, Amount columns."); setAiPrompt(''); }
             } catch (error: any) {
                 showToast('error', `Failed to parse ${file.name}: ${error.message || 'Unknown error'}`);
@@ -488,11 +506,12 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 }).join(` ${conditionLogic} `);
 
                 // Compute recurring parameters from recurringMode
-                const recurringParams = recurringMode === 'weekly'
-                    ? { maxTriggers: -1, cooldownMinutes: 10080 }   // 7 * 24 * 60
-                    : recurringMode === 'monthly'
-                        ? { maxTriggers: -1, cooldownMinutes: 43200 }  // 30 * 24 * 60
-                        : { maxTriggers: 1, cooldownMinutes: 0 };      // one-time
+                const recurringParams =
+                    recurringMode === 'daily'    ? { maxTriggers: -1, cooldownMinutes: 1440 }    :  // 24h
+                    recurringMode === 'weekly'   ? { maxTriggers: -1, cooldownMinutes: 10080 }   :  // 7d
+                    recurringMode === 'biweekly' ? { maxTriggers: -1, cooldownMinutes: 20160 }   :  // 14d
+                    recurringMode === 'monthly'  ? { maxTriggers: -1, cooldownMinutes: 43200 }   :  // 30d
+                                                   { maxTriggers: 1,  cooldownMinutes: 0 };         // once
 
                 const condRes = await fetch('/api/conditional-payroll', {
                     method: 'POST',
@@ -513,7 +532,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 });
                 if (!condRes.ok) throw new Error('Failed to deploy conditional rule.');
 
-                const freqLabel = recurringMode === 'monthly' ? ' (Monthly)' : recurringMode === 'weekly' ? ' (Weekly)' : '';
+                const freqLabels: Record<string, string> = { daily: ' (Daily)', weekly: ' (Weekly)', biweekly: ' (Bi-weekly)', monthly: ' (Monthly)' };
+                const freqLabel = freqLabels[recurringMode] || '';
                 showToast('success', `Conditional rule deployed${freqLabel}! Agent is monitoring ${conditions.length} condition${conditions.length > 1 ? 's' : ''}.`);
                 resetTerminal(true);
                 await fetchData(true);

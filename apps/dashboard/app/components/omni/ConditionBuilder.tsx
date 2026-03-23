@@ -16,8 +16,8 @@ interface ConditionBuilderProps {
     setConditions: React.Dispatch<React.SetStateAction<Condition[]>>;
     conditionLogic: 'AND' | 'OR';
     setConditionLogic: React.Dispatch<React.SetStateAction<'AND' | 'OR'>>;
-    recurringMode: 'once' | 'weekly' | 'monthly';
-    setRecurringMode: React.Dispatch<React.SetStateAction<'once' | 'weekly' | 'monthly'>>;
+    recurringMode: 'once' | 'daily' | 'weekly' | 'biweekly' | 'monthly';
+    setRecurringMode: React.Dispatch<React.SetStateAction<'once' | 'daily' | 'weekly' | 'biweekly' | 'monthly'>>;
     onClose: () => void;
 }
 
@@ -292,7 +292,9 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                         <div className="flex gap-1.5">
                             {([
                                 { value: 'once', label: 'One-time', icon: '1️⃣' },
+                                { value: 'daily', label: 'Daily', icon: '📆' },
                                 { value: 'weekly', label: 'Weekly', icon: '📅' },
+                                { value: 'biweekly', label: 'Bi-weekly', icon: '📋' },
                                 { value: 'monthly', label: 'Monthly', icon: '🗓️' },
                             ] as const).map(opt => (
                                 <button
@@ -322,8 +324,8 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
                             </span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 text-[10px] font-mono">
-                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400/80 border border-amber-500/15 font-bold uppercase tracking-wider text-[8px]">Manual Trigger</span>
-                            <span className="text-slate-600">Rules are saved and triggered manually from the Boardroom. Automated monitoring coming soon.</span>
+                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400/80 border border-emerald-500/15 font-bold uppercase tracking-wider text-[8px]">Auto-Monitor</span>
+                            <span className="text-slate-600">Conditions are evaluated every 60s. When matched → payment auto-queues to Boardroom for approval.</span>
                         </div>
                     </div>
                 )}

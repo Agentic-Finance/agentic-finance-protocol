@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import prisma from '@/app/lib/prisma';
 
 // Lazy-init: avoid throwing at module load when OPENAI_API_KEY is unset (CI builds)
 let _openai: OpenAI | null = null;
@@ -7,6 +8,9 @@ function getOpenAI() {
     if (!_openai) _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     return _openai;
 }
+
+// In-memory invoice tracking (persists across requests within same process)
+const processedInvoices = new Map<string, { processedAt: string; amount: number }>();
 
 export async function POST(req: Request) {
     try {
@@ -128,6 +132,34 @@ IMPORTANT:
         }
 
         const parsed = JSON.parse(resultText);
+
+        // Invoice Intelligence: duplicate detection
+        if (parsed.success && parsed.invoiceNumber) {
+            const invoiceKey = `${parsed.invoiceFrom || ''}:${parsed.invoiceNumber}`.toLowerCase();
+            const existing = processedInvoices.get(invoiceKey);
+            if (existing) {
+                parsed.duplicateWarning = `Invoice ${parsed.invoiceNumber} was already processed on ${existing.processedAt}. Total: $${existing.amount}`;
+            } else {
+                const totalAmount = (parsed.intents || []).reduce((sum: number, i: any) => sum + parseFloat(i.amount || '0'), 0);
+                processedInvoices.set(invoiceKey, { processedAt: new Date().toISOString(), amount: totalAmount });
+            }
+        }
+
+        // Add smart suggestions
+        if (parsed.success && parsed.intents?.length > 0) {
+            const totalAmount = parsed.intents.reduce((sum: number, i: any) => sum + parseFloat(i.amount || '0'), 0);
+            parsed.summary = {
+                lineItems: parsed.intents.length,
+                totalAmount,
+                unresolvedWallets: parsed.intents.filter((i: any) => !i.wallet || i.wallet === '0x00...00').length,
+                suggestion: totalAmount > 10000
+                    ? 'Large invoice — consider splitting into milestones via Streaming Payroll'
+                    : parsed.intents.length > 5
+                        ? 'Multiple line items — review each before deploying'
+                        : null,
+            };
+        }
+
         return NextResponse.json(parsed);
 
     } catch (error: any) {

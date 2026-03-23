@@ -942,7 +942,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     onKeyDown={handleKeyDownToDeploy}
                                     disabled={isA2aActive && !isPayroll}
                                     className={`relative z-10 caret-emerald-400 font-sans text-xl font-medium leading-relaxed tracking-wide whitespace-pre-wrap break-words w-full h-full p-0 m-0 outline-none border-none bg-transparent resize-none scrollbar-hide ${isA2aActive && !isPayroll ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    style={{ color: 'var(--pp-text-primary)' }}
+                                    style={{ color: 'var(--pp-text-primary)', ...(aiPrompt.startsWith('[') && aiPrompt.includes('/pay/') ? { display: 'none' } : {}) }}
                                     spellCheck={false}
                                 />
                             </div>

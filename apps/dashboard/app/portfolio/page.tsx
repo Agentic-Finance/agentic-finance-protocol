@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { AppShell } from '../components/ui/AppShell';
+import { useSharedWallet } from '../providers/SharedWalletContext';
 import dynamic from 'next/dynamic';
 
 const MyBalances = dynamic(() => import('../components/portfolio/MyBalances'), { ssr: false });
@@ -39,14 +40,21 @@ interface PortfolioData {
 }
 
 function PortfolioContent() {
+  const { walletAddress: sharedWallet, isConnected, connect, isLoading: walletLoading } = useSharedWallet();
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [data, setData] = useState<PortfolioData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>('balances');
 
-  // Wallet detection
+  // Sync from shared wallet context (Privy + MetaMask)
   useEffect(() => {
+    if (sharedWallet) setWalletAddress(sharedWallet);
+  }, [sharedWallet]);
+
+  // Fallback: direct wallet detection
+  useEffect(() => {
+    if (walletAddress) return; // Already have wallet from context
     async function detectWallet() {
       try {
         const eth = (window as any).ethereum;
@@ -82,23 +90,8 @@ function PortfolioContent() {
     if (walletAddress) fetchPortfolio(walletAddress);
   }, [walletAddress, fetchPortfolio]);
 
-  // Connect wallet handler
-  async function connectWallet() {
-    try {
-      const eth = (window as any).ethereum;
-      if (!eth) {
-        setError('No wallet detected. Please install MetaMask.');
-        return;
-      }
-      const accounts: string[] = await eth.request({ method: 'eth_requestAccounts' });
-      if (accounts.length > 0) setWalletAddress(accounts[0]);
-    } catch {
-      setError('Failed to connect wallet');
-    }
-  }
-
-  // No wallet connected
-  if (!walletAddress) {
+  // No wallet connected — use shared connect (supports Privy + MetaMask)
+  if (!walletAddress && !walletLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-3xl">
@@ -109,11 +102,19 @@ function PortfolioContent() {
           Connect your wallet to view your portfolio, escrows, streams, and reputation score.
         </p>
         <button
-          onClick={connectWallet}
+          onClick={connect}
           className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-colors"
         >
           Connect Wallet
         </button>
+      </div>
+    );
+  }
+
+  if (walletLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(99,102,241,0.3)', borderTopColor: '#6366f1' }} />
       </div>
     );
   }

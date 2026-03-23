@@ -3,6 +3,7 @@ import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { WalletProvider } from "./providers/WalletProvider";
 import PrivyProvider from "./providers/PrivyProvider";
+import { SharedWalletProvider } from "./providers/SharedWalletContext";
 import { ToastProvider } from "./components/ui/Toast";
 import "./globals.css";
 
@@ -86,13 +87,15 @@ export default function RootLayout({
         </a>
         <ErrorBoundary>
           <PrivyProvider>
-            <WalletProvider>
-              <ToastProvider>
-                <ErrorBoundary>
-                  {children}
-                </ErrorBoundary>
-              </ToastProvider>
-            </WalletProvider>
+            <SharedWalletProvider>
+              <WalletProvider>
+                <ToastProvider>
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
+                </ToastProvider>
+              </WalletProvider>
+            </SharedWalletProvider>
           </PrivyProvider>
         </ErrorBoundary>
       </body>

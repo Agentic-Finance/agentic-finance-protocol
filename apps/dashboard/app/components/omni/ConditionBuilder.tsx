@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { XMarkIcon, PlusIcon, BoltIcon, LightBulbIcon, ChevronRightIcon } from '@/app/components/icons';
+import { XMarkIcon, PlusIcon, ChevronRightIcon } from '@/app/components/icons';
 
 export interface Condition {
     id: string;
@@ -22,68 +22,71 @@ interface ConditionBuilderProps {
 }
 
 const CONDITION_TYPES = [
-    { value: 'price_feed', label: 'Price Feed', icon: '📈', placeholder: 'e.g. AlphaUSD' },
-    { value: 'tvl_threshold', label: 'TVL Threshold', icon: '🏦', placeholder: 'Protocol name' },
-    { value: 'date_time', label: 'Date / Time', icon: '📅', placeholder: 'YYYY-MM-DD or duration' },
-    { value: 'wallet_balance', label: 'Wallet Balance', icon: '💰', placeholder: '0x...' },
-    { value: 'webhook', label: 'Custom Webhook', icon: '🔗', placeholder: 'https://...' },
+    { value: 'date_time', label: 'Schedule', desc: 'Run on a specific date', color: 'var(--agt-blue)' },
+    { value: 'wallet_balance', label: 'Balance', desc: 'When wallet has funds', color: 'var(--agt-mint)' },
+    { value: 'price_feed', label: 'Price', desc: 'When token hits target', color: 'var(--agt-orange)' },
+    { value: 'webhook', label: 'Webhook', desc: 'External API trigger', color: 'var(--agt-pink)' },
 ];
 
-const OPERATORS = [
-    { value: '>=', label: '≥' },
-    { value: '<=', label: '≤' },
-    { value: '==', label: '=' },
-    { value: '>', label: '>' },
-    { value: '<', label: '<' },
+const OPERATORS: { value: string; label: string }[] = [
+    { value: '>=', label: 'at least' },
+    { value: '<=', label: 'at most' },
+    { value: '==', label: 'exactly' },
+    { value: '>', label: 'above' },
+    { value: '<', label: 'below' },
 ];
 
-// Example presets that users can click to auto-populate
-const EXAMPLE_PRESETS = [
+const PRESETS = [
     {
-        title: 'Pay when token price hits target',
-        description: 'Auto-pay team bonuses when AlphaUSD reaches $1.05',
-        icon: '📈',
+        title: 'Monthly payroll',
+        desc: '1st of every month',
+        conditions: [{ type: 'date_time' as const, param: '1st of month', operator: '>=' as const, value: '2026-04-01' }],
+        recurring: 'monthly' as const,
+        color: 'var(--agt-blue)',
+    },
+    {
+        title: 'Price trigger',
+        desc: 'When AlphaUSD >= $1.05',
         conditions: [{ type: 'price_feed' as const, param: 'AlphaUSD', operator: '>=' as const, value: '$1.05' }],
-        logic: 'AND' as const,
+        recurring: 'once' as const,
+        color: 'var(--agt-orange)',
     },
     {
-        title: 'Scheduled payroll on date',
-        description: 'Execute mass payroll on the 1st of every month',
-        icon: '📅',
-        conditions: [{ type: 'date_time' as const, param: '1st of month', operator: '>=' as const, value: '2026-03-01' }],
-        logic: 'AND' as const,
+        title: 'Treasury check',
+        desc: 'When balance >= $50K',
+        conditions: [{ type: 'wallet_balance' as const, param: '0xTreasury', operator: '>=' as const, value: '$50,000' }],
+        recurring: 'once' as const,
+        color: 'var(--agt-mint)',
     },
     {
-        title: 'Treasury balance threshold',
-        description: 'Only disburse when treasury wallet has enough funds',
-        icon: '💰',
-        conditions: [{ type: 'wallet_balance' as const, param: '0xTreasury...', operator: '>=' as const, value: '$50,000' }],
-        logic: 'AND' as const,
-    },
-    {
-        title: 'Multi-condition: Price + Date',
-        description: 'Pay when token price is above threshold AND after a specific date',
-        icon: '⚡',
-        conditions: [
-            { type: 'price_feed' as const, param: 'AlphaUSD', operator: '>=' as const, value: '$1.00' },
-            { type: 'date_time' as const, param: 'After date', operator: '>=' as const, value: '2026-04-01' },
-        ],
-        logic: 'AND' as const,
+        title: 'Weekly payroll',
+        desc: 'Every Friday',
+        conditions: [{ type: 'date_time' as const, param: 'Every Friday', operator: '>=' as const, value: '2026-03-28' }],
+        recurring: 'weekly' as const,
+        color: '#a78bfa',
     },
 ];
+
+const FREQUENCIES = [
+    { value: 'once', label: 'Once', desc: 'Single trigger' },
+    { value: 'daily', label: 'Daily', desc: 'Every day' },
+    { value: 'weekly', label: 'Weekly', desc: 'Every 7 days' },
+    { value: 'biweekly', label: 'Bi-weekly', desc: 'Every 14 days' },
+    { value: 'monthly', label: 'Monthly', desc: 'Every 30 days' },
+] as const;
 
 function ConditionBuilder({ conditions, setConditions, conditionLogic, setConditionLogic, recurringMode, setRecurringMode, onClose }: ConditionBuilderProps) {
-    const [showGuide, setShowGuide] = useState(true);
+    const [showPresets, setShowPresets] = useState(true);
 
-    const addCondition = useCallback(() => {
+    const addCondition = useCallback((type?: string) => {
         setConditions(prev => [...prev, {
             id: crypto.randomUUID(),
-            type: 'price_feed',
+            type: (type || 'date_time') as Condition['type'],
             param: '',
             operator: '>=',
             value: '',
         }]);
-        setShowGuide(false);
+        setShowPresets(false);
     }, [setConditions]);
 
     const removeCondition = useCallback((id: string) => {
@@ -91,242 +94,176 @@ function ConditionBuilder({ conditions, setConditions, conditionLogic, setCondit
     }, [setConditions]);
 
     const updateCondition = useCallback((id: string, field: keyof Condition, value: string) => {
-        setConditions(prev => prev.map(c => {
-            if (c.id !== id) return c;
-            const updated = { ...c, [field]: value };
-            // Reset operator to valid value when type changes
-            if (field === 'type') {
-                if (value === 'date_time' && !['>=', '=='].includes(c.operator)) {
-                    updated.operator = '>=';
-                }
-                if (value === 'webhook') {
-                    updated.operator = '>=';
-                }
-            }
-            return updated;
-        }));
+        setConditions(prev => prev.map(c => c.id !== id ? c : { ...c, [field]: value }));
     }, [setConditions]);
 
-    const applyPreset = useCallback((preset: typeof EXAMPLE_PRESETS[0]) => {
-        const newConditions: Condition[] = preset.conditions.map(c => ({
-            id: crypto.randomUUID(),
-            type: c.type,
-            param: c.param,
-            operator: c.operator,
-            value: c.value,
-        }));
-        setConditions(newConditions);
-        setConditionLogic(preset.logic);
-        setShowGuide(false);
-    }, [setConditions, setConditionLogic]);
+    const applyPreset = useCallback((preset: typeof PRESETS[0]) => {
+        setConditions(preset.conditions.map(c => ({ id: crypto.randomUUID(), ...c })));
+        setRecurringMode(preset.recurring);
+        setShowPresets(false);
+    }, [setConditions, setRecurringMode]);
 
-    // Check if conditions are still empty/default (user hasn't customized yet)
-    const hasEmptyConditions = conditions.length <= 1 && conditions.every(c => !c.param && !c.value);
+    const hasFilledConditions = conditions.some(c => c.param || c.value);
 
     return (
         <div className="mt-4 mb-2 animate-in slide-in-from-top-4 fade-in duration-300">
-            <div className="p-5 rounded-2xl bg-amber-500/[0.03] border border-amber-500/20 backdrop-blur-xl">
+            <div className="rounded-2xl border overflow-hidden" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>
+
                 {/* Header */}
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
-                            <BoltIcon className="w-4 h-4 text-amber-400" />
+                <div className="px-5 py-4 flex justify-between items-center" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))' }}>
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-amber-400 tracking-wide">CONDITIONAL ENGINE</h3>
-                            <p className="text-[10px] text-slate-500 mt-0.5">Set rules below — press <span className="text-amber-400/70 font-semibold">"Deploy Conditional"</span> to save. Trigger manually from Boardroom.</p>
+                            <h3 className="text-sm font-bold" style={{ color: 'var(--pp-text-primary)' }}>Automation Rules</h3>
+                            <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>Set conditions &bull; Auto-trigger when matched</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        {!showGuide && hasEmptyConditions && (
-                            <button
-                                onClick={() => setShowGuide(true)}
-                                className="p-1.5 rounded-lg hover:bg-amber-500/10 text-slate-500 hover:text-amber-400 transition-all"
-                                title="Show examples"
-                            >
-                                <LightBulbIcon className="w-4 h-4" />
-                            </button>
-                        )}
-                        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-rose-400 transition-all">
-                            <XMarkIcon className="w-4 h-4" />
-                        </button>
-                    </div>
+                    <button onClick={onClose} className="p-1.5 rounded-lg transition-all hover:scale-110" style={{ color: 'var(--pp-text-muted)', background: 'var(--pp-surface-1)' }}>
+                        <XMarkIcon className="w-4 h-4" />
+                    </button>
                 </div>
 
-                {/* Guided Onboarding: Example Presets */}
-                {showGuide && hasEmptyConditions && (
-                    <div className="mb-4 animate-in fade-in duration-300">
-                        <div className="flex items-center gap-2 mb-3">
-                            <LightBulbIcon className="w-3.5 h-3.5 text-amber-400/70" />
-                            <span className="text-[11px] font-bold text-amber-400/70 uppercase tracking-wider">Quick Start - Choose an example or build your own</span>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {EXAMPLE_PRESETS.map((preset, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => applyPreset(preset)}
-                                    className="group text-left p-3.5 rounded-xl border hover:border-amber-500/25 hover:bg-amber-500/[0.04] transition-all duration-200"
-                                    style={{ background: 'color-mix(in srgb, var(--pp-bg-card) 60%, transparent)', borderColor: 'var(--pp-border)' }}
+                {/* Presets (if no conditions yet) */}
+                {showPresets && !hasFilledConditions && (
+                    <div className="px-5 py-4" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                        <p className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--pp-text-muted)' }}>Quick Start</p>
+                        <div className="grid grid-cols-2 gap-2">
+                            {PRESETS.map((preset, i) => (
+                                <button key={i} onClick={() => applyPreset(preset)}
+                                    className="text-left p-3 rounded-xl border transition-all group hover:scale-[1.01]"
+                                    style={{ borderColor: 'var(--pp-border)', background: 'var(--pp-bg-elevated)' }}
+                                    onMouseEnter={e => e.currentTarget.style.borderColor = preset.color}
+                                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--pp-border)'}
                                 >
-                                    <div className="flex items-start gap-2.5">
-                                        <span className="text-lg shrink-0 mt-0.5">{preset.icon}</span>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between gap-2">
-                                                <p className="text-xs font-bold text-[var(--pp-text-secondary)] group-hover:text-amber-300 transition-colors truncate">{preset.title}</p>
-                                                <ChevronRightIcon className="w-3 h-3 text-[var(--pp-text-muted)] group-hover:text-amber-400 shrink-0 transition-colors" />
-                                            </div>
-                                            <p className="text-[10px] text-[var(--pp-text-muted)] mt-1 leading-relaxed line-clamp-2">{preset.description}</p>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-[12px] font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{preset.title}</p>
+                                            <p className="text-[10px] mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>{preset.desc}</p>
                                         </div>
+                                        <ChevronRightIcon className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: preset.color }} />
                                     </div>
                                 </button>
                             ))}
                         </div>
-                        <div className="flex items-center gap-3 mt-3">
-                            <div className="flex-1 h-px" style={{ background: 'var(--pp-border)' }}></div>
-                            <span className="text-[9px] font-mono uppercase tracking-widest" style={{ color: 'var(--pp-text-muted)' }}>or customize below</span>
-                            <div className="flex-1 h-px" style={{ background: 'var(--pp-border)' }}></div>
-                        </div>
                     </div>
                 )}
 
-                {/* Conditions List */}
-                <div className="space-y-3">
-                    {conditions.map((cond, idx) => {
-                        const typeInfo = CONDITION_TYPES.find(t => t.value === cond.type);
-                        return (
-                            <div key={cond.id} className="relative">
-                                {/* Logic connector pill between conditions */}
-                                {idx > 0 && (
-                                    <div className="flex justify-center -mt-1.5 mb-1.5">
-                                        <button
-                                            onClick={() => setConditionLogic(prev => prev === 'AND' ? 'OR' : 'AND')}
-                                            className="px-3 py-0.5 text-[9px] font-black rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-all tracking-widest"
-                                        >
-                                            {conditionLogic}
-                                        </button>
-                                    </div>
-                                )}
-
-                                <div className="flex flex-wrap items-center gap-2 p-3.5 rounded-xl bg-[var(--pp-bg-card)]/80 border border-white/5 hover:border-amber-500/10 transition-colors">
-                                    {/* Condition number */}
-                                    <span className="text-[9px] font-black text-amber-500/40 w-5 shrink-0">#{idx + 1}</span>
-
-                                    {/* Type Selector */}
-                                    <select
-                                        value={cond.type}
-                                        onChange={(e) => updateCondition(cond.id, 'type', e.target.value)}
-                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 cursor-pointer appearance-none min-w-[150px]"
-                                    >
-                                        {CONDITION_TYPES.map(t => (
-                                            <option key={t.value} value={t.value}>{t.icon} {t.label}</option>
-                                        ))}
-                                    </select>
-
-                                    {/* Parameter Input */}
-                                    <input
-                                        type="text"
-                                        value={cond.param}
-                                        onChange={(e) => updateCondition(cond.id, 'param', e.target.value)}
-                                        placeholder={typeInfo?.placeholder || 'Parameter...'}
-                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 flex-1 min-w-[120px] placeholder:text-slate-600"
-                                    />
-
-                                    {/* Operator - hide for webhook and date types */}
-                                    {cond.type !== 'webhook' && (
-                                        <select
-                                            value={cond.operator}
-                                            onChange={(e) => updateCondition(cond.id, 'operator', e.target.value)}
-                                            className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2 py-2 text-xs text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/30 w-[52px] text-center cursor-pointer appearance-none"
-                                        >
-                                            {cond.type === 'date_time'
-                                                ? [{ value: '>=', label: '≥ After' }, { value: '==', label: '= On' }].map(o => (
-                                                    <option key={o.value} value={o.value}>{o.label}</option>
-                                                ))
-                                                : OPERATORS.map(o => (
-                                                    <option key={o.value} value={o.value}>{o.label}</option>
-                                                ))
-                                            }
-                                        </select>
+                {/* Conditions */}
+                <div className="px-5 py-4">
+                    {conditions.length > 0 && (
+                        <p className="text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--pp-text-muted)' }}>
+                            When {conditionLogic === 'AND' ? 'ALL' : 'ANY'} of these are true:
+                        </p>
+                    )}
+                    <div className="space-y-2">
+                        {conditions.map((cond, idx) => {
+                            const typeInfo = CONDITION_TYPES.find(t => t.value === cond.type);
+                            return (
+                                <div key={cond.id}>
+                                    {/* Logic connector */}
+                                    {idx > 0 && (
+                                        <div className="flex justify-center py-1">
+                                            <button onClick={() => setConditionLogic(prev => prev === 'AND' ? 'OR' : 'AND')}
+                                                className="px-4 py-1 text-[10px] font-bold rounded-full transition-all hover:scale-105"
+                                                style={{ background: 'var(--pp-surface-2)', color: 'var(--agt-blue)', border: '1px solid var(--pp-border)' }}
+                                            >{conditionLogic}</button>
+                                        </div>
                                     )}
 
-                                    {/* Value Input */}
-                                    <input
-                                        type="text"
-                                        value={cond.value}
-                                        onChange={(e) => updateCondition(cond.id, 'value', e.target.value)}
-                                        placeholder={
-                                            cond.type === 'date_time' ? '2026-04-01'
-                                            : cond.type === 'webhook' ? 'Returns truthy'
-                                            : cond.type === 'price_feed' ? '$1.05'
-                                            : cond.type === 'tvl_threshold' ? '$10,000,000'
-                                            : '$5,000'
-                                        }
-                                        className="bg-[var(--pp-bg-primary)] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-amber-500/30 w-[130px] placeholder:text-slate-600"
-                                    />
-
-                                    {/* Remove button */}
-                                    <button
-                                        onClick={() => removeCondition(cond.id)}
-                                        className="p-1.5 rounded-lg hover:bg-rose-500/10 text-slate-600 hover:text-rose-400 transition-all shrink-0"
+                                    <div className="flex items-center gap-2 p-3 rounded-xl border transition-all"
+                                        style={{ background: 'var(--pp-bg-elevated)', borderColor: 'var(--pp-border)' }}
                                     >
-                                        <XMarkIcon className="w-3.5 h-3.5" />
-                                    </button>
+                                        {/* Type indicator */}
+                                        <div className="w-2 h-8 rounded-full flex-shrink-0" style={{ background: typeInfo?.color || 'var(--pp-text-muted)' }} />
+
+                                        {/* Type select */}
+                                        <select value={cond.type} onChange={e => updateCondition(cond.id, 'type', e.target.value)}
+                                            className="text-[12px] font-semibold rounded-lg px-2.5 py-2 outline-none cursor-pointer min-w-[100px]"
+                                            style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: typeInfo?.color || 'var(--pp-text-primary)' }}
+                                        >
+                                            {CONDITION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                                        </select>
+
+                                        {/* Param */}
+                                        <input type="text" value={cond.param} onChange={e => updateCondition(cond.id, 'param', e.target.value)}
+                                            placeholder={cond.type === 'date_time' ? 'YYYY-MM-DD' : cond.type === 'wallet_balance' ? '0x...' : cond.type === 'webhook' ? 'https://...' : 'Token name'}
+                                            className="text-[12px] rounded-lg px-2.5 py-2 outline-none flex-1 min-w-[100px] font-mono"
+                                            style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}
+                                        />
+
+                                        {/* Operator */}
+                                        {cond.type !== 'webhook' && (
+                                            <select value={cond.operator} onChange={e => updateCondition(cond.id, 'operator', e.target.value)}
+                                                className="text-[12px] font-semibold rounded-lg px-2 py-2 outline-none cursor-pointer w-[90px]"
+                                                style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: 'var(--agt-blue)' }}
+                                            >
+                                                {(cond.type === 'date_time'
+                                                    ? [{ value: '>=', label: 'after' }, { value: '==', label: 'on' }]
+                                                    : OPERATORS
+                                                ).map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                                            </select>
+                                        )}
+
+                                        {/* Value */}
+                                        <input type="text" value={cond.value} onChange={e => updateCondition(cond.id, 'value', e.target.value)}
+                                            placeholder={cond.type === 'date_time' ? '2026-04-01' : cond.type === 'price_feed' ? '$1.05' : '$50,000'}
+                                            className="text-[12px] rounded-lg px-2.5 py-2 outline-none w-[110px] font-mono"
+                                            style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}
+                                        />
+
+                                        {/* Remove */}
+                                        <button onClick={() => removeCondition(cond.id)} className="p-1.5 rounded-lg transition-all hover:scale-110 flex-shrink-0"
+                                            style={{ color: 'var(--pp-text-muted)' }}
+                                        ><XMarkIcon className="w-3.5 h-3.5" /></button>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
+
+                    {/* Add condition */}
+                    <div className="mt-3 flex gap-2">
+                        {CONDITION_TYPES.map(t => (
+                            <button key={t.value} onClick={() => addCondition(t.value)}
+                                className="flex-1 py-2 rounded-lg text-[10px] font-semibold transition-all border border-dashed hover:scale-[1.02]"
+                                style={{ borderColor: 'var(--pp-border)', color: 'var(--pp-text-muted)' }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = t.color; e.currentTarget.style.color = t.color; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--pp-border)'; e.currentTarget.style.color = 'var(--pp-text-muted)'; }}
+                            >+ {t.label}</button>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Add Condition Button */}
-                <button
-                    onClick={addCondition}
-                    className="mt-3 flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-amber-400/70 hover:text-amber-400 hover:bg-amber-500/[0.06] rounded-xl transition-all border border-dashed border-amber-500/10 hover:border-amber-500/25 w-full justify-center"
-                >
-                    <PlusIcon className="w-3.5 h-3.5" /> Add Condition
-                </button>
-
-                {/* Recurring Mode Selector */}
-                {conditions.length > 0 && conditions.some(c => c.param || c.value) && (
-                    <div className="mt-3 flex items-center gap-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Frequency:</span>
+                {/* Frequency selector */}
+                {hasFilledConditions && (
+                    <div className="px-5 py-4" style={{ borderTop: '1px solid var(--pp-border)' }}>
+                        <p className="text-[10px] font-bold uppercase tracking-wider mb-2.5" style={{ color: 'var(--pp-text-muted)' }}>Frequency</p>
                         <div className="flex gap-1.5">
-                            {([
-                                { value: 'once', label: 'One-time', icon: '1️⃣' },
-                                { value: 'daily', label: 'Daily', icon: '📆' },
-                                { value: 'weekly', label: 'Weekly', icon: '📅' },
-                                { value: 'biweekly', label: 'Bi-weekly', icon: '📋' },
-                                { value: 'monthly', label: 'Monthly', icon: '🗓️' },
-                            ] as const).map(opt => (
-                                <button
-                                    key={opt.value}
-                                    onClick={() => setRecurringMode(opt.value)}
-                                    className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1.5 ${
-                                        recurringMode === opt.value
-                                            ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                                            : 'bg-white/[0.03] text-slate-500 border border-white/5 hover:border-amber-500/15 hover:text-slate-300'
-                                    }`}
-                                >
-                                    <span className="text-[9px]">{opt.icon}</span> {opt.label}
-                                </button>
+                            {FREQUENCIES.map(f => (
+                                <button key={f.value} onClick={() => setRecurringMode(f.value)}
+                                    className="flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all text-center"
+                                    style={{
+                                        background: recurringMode === f.value ? 'rgba(27,191,236,0.1)' : 'var(--pp-surface-1)',
+                                        border: `1px solid ${recurringMode === f.value ? 'var(--agt-blue)' : 'var(--pp-border)'}`,
+                                        color: recurringMode === f.value ? 'var(--agt-blue)' : 'var(--pp-text-muted)',
+                                    }}
+                                >{f.label}</button>
                             ))}
                         </div>
                     </div>
                 )}
 
-                {/* Status indicator */}
-                {conditions.length > 0 && conditions.some(c => c.param || c.value) && (
-                    <div className="mt-4 pt-3 border-t border-white/5">
-                        <div className="flex items-center gap-2 text-[10px] font-mono">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
-                            <span className="text-slate-500">
-                                When <span className="text-amber-400 font-bold">{conditionLogic === 'AND' ? 'ALL' : 'ANY'}</span> condition{conditions.length > 1 ? 's are' : ' is'} met → payment will be queued
-                                {recurringMode !== 'once' && <span className="text-amber-400 font-bold"> ({recurringMode})</span>}
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2 mt-2 text-[10px] font-mono">
-                            <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400/80 border border-emerald-500/15 font-bold uppercase tracking-wider text-[8px]">Auto-Monitor</span>
-                            <span className="text-slate-600">Conditions are evaluated every 60s. When matched → payment auto-queues to Boardroom for approval.</span>
-                        </div>
+                {/* Status bar */}
+                {hasFilledConditions && (
+                    <div className="px-5 py-3 flex items-center gap-2" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-bg-elevated)' }}>
+                        <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--agt-mint)' }} />
+                        <span className="text-[10px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>
+                            Auto-monitor active &bull; Triggers when conditions match &bull; Queues to Boardroom
+                        </span>
                     </div>
                 )}
             </div>

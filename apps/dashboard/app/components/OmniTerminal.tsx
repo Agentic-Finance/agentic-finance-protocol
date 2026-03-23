@@ -512,8 +512,10 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                         const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://agt.finance';
                         const fullUrl = `${baseUrl}${data.url}`;
                         navigator.clipboard?.writeText(fullUrl);
-                        setAiPrompt(`[Payment Link created: ${fullUrl} — Copied! Share this link for anyone to pay you. Amount is flexible — payer decides how much to send.]`);
-                        showToast('success', 'Payment link created and copied!');
+                        // Generate QR code URL using Google Charts API
+                        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullUrl)}&bgcolor=1A1D28&color=3EDDB9`;
+                        setAiPrompt(`[Payment Link + QR created: ${fullUrl} — Copied! QR: ${qrUrl} — Share link or QR code for anyone to pay you.]`);
+                        showToast('success', 'Payment link + QR created and copied!');
                     } else {
                         showToast('error', 'Failed to create payment link.');
                     }
@@ -522,28 +524,55 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                 }
                 break;
             }
-            case 'request-pay': {
-                setAiPrompt('[Request Payment — Type: "Request 500 AlphaUSD from 0x... for March consulting" then press Enter. A payment request notification will be sent to that wallet.]');
-                showToast('success', 'Request Payment mode active. Type your request below.');
-                break;
-            }
             case 'split-pay': {
-                setAiPrompt('[Split Payment — Type: "Split 1000 AlphaUSD between Alice, Bob, Charlie equally" then press Enter. Shares will be auto-calculated and added as intent cards.]');
-                showToast('success', 'Split Payment mode active. Type the total and recipients below.');
+                setAiPrompt('[Split Bill — Type: "Split 1000 AlphaUSD between Alice, Bob, Charlie" then press Enter. Shares auto-calculated.]');
+                showToast('success', 'Split Bill mode. Type total + recipients below.');
                 break;
             }
-            case 'subscription': {
+            case 'invoice-gen': {
+                // Generate invoice number and set up mode
+                const invNum = `INV-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+                setAiPrompt(`[Invoice ${invNum} — Type line items: "Web design $2000, Hosting $500, Support $300 to 0x..." then press Enter. Invoice will be created with all items.]`);
+                showToast('success', `Invoice ${invNum} — type line items below.`);
+                break;
+            }
+            case 'batch-template': {
+                // Load saved templates
+                try {
+                    const res = await fetch(`/api/payroll-templates?wallet=${walletAddress}`);
+                    const data = await res.json();
+                    if (data.success && data.templates?.length > 0) {
+                        const template = data.templates[0]; // Use most recent
+                        const recipients = JSON.parse(template.recipients);
+                        let idx = 0;
+                        const parsed: ParsedIntent[] = recipients.map((r: any) => ({
+                            name: r.name, wallet: r.wallet || '0x00...00', isRawWallet: !!r.wallet,
+                            amount: r.amount?.toString() || '0', token: r.token || 'AlphaUSD', note: r.note,
+                            indexId: idx++,
+                        }));
+                        setLiveIntents(parsed);
+                        setAiPrompt(`[Template "${template.name}" loaded — ${parsed.length} recipients, ready to deploy. Edit amounts if needed.]`);
+                        showToast('success', `Template "${template.name}" loaded!`);
+                    } else {
+                        setAiPrompt('[No saved templates. Deploy a payroll first, then save it as template from Boardroom.]');
+                        showToast('error', 'No saved templates yet. Deploy a payroll first.');
+                    }
+                } catch { showToast('error', 'Failed to load templates.'); }
+                break;
+            }
+            case 'scheduled-send': {
                 setShowConditionBuilder(true);
-                setRecurringMode('monthly');
+                setRecurringMode('once');
+                const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
                 setConditions([{
                     id: crypto.randomUUID(),
                     type: 'date_time',
-                    param: '1st of month',
+                    param: 'Scheduled',
                     operator: '>=',
-                    value: new Date().toISOString().split('T')[0],
+                    value: tomorrow,
                 }]);
-                setAiPrompt('[Subscription mode — Add recipients above, configure frequency and conditions below, then click Deploy Conditional. The engine will auto-trigger payments on schedule.]');
-                showToast('success', 'Subscription mode — configure recurring payment below.');
+                setAiPrompt(`[Schedule Send — Add recipients above, set date/time below (default: tomorrow ${tomorrow}), then Deploy. Payment will auto-execute at the scheduled time.]`);
+                showToast('success', 'Schedule Send — set date and recipients.');
                 break;
             }
         }
@@ -1132,9 +1161,10 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                             processCSV={processCSV}
                             aiPrompt={aiPrompt}
                             onPaymentLinkClick={() => handlePayToolAction('payment-link')}
-                            onRequestPayClick={() => handlePayToolAction('request-pay')}
                             onSplitPayClick={() => handlePayToolAction('split-pay')}
-                            onSubscriptionClick={() => handlePayToolAction('subscription')}
+                            onInvoiceGenClick={() => handlePayToolAction('invoice-gen')}
+                            onBatchTemplateClick={() => handlePayToolAction('batch-template')}
+                            onScheduledSendClick={() => handlePayToolAction('scheduled-send')}
                             showConditionBuilder={showConditionBuilder}
                             onToggleConditions={() => {
                                 if (showConditionBuilder) {

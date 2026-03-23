@@ -103,6 +103,18 @@ export default function PayPage() {
                         Agentic Finance
                     </h1>
                     <p className="text-[12px] mt-1" style={{ color: 'var(--pp-text-muted)' }}>Secure Payment Link</p>
+                {/* QR Code */}
+                {!loading && link && !paid && (
+                    <div className="mt-4">
+                        <img
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&bgcolor=14161E&color=3EDDB9&format=svg`}
+                            alt="Payment QR Code"
+                            className="mx-auto rounded-xl"
+                            width={120} height={120}
+                        />
+                        <p className="text-[10px] mt-2" style={{ color: 'var(--pp-text-muted)' }}>Scan to pay</p>
+                    </div>
+                )}
                 </div>
 
                 <div className="rounded-2xl border p-6" style={{ background: 'var(--pp-bg-card)', borderColor: 'var(--pp-border)' }}>

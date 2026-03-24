@@ -53,33 +53,40 @@ const TABS: { id: MainTabId; label: string; icon: React.ReactNode; gradient: str
 
 function DashboardMainTabs({ activeTab, onTabChange, boardroomCount = 0, activeAgents = 0 }: MainTabsProps) {
     return (
-        <div className="flex items-center gap-1 p-1 rounded-2xl mb-6" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
-            {TABS.map(tab => {
+        <div className="flex items-center p-1 rounded-2xl mb-6" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+            {TABS.map((tab, idx) => {
                 const isActive = activeTab === tab.id;
+                const isNextActive = idx < TABS.length - 1 && activeTab === TABS[idx + 1].id;
+                const isPrevActive = idx > 0 && activeTab === TABS[idx - 1].id;
                 const badge = tab.id === 'payroll' && boardroomCount > 0 ? boardroomCount
                     : tab.id === 'agents' && activeAgents > 0 ? activeAgents
                     : 0;
+                const showSeparator = idx < TABS.length - 1 && !isActive && !isNextActive;
 
                 return (
-                    <button
-                        key={tab.id}
-                        onClick={() => onTabChange(tab.id)}
-                        className="relative flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex-1"
-                        style={{
-                            background: isActive ? tab.gradient : 'transparent',
-                            border: isActive ? `1px solid ${tab.borderColor}` : '1px solid transparent',
-                            color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-muted)',
-                        }}
-                    >
-                        <span style={{ opacity: isActive ? 1 : 0.5 }}>{tab.icon}</span>
-                        <span>{tab.label}</span>
-                        {badge > 0 && (
-                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
-                                style={{ background: tab.id === 'payroll' ? 'var(--agt-orange)' : 'var(--agt-pink)' }}>
-                                {badge}
-                            </span>
+                    <React.Fragment key={tab.id}>
+                        <button
+                            onClick={() => onTabChange(tab.id)}
+                            className="relative flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex-1"
+                            style={{
+                                background: isActive ? tab.gradient : 'transparent',
+                                border: isActive ? `1px solid ${tab.borderColor}` : '1px solid transparent',
+                                color: isActive ? 'var(--pp-text-primary)' : 'var(--pp-text-muted)',
+                            }}
+                        >
+                            <span style={{ opacity: isActive ? 1 : 0.5 }}>{tab.icon}</span>
+                            <span>{tab.label}</span>
+                            {badge > 0 && (
+                                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
+                                    style={{ background: tab.id === 'payroll' ? 'var(--agt-orange)' : 'var(--agt-pink)' }}>
+                                    {badge}
+                                </span>
+                            )}
+                        </button>
+                        {showSeparator && (
+                            <div className="w-px h-5 flex-shrink-0" style={{ background: 'var(--pp-border)' }} />
                         )}
-                    </button>
+                    </React.Fragment>
                 );
             })}
         </div>

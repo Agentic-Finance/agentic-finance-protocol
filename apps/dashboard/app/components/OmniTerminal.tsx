@@ -900,7 +900,8 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                 </span>
                             </div>
 
-                            <div className="flex rounded-xl p-1 gap-1" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                            {/* Only show toggle when NOT in a specific tab context */}
+                            {!defaultToAgentMode && <div className="flex rounded-xl p-1 gap-1" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
                                 <button
                                     onClick={() => { setActiveTab('payroll'); resetTerminal(true); }}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
@@ -925,7 +926,7 @@ function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardr
                                     <CpuChipIcon className="w-4 h-4"/>
                                     Agents
                                 </button>
-                            </div>
+                            </div>}
                         </div>
 
                         {/* Input Area */}

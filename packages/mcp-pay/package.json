@@ -1,0 +1,34 @@
+{
+  "name": "@agtfi/mcp-pay",
+  "version": "1.0.0",
+  "description": "Payment middleware for MCP servers — paywall any tool with one line of code",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./middleware": {
+      "import": "./dist/middleware.js",
+      "types": "./dist/middleware.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --loader ts-node/esm src/test.ts"
+  },
+  "keywords": ["mcp", "payments", "agents", "x402", "mpp", "micropayments", "ai"],
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": ">=1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}

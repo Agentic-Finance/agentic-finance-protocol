@@ -58,6 +58,15 @@ export const MPP_COMPLIANCE_GATEWAY_ADDRESS = "0x5F68F2A17a28b06A02A649cade5a666
 // Agent Discovery Registry — privacy-preserving agent marketplace
 export const AGENT_DISCOVERY_REGISTRY_ADDRESS = "0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47";
 
+// Portable Reputation — Cross-chain ZK reputation attestations
+export const PORTABLE_REPUTATION_ADDRESS = "0x75B852dee59a6C3569E9eDAb1119C8B2C967C93a";
+
+// Compliance Service — Enterprise compliance-as-a-service
+export const COMPLIANCE_SERVICE_ADDRESS = "0xA4196cA72e22445572f32c0B4Bf30d2657ceB2aB";
+
+// Batch Settlement — Micropayment aggregation engine
+export const BATCH_SETTLEMENT_ADDRESS = "0x18823f22C82f35838FdC71C2325251576a66484a";
+
 // Legacy ABI - kept for backward compatibility
 export const NEXUS_ABI = ["function createJob(address _worker, address _judge, address _token, uint256 _amount) external"] as const;
 

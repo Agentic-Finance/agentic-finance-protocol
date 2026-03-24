@@ -39,13 +39,15 @@ interface OmniTerminalProps {
     history?: any[];
     walletAddress?: string | null;
     onOpenChat?: (jobId: string) => void;
+    /** When true, default to Agents mode instead of Payroll */
+    defaultToAgentMode?: boolean;
 }
 
-function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history, walletAddress, onOpenChat }: OmniTerminalProps) {
+function OmniTerminal({ SUPPORTED_TOKENS, contacts, showToast, fetchData, boardroomRef, autopilotRef, history, walletAddress, onOpenChat, defaultToAgentMode }: OmniTerminalProps) {
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
-    const [activeTab, setActiveTab] = useState<'payroll' | 'a2a'>('payroll');
+    const [activeTab, setActiveTab] = useState<'payroll' | 'a2a'>(defaultToAgentMode ? 'a2a' : 'payroll');
 
     // Shared UI state
     const [aiPrompt, setAiPrompt] = useState('');

@@ -6,9 +6,16 @@ import { AGTFI_NEXUS_ADDRESS, AGTFI_MULTISEND_ADDRESS, AGTFI_SHIELD_ADDRESS, AGT
 
 // Direct imports for critical above-the-fold components
 import Navbar from './components/Navbar';
-import TopStatsCards from './components/TopStatsCards';
+import DashboardMainTabs, { type MainTabId } from './components/DashboardMainTabs';
 import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
 import { FeatureErrorBoundary } from './components/FeatureErrorBoundary';
+
+// Tab content components (lazy loaded)
+const OverviewTab = lazy(() => import('./components/tabs/OverviewTab'));
+const PayrollTab = lazy(() => import('./components/tabs/PayrollTab'));
+const AgentsTab = lazy(() => import('./components/tabs/AgentsTab'));
+const PaymentsTab = lazy(() => import('./components/tabs/PaymentsTab'));
+const AnalyticsTab = lazy(() => import('./components/tabs/AnalyticsTab'));
 import { usePollingEngine } from './hooks/usePollingEngine';
 import { usePrivy, useWallets, useSignMessage as usePrivySignMessage } from '@privy-io/react-auth';
 
@@ -52,6 +59,7 @@ const LazyFallback = () => (
 
 export default function Dashboard() {
     const [showLanding, setShowLanding] = useState(true);
+    const [mainTab, setMainTab] = useState<MainTabId>('overview');
     const [isReady, setIsReady] = useState(false);
 
     // After hydration, check ?app=1 query param to skip landing & auto-reconnect wallet
@@ -793,139 +801,71 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                <TopStatsCards totalDisbursed={totalDisbursed} workspaceVolume={workspaceStats?.totalVolume != null ? workspaceStats.totalVolume.toLocaleString() : null} agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin} toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent} activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken} SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance} showFundInput={showFundInput} setShowFundInput={setShowFundInput} fundAmount={fundAmount} setFundAmount={setFundAmount} executeFund={executeFund} isFunding={isFunding} daemonJobsProcessed={workspaceStats?.daemonJobsProcessed} daemonLastSeen={workspaceStats?.lastActivityAt} />
+                {/* ── Main Tab Navigation ── */}
+                <DashboardMainTabs
+                    activeTab={mainTab}
+                    onTabChange={setMainTab}
+                    boardroomCount={awaitingTxs.length}
+                    activeAgents={activeBotsCount}
+                />
 
-                <FeatureErrorBoundary feature="OmniTerminal">
-                    <Suspense fallback={<TerminalSkeleton />}>
-                        <OmniTerminal SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts} showToast={showToast} fetchData={fetchData} boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history} walletAddress={walletAddress} onOpenChat={(jobId) => { setChatTargetJobId(jobId); setIsChatOpen(true); }} />
-                    </Suspense>
-                </FeatureErrorBoundary>
-
-                {/* Streaming Payroll */}
-                {walletAddress && (
-                    <FeatureErrorBoundary feature="StreamingPayroll">
-                        <Suspense fallback={null}>
-                            <StreamingPayroll walletAddress={walletAddress} />
-                        </Suspense>
-                    </FeatureErrorBoundary>
-                )}
-
-                <div className="agt-card agt-card-accent-pink mb-6 overflow-hidden">
-                    <Suspense fallback={<ChartSkeleton />}>
-                        <DashboardTabs walletAddress={walletAddress} workspaceStats={workspaceStats} agentStatus={agentStatus} onRangeChange={setWsRange} activeRange={wsRange} />
-                    </Suspense>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div className="lg:col-span-8 space-y-6">
-                        {isAdmin && (
-                            <FeatureErrorBoundary feature="Boardroom">
-                                <Suspense fallback={<BoardroomSkeleton />}>
-                                    <Boardroom boardroomRef={boardroomRef} awaitingTxs={awaitingTxs} isAdmin={isAdmin} usePhantomShield={usePhantomShield} setUsePhantomShield={setUsePhantomShield} awaitingTotalAmountNum={awaitingTotalAmountNum} protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum} totalWithFee={totalWithFee} activeVaultToken={activeVaultToken} signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting} removeAwaitingTx={removeAwaitingTx} showToast={showToast} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        )}
-
-                        {isAdmin && (
-                            <div id="section-employees" className="scroll-mt-20">
-                                <FeatureErrorBoundary feature="Employee Directory">
-                                    <Suspense fallback={<SectionSkeleton />}>
-                                        <EmployeeDirectory walletAddress={walletAddress} isAdmin={isAdmin} showToast={showToast} onPayEmployee={(emps) => { fetch('/api/employees', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Wallet-Address': walletAddress || '' }, body: JSON.stringify({ intents: emps.map(e => ({ name: e.name, wallet: e.wallet, amount: e.amount, token: e.token, note: e.note })) }) }).then(() => fetchData()); }} />
-                                    </Suspense>
-                                </FeatureErrorBoundary>
-                            </div>
-                        )}
-
-                        {/* Payroll Analytics — admin only */}
-                        {isAdmin && (
-                            <FeatureErrorBoundary feature="Payroll Analytics">
-                                <Suspense fallback={<SectionSkeleton />}>
-                                    <PayrollAnalytics walletAddress={walletAddress} isAdmin={isAdmin} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        )}
-
-                        {/* Employee Portal — visible to all users (employees see their pay history) */}
-                        {walletAddress && !isAdmin && (
-                            <FeatureErrorBoundary feature="Employee Portal">
-                                <Suspense fallback={<SectionSkeleton />}>
-                                    <EmployeePortal walletAddress={walletAddress} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        )}
-
-                        <FeatureErrorBoundary feature="Settlement Receipt">
-                            <Suspense fallback={<SectionSkeleton />}>
-                                <SettlementReceipt settlements={history} settlementRef={settlementRef} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
-
-                        <div id="section-jobs" className="scroll-mt-20">
-                            <FeatureErrorBoundary feature="Job History">
-                                <Suspense fallback={<SectionSkeleton />}>
-                                    <JobHistory walletAddress={walletAddress} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        </div>
-
-                        <div id="section-offramp" className="scroll-mt-20">
-                            <FeatureErrorBoundary feature="Fiat Off-Ramp">
-                                <Suspense fallback={<SectionSkeleton />}>
-                                    <FiatOffRamp walletAddress={walletAddress || ''} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        </div>
-
-                        <div id="section-agents" className="scroll-mt-20">
-                            <FeatureErrorBoundary feature="Active Agents">
-                                <Suspense fallback={<SectionSkeleton />}>
-                                    <ActiveAgents autopilotRef={autopilotRef} autopilotRules={autopilotRules} isAdmin={isAdmin} triggerAutopilotAgent={triggerAutopilotAgent} toggleAutopilotState={toggleAutopilotState} deleteAutopilotAgent={deleteAutopilotAgent} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        </div>
-
-                    </div>
-
-                    <div id="escrow-vault-section" className="lg:col-span-4 space-y-8 scroll-mt-20">
-                        <div id="daemon-queue-section" className="scroll-mt-20">
-                            <FeatureErrorBoundary feature="Daemon Queue" compact>
-                                <Suspense fallback={<SidebarSkeleton />}>
-                                    <TimeVault localEscrow={localEscrow} />
-                                </Suspense>
-                            </FeatureErrorBoundary>
-                        </div>
-                        <FeatureErrorBoundary feature="Escrow Tracker" compact>
-                            <Suspense fallback={<SidebarSkeleton />}>
-                                <EscrowTracker walletAddress={walletAddress} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
-                        <FeatureErrorBoundary feature="Agent Earnings" compact>
-                            <Suspense fallback={<SidebarSkeleton />}>
-                                <AgentEarnings walletAddress={walletAddress} />
-                            </Suspense>
-                        </FeatureErrorBoundary>
-
-                        {/* MPP Protocol */}
-                        <FeatureErrorBoundary feature="MPP Dashboard" compact>
-                            <Suspense fallback={null}>
-                                <MppDashboard />
-                            </Suspense>
-                        </FeatureErrorBoundary>
-
-                        {/* MPP Session Keys */}
-                        <FeatureErrorBoundary feature="MPP Session Keys" compact>
-                            <MppSessionKeys walletAddress={walletAddress} />
-                        </FeatureErrorBoundary>
-
-                        {/* ZK Compliance + Reputation */}
-                        <FeatureErrorBoundary feature="ZK Compliance" compact>
-                            <ComplianceStatus />
-                        </FeatureErrorBoundary>
-                        <FeatureErrorBoundary feature="Agent Reputation" compact>
-                            <AgentReputationPanel />
-                        </FeatureErrorBoundary>
-                    </div>
-                </div>
+                {/* ── Tab Content ── */}
+                <Suspense fallback={<LazyFallback />}>
+                    {mainTab === 'overview' && (
+                        <OverviewTab
+                            totalDisbursed={totalDisbursed} workspaceStats={workspaceStats}
+                            agentStatus={agentStatus} activeBotsCount={activeBotsCount} isAdmin={isAdmin}
+                            activeVaultToken={activeVaultToken} setActiveVaultToken={setActiveVaultToken}
+                            SUPPORTED_TOKENS={SUPPORTED_TOKENS} vaultBalance={vaultBalance}
+                            showFundInput={showFundInput} setShowFundInput={setShowFundInput}
+                            fundAmount={fundAmount} setFundAmount={setFundAmount}
+                            executeFund={executeFund} isFunding={isFunding}
+                            toggleAgent={toggleAgent} isTogglingAgent={isTogglingAgent}
+                            walletAddress={walletAddress} history={history}
+                            localEscrow={localEscrow} settlementRef={settlementRef}
+                        />
+                    )}
+                    {mainTab === 'payroll' && (
+                        <PayrollTab
+                            walletAddress={walletAddress} isAdmin={isAdmin}
+                            SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts}
+                            showToast={showToast} fetchData={fetchData}
+                            boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history}
+                            awaitingTxs={awaitingTxs} usePhantomShield={usePhantomShield}
+                            setUsePhantomShield={setUsePhantomShield}
+                            awaitingTotalAmountNum={awaitingTotalAmountNum}
+                            protocolFeeNum={protocolFeeNum} shieldFeeNum={shieldFeeNum}
+                            totalWithFee={totalWithFee} activeVaultToken={activeVaultToken}
+                            signAndApproveBatch={signAndApproveBatch} isEncrypting={isEncrypting}
+                            removeAwaitingTx={removeAwaitingTx}
+                            onOpenChat={(jobId) => { setChatTargetJobId(jobId); setIsChatOpen(true); }}
+                        />
+                    )}
+                    {mainTab === 'agents' && (
+                        <AgentsTab
+                            walletAddress={walletAddress} isAdmin={isAdmin}
+                            SUPPORTED_TOKENS={SUPPORTED_TOKENS} contacts={contacts}
+                            showToast={showToast} fetchData={fetchData}
+                            boardroomRef={boardroomRef} autopilotRef={autopilotRef} history={history}
+                            autopilotRules={autopilotRules}
+                            triggerAutopilotAgent={triggerAutopilotAgent}
+                            toggleAutopilotState={toggleAutopilotState}
+                            deleteAutopilotAgent={deleteAutopilotAgent}
+                            onOpenChat={(jobId) => { setChatTargetJobId(jobId); setIsChatOpen(true); }}
+                            defaultToAgentMode
+                        />
+                    )}
+                    {mainTab === 'payments' && (
+                        <PaymentsTab walletAddress={walletAddress} showToast={showToast} />
+                    )}
+                    {mainTab === 'analytics' && (
+                        <AnalyticsTab
+                            walletAddress={walletAddress} isAdmin={isAdmin}
+                            workspaceStats={workspaceStats} agentStatus={agentStatus}
+                            wsRange={wsRange} setWsRange={setWsRange}
+                        />
+                    )}
+                </Suspense>
             </main>
 
             {/* Chat — floating button + slide-in panel */}

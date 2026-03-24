@@ -58,6 +58,14 @@ export const MPP_COMPLIANCE_GATEWAY_ADDRESS = "0x5F68F2A17a28b06A02A649cade5a666
 // Agent Discovery Registry — privacy-preserving agent marketplace
 export const AGENT_DISCOVERY_REGISTRY_ADDRESS = "0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47";
 
+// Agent Staking — insurance layer for agent commerce
+// Stake tokens as guarantee, auto-slash on failure
+export const AGENT_STAKING_ADDRESS = "0x969dE0F0F6A99FCC0c1D29a430dC8cFa11273F71";
+
+// Agent Credit — DeFi lending for AI agents
+// Borrow against ZK reputation, credit tiers based on track record
+export const AGENT_CREDIT_ADDRESS = "0x8F660638fD97A8640c8B84Ad6115ff6869e94808";
+
 // Portable Reputation — Cross-chain ZK reputation attestations
 export const PORTABLE_REPUTATION_ADDRESS = "0x75B852dee59a6C3569E9eDAb1119C8B2C967C93a";
 

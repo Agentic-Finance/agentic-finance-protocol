@@ -1,0 +1,27 @@
+{
+  "name": "@agtfi/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Payment Server for Agentic Finance — payments, compliance, reputation for any AI agent",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "agtfi-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "keywords": ["mcp", "payments", "ai-agents", "zk-compliance", "agent-reputation", "agentic-finance"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "ethers": "^6.13.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "@types/node": "^22.0.0"
+  }
+}

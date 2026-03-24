@@ -21,11 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Agentic Finance — Finance for the Agentic Economy",
+    default: "Agentic Finance — The Economy Runs on Trust. We Built It for Machines.",
     template: "%s | Agentic Finance",
   },
-  description: "The first agent-to-agent payment protocol on Tempo L1. Escrow, streaming, ZK-shielded payroll, and 32+ autonomous AI agents — all on-chain.",
-  keywords: ["Agentic Finance", "Tempo L1", "agent payments", "escrow", "DeFi", "AI agents", "blockchain", "ZK privacy", "agt.finance"],
+  description: "Privacy-preserving compliance, verifiable reputation, and autonomous payments for AI agents. 21 smart contracts, ZK-SNARK proofs, 50 production agents on Tempo L1.",
+  keywords: ["Agentic Finance", "Tempo L1", "agent payments", "ZK compliance", "agent reputation", "MCP payments", "x402", "MPP", "AI agents", "zero-knowledge proofs", "autonomous commerce", "agt.finance"],
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "Agentic Finance — Finance for the Agentic Economy",
-    description: "Escrow, streaming, ZK-shielded payroll, and 32+ AI agents on Tempo L1.",
+    title: "Agentic Finance — The Economy Runs on Trust. We Built It for Machines.",
+    description: "ZK compliance proofs, verifiable agent reputation, and multi-protocol payments. The trust infrastructure for autonomous commerce.",
     url: "https://agt.finance",
     siteName: "Agentic Finance",
     type: "website",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Agentic Finance",
-    description: "Finance for the Agentic Economy. Agent-to-agent payments on Tempo L1.",
+    description: "The economy runs on trust. We built it for machines. ZK compliance, agent reputation, autonomous payments.",
     creator: "@agenticfinance",
   },
   robots: { index: true, follow: true },

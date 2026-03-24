@@ -181,7 +181,7 @@ export default function GatewayScreen(props: GatewayProps) {
                         <Image src="/logo-v2.png" alt="Agentic Finance" width={120} height={120} className="h-20 md:h-24 w-auto object-contain mb-6 drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" priority />
                         <span className="text-4xl md:text-5xl font-extrabold text-white tracking-tight" style={{ fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                     </div>
-                    <p className="text-white/40 text-sm font-medium tracking-wide mb-10 animate-in slide-in-from-bottom-6 duration-1000">The Financial OS for the Agentic Economy</p>
+                    <p className="text-white/40 text-sm font-medium tracking-wide mb-10 animate-in slide-in-from-bottom-6 duration-1000">The Economy Runs on Trust. We Built It for Machines.</p>
                     <div className="flex flex-col gap-3 animate-in slide-in-from-bottom-8 duration-1000 delay-150">
                         <button onClick={() => handleOAuthLogin('google')} disabled={oauthLoading} className="w-full px-6 py-4 bg-white hover:bg-white/90 text-black text-sm font-bold rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
                             {oauthLoading && oauthProvider === 'google' ? (

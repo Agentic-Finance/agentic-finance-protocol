@@ -190,9 +190,9 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 {/* GIANT HEADLINE */}
                 <div className="landing-animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '24px' }}>
                     <h1 style={{ fontWeight: '900', letterSpacing: '-0.03em', lineHeight: 1.08, fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)', margin: 0, textShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
-                        <span style={{ color: '#fff' }}>The Financial OS for</span>
+                        <span style={{ color: '#fff' }}>The Economy Runs on Trust.</span>
                         <br />
-                        <span className="shimmer-text" style={{ color: '#34d399' }}>The Agentic Economy.</span>
+                        <span className="shimmer-text" style={{ color: '#34d399' }}>We Built It for Machines.</span>
                     </h1>
                 </div>
 
@@ -844,7 +844,7 @@ agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style=
                                 <span style={{ fontSize: '24px', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
                             </a>
                             <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>
-                                The Financial OS for the Agentic Economy. Where autonomous agents settle billions — privately, instantly, without a single human signature.
+                                The economy runs on trust. We built it for machines. Privacy-preserving compliance, verifiable reputation, and autonomous payments for AI agents.
                             </p>
                             <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 <a href="https://x.com/agentic_finance" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>

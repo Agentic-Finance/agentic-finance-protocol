@@ -84,15 +84,15 @@ contract PayPolShieldVaultV2 {
         require(!commitments[commitment], "Commitment already registered");
         require(amount > 0, "Amount must be > 0");
 
-        // Transfer tokens from depositor to vault
+        // CEI: Register commitment BEFORE external call (reentrancy protection)
+        commitments[commitment] = true;
+        commitmentAmounts[commitment] = amount;
+
+        // Interaction: Transfer tokens from depositor to vault
         require(
             paymentToken.transferFrom(msg.sender, address(this), amount),
             "Token transfer failed"
         );
-
-        // Register commitment
-        commitments[commitment] = true;
-        commitmentAmounts[commitment] = amount;
 
         emit Deposited(commitment, msg.sender, amount);
     }

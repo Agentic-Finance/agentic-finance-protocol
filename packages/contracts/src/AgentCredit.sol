@@ -206,20 +206,20 @@ contract AgentCredit {
 
         uint256 repayAmount = _amount > totalOwed ? totalOwed : _amount;
 
-        require(lendingToken.transferFrom(msg.sender, address(this), repayAmount), "Credit: transfer failed");
-
-        // Apply payment: interest first, then principal
+        // CEI: Update state BEFORE external call (reentrancy protection)
         if (repayAmount <= interest) {
-            totalPoolBalance += repayAmount; // All goes to pool as interest income
+            totalPoolBalance += repayAmount;
         } else {
             uint256 principalPaid = repayAmount - interest;
             credit.borrowed -= principalPaid;
             totalBorrowedGlobal -= principalPaid;
             totalPoolBalance += repayAmount;
         }
-
         credit.totalRepaid += repayAmount;
         credit.lastRepayAt = block.timestamp;
+
+        // Interaction: External call LAST
+        require(lendingToken.transferFrom(msg.sender, address(this), repayAmount), "Credit: transfer failed");
 
         emit Repaid(msg.sender, repayAmount, credit.borrowed);
     }

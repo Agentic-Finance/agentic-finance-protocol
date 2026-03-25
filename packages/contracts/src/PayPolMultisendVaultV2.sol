@@ -155,29 +155,28 @@ contract PayPolMultisendVaultV2 {
         require(recipients.length > 0, "Empty arrays");
         require(!batchExecuted[batchId], "Batch already executed");
 
-        uint256 totalAmount = 0;
+        // CEI: Mark executed BEFORE external calls (reentrancy protection)
+        batchExecuted[batchId] = true;
 
+        uint256 totalAmount = 0;
         for (uint256 i = 0; i < recipients.length; i++) {
             require(recipients[i] != address(0), "Invalid recipient");
             require(amounts[i] > 0, "Amount must be > 0");
+            totalAmount += amounts[i];
+        }
 
+        // CEI: Deduct balance BEFORE external calls
+        require(deposits[msg.sender][token] >= totalAmount, "Insufficient depositor balance");
+        deposits[msg.sender][token] -= totalAmount;
+
+        // Interactions: External calls LAST
+        for (uint256 i = 0; i < recipients.length; i++) {
             require(
                 IERC20(token).transfer(recipients[i], amounts[i]),
                 "Transfer failed"
             );
-
-            totalAmount += amounts[i];
-
-            // Per-transfer event for block explorer visibility
             emit IndividualTransfer(batchId, recipients[i], amounts[i], i);
         }
-
-        // Deduct total from depositor balance (daemon is the depositor)
-        require(deposits[msg.sender][token] >= totalAmount, "Insufficient depositor balance");
-        deposits[msg.sender][token] -= totalAmount;
-
-        // Mark batch as executed
-        batchExecuted[batchId] = true;
 
         // Store batch record
         batchHistory.push(BatchRecord({

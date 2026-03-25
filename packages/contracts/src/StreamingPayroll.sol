@@ -96,9 +96,13 @@ contract StreamingPayroll {
         Stream storage s = streams[streamId];
         require(msg.sender == s.employer, "Not employer");
         require(s.active, "Stream not active");
+        require(amount > 0, "Amount must be > 0");
 
-        IERC20(s.token).transferFrom(msg.sender, address(this), amount);
+        // CEI: Update state BEFORE external call
         s.totalDeposited += amount;
+
+        // Interaction: External call LAST
+        require(IERC20(s.token).transferFrom(msg.sender, address(this), amount), "StreamingPayroll: topUp transfer failed");
 
         emit StreamTopUp(streamId, amount);
     }

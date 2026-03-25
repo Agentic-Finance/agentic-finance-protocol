@@ -71,9 +71,9 @@ export default function Dashboard() {
         const privyOAuthRedirect = !!params.get('privy_oauth_code') || !!params.get('privy_oauth_provider');
         // If we detect OAuth redirect via URL params, also set the flag for the Privy effect
         if (privyOAuthRedirect && !oauthPending) sessionStorage.setItem('agtfi_oauth_pending', 'true');
-        // Also skip landing if user has an active session (wallet connected previously)
-        const hasActiveSession = !!sessionStorage.getItem('agtfi_session_active');
-        const skipLanding = params.get('app') === '1' || oauthPending || privyOAuthRedirect || hasActiveSession;
+        // Only skip landing if explicitly requested via ?app=1 or OAuth redirect
+        // Landing page should always show when user visits agt.finance directly
+        const skipLanding = params.get('app') === '1' || oauthPending || privyOAuthRedirect;
 
         // Also check if wallet is already connected (user coming from sub-page like /stream)
         const checkWalletAndSkip = async () => {

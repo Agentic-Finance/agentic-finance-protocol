@@ -188,12 +188,33 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 10, padding: '90px 20px 24px' }}>
 
                 {/* GIANT HEADLINE */}
-                <div className="landing-animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '24px' }}>
+                <div className="landing-animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '16px' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '9999px', border: '1px solid rgba(62,221,185,0.2)', backgroundColor: 'rgba(62,221,185,0.05)', marginBottom: '20px', fontSize: '0.75rem', fontWeight: '700', color: '#3EDDB9', letterSpacing: '0.05em' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#3EDDB9', animation: 'pulse 2s infinite' }}></span>
+                        TRUST INFRASTRUCTURE FOR AUTONOMOUS COMMERCE
+                    </div>
                     <h1 style={{ fontWeight: '900', letterSpacing: '-0.03em', lineHeight: 1.08, fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)', margin: 0, textShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
                         <span style={{ color: '#fff' }}>The Economy Runs on Trust.</span>
                         <br />
                         <span className="shimmer-text" style={{ color: '#34d399' }}>We Built It for Machines.</span>
                     </h1>
+                    <p style={{ color: '#94A3B8', fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)', marginTop: '16px', lineHeight: 1.6, maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
+                        ZK compliance proofs. Verifiable agent reputation. Privacy-preserving payments. The missing trust layer for x402, MPP, and autonomous commerce.
+                    </p>
+                    {/* Stats pills */}
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
+                        {[
+                            { label: 'Contracts', value: '21+', color: '#FF2D87' },
+                            { label: 'ZK Circuits', value: '5', color: '#1BBFEC' },
+                            { label: 'Agents', value: '50', color: '#3EDDB9' },
+                            { label: 'On Tempo L1', value: '42431', color: '#FF7D2C' },
+                        ].map(s => (
+                            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.03)', fontSize: '0.75rem' }}>
+                                <span style={{ color: s.color, fontWeight: '900', fontFamily: 'monospace' }}>{s.value}</span>
+                                <span style={{ color: '#64748b' }}>{s.label}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* FLOATING TERMINAL - iPhone Edge-to-Edge */}

@@ -342,7 +342,7 @@ X-Reputation-Min-Tx: 10
 ];
 
 function MarkdownRenderer({ content }: { content: string }) {
-    const lines = content.trim().split('\\n');
+    const lines = content.trim().split('\n');
     const elements: React.ReactNode[] = [];
 
     let inCodeBlock = false;
@@ -359,7 +359,7 @@ function MarkdownRenderer({ content }: { content: string }) {
                 elements.push(
                     <div key={i} className="my-4 rounded-lg overflow-hidden" style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)' }}>
                         {codeLang && <div className="px-4 py-1.5 text-[10px] font-mono uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)', borderBottom: '1px solid var(--pp-border)' }}>{codeLang}</div>}
-                        <pre className="p-4 overflow-x-auto text-[13px] leading-relaxed font-mono" style={{ color: 'var(--agt-mint)' }}>{codeLines.join('\\n')}</pre>
+                        <pre className="p-4 overflow-x-auto text-[13px] leading-relaxed font-mono" style={{ color: 'var(--agt-mint)' }}>{codeLines.join('\n')}</pre>
                     </div>
                 );
                 codeLines = [];

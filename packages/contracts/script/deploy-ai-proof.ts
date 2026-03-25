@@ -5,8 +5,9 @@ import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const RPC_URL = 'https://rpc.moderato.tempo.xyz';
-const PRIVATE_KEY = '0x3a573b684c573b069719efebf714c021ac4f6f8480aa397375fe58fa16b93eae';
+const RPC_URL = process.env.RPC_URL || 'https://rpc.moderato.tempo.xyz';
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+if (!PRIVATE_KEY) throw new Error('PRIVATE_KEY env var required');
 
 async function main() {
   const provider = new ethers.JsonRpcProvider(RPC_URL, { name: 'tempo-moderato', chainId: 42431 });

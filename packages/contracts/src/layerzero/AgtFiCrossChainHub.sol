@@ -69,14 +69,20 @@ contract AgtFiCrossChainHub {
         bytes32 messageHash
     );
 
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
     // ═══════════════════════════════════════════════
+
+    /// @notice Authorized attestors
+    mapping(address => bool) public authorizedAttestors;
 
     constructor(address _complianceRegistry, address _reputationRegistry) {
         owner = msg.sender;
         complianceRegistry = _complianceRegistry;
         reputationRegistry = _reputationRegistry;
+        authorizedAttestors[msg.sender] = true;
     }
 
     // ═══════════════════════════════════════════════
@@ -95,6 +101,7 @@ contract AgtFiCrossChainHub {
         uint256 _sanctionsRoot,
         bytes calldata _thresholds
     ) external {
+        require(authorizedAttestors[msg.sender] || msg.sender == owner, "Hub: not authorized attestor");
         // Verify compliance is active on registry
         (bool ok, bytes memory result) = complianceRegistry.staticcall(
             abi.encodeWithSignature("isCompliant(uint256)", _commitment)
@@ -131,6 +138,7 @@ contract AgtFiCrossChainHub {
         uint256 _minTxCount,
         uint256 _minVolume
     ) external {
+        require(authorizedAttestors[msg.sender] || msg.sender == owner, "Hub: not authorized attestor");
         // Verify reputation meets requirements
         (bool ok, bytes memory result) = reputationRegistry.staticcall(
             abi.encodeWithSignature(
@@ -219,6 +227,11 @@ contract AgtFiCrossChainHub {
     // ADMIN
     // ═══════════════════════════════════════════════
 
+    function setAttestor(address _attestor, bool _authorized) external {
+        require(msg.sender == owner, "Hub: not owner");
+        authorizedAttestors[_attestor] = _authorized;
+    }
+
     function setRegistries(address _compliance, address _reputation) external {
         require(msg.sender == owner, "Hub: not owner");
         complianceRegistry = _compliance;
@@ -227,6 +240,8 @@ contract AgtFiCrossChainHub {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Hub: not owner");
+        require(_newOwner != address(0), "Hub: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

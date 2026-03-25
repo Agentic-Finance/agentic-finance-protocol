@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// @deprecated Use PayPolShieldVaultV2 instead. V1 has no nullifier tracking and is vulnerable to replay attacks.
 pragma solidity ^0.8.19;
 
 import "./PlonkVerifier.sol";

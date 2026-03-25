@@ -41,6 +41,7 @@ contract BatchShieldExecutor {
     event BatchExecuted(uint256 count, uint256 totalAmount);
     event DaemonUpdated(address newDaemon);
     event ShieldVaultUpdated(address newVault);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ── Constructor ──────────────────────────────────────────
     constructor(address _shieldVault, address _daemon) {
@@ -79,7 +80,7 @@ contract BatchShieldExecutor {
         uint256 len = proofs.length;
         require(len > 0, "Empty batch");
         require(len == pubSignals.length && len == amounts.length, "Array length mismatch");
-        require(len <= 200, "Batch too large");
+        require(len <= 20, "Batch too large");
 
         uint256 totalAmount = 0;
         for (uint256 i = 0; i < len; i++) {
@@ -120,5 +121,11 @@ contract BatchShieldExecutor {
     function updateShieldVault(address _newVault) external onlyOwner {
         shieldVault = IShieldVaultV2(_newVault);
         emit ShieldVaultUpdated(_newVault);
+    }
+
+    function transferOwnership(address _newOwner) external onlyOwner {
+        require(_newOwner != address(0), "BatchShieldExecutor: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
+        owner = _newOwner;
     }
 }

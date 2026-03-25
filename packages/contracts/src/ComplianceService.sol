@@ -88,6 +88,7 @@ contract ComplianceService {
     event DeveloperRegistered(bytes32 indexed apiKeyHash, address wallet, string name, uint256 tier);
     event ComplianceChecked(bytes32 indexed checkId, uint256 indexed agentCommitment, bool isCompliant, string checkType);
     event TierUpgraded(bytes32 indexed apiKeyHash, uint256 newTier);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
@@ -264,11 +265,14 @@ contract ComplianceService {
 
     function withdrawRevenue() external {
         require(msg.sender == owner, "ComplianceService: not owner");
-        payable(owner).transfer(address(this).balance);
+        (bool success, ) = payable(owner).call{value: address(this).balance}("");
+        require(success, "ComplianceService: withdraw failed");
     }
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "ComplianceService: not owner");
+        require(_newOwner != address(0), "ComplianceService: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

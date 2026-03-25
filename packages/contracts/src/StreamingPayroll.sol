@@ -46,7 +46,7 @@ contract StreamingPayroll {
         require(ratePerSecond > 0, "Rate must be > 0");
         require(depositAmount > 0, "Must deposit funds");
 
-        IERC20(token).transferFrom(msg.sender, address(this), depositAmount);
+        require(IERC20(token).transferFrom(msg.sender, address(this), depositAmount), "StreamingPayroll: deposit transfer failed");
 
         streamId = ++streamCount;
         streams[streamId] = Stream({
@@ -87,7 +87,7 @@ contract StreamingPayroll {
         require(claimable > 0, "Nothing to claim");
 
         s.totalClaimed += claimable;
-        IERC20(s.token).transfer(s.employee, claimable);
+        require(IERC20(s.token).transfer(s.employee, claimable), "StreamingPayroll: claim transfer failed");
 
         emit StreamClaimed(streamId, s.employee, claimable);
     }
@@ -116,10 +116,10 @@ contract StreamingPayroll {
 
         if (employeePortion > 0) {
             s.totalClaimed += employeePortion;
-            IERC20(s.token).transfer(s.employee, employeePortion);
+            require(IERC20(s.token).transfer(s.employee, employeePortion), "StreamingPayroll: employee transfer failed");
         }
         if (employerRefund > 0) {
-            IERC20(s.token).transfer(s.employer, employerRefund);
+            require(IERC20(s.token).transfer(s.employer, employerRefund), "StreamingPayroll: refund transfer failed");
         }
 
         emit StreamCancelled(streamId, employerRefund, employeePortion);

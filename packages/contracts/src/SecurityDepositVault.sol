@@ -100,7 +100,10 @@ contract SecurityDepositVault {
         }
 
         deposits[msg.sender].amount += _amount;
-        deposits[msg.sender].depositedAt = block.timestamp;
+        // Only set depositedAt on the first deposit to preserve the lock period start
+        if (deposits[msg.sender].depositedAt == 0) {
+            deposits[msg.sender].depositedAt = block.timestamp;
+        }
         totalDeposited += _amount;
 
         uint8 tier = getTier(msg.sender);

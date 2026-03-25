@@ -85,8 +85,9 @@ contract AgentWallet {
         return id;
     }
 
-    // --- 🦞 STEP 2: EXECUTE (Release the trap after delay) ---
-    function executeProposal(uint256 id) external onlyAuthorized whenNotPaused {
+    // --- STEP 2: EXECUTE (Release the trap after delay) ---
+    // Only owner can execute — aiAgent can only propose
+    function executeProposal(uint256 id) external onlyOwner whenNotPaused {
         Proposal storage p = proposals[id];
         
         require(!p.executed, "Trap: Already executed");

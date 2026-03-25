@@ -26,6 +26,7 @@ contract AIProofRegistry {
         bytes32 resultHash;     // keccak256 of actual result (set on verify)
         bool verified;          // Has verify() been called?
         bool matched;           // Did planHash match resultHash?
+        bool slashed;           // Has this commitment been slashed?
         uint256 committedAt;    // Block timestamp of commitment
         uint256 verifiedAt;     // Block timestamp of verification
     }
@@ -63,6 +64,8 @@ contract AIProofRegistry {
         address indexed agent,
         uint256 indexed nexusJobId
     );
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ── Modifiers ─────────────────────────────────────────────
 
@@ -106,6 +109,7 @@ contract AIProofRegistry {
             resultHash: bytes32(0),
             verified: false,
             matched: false,
+            slashed: false,
             committedAt: block.timestamp,
             verifiedAt: 0
         });
@@ -127,6 +131,7 @@ contract AIProofRegistry {
         Commitment storage c = commitments[_commitmentId];
         require(c.committedAt > 0, "AIProofRegistry: commitment not found");
         require(!c.verified, "AIProofRegistry: already verified");
+        require(msg.sender == c.agent || msg.sender == owner, "AIProofRegistry: only agent or owner can verify");
         require(_resultHash != bytes32(0), "AIProofRegistry: empty result hash");
 
         c.resultHash = _resultHash;
@@ -152,7 +157,9 @@ contract AIProofRegistry {
         Commitment storage c = commitments[_commitmentId];
         require(c.verified, "AIProofRegistry: not yet verified");
         require(!c.matched, "AIProofRegistry: commitment matched, cannot slash");
+        require(!c.slashed, "AIProofRegistry: already slashed");
 
+        c.slashed = true;
         totalSlashed++;
 
         emit AgentSlashed(_commitmentId, c.agent, c.nexusJobId);
@@ -182,6 +189,12 @@ contract AIProofRegistry {
      */
     function getJobCommitment(uint256 _nexusJobId) external view returns (bytes32) {
         return jobCommitments[_nexusJobId];
+    }
+
+    function transferOwnership(address _newOwner) external onlyOwner {
+        require(_newOwner != address(0), "AIProofRegistry: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
+        owner = _newOwner;
     }
 
     /**

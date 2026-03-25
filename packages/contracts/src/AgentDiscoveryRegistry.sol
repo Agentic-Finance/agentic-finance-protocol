@@ -77,6 +77,9 @@ contract AgentDiscoveryRegistry {
     uint256 public premiumMinTx;
     uint256 public premiumMinVolume;
 
+    /// @notice listingId => registrant address
+    mapping(bytes32 => address) public listingOwner;
+
     uint256 public totalListings;
     uint256 public totalActive;
 
@@ -95,6 +98,7 @@ contract AgentDiscoveryRegistry {
     event AgentUpdated(bytes32 indexed listingId, string endpoint, string capabilities);
     event AgentDeactivated(bytes32 indexed listingId);
     event AgentPinged(bytes32 indexed listingId, uint256 timestamp);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
@@ -142,6 +146,12 @@ contract AgentDiscoveryRegistry {
         require(bytes(_endpoint).length > 0, "Discovery: empty endpoint");
         require(bytes(_capabilities).length > 0, "Discovery: empty capabilities");
 
+        // Refund excess fee
+        if (msg.value > registrationFee) {
+            (bool refundOk, ) = msg.sender.call{value: msg.value - registrationFee}("");
+            require(refundOk, "Discovery: refund failed");
+        }
+
         // Determine tier based on reputation
         Tier tier = Tier.Basic;
         if (_reputationCommitment != 0) {
@@ -178,6 +188,7 @@ contract AgentDiscoveryRegistry {
         });
 
         allListingIds.push(listingId);
+        listingOwner[listingId] = msg.sender;
         totalListings++;
         totalActive++;
 
@@ -189,17 +200,18 @@ contract AgentDiscoveryRegistry {
      */
     function ping(bytes32 _listingId) external {
         require(listings[_listingId].active, "Discovery: not active");
+        require(listingOwner[_listingId] == msg.sender, "Discovery: not listing owner");
         listings[_listingId].lastActiveAt = block.timestamp;
         emit AgentPinged(_listingId, block.timestamp);
     }
 
     /**
-     * @notice Deactivate a listing
+     * @notice Deactivate a listing (by listing owner or contract owner)
      */
     function deactivate(bytes32 _listingId) external {
         AgentListing storage listing = listings[_listingId];
         require(listing.active, "Discovery: already inactive");
-        require(msg.sender == owner, "Discovery: not authorized");
+        require(msg.sender == owner || msg.sender == listingOwner[_listingId], "Discovery: not authorized");
         listing.active = false;
         totalActive--;
         emit AgentDeactivated(_listingId);
@@ -214,6 +226,13 @@ contract AgentDiscoveryRegistry {
      */
     function getListingCount() external view returns (uint256) {
         return allListingIds.length;
+    }
+
+    /**
+     * @notice Get count of active listings only
+     */
+    function getActiveListingCount() external view returns (uint256) {
+        return totalActive;
     }
 
     /**
@@ -283,11 +302,14 @@ contract AgentDiscoveryRegistry {
 
     function withdraw() external {
         require(msg.sender == owner, "Discovery: not owner");
-        payable(owner).transfer(address(this).balance);
+        (bool success, ) = payable(owner).call{value: address(this).balance}("");
+        require(success, "Discovery: withdraw failed");
     }
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Discovery: not owner");
+        require(_newOwner != address(0), "Discovery: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

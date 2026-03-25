@@ -154,7 +154,13 @@ contract ComplianceRegistry {
         uint256[4] calldata _pubSignals
     ) external payable returns (bool certificateValid) {
         require(msg.value >= proofFee, "ComplianceRegistry: insufficient fee");
-        if (msg.value > 0) totalFeesCollected += msg.value;
+        if (proofFee > 0) totalFeesCollected += proofFee;
+
+        // Refund excess fee
+        if (msg.value > proofFee) {
+            (bool refundOk, ) = msg.sender.call{value: msg.value - proofFee}("");
+            require(refundOk, "ComplianceRegistry: refund failed");
+        }
 
         uint256 proofSanctionsRoot = _pubSignals[0];
         uint256 commitment = _pubSignals[1];
@@ -321,7 +327,8 @@ contract ComplianceRegistry {
     function withdrawFees() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "ComplianceRegistry: no fees to withdraw");
-        payable(owner).transfer(balance);
+        (bool success, ) = payable(owner).call{value: balance}("");
+        require(success, "ComplianceRegistry: withdraw failed");
     }
 
 

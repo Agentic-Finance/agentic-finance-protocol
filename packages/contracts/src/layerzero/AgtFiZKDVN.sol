@@ -55,6 +55,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
     /// @notice Default fee if destination-specific fee not set
     uint256 public defaultFee;
 
+    /// @notice Test mode flag — verifyDirect() only works when enabled
+    bool public testMode;
+
     /// @notice Verified message hashes (replay protection)
     mapping(bytes32 => bool) public verifiedHashes;
 
@@ -118,6 +121,7 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         zkVerifier = _zkVerifier;
         receiveLib = _receiveLib;
         defaultFee = _defaultFee;
+        testMode = true; // Start in test mode, disable for production
 
         emit ZKVerifierUpdated(_zkVerifier);
         emit ReceiveLibUpdated(_receiveLib);
@@ -273,6 +277,7 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         bytes32 _payloadHash,
         uint64 _confirmations
     ) external onlyOperator {
+        require(testMode, "AgtFiZKDVN: verifyDirect disabled in production mode");
         bytes32 messageHash = keccak256(abi.encodePacked(_packetHeader, _payloadHash));
         require(!verifiedHashes[messageHash], "AgtFiZKDVN: already verified");
 
@@ -320,10 +325,15 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         defaultFee = _fee;
     }
 
+    function setTestMode(bool _testMode) external onlyOwner {
+        testMode = _testMode;
+    }
+
     function withdrawFees(address payable _to) external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "AgtFiZKDVN: no fees");
-        _to.transfer(balance);
+        (bool success, ) = _to.call{value: balance}("");
+        require(success, "AgtFiZKDVN: withdraw failed");
         emit FeeWithdrawn(_to, balance);
     }
 

@@ -130,6 +130,7 @@ contract AgentReputationRegistry {
         uint256[] calldata accumulators
     ) external onlyDaemon {
         require(commitments.length == accumulators.length, "ReputationRegistry: length mismatch");
+        require(commitments.length <= 500, "ReputationRegistry: batch too large (max 500)");
         for (uint256 i = 0; i < commitments.length; i++) {
             registeredAccumulators[commitments[i]] = accumulators[i];
             emit AccumulatorRegistered(commitments[i], accumulators[i], block.timestamp);

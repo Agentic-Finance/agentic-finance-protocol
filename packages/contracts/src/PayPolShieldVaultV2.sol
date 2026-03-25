@@ -115,8 +115,9 @@ contract PayPolShieldVaultV2 {
         uint256 nullifierHash = pubSignals[1];
         // pubSignals[2] = recipient (used by circuit, extracted below)
 
-        // 1. Check commitment exists
+        // 1. Check commitment exists and amount matches
         require(commitments[commitment], "Unknown commitment");
+        require(exactAmount == commitmentAmounts[commitment], "Amount mismatch with commitment");
 
         // 2. Check nullifier not already used (anti-double-spend)
         require(!usedNullifiers[nullifierHash], "Nullifier already used - double spend rejected");
@@ -124,8 +125,9 @@ contract PayPolShieldVaultV2 {
         // 3. Verify ZK proof
         require(verifier.verifyProof(proof, pubSignals), "ZK: Invalid proof");
 
-        // 4. Mark nullifier as used
+        // 4. Mark nullifier as used and clear commitment amount
         usedNullifiers[nullifierHash] = true;
+        commitmentAmounts[commitment] = 0;
 
         // 5. Extract recipient from pubSignals and transfer
         address recipient = address(uint160(pubSignals[2]));

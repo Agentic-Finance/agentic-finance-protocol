@@ -56,7 +56,7 @@ contract PayPolNexusV2 is Ownable, ReentrancyGuard {
 
     /// @notice Arbitration penalty in basis points (300 = 3%). Applied to losing party in disputes. Max $10.
     uint256 public arbitrationPenaltyBps = 300;
-    uint256 public maxArbitrationPenalty = 10e18; // Max $10 in 18-decimal tokens
+    uint256 public maxArbitrationPenalty = 10_000_000; // Max $10 in 6-decimal tokens (AlphaUSD)
 
     /// @notice Accumulated platform fees per token, withdrawable by owner.
     mapping(address => uint256) public accumulatedFees;

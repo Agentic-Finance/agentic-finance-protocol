@@ -100,6 +100,8 @@ contract MPPComplianceGateway {
         string reason
     );
 
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
     // ═══════════════════════════════════════════════
@@ -295,6 +297,8 @@ contract MPPComplianceGateway {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Gateway: not owner");
+        require(_newOwner != address(0), "Gateway: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

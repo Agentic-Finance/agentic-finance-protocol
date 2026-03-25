@@ -134,8 +134,16 @@ contract ReputationRegistry {
         // Compute composite score
         rep.compositeScore = _computeScore(rep);
 
-        // Record history
-        snapshotTimestamps[_agent].push(block.timestamp);
+        // Record history (cap at 100 entries to prevent unbounded growth)
+        if (snapshotTimestamps[_agent].length >= 100) {
+            // Shift left: remove oldest, append new
+            for (uint256 j = 0; j < 99; j++) {
+                snapshotTimestamps[_agent][j] = snapshotTimestamps[_agent][j + 1];
+            }
+            snapshotTimestamps[_agent][99] = block.timestamp;
+        } else {
+            snapshotTimestamps[_agent].push(block.timestamp);
+        }
 
         emit ReputationUpdated(_agent, rep.compositeScore, block.timestamp);
     }
@@ -188,7 +196,15 @@ contract ReputationRegistry {
             rep.updatedAt = block.timestamp;
             rep.compositeScore = _computeScore(rep);
 
-            snapshotTimestamps[inp.agent].push(block.timestamp);
+            // Cap snapshot history at 100 entries
+            if (snapshotTimestamps[inp.agent].length >= 100) {
+                for (uint256 j = 0; j < 99; j++) {
+                    snapshotTimestamps[inp.agent][j] = snapshotTimestamps[inp.agent][j + 1];
+                }
+                snapshotTimestamps[inp.agent][99] = block.timestamp;
+            } else {
+                snapshotTimestamps[inp.agent].push(block.timestamp);
+            }
             emit ReputationUpdated(inp.agent, rep.compositeScore, block.timestamp);
         }
     }

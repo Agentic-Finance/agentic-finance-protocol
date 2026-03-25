@@ -103,6 +103,7 @@ contract AgentCredit {
     event Defaulted(address indexed agent, uint256 amount);
     event PoolDeposited(address indexed depositor, uint256 amount);
     event TierUpgraded(address indexed agent, CreditTier oldTier, CreditTier newTier);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
@@ -197,15 +198,28 @@ contract AgentCredit {
         CreditLine storage credit = credits[msg.sender];
         require(credit.borrowed > 0, "Credit: nothing to repay");
 
-        uint256 repayAmount = _amount > credit.borrowed ? credit.borrowed : _amount;
+        // Calculate accrued interest
+        uint256 timeElapsed = block.timestamp - credit.lastRepayAt;
+        if (timeElapsed == 0) timeElapsed = block.timestamp - credit.lastBorrowAt;
+        uint256 interest = (credit.borrowed * interestRateBps * timeElapsed) / (10000 * 365 days);
+        uint256 totalOwed = credit.borrowed + interest;
+
+        uint256 repayAmount = _amount > totalOwed ? totalOwed : _amount;
 
         require(lendingToken.transferFrom(msg.sender, address(this), repayAmount), "Credit: transfer failed");
 
-        credit.borrowed -= repayAmount;
+        // Apply payment: interest first, then principal
+        if (repayAmount <= interest) {
+            totalPoolBalance += repayAmount; // All goes to pool as interest income
+        } else {
+            uint256 principalPaid = repayAmount - interest;
+            credit.borrowed -= principalPaid;
+            totalBorrowedGlobal -= principalPaid;
+            totalPoolBalance += repayAmount;
+        }
+
         credit.totalRepaid += repayAmount;
         credit.lastRepayAt = block.timestamp;
-        totalBorrowedGlobal -= repayAmount;
-        totalPoolBalance += repayAmount;
 
         emit Repaid(msg.sender, repayAmount, credit.borrowed);
     }
@@ -217,10 +231,22 @@ contract AgentCredit {
     /**
      * @notice Deposit tokens into the lending pool
      */
+    /// @notice depositorAddress => deposited amount
+    mapping(address => uint256) public poolDeposits;
+
     function depositToPool(uint256 _amount) external {
         require(lendingToken.transferFrom(msg.sender, address(this), _amount), "Credit: deposit failed");
+        poolDeposits[msg.sender] += _amount;
         totalPoolBalance += _amount;
         emit PoolDeposited(msg.sender, _amount);
+    }
+
+    function withdrawFromPool(uint256 _amount) external {
+        require(poolDeposits[msg.sender] >= _amount, "Credit: insufficient deposit");
+        require(totalPoolBalance >= _amount, "Credit: pool has insufficient liquidity");
+        poolDeposits[msg.sender] -= _amount;
+        totalPoolBalance -= _amount;
+        require(lendingToken.transfer(msg.sender, _amount), "Credit: withdraw failed");
     }
 
     // ═══════════════════════════════════════════════
@@ -234,8 +260,9 @@ contract AgentCredit {
         require(msg.sender == owner, "Credit: not owner");
         CreditLine storage credit = credits[_agent];
         require(credit.borrowed > 0, "Credit: no debt");
+        uint256 lastActivity = credit.lastRepayAt > credit.lastBorrowAt ? credit.lastRepayAt : credit.lastBorrowAt;
         require(
-            block.timestamp > credit.lastBorrowAt + defaultThreshold,
+            block.timestamp > lastActivity + defaultThreshold,
             "Credit: not yet defaultable"
         );
 
@@ -286,6 +313,8 @@ contract AgentCredit {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Credit: not owner");
+        require(_newOwner != address(0), "Credit: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

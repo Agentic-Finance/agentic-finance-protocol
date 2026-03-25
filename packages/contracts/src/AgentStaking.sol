@@ -85,6 +85,7 @@ contract AgentStaking {
     event InsuranceReleased(uint256 indexed jobId, address indexed agent, uint256 amount);
     event Slashed(uint256 indexed jobId, address indexed agent, address indexed client, uint256 amount);
     event TierUpgraded(address indexed agent, Tier oldTier, Tier newTier);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
@@ -173,9 +174,9 @@ contract AgentStaking {
         StakeInfo storage info = stakes[_agent];
         uint256 insuranceAmount = (_jobValue * insuranceRateBps) / 10000;
 
-        // Cap insurance at available stake
+        // Revert if agent cannot fully cover insurance
         uint256 available = info.totalStaked - info.lockedInJobs;
-        if (insuranceAmount > available) insuranceAmount = available;
+        require(insuranceAmount <= available, "Staking: insufficient stake for insurance");
 
         info.lockedInJobs += insuranceAmount;
         jobInsurance[_jobId] = insuranceAmount;
@@ -284,6 +285,8 @@ contract AgentStaking {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Staking: not owner");
+        require(_newOwner != address(0), "Staking: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

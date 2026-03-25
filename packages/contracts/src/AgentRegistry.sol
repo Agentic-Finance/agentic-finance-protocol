@@ -39,8 +39,17 @@ contract AgentRegistry is Ownable, ReentrancyGuard {
     // Job escrow: jobId → escrowed amount (wei)
     mapping(bytes32 => uint256) public jobEscrow;
 
+    // Job client: jobId → client address (who funded the job)
+    mapping(bytes32 => address) public jobClient;
+
+    // Job agent: jobId → agentId
+    mapping(bytes32 => bytes32) public jobAgent;
+
     // Platform cut (basis points, 100 = 1%)
     uint256 public platformFeeBps = 1000; // 10 %
+
+    // Accumulated platform fees (wei)
+    uint256 public accumulatedFees;
 
     // ── Events ────────────────────────────────────────────────
 
@@ -139,6 +148,8 @@ contract AgentRegistry is Ownable, ReentrancyGuard {
         require(jobEscrow[jobId] == 0,       "Job ID already used");
 
         jobEscrow[jobId] = msg.value;
+        jobClient[jobId] = msg.sender;
+        jobAgent[jobId] = agentId;
         a.totalJobs++;
 
         emit JobFunded(jobId, agentId, msg.sender, msg.value);
@@ -158,7 +169,9 @@ contract AgentRegistry is Ownable, ReentrancyGuard {
         uint256 agentPayment  = escrowed - fee;
 
         jobEscrow[jobId] = 0;
-        agents[agentId].wallet.transfer(agentPayment);
+        accumulatedFees += fee;
+        (bool success, ) = agents[agentId].wallet.call{value: agentPayment}("");
+        require(success, "Agent payment failed");
 
         emit JobSettled(jobId, agentId, agentPayment, fee);
     }
@@ -166,11 +179,17 @@ contract AgentRegistry is Ownable, ReentrancyGuard {
     // ── Rating System ─────────────────────────────────────────
 
     /**
-     * @notice Rate a completed job (1–5 stars).
+     * @notice Rate a completed job (1–5 stars). Only clients who funded jobs for this agent can rate.
+     * @param jobId  The job that was completed
+     * @param rating Rating 1-5
      */
-    function rateAgent(bytes32 agentId, uint256 rating) external {
+    function rateAgent(bytes32 jobId, uint256 rating) external {
         require(rating >= 1 && rating <= 5, "Rating must be 1-5");
-        require(agents[agentId].active,     "Agent not active");
+        require(jobClient[jobId] == msg.sender, "Only job client can rate");
+        require(jobEscrow[jobId] == 0, "Job not yet settled");
+
+        bytes32 agentId = jobAgent[jobId];
+        require(agents[agentId].wallet != address(0), "Agent not found");
 
         agents[agentId].ratingSum   += rating;
         agents[agentId].ratingCount += 1;
@@ -202,6 +221,10 @@ contract AgentRegistry is Ownable, ReentrancyGuard {
 
     /** @notice Withdraw accumulated platform fees. */
     function withdrawFees() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+        uint256 amount = accumulatedFees;
+        require(amount > 0, "No fees to withdraw");
+        accumulatedFees = 0;
+        (bool success, ) = payable(owner()).call{value: amount}("");
+        require(success, "Fee withdrawal failed");
     }
 }

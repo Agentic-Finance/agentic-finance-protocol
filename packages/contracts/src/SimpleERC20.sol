@@ -23,6 +23,7 @@ contract SimpleERC20 {
     }
 
     function transfer(address to, uint256 amount) external returns (bool) {
+        require(to != address(0), "Transfer to zero address");
         require(balanceOf[msg.sender] >= amount, "Insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[to] += amount;
@@ -37,6 +38,7 @@ contract SimpleERC20 {
     }
 
     function transferFrom(address from, address to, uint256 amount) external returns (bool) {
+        require(to != address(0), "Transfer to zero address");
         require(balanceOf[from] >= amount, "Insufficient balance");
         require(allowance[from][msg.sender] >= amount, "Insufficient allowance");
         allowance[from][msg.sender] -= amount;

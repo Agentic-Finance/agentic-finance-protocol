@@ -89,6 +89,9 @@ contract BatchSettlement {
     /// @notice Minimum batch size to settle
     uint256 public minBatchSize;
 
+    /// @notice batchId => recipient => is recipient
+    mapping(bytes32 => mapping(address => bool)) public batchRecipients;
+
     uint256 public totalBatches;
     uint256 public totalSettled;
     uint256 public totalPaymentsProcessed;
@@ -110,6 +113,7 @@ contract BatchSettlement {
     event BatchDisputed(bytes32 indexed batchId, address disputant);
     event BalanceClaimed(address indexed recipient, address token, uint256 amount);
     event SettlementDeposited(address indexed depositor, address token, uint256 amount);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // MODIFIERS
@@ -189,6 +193,7 @@ contract BatchSettlement {
         // Credit recipients
         uint256 availableAt = block.timestamp + disputeWindow;
         for (uint256 i = 0; i < _recipients.length; i++) {
+            batchRecipients[batchId][_recipients[i]] = true;
             claimable[_recipients[i]][_token].push(ClaimableBalance({
                 amount: _amounts[i],
                 batchId: uint256(batchId),
@@ -229,10 +234,38 @@ contract BatchSettlement {
     }
 
     /**
+     * @notice Claim settled balance in batches to prevent unbounded loops
+     * @param _token Token to claim
+     * @param _startIndex Start index in the claimable array
+     * @param _count Number of entries to process
+     */
+    function claimBatch(address _token, uint256 _startIndex, uint256 _count) external {
+        uint256 claimableAmount = 0;
+        ClaimableBalance[] storage balances = claimable[msg.sender][_token];
+        uint256 end = _startIndex + _count;
+        if (end > balances.length) end = balances.length;
+
+        for (uint256 i = _startIndex; i < end; i++) {
+            if (!balances[i].claimed && block.timestamp >= balances[i].availableAt) {
+                claimableAmount += balances[i].amount;
+                balances[i].claimed = true;
+            }
+        }
+
+        require(claimableAmount > 0, "BatchSettlement: nothing to claim");
+
+        unclaimedBalance[msg.sender][_token] -= claimableAmount;
+        require(IERC20(_token).transfer(msg.sender, claimableAmount), "BatchSettlement: transfer failed");
+
+        emit BalanceClaimed(msg.sender, _token, claimableAmount);
+    }
+
+    /**
      * @notice Dispute a batch (during dispute window)
      */
     function disputeBatch(bytes32 _batchId) external {
         Batch storage batch = batches[_batchId];
+        require(batchRecipients[_batchId][msg.sender], "BatchSettlement: not a batch recipient");
         require(!batch.finalized, "BatchSettlement: already finalized");
         require(block.timestamp < batch.createdAt + disputeWindow, "BatchSettlement: dispute window closed");
 
@@ -295,6 +328,8 @@ contract BatchSettlement {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "BatchSettlement: not owner");
+        require(_newOwner != address(0), "BatchSettlement: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

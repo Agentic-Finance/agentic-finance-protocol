@@ -84,6 +84,7 @@ contract ProofChainSettlement {
     );
 
     event ChainReset(address indexed sender, uint256 timestamp);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     // ═══════════════════════════════════════════════
     // CONSTRUCTOR
@@ -106,10 +107,18 @@ contract ProofChainSettlement {
     // CORE: Settle a proof chain batch
     // ═══════════════════════════════════════════════
 
+    /// @notice Pending settlement balance per recipient
+    mapping(address => uint256) public recipientBalances;
+
+    event RecipientCredited(address indexed recipient, uint256 amount);
+    event RecipientClaimed(address indexed recipient, uint256 amount);
+
     /**
      * @notice Settle a batch of micropayments using a chained proof
      * @param _proof PLONK proof (24 uint256 elements)
      * @param _pubSignals [prevChainHash, newChainHash, settlementAmount, batchCount]
+     * @param _recipients Array of recipient addresses for distribution
+     * @param _amounts Array of amounts per recipient (must sum to settlementAmount - fee)
      *
      * The proof guarantees:
      *   - All payments in the batch are valid (correct amounts, recipients)
@@ -119,7 +128,9 @@ contract ProofChainSettlement {
      */
     function settleBatch(
         uint256[24] calldata _proof,
-        uint256[4] calldata _pubSignals
+        uint256[4] calldata _pubSignals,
+        address[] calldata _recipients,
+        uint256[] calldata _amounts
     ) external {
         uint256 prevChainHash = _pubSignals[0];
         uint256 newChainHash = _pubSignals[1];
@@ -150,6 +161,9 @@ contract ProofChainSettlement {
         globalBatchCount += 1;
         globalPaymentCount += batchCount;
 
+        // Validate recipients
+        require(_recipients.length == _amounts.length, "ProofChain: recipient/amount length mismatch");
+
         // Transfer settlement (sender must have approved this contract)
         if (settlementAmount > 0 && token != address(0)) {
             require(
@@ -157,12 +171,19 @@ contract ProofChainSettlement {
                 "ProofChain: transfer failed"
             );
 
-            // Send net amount to... in micropayment context, funds go to
-            // the API providers. For now, hold in contract for batch distribution.
             // Fee to platform
             if (fee > 0 && feeRecipient != address(0)) {
-                IERC20(token).transfer(feeRecipient, fee);
+                require(IERC20(token).transfer(feeRecipient, fee), "ProofChain: fee transfer failed");
             }
+
+            // Distribute net amount to recipients
+            uint256 distributed = 0;
+            for (uint256 i = 0; i < _recipients.length; i++) {
+                recipientBalances[_recipients[i]] += _amounts[i];
+                distributed += _amounts[i];
+                emit RecipientCredited(_recipients[i], _amounts[i]);
+            }
+            require(distributed == netAmount, "ProofChain: distribution mismatch");
         }
 
         emit BatchSettled(
@@ -174,6 +195,17 @@ contract ProofChainSettlement {
             fee,
             block.timestamp
         );
+    }
+
+    /**
+     * @notice Recipients claim their accumulated settlement balance
+     */
+    function claimSettlement() external {
+        uint256 amount = recipientBalances[msg.sender];
+        require(amount > 0, "ProofChain: nothing to claim");
+        recipientBalances[msg.sender] = 0;
+        require(IERC20(token).transfer(msg.sender, amount), "ProofChain: claim transfer failed");
+        emit RecipientClaimed(msg.sender, amount);
     }
 
     // ═══════════════════════════════════════════════
@@ -242,6 +274,8 @@ contract ProofChainSettlement {
 
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "ProofChain: not owner");
+        require(_newOwner != address(0), "ProofChain: zero address");
+        emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;
     }
 }

@@ -172,6 +172,10 @@ contract PayPolMultisendVaultV2 {
             emit IndividualTransfer(batchId, recipients[i], amounts[i], i);
         }
 
+        // Deduct total from depositor balance (daemon is the depositor)
+        require(deposits[msg.sender][token] >= totalAmount, "Insufficient depositor balance");
+        deposits[msg.sender][token] -= totalAmount;
+
         // Mark batch as executed
         batchExecuted[batchId] = true;
 

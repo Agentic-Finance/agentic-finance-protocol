@@ -33,9 +33,9 @@ interface IComplianceRegistry {
 
 contract ComplianceService {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IComplianceRegistry public complianceRegistry;
@@ -81,18 +81,18 @@ contract ComplianceService {
     uint256 public totalChecks;
     uint256 public totalRevenue;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event DeveloperRegistered(bytes32 indexed apiKeyHash, address wallet, string name, uint256 tier);
     event ComplianceChecked(bytes32 indexed checkId, uint256 indexed agentCommitment, bool isCompliant, string checkType);
     event TierUpgraded(bytes32 indexed apiKeyHash, uint256 newTier);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _complianceRegistry) {
         owner = msg.sender;
@@ -102,9 +102,9 @@ contract ComplianceService {
         checkValidity = 86400;         // 24 hours
     }
 
-    // ═══════════════════════════════════════════════
-    // DEVELOPER REGISTRATION
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            DEVELOPER REGISTRATION
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Register as a developer
@@ -142,9 +142,9 @@ contract ComplianceService {
         emit TierUpgraded(apiKeyHash, 1);
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Compliance Checks
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Compliance Checks
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Check if an agent is compliant
@@ -228,9 +228,9 @@ contract ComplianceService {
         return check.isCompliant;
     }
 
-    // ═══════════════════════════════════════════════
-    // VIEW
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            VIEW
+    //////////////////////////////////////////////////////////////*/
 
     function getDeveloper(bytes32 apiKeyHash) external view returns (DeveloperAccount memory) {
         return developers[apiKeyHash];
@@ -244,9 +244,9 @@ contract ComplianceService {
         return (totalDevelopers, totalChecks, totalRevenue);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setFreeTierLimit(uint256 _limit) external {
         require(msg.sender == owner, "ComplianceService: not owner");

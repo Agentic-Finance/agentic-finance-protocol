@@ -27,9 +27,7 @@
 
 import { ethers } from 'ethers';
 
-// ══════════════════════════════════════════════════════════
-// TYPES
-// ══════════════════════════════════════════════════════════
+// --- TYPES ---
 
 export interface AgentWalletConfig {
     /** Agent's private key */
@@ -80,9 +78,7 @@ export interface WalletStatus {
     activeSessions: number;
 }
 
-// ══════════════════════════════════════════════════════════
-// CONTRACT ADDRESSES (Tempo Moderato)
-// ══════════════════════════════════════════════════════════
+// --- CONTRACT ADDRESSES (Tempo Moderato) ---
 
 const CONTRACTS = {
     COMPLIANCE_REGISTRY: '0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14',
@@ -115,9 +111,7 @@ const ERC20_ABI = [
     'function approve(address spender, uint256 amount) returns (bool)',
 ];
 
-// ══════════════════════════════════════════════════════════
-// MAIN CLASS
-// ══════════════════════════════════════════════════════════
+// --- MAIN CLASS ---
 
 export class AgentWallet {
     private config: Required<AgentWalletConfig>;
@@ -161,9 +155,7 @@ export class AgentWallet {
         this._reputationSecret = BigInt(repHash) >> BigInt(8);
     }
 
-    // ═══════════════════════════════════════════════
-    // PUBLIC API
-    // ═══════════════════════════════════════════════
+    // --- PUBLIC API ---
 
     /**
      * Get wallet address
@@ -282,9 +274,7 @@ export class AgentWallet {
         return ethers.formatUnits(balance, 6);
     }
 
-    // ═══════════════════════════════════════════════
-    // PRIVATE HELPERS
-    // ═══════════════════════════════════════════════
+    // --- PRIVATE HELPERS ---
 
     private _getComplianceCommitmentHex(): string {
         return ethers.keccak256(

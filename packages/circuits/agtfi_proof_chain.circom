@@ -45,9 +45,13 @@ include "node_modules/circomlib/circuits/comparators.circom";
  */
 template AgtFiProofChain(maxBatchSize) {
 
-    // ═══════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PUBLIC INPUTS
-    // ═══════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Previous chain hash (from on-chain state, 0 for genesis)
     signal input prevChainHash;
@@ -61,9 +65,13 @@ template AgtFiProofChain(maxBatchSize) {
     // Number of payments in this batch
     signal input batchCount;
 
-    // ═══════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PRIVATE INPUTS
-    // ═══════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Sender identity
     signal input senderAddress;
@@ -77,9 +85,13 @@ template AgtFiProofChain(maxBatchSize) {
     signal input recipients[maxBatchSize];
     signal input timestamps[maxBatchSize];
 
-    // ═══════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 1: Verify sender commitment
-    // ═══════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     component senderHasher = Poseidon(2);
     senderHasher.inputs[0] <== senderAddress;
@@ -87,9 +99,15 @@ template AgtFiProofChain(maxBatchSize) {
     // senderCommitment is implicitly bound via chainHash
 
 
-    // ═══════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
+
     // CONSTRAINT 2: Compute chain hash and accumulate
-    // ═══════════════════════════════════════════════
+
+
+
+    // --------------------------------------------------------
 
     component isActive[maxBatchSize];
     component paymentHashers[maxBatchSize];
@@ -131,9 +149,13 @@ template AgtFiProofChain(maxBatchSize) {
         countAccum[i + 1] <== countAccum[i] + isActive[i].out;
     }
 
-    // ═══════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 3: Verify outputs match
-    // ═══════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Chain hash must match declared newChainHash
     newChainHash === chainState[maxBatchSize];

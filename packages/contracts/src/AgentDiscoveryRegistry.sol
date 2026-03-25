@@ -32,9 +32,9 @@ interface IComplianceRegistry {
 
 contract AgentDiscoveryRegistry {
 
-    // ═══════════════════════════════════════════════
-    // TYPES
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            TYPES
+    //////////////////////////////////////////////////////////////*/
 
     enum Tier { Basic, Verified, Premium }
 
@@ -51,9 +51,9 @@ contract AgentDiscoveryRegistry {
         bool    active;
     }
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IReputationRegistry public reputationRegistry;
@@ -83,9 +83,9 @@ contract AgentDiscoveryRegistry {
     uint256 public totalListings;
     uint256 public totalActive;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event AgentRegistered(
         bytes32 indexed listingId,
@@ -100,9 +100,9 @@ contract AgentDiscoveryRegistry {
     event AgentPinged(bytes32 indexed listingId, uint256 timestamp);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(
         address _reputationRegistry,
@@ -121,9 +121,9 @@ contract AgentDiscoveryRegistry {
         registrationFee = 0; // Free on testnet
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Register & Discover
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Register & Discover
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Register an agent in the discovery registry
@@ -217,9 +217,9 @@ contract AgentDiscoveryRegistry {
         emit AgentDeactivated(_listingId);
     }
 
-    // ═══════════════════════════════════════════════
-    // QUERY: Discover agents
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY: Discover agents
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Get total number of listings
@@ -280,9 +280,9 @@ contract AgentDiscoveryRegistry {
         return complianceRegistry.isCompliant(listing.complianceCommitment);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setRegistrationFee(uint256 _fee) external {
         require(msg.sender == owner, "Discovery: not owner");

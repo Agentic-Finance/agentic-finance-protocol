@@ -50,9 +50,13 @@ include "node_modules/circomlib/circuits/smt/smtverifier.circom";
 // Oversized for safety margin and future growth
 template AgtFiCompliance(smtLevels) {
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PUBLIC INPUTS — visible on-chain, verified by contract
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // OFAC tree root — published on-chain by trusted operator
     signal input sanctionsRoot;
@@ -67,9 +71,13 @@ template AgtFiCompliance(smtLevels) {
     // Cumulative volume threshold (same scale)
     signal input volumeThreshold;
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PRIVATE INPUTS — known only to prover, never on-chain
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Sender's actual address (as field element)
     signal input senderAddress;
@@ -90,10 +98,10 @@ template AgtFiCompliance(smtLevels) {
     signal input smtIsOld0;
 
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
     // CONSTRAINT 1: Verify compliance commitment
     // Proves: "I know the sender address behind this commitment"
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
 
     component commitHasher = Poseidon(2);
     commitHasher.inputs[0] <== senderAddress;
@@ -101,11 +109,11 @@ template AgtFiCompliance(smtLevels) {
     complianceCommitment === commitHasher.out;
 
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
     // CONSTRAINT 2: OFAC Non-Membership Proof
     // Proves: "senderAddress is NOT in the sanctions tree"
     // Uses SMTVerifier with fnc=1 (non-inclusion mode)
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
 
     component smtVerifier = SMTVerifier(smtLevels);
     smtVerifier.enabled <== 1;
@@ -121,11 +129,11 @@ template AgtFiCompliance(smtLevels) {
     }
 
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
     // CONSTRAINT 3: Transaction Amount Range Proof
     // Proves: "amount < amountThreshold" (e.g., < $10,000)
     // Without revealing the actual amount
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
 
     // 64-bit comparison — supports amounts up to ~1.8 * 10^19
     // (sufficient for any realistic payment amount)
@@ -135,11 +143,11 @@ template AgtFiCompliance(smtLevels) {
     amountCheck.out === 1;
 
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
     // CONSTRAINT 4: Cumulative Volume Range Proof
     // Proves: "30-day total < volumeThreshold" (AML structuring check)
     // Without revealing cumulative volume
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
 
     component volumeCheck = LessThan(64);
     volumeCheck.in[0] <== cumulativeVolume;

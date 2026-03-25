@@ -33,9 +33,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { ethers } from "ethers";
 
-// ══════════════════════════════════════════════════════════
-// CONFIGURATION
-// ══════════════════════════════════════════════════════════
+// --- CONFIGURATION ---
 
 const RPC_URL = process.env.AGTFI_RPC_URL || "https://rpc.moderato.tempo.xyz";
 const PRIVATE_KEY = process.env.AGTFI_PRIVATE_KEY || "";
@@ -83,9 +81,7 @@ const NEXUS_ABI = [
   "function createJob(address worker, address judge, address token, uint256 amount, uint256 deadlineDuration) returns (uint256)",
 ];
 
-// ══════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════
+// --- HELPERS ---
 
 function getProvider() {
   return new ethers.JsonRpcProvider(RPC_URL);
@@ -104,9 +100,7 @@ function parseUSD(amount: string, decimals = 6): bigint {
   return ethers.parseUnits(amount, decimals);
 }
 
-// ══════════════════════════════════════════════════════════
-// MCP SERVER
-// ══════════════════════════════════════════════════════════
+// --- MCP SERVER ---
 
 const server = new McpServer({
   name: "Agentic Finance",
@@ -429,9 +423,7 @@ server.tool(
   }
 );
 
-// ══════════════════════════════════════════════════════════
-// START SERVER
-// ══════════════════════════════════════════════════════════
+// --- START SERVER ---
 
 async function main() {
   const transport = new StdioServerTransport();

@@ -30,9 +30,9 @@ import "./IAgtFiZKDVN.sol";
  */
 contract AgtFiZKDVN is IAgtFiZKDVN {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     /// @notice Contract owner
     address public owner;
@@ -81,9 +81,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
     /// @notice jobId => PendingJob
     mapping(uint256 => PendingJob) public jobs;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event OperatorUpdated(address indexed operator, bool authorized);
     event ZKVerifierUpdated(address indexed verifier);
@@ -91,9 +91,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
     event FeeUpdated(uint32 dstEid, uint256 fee);
     event FeeWithdrawn(address indexed to, uint256 amount);
 
-    // ═══════════════════════════════════════════════
-    // MODIFIERS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            MODIFIERS
+    //////////////////////////////////////////////////////////////*/
 
     modifier onlyOwner() {
         require(msg.sender == owner, "AgtFiZKDVN: not owner");
@@ -105,9 +105,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         _;
     }
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(
         uint32 _localEid,
@@ -127,9 +127,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         emit ReceiveLibUpdated(_receiveLib);
     }
 
-    // ═══════════════════════════════════════════════
-    // LAYERZERO DVN INTERFACE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            LAYERZERO DVN INTERFACE
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Called by SendLib when an OApp sends a cross-chain message
@@ -183,9 +183,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         return _getFee(_dstEid);
     }
 
-    // ═══════════════════════════════════════════════
-    // ZK VERIFICATION (destination chain)
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ZK VERIFICATION (destination chain)
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Submit a ZK-verified message to ReceiveLib
@@ -297,9 +297,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setOperator(address _operator, bool _authorized) external onlyOwner {
         operators[_operator] = _authorized;
@@ -342,9 +342,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         owner = _newOwner;
     }
 
-    // ═══════════════════════════════════════════════
-    // VIEW
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            VIEW
+    //////////////////////////////////////////////////////////////*/
 
     function getStats() external view returns (
         uint256 _totalJobs,
@@ -362,9 +362,9 @@ contract AgtFiZKDVN is IAgtFiZKDVN {
         return verifiedHashes[keccak256(abi.encodePacked(_packetHeader, _payloadHash))];
     }
 
-    // ═══════════════════════════════════════════════
-    // INTERNAL
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            INTERNAL
+    //////////////////////////////////////////////////////////////*/
 
     function _getFee(uint32 _dstEid) internal view returns (uint256) {
         uint256 fee = dstFees[_dstEid];

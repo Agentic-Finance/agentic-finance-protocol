@@ -32,9 +32,7 @@
 
 import { ethers } from 'ethers';
 
-// ══════════════════════════════════════════════════════════
-// TYPES
-// ══════════════════════════════════════════════════════════
+// --- TYPES ---
 
 export interface ComplianceMiddlewareConfig {
     /** ComplianceRegistry contract address */
@@ -62,9 +60,7 @@ interface ComplianceCacheEntry {
     checkedAt: number;
 }
 
-// ══════════════════════════════════════════════════════════
-// ABI
-// ══════════════════════════════════════════════════════════
+// --- ABI ---
 
 const COMPLIANCE_ABI = [
     'function isCompliant(uint256 commitment) view returns (bool)',
@@ -74,9 +70,7 @@ const REPUTATION_ABI = [
     'function meetsRequirements(uint256 commitment, uint256 txCount, uint256 volume) view returns (bool)',
 ];
 
-// ══════════════════════════════════════════════════════════
-// MIDDLEWARE
-// ══════════════════════════════════════════════════════════
+// --- MIDDLEWARE ---
 
 /**
  * Create Express-compatible compliance middleware

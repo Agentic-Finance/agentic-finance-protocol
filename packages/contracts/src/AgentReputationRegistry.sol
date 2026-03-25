@@ -26,9 +26,9 @@ interface IReputationVerifier {
 
 contract AgentReputationRegistry {
 
-    // ═══════════════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     IReputationVerifier public immutable verifier;
     address public owner;
@@ -59,9 +59,9 @@ contract AgentReputationRegistry {
     /// @notice Trusted daemon that can register claim accumulators
     address public daemon;
 
-    // ═══════════════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event ReputationVerified(
         uint256 indexed agentCommitment,
@@ -78,9 +78,9 @@ contract AgentReputationRegistry {
     event AgentSuspended(uint256 indexed agentCommitment, string reason);
     event DaemonUpdated(address indexed newDaemon);
 
-    // ═══════════════════════════════════════════════════════
-    // MODIFIERS
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            MODIFIERS
+    //////////////////////////////////////////////////////////////*/
 
     modifier onlyOwner() {
         require(msg.sender == owner, "ReputationRegistry: not owner");
@@ -92,9 +92,9 @@ contract AgentReputationRegistry {
         _;
     }
 
-    // ═══════════════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _verifier, address _daemon) {
         verifier = IReputationVerifier(_verifier);
@@ -102,9 +102,9 @@ contract AgentReputationRegistry {
         daemon = _daemon;
     }
 
-    // ═══════════════════════════════════════════════════════
-    // DAEMON: Register claim accumulators
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            DAEMON: Register claim accumulators
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Register or update an agent's claim accumulator
@@ -137,9 +137,9 @@ contract AgentReputationRegistry {
         }
     }
 
-    // ═══════════════════════════════════════════════════════
-    // CORE: Verify reputation proof
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Verify reputation proof
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Submit a ZK reputation proof for verification
@@ -207,9 +207,9 @@ contract AgentReputationRegistry {
         return true;
     }
 
-    // ═══════════════════════════════════════════════════════
-    // QUERY: Check agent reputation
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY: Check agent reputation
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Check if an agent meets minimum reputation requirements
@@ -241,9 +241,9 @@ contract AgentReputationRegistry {
         return scores[agentCommitment];
     }
 
-    // ═══════════════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function suspendAgent(uint256 agentCommitment, string calldata reason) external onlyOwner {
         scores[agentCommitment].active = false;

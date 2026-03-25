@@ -18,9 +18,9 @@ pragma solidity ^0.8.20;
  */
 contract AgtFiCrossChainHub {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
 
@@ -52,9 +52,9 @@ contract AgtFiCrossChainHub {
     /// @notice Reputation Registry reference
     address public reputationRegistry;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event AttestationCreated(
         uint256 indexed attestationId,
@@ -71,9 +71,9 @@ contract AgtFiCrossChainHub {
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     /// @notice Authorized attestors
     mapping(address => bool) public authorizedAttestors;
@@ -85,9 +85,9 @@ contract AgtFiCrossChainHub {
         authorizedAttestors[msg.sender] = true;
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Create Attestations
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Create Attestations
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Create a compliance attestation
@@ -200,9 +200,9 @@ contract AgtFiCrossChainHub {
         );
     }
 
-    // ═══════════════════════════════════════════════
-    // VIEW
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            VIEW
+    //////////////////////////////////////////////////////////////*/
 
     function getAttestation(uint256 _id)
         external view returns (Attestation memory)
@@ -223,9 +223,9 @@ contract AgtFiCrossChainHub {
         return (attestationCount, complianceRegistry, reputationRegistry);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setAttestor(address _attestor, bool _authorized) external {
         require(msg.sender == owner, "Hub: not owner");

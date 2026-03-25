@@ -39,9 +39,7 @@
 
 import { ethers } from 'ethers';
 
-// ══════════════════════════════════════════════════════════
-// TYPES
-// ══════════════════════════════════════════════════════════
+// --- TYPES ---
 
 export interface ZKPrivacyConfig {
     /** RPC URL for the target chain */
@@ -119,9 +117,7 @@ export interface PrivatePaymentResult {
     totalTimeMs: number;
 }
 
-// ══════════════════════════════════════════════════════════
-// ABIS (minimal interfaces)
-// ══════════════════════════════════════════════════════════
+// --- ABIS (minimal interfaces) ---
 
 const COMPLIANCE_REGISTRY_ABI = [
     'function verifyCertify(uint256[24] calldata _proof, uint256[4] calldata _pubSignals) external returns (bool)',
@@ -140,9 +136,7 @@ const REPUTATION_REGISTRY_ABI = [
     'function getStats() external view returns (uint256, uint256)',
 ];
 
-// ══════════════════════════════════════════════════════════
-// MAIN CLASS
-// ══════════════════════════════════════════════════════════
+// --- MAIN CLASS ---
 
 export class ZKPrivacy {
     private config: ZKPrivacyConfig;
@@ -181,9 +175,7 @@ export class ZKPrivacy {
         );
     }
 
-    // ══════════════════════════════════════════════════════
-    // COMPLIANCE
-    // ══════════════════════════════════════════════════════
+    // --- COMPLIANCE ---
 
     /**
      * Check compliance status for a commitment
@@ -212,9 +204,7 @@ export class ZKPrivacy {
         };
     }
 
-    // ══════════════════════════════════════════════════════
-    // REPUTATION
-    // ══════════════════════════════════════════════════════
+    // --- REPUTATION ---
 
     /**
      * Check if an agent meets reputation requirements
@@ -277,9 +267,7 @@ export class ZKPrivacy {
         };
     }
 
-    // ══════════════════════════════════════════════════════
-    // UTILITY
-    // ══════════════════════════════════════════════════════
+    // --- UTILITY ---
 
     /**
      * Generate a deterministic secret for an address
@@ -313,9 +301,7 @@ export class ZKPrivacy {
     }
 }
 
-// ══════════════════════════════════════════════════════════
-// PROOF BATCHING
-// ══════════════════════════════════════════════════════════
+// --- PROOF BATCHING ---
 
 export interface BatchProofResult {
     /** Number of individual proofs batched */

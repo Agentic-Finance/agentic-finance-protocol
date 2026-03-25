@@ -29,9 +29,9 @@ interface IERC20 {
 
 contract AgentStaking {
 
-    // ═══════════════════════════════════════════════
-    // TYPES
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            TYPES
+    //////////////////////////////////////////////////////////////*/
 
     enum Tier { None, Bronze, Silver, Gold, Diamond }
 
@@ -45,9 +45,9 @@ contract AgentStaking {
         bool    active;             // Is staking active
     }
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IERC20 public stakingToken;
@@ -75,9 +75,9 @@ contract AgentStaking {
     uint256 public totalInsurancePaid;
     uint256 public totalAgentsStaking;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event Staked(address indexed agent, uint256 amount, Tier tier);
     event Unstaked(address indexed agent, uint256 amount);
@@ -87,9 +87,9 @@ contract AgentStaking {
     event TierUpgraded(address indexed agent, Tier oldTier, Tier newTier);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _stakingToken) {
         owner = msg.sender;
@@ -100,9 +100,9 @@ contract AgentStaking {
         diamondThreshold = 1000 * 1e6; // $1,000
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Stake / Unstake
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Stake / Unstake
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Stake tokens to activate on marketplace
@@ -161,9 +161,9 @@ contract AgentStaking {
         emit Unstaked(msg.sender, _amount);
     }
 
-    // ═══════════════════════════════════════════════
-    // INSURANCE: Lock / Release / Slash
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            INSURANCE: Lock / Release / Slash
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Lock insurance for a job (called when agent is hired)
@@ -230,9 +230,9 @@ contract AgentStaking {
         emit Slashed(_jobId, agent, _client, amount);
     }
 
-    // ═══════════════════════════════════════════════
-    // QUERY
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY
+    //////////////////////////////////////////////////////////////*/
 
     function getStake(address _agent) external view returns (StakeInfo memory) {
         return stakes[_agent];
@@ -254,9 +254,9 @@ contract AgentStaking {
         return (totalStakedGlobal, totalSlashed, totalInsurancePaid, totalAgentsStaking);
     }
 
-    // ═══════════════════════════════════════════════
-    // INTERNAL
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            INTERNAL
+    //////////////////////////////////////////////////////////////*/
 
     function _calculateTier(uint256 _staked) internal view returns (Tier) {
         if (_staked >= diamondThreshold) return Tier.Diamond;
@@ -266,9 +266,9 @@ contract AgentStaking {
         return Tier.None;
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setInsuranceRate(uint256 _rateBps) external {
         require(msg.sender == owner, "Staking: not owner");

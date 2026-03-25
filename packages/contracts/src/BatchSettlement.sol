@@ -42,9 +42,9 @@ interface IERC20 {
 
 contract BatchSettlement {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     address public daemon;
@@ -96,9 +96,9 @@ contract BatchSettlement {
     uint256 public totalSettled;
     uint256 public totalPaymentsProcessed;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event BatchCreated(
         bytes32 indexed batchId,
@@ -115,18 +115,18 @@ contract BatchSettlement {
     event SettlementDeposited(address indexed depositor, address token, uint256 amount);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // MODIFIERS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            MODIFIERS
+    //////////////////////////////////////////////////////////////*/
 
     modifier onlyDaemon() {
         require(msg.sender == daemon || msg.sender == owner, "BatchSettlement: not daemon");
         _;
     }
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _daemon) {
         owner = msg.sender;
@@ -136,9 +136,9 @@ contract BatchSettlement {
         minBatchSize = 1;             // Minimum 1 payment per batch
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Batch Settlement
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Batch Settlement
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Submit a batch settlement
@@ -287,9 +287,9 @@ contract BatchSettlement {
         emit BatchFinalized(_batchId);
     }
 
-    // ═══════════════════════════════════════════════
-    // VIEW
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            VIEW
+    //////////////////////////////////////////////////////////////*/
 
     function getClaimableBalance(address _recipient, address _token) external view returns (uint256) {
         return unclaimedBalance[_recipient][_token];
@@ -307,9 +307,9 @@ contract BatchSettlement {
         return (totalBatches, totalSettled, totalPaymentsProcessed);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setSettlementPeriod(uint256 _period) external {
         require(msg.sender == owner, "BatchSettlement: not owner");

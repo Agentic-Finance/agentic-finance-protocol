@@ -38,9 +38,9 @@ interface IERC20 {
 
 contract ProofChainSettlement {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     IProofChainVerifier public immutable verifier;
     address public owner;
@@ -69,9 +69,9 @@ contract ProofChainSettlement {
     uint256 public constant MAX_FEE_BPS = 500; // 5% max
     address public feeRecipient;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event BatchSettled(
         address indexed sender,
@@ -86,9 +86,9 @@ contract ProofChainSettlement {
     event ChainReset(address indexed sender, uint256 timestamp);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(
         address _verifier,
@@ -103,9 +103,9 @@ contract ProofChainSettlement {
         feeRecipient = _feeRecipient;
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Settle a proof chain batch
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Settle a proof chain batch
+    //////////////////////////////////////////////////////////////*/
 
     /// @notice Pending settlement balance per recipient
     mapping(address => uint256) public recipientBalances;
@@ -208,9 +208,9 @@ contract ProofChainSettlement {
         emit RecipientClaimed(msg.sender, amount);
     }
 
-    // ═══════════════════════════════════════════════
-    // VIEW
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            VIEW
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Get sender's current chain state
@@ -240,9 +240,9 @@ contract ProofChainSettlement {
         return (globalSettledAmount, globalBatchCount, globalPaymentCount);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setPlatformFee(uint256 _feeBps) external {
         require(msg.sender == owner, "ProofChain: not owner");

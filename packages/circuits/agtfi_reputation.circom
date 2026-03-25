@@ -56,9 +56,13 @@ include "node_modules/circomlib/circuits/bitify.circom";
  */
 template AgtFiReputation(maxClaims) {
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PUBLIC INPUTS
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Agent's identity commitment = Poseidon(agentAddress, agentSecret)
     signal input agentCommitment;
@@ -70,9 +74,13 @@ template AgtFiReputation(maxClaims) {
     signal input minTxCount;      // Minimum completed transactions
     signal input minVolume;       // Minimum total volume (6 decimals)
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // PRIVATE INPUTS
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Agent identity
     signal input agentAddress;
@@ -86,18 +94,26 @@ template AgtFiReputation(maxClaims) {
     signal input claimTimestamps[maxClaims];  // Timestamp per transaction
     signal input claimStatuses[maxClaims];    // 1=success, 0=dispute
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 1: Verify agent identity commitment
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     component agentHasher = Poseidon(2);
     agentHasher.inputs[0] <== agentAddress;
     agentHasher.inputs[1] <== agentSecret;
     agentCommitment === agentHasher.out;
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 2: Build hash chain accumulator & compute stats
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // Compute each claim hash and chain them
     component claimHashers[maxClaims];
@@ -151,15 +167,23 @@ template AgtFiReputation(maxClaims) {
         disputeAccum[i + 1] <== disputeAccum[i] + isDispute[i];
     }
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 3: Verify accumulator matches on-chain value
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     accumulatorHash === chainState[maxClaims];
 
-    // ═══════════════════════════════════════════════════════
+    // --------------------------------------------------------
+
+
     // CONSTRAINT 4: Verify reputation meets minimum requirements
-    // ═══════════════════════════════════════════════════════
+
+
+    // --------------------------------------------------------
 
     // txCount >= minTxCount
     component txCheck = GreaterEqThan(32);

@@ -36,9 +36,9 @@ interface IReputationRegistry {
 
 contract MPPComplianceGateway {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IComplianceRegistry public complianceRegistry;
@@ -74,9 +74,9 @@ contract MPPComplianceGateway {
     uint256 public minReputationTxCount;
     uint256 public minReputationVolume;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event SessionCreated(
         bytes32 indexed sessionId,
@@ -102,9 +102,9 @@ contract MPPComplianceGateway {
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _complianceRegistry, address _reputationRegistry) {
         owner = msg.sender;
@@ -114,9 +114,9 @@ contract MPPComplianceGateway {
         minReputationVolume = 10000_000000; // $10K minimum
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Create compliant MPP session
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Create compliant MPP session
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Create a new MPP session with ZK compliance verification
@@ -242,9 +242,9 @@ contract MPPComplianceGateway {
         emit SessionClosed(_sessionId, session.spent, "manual_close");
     }
 
-    // ═══════════════════════════════════════════════
-    // QUERY
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Check if a session is valid for payment
@@ -279,9 +279,9 @@ contract MPPComplianceGateway {
         return (totalSessions, totalCompliantSessions, totalVolume);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setMinReputation(uint256 _txCount, uint256 _volume) external {
         require(msg.sender == owner, "Gateway: not owner");

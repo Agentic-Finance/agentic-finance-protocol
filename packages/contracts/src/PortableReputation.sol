@@ -40,9 +40,9 @@ interface IReputationRegistry {
 
 contract PortableReputation {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IReputationRegistry public reputationRegistry;
@@ -85,9 +85,9 @@ contract PortableReputation {
         "ReputationAttestation(uint256 agentCommitment,uint256 accumulatorHash,uint256 minTxCount,uint256 minVolume,uint256 sourceChainId,uint256 attestedAt,uint256 expiresAt)"
     );
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event AttestationCreated(
         bytes32 indexed attestationId,
@@ -103,9 +103,9 @@ contract PortableReputation {
     event AttestorRemoved(address indexed attestor);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _reputationRegistry, uint256 _attestationValidity) {
         owner = msg.sender;
@@ -122,9 +122,9 @@ contract PortableReputation {
         ));
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Create & Verify Attestations
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Create & Verify Attestations
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Create a portable reputation attestation
@@ -244,9 +244,9 @@ contract PortableReputation {
         return true;
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function addAttestor(address _attestor) external {
         require(msg.sender == owner, "PortableRep: not owner");

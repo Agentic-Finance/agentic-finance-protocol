@@ -15,9 +15,9 @@ pragma solidity ^0.8.20;
  */
 contract AgtFiCrossChainSpoke {
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
 
@@ -65,16 +65,16 @@ contract AgtFiCrossChainSpoke {
     uint256 public totalComplianceAttestations;
     uint256 public totalReputationAttestations;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event ComplianceReceived(uint256 indexed commitment, uint256 dataHash, uint256 timestamp);
     event ReputationReceived(uint256 indexed agentCommitment, uint256 txCount, uint256 volume, uint256 timestamp);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _authorizedDVN) {
         owner = msg.sender;
@@ -82,9 +82,9 @@ contract AgtFiCrossChainSpoke {
         authorizedRelayers[msg.sender] = true;
     }
 
-    // ═══════════════════════════════════════════════
-    // RECEIVE ATTESTATIONS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            RECEIVE ATTESTATIONS
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Receive a compliance attestation from Tempo Hub
@@ -165,9 +165,9 @@ contract AgtFiCrossChainSpoke {
         }
     }
 
-    // ═══════════════════════════════════════════════
-    // QUERY: For merchants and protocols
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY: For merchants and protocols
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Check if a commitment has valid compliance attestation
@@ -201,9 +201,9 @@ contract AgtFiCrossChainSpoke {
         return true;
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     modifier onlyAuthorized() {
         require(

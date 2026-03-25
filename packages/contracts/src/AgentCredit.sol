@@ -42,9 +42,9 @@ interface IReputationRegistry {
 
 contract AgentCredit {
 
-    // ═══════════════════════════════════════════════
-    // TYPES
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            TYPES
+    //////////////////////////////////////////////////////////////*/
 
     enum CreditTier { None, Starter, Builder, Pro, Elite }
 
@@ -61,9 +61,9 @@ contract AgentCredit {
         bool     defaulted;           // Has defaulted
     }
 
-    // ═══════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            STATE
+    //////////////////////////////////////////////////////////////*/
 
     address public owner;
     IERC20 public lendingToken;
@@ -93,9 +93,9 @@ contract AgentCredit {
     /// @notice Default threshold (seconds since last repayment)
     uint256 public defaultThreshold;
 
-    // ═══════════════════════════════════════════════
-    // EVENTS
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            EVENTS
+    //////////////////////////////////////////////////////////////*/
 
     event CreditLineOpened(address indexed agent, CreditTier tier, uint256 creditLimit);
     event Borrowed(address indexed agent, uint256 amount, uint256 totalBorrowed);
@@ -105,9 +105,9 @@ contract AgentCredit {
     event TierUpgraded(address indexed agent, CreditTier oldTier, CreditTier newTier);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    // ═══════════════════════════════════════════════
-    // CONSTRUCTOR
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
 
     constructor(address _lendingToken, address _reputationRegistry) {
         owner = msg.sender;
@@ -124,9 +124,9 @@ contract AgentCredit {
         tierConfigs[CreditTier.Elite] = TierConfig(1000, 250000 * 1e6, 10000 * 1e6);
     }
 
-    // ═══════════════════════════════════════════════
-    // CORE: Open credit line
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            CORE: Open credit line
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Open or upgrade a credit line based on ZK reputation
@@ -224,9 +224,9 @@ contract AgentCredit {
         emit Repaid(msg.sender, repayAmount, credit.borrowed);
     }
 
-    // ═══════════════════════════════════════════════
-    // POOL: Deposit liquidity
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            POOL: Deposit liquidity
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Deposit tokens into the lending pool
@@ -249,9 +249,9 @@ contract AgentCredit {
         require(lendingToken.transfer(msg.sender, _amount), "Credit: withdraw failed");
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN: Default management
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN: Default management
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Mark agent as defaulted (called after default threshold)
@@ -276,9 +276,9 @@ contract AgentCredit {
         emit Defaulted(_agent, defaultAmount);
     }
 
-    // ═══════════════════════════════════════════════
-    // QUERY
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            QUERY
+    //////////////////////////////////////////////////////////////*/
 
     function getCreditLine(address _agent) external view returns (CreditLine memory) {
         return credits[_agent];
@@ -297,9 +297,9 @@ contract AgentCredit {
         return (totalPoolBalance, totalBorrowedGlobal, totalDefaulted, activeCredits);
     }
 
-    // ═══════════════════════════════════════════════
-    // ADMIN
-    // ═══════════════════════════════════════════════
+    /*//////////////////////////////////////////////////////////////
+                            ADMIN
+    //////////////////////////////////////////////////////////////*/
 
     function setInterestRate(uint256 _rateBps) external {
         require(msg.sender == owner, "Credit: not owner");

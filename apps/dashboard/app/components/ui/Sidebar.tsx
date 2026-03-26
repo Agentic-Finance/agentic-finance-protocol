@@ -20,7 +20,7 @@ const sections: NavSection[] = [
     {
         label: 'Main',
         items: [
-            { href: '/', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
+            { href: '/?app=1', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
             { href: '/chat', label: 'Chat', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
             { href: '/portfolio', label: 'Portfolio', icon: <BriefcaseIcon className="w-[18px] h-[18px]" /> },
             { href: '/live', label: 'Live Feed', icon: <ActivityIcon className="w-[18px] h-[18px]" /> },
@@ -100,10 +100,12 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2.5 px-3 py-4 group">
-                    <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="flex-shrink-0" />
+                <Link href="/" className="flex items-center gap-3 px-3 py-4 group">
+                    <div className="flex-shrink-0" style={{ animation: 'sidebar-logo-spin 20s linear infinite', perspective: '200px' }}>
+                        <Image src="/logo-v2.png" alt="Agentic Finance" width={36} height={36} />
+                    </div>
                     {!collapsed && (
-                        <span className="text-sm font-bold tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>
+                        <span className="text-[15px] font-extrabold tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>
                             Agentic Finance
                         </span>
                     )}

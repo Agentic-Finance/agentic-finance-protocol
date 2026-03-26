@@ -289,7 +289,7 @@ export default function LiveDashboard() {
   }, [state.txFeed, eventFilter]);
 
   return (
-    <div className="text-white px-4 sm:px-6 pb-6">
+    <div className="text-white pb-6 overflow-hidden">
       {/* Connection Status */}
       <div className="max-w-full mx-auto mb-6 flex items-center justify-end gap-4">
         <div className="text-right">
@@ -306,7 +306,7 @@ export default function LiveDashboard() {
 
       {/* Stats Bar */}
       <div className="max-w-full mx-auto mb-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 overflow-hidden">
           <StatCard label="Transactions" value={state.stats.totalTxs} color="blue" icon={<span className="text-sm">📊</span>} trend={{ value: 18, direction: 'up', label: '24h' }} variant="compact" />
           <StatCard label="Agent Jobs" value={state.stats.totalAgentJobs} color="emerald" icon={<span className="text-sm">🤖</span>} trend={{ value: 7, direction: 'up', label: 'today' }} variant="compact" />
           <StatCard label="A2A Chains" value={state.stats.totalA2AChains} color="indigo" icon={<span className="text-sm">🔗</span>} trend={{ value: 32, direction: 'up', label: 'growth' }} variant="compact" />

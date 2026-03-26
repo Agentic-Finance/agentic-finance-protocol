@@ -82,7 +82,9 @@ export function UserProfileArea({ walletAddress: walletProp, isAdmin, onDisconne
   if (!walletAddress && !authenticated) return null;
 
   const hue = walletAddress ? getHueFromAddress(walletAddress) : 220;
-  const initials = walletAddress ? walletAddress.slice(2, 4).toUpperCase() : (displayName ? displayName.charAt(0).toUpperCase() : '?');
+  const initials = displayName ? displayName.charAt(0).toUpperCase() : (walletAddress ? walletAddress.slice(2, 4).toUpperCase() : '?');
+  // GitHub-style identicon URL
+  const identiconUrl = walletAddress ? `https://api.dicebear.com/9.x/identicon/svg?seed=${walletAddress}&backgroundColor=transparent&scale=80` : null;
 
   const handleCopy = async () => {
     try {
@@ -102,20 +104,20 @@ export function UserProfileArea({ walletAddress: walletProp, isAdmin, onDisconne
         aria-label="User profile menu"
         aria-expanded={open}
       >
-        {/* Avatar */}
-        <div
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-white"
-          style={{
-            background: `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 60) % 360}, 70%, 40%))`,
-          }}
-        >
-          {initials}
-        </div>
+        {/* Avatar — GitHub-style identicon */}
+        {identiconUrl ? (
+          <img src={identiconUrl} alt="" className="w-8 h-8 rounded-full flex-shrink-0" style={{ background: `hsl(${hue}, 40%, 20%)` }} />
+        ) : (
+          <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-white"
+            style={{ background: `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 60) % 360}, 70%, 40%))` }}>
+            {initials}
+          </div>
+        )}
 
-        {/* Address + Admin badge */}
+        {/* Name or Address + Admin badge */}
         <div className="hidden sm:flex items-center gap-1.5">
-          <span className="text-[11px] text-slate-300 font-mono">
-            {truncateAddress(walletAddress)}
+          <span className="text-[11px] font-medium" style={{ color: 'var(--pp-text-primary)' }}>
+            {displayName || (walletAddress ? truncateAddress(walletAddress) : 'Unknown')}
           </span>
           {isAdmin && (
             <span className="text-[8px] font-bold bg-[#FF2D87]/15 text-[#FF2D87] px-1.5 py-0.5 rounded border border-[#FF2D87]/25 uppercase tracking-wider">

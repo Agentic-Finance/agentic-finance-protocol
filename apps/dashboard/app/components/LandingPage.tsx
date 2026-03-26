@@ -1,1062 +1,531 @@
 'use client';
-// Agentic Finance - Landing Page v2.1
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import dynamic from 'next/dynamic';
-
-const GlobeShowcase = dynamic(() => import('./landing/GlobeShowcase'), {
-    ssr: false,
-    loading: () => <div style={{ minHeight: '600px' }} />,
-});
-import {
-    CommandLineIcon, CubeTransparentIcon, CpuChipIcon,
-    ShieldCheckIcon, DocumentTextIcon, SparklesIcon,
-    ClockIcon, BoltIcon, GlobeAltIcon, EyeSlashIcon,
-    UserGroupIcon, BriefcaseIcon, ServerStackIcon,
-    ArrowPathIcon, CodeBracketIcon, ChartBarIcon,
-    LightBulbIcon, RocketLaunchIcon, CheckCircleIcon,
-    PuzzlePieceIcon, TruckIcon, ArrowsRightLeftIcon,
-    BookOpenIcon, ChatBubbleLeftRightIcon, ArrowTopRightOnSquareIcon,
-    SignalIcon, CheckBadgeIcon, ScaleIcon, KeyIcon
-} from '@heroicons/react/24/outline';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
-export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }) {
-    const [scrolled, setScrolled] = useState(false);
-    const [activeTab, setActiveTab] = useState(0);
+// --- Animated counter hook ---
+function useCounter(end: number, duration = 2000, start = 0) {
+    const [count, setCount] = useState(start);
+    const [triggered, setTriggered] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
 
-    // --- REAL AI BRAIN INTEGRATION STATES ---
-    const [outputStep, setOutputStep] = useState(0);
-    const [agentData, setAgentData] = useState<any>(null);
-    const [nexusLog, setNexusLog] = useState<string[]>([]);
-
-    // Navbar Scroll — debounced for performance
     useEffect(() => {
-        let ticking = false;
-        const handleScroll = () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    setScrolled(window.scrollY > 20);
-                    ticking = false;
-                });
-                ticking = true;
-            }
+        const el = ref.current;
+        if (!el) return;
+        const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setTriggered(true); }, { threshold: 0.3 });
+        obs.observe(el);
+        return () => obs.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!triggered) return;
+        let frame: number;
+        const t0 = performance.now();
+        const tick = (now: number) => {
+            const p = Math.min((now - t0) / duration, 1);
+            setCount(Math.floor(start + (end - start) * p));
+            if (p < 1) frame = requestAnimationFrame(tick);
         };
+        frame = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(frame);
+    }, [triggered, end, duration, start]);
+
+    return { count, ref };
+}
+
+// --- Particle background ---
+function ParticleGrid() {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let animId: number;
+        const particles: { x: number; y: number; vx: number; vy: number; size: number }[] = [];
+        const count = 60;
+
+        const resize = () => { canvas.width = canvas.offsetWidth * 2; canvas.height = canvas.offsetHeight * 2; };
+        resize();
+        window.addEventListener('resize', resize);
+
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2 + 1,
+            });
+        }
+
+        const draw = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 200) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(62, 221, 185, ${0.08 * (1 - dist / 200)})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw particles
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(62, 221, 185, 0.3)';
+                ctx.fill();
+
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+
+            animId = requestAnimationFrame(draw);
+        };
+        draw();
+
+        return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
+    }, []);
+
+    return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.6 }} />;
+}
+
+// --- TypeWriter ---
+function TypeWriter({ texts, speed = 50 }: { texts: string[]; speed?: number }) {
+    const [idx, setIdx] = useState(0);
+    const [charIdx, setCharIdx] = useState(0);
+    const [deleting, setDeleting] = useState(false);
+
+    useEffect(() => {
+        const text = texts[idx];
+        const timeout = setTimeout(() => {
+            if (!deleting) {
+                if (charIdx < text.length) {
+                    setCharIdx(charIdx + 1);
+                } else {
+                    setTimeout(() => setDeleting(true), 2000);
+                }
+            } else {
+                if (charIdx > 0) {
+                    setCharIdx(charIdx - 1);
+                } else {
+                    setDeleting(false);
+                    setIdx((idx + 1) % texts.length);
+                }
+            }
+        }, deleting ? speed / 2 : speed);
+        return () => clearTimeout(timeout);
+    }, [charIdx, deleting, idx, texts, speed]);
+
+    return (
+        <span>
+            {texts[idx].substring(0, charIdx)}
+            <span className="animate-pulse" style={{ color: 'var(--agt-mint)' }}>|</span>
+        </span>
+    );
+}
+
+export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }) {
+    const [scrollY, setScrollY] = useState(0);
+
+    useEffect(() => {
+        const handleScroll = () => setScrollY(window.scrollY);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Scroll-triggered reveal animations
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    // Stagger children
-                    const children = entry.target.querySelectorAll('.reveal-child');
-                    children.forEach((child, i) => {
-                        (child as HTMLElement).style.transitionDelay = `${i * 0.08}s`;
-                        child.classList.add('revealed');
-                    });
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        return () => observer.disconnect();
-    }, []);
-
-    // --- TERMINAL LOGIC ---
-    useEffect(() => {
-        setOutputStep(0);
-        setNexusLog([]);
-        setAgentData(null);
-
-        if (activeTab !== 1) {
-            const t1 = setTimeout(() => setOutputStep(1), 200);
-            const t2 = setTimeout(() => setOutputStep(2), 600);
-            const t3 = setTimeout(() => setOutputStep(3), 1000);
-            return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-        } else {
-            // Nexus A2A - Live demo with real marketplace agents
-            let cancelled = false;
-            const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
-            const runLiveDemo = async () => {
-                setOutputStep(1);
-                setNexusLog(prev => [...prev, "> Initializing Nexus Protocol..."]);
-
-                await delay(800);
-                if (cancelled) return;
-                setNexusLog(prev => [...prev, "> Querying Agent Marketplace on Tempo L1..."]);
-
-                try {
-                    const res = await fetch('/api/marketplace/agents');
-                    const data = await res.json();
-                    if (cancelled) return;
-                    const agents = (data.agents || []).filter((a: any) => a.isVerified);
-
-                    await delay(600);
-                    if (cancelled) return;
-                    setNexusLog(prev => [...prev, `> ${agents.length} verified agents found on-chain`]);
-
-                    if (agents.length >= 2) {
-                        const a1 = agents[0];
-                        const a2 = agents[Math.min(5, agents.length - 1)];
-                        setAgentData({ devAddress: a1.ownerWallet, auditAddress: a2.ownerWallet });
-                        await delay(400);
-                        if (cancelled) return;
-                        setNexusLog(prev => [...prev, `> Agent 1: ${a1.avatarEmoji} ${a1.name} — ${a1.category} (${a1.basePrice} ALPHA)`]);
-                        setNexusLog(prev => [...prev, `> Agent 2: ${a2.avatarEmoji} ${a2.name} — ${a2.category} (${a2.basePrice} ALPHA)`]);
-                    }
-                    setOutputStep(2);
-
-                    await delay(1200);
-                    if (cancelled) return;
-                    setNexusLog(prev => [...prev, "> NexusV2 Escrow: Funds locked trustlessly on-chain"]);
-
-                    await delay(1000);
-                    if (cancelled) return;
-                    const agent = agents[0];
-                    setNexusLog(prev => [...prev, `> [CHAIN] \u2705 Job completed. Escrow settled.`]);
-                    setNexusLog(prev => [...prev, `> [CHAIN] \uD83D\uDCB8 ${agent?.basePrice || 5} ALPHA released to ${agent?.name || 'Agent'}`]);
-                    setOutputStep(3);
-                } catch {
-                    if (cancelled) return;
-                    // Fallback — use real Agentic Finance ecosystem addresses
-                    setAgentData({ devAddress: '0x33F7E5da', auditAddress: '0x6A467Cd4' });
-                    setNexusLog(prev => [...prev, `> Agents: Dev(0x33F7...) & Audit(0x6A46...)`]);
-                    setOutputStep(2);
-                    await delay(1500);
-                    if (cancelled) return;
-                    setNexusLog(prev => [...prev, "> [CHAIN] \uD83D\uDCB8 $5.00 streamed to Dev Agent."]);
-                    setOutputStep(3);
-                }
-            };
-            runLiveDemo();
-            return () => { cancelled = true; };
-        }
-    }, [activeTab]);
-
-    const prompts = [
-        { title: "Private Payroll", command: "Pay @Tony 10 AlphaUSD, use ZK Shield and lock for 7 days.", icon: <ShieldCheckIcon className="w-5 h-5" />, color: '#10b981' },
-        { title: "Nexus A2A Escrow", command: "Fund 500 AlphaUSD. Hire DevAgent & AuditAgent. Micro-stream $5 per approved PR.", icon: <CubeTransparentIcon className="w-5 h-5" />, color: '#a855f7' },
-        { title: "Smart Ledger", command: "Parse Q3_Engineering_Roster.csv and map to addresses.", icon: <DocumentTextIcon className="w-5 h-5" />, color: '#818cf8' },
-        { title: "Conditional Payroll", command: "Pay marketing team 500 AlphaUSD monthly if TVL exceeds $10K.", icon: <ArrowPathIcon className="w-5 h-5" />, color: '#ec4899' },
-        { title: "AI Proof Verification", command: "Verify Agent #7 execution proof. Check Poseidon hash against on-chain commitment.", icon: <ChartBarIcon className="w-5 h-5" />, color: '#eab308' },
-        { title: "DePIN Reward Routing", command: "Ping node uptime API. Disburse micro-rewards to 5,000 active nodes.", icon: <SignalIcon className="w-5 h-5" />, color: '#06b6d4' }
-    ];
+    const c1 = useCounter(21, 2000);
+    const c2 = useCounter(96121, 2500);
+    const c3 = useCounter(50, 1800);
+    const c4 = useCounter(11, 1500);
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#111B2E', color: '#e2e8f0', fontFamily: 'sans-serif', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ background: '#0A0E1A', color: '#fff', minHeight: '100vh', overflow: 'hidden' }}>
 
-            {/* BACKGROUND - Vibrant gradient mesh */}
-            <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '-15%', left: '10%', width: '60vw', height: '60vw', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', bottom: '-25%', right: '-5%', width: '55vw', height: '55vw', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', top: '40%', left: '50%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', top: '10%', right: '20%', width: '30vw', height: '30vw', background: 'radial-gradient(circle, rgba(6, 182, 212, 0.10) 0%, transparent 70%)', borderRadius: '50%' }}></div>
-                {/* Subtle grid overlay */}
-                <div style={{ position: 'absolute', inset: 0, backgroundImage: "url('/grid.svg')", backgroundPosition: 'center', opacity: 0.04 }}></div>
-                {/* Noise texture */}
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.02, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '128px 128px' }}></div>
-            </div>
-
-            {/* NAVBAR */}
-            <div className="landing-nav" style={{ position: 'fixed', top: '0', width: '100%', zIndex: 50, padding: '12px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', pointerEvents: 'none', background: scrolled ? 'rgba(11, 17, 32, 0.95)' : 'transparent', borderBottom: scrolled ? '1px solid rgba(255,255,255,0.10)' : 'none', backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none', transition: 'all 0.3s ease' }}>
-                <div className="landing-logo" style={{ pointerEvents: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 0 25px rgba(16,185,129,0.5))', transition: 'transform 0.3s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    <Image src="/logo-v2.png" alt="Agentic Finance" width={36} height={36} style={{ marginRight: '8px' }} priority />
-                    <span style={{ fontSize: '22px', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
+            {/* --- NAV --- */}
+            <nav style={{
+                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+                padding: '16px 24px',
+                background: scrollY > 50 ? 'rgba(10, 14, 26, 0.9)' : 'transparent',
+                backdropFilter: scrollY > 50 ? 'blur(20px)' : 'none',
+                borderBottom: scrollY > 50 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                transition: 'all 0.3s',
+            }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Image src="/logo-v2.png" alt="AF" width={36} height={36} style={{ borderRadius: '8px' }} />
+                        <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>Agentic Finance</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <a href="https://github.com/Agentic-Finance/agentic-finance-protocol" target="_blank" rel="noopener"
+                            style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, color: '#94A3B8', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', transition: 'all 0.2s' }}>
+                            GitHub
+                        </a>
+                        <button onClick={onLaunchApp} style={{
+                            padding: '8px 20px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700,
+                            background: 'linear-gradient(135deg, #FF2D87, #1BBFEC)', color: '#fff',
+                            border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+                        }}>
+                            Launch App
+                        </button>
+                    </div>
                 </div>
-                <div className="hidden md:flex" style={{ pointerEvents: 'auto', alignItems: 'center', gap: '32px', padding: '12px 40px', backgroundColor: 'rgba(15, 23, 42, 0.85)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '9999px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px) saturate(180%)', height: '52px' }}>
+            </nav>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* HERO                                               */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '120px 20px 80px', textAlign: 'center' }}>
+                <ParticleGrid />
+
+                {/* Radial glow */}
+                <div style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(62,221,185,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+                <div style={{ position: 'relative', zIndex: 10, maxWidth: '900px' }}>
+                    {/* Badge */}
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 18px', borderRadius: '9999px', border: '1px solid rgba(62,221,185,0.25)', background: 'rgba(62,221,185,0.06)', marginBottom: '28px', fontSize: '0.7rem', fontWeight: 700, color: '#3EDDB9', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3EDDB9', boxShadow: '0 0 10px #3EDDB9' }} className="animate-pulse" />
+                        LIVE ON TEMPO L1
+                    </div>
+
+                    {/* Headline */}
+                    <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.05, margin: '0 0 20px' }}>
+                        <span style={{ display: 'block', color: '#fff' }}>The Economy Runs</span>
+                        <span style={{ display: 'block', color: '#fff' }}>on Trust.</span>
+                        <span style={{ display: 'block', background: 'linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                            We Built It for Machines.
+                        </span>
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)', color: '#64748B', lineHeight: 1.6, maxWidth: '640px', margin: '0 auto 36px' }}>
+                        Privacy-preserving compliance. Verifiable agent reputation. Autonomous payments. The missing trust layer for the agentic economy.
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '48px' }}>
+                        <button onClick={onLaunchApp} style={{
+                            padding: '14px 32px', borderRadius: '12px', fontSize: '0.95rem', fontWeight: 800,
+                            background: '#fff', color: '#0A0E1A', border: 'none', cursor: 'pointer',
+                            boxShadow: '0 0 40px rgba(255,255,255,0.15)', transition: 'all 0.2s',
+                        }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                            Launch App →
+                        </button>
+                        <a href="/docs" style={{
+                            padding: '14px 32px', borderRadius: '12px', fontSize: '0.95rem', fontWeight: 700,
+                            background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.15)',
+                            cursor: 'pointer', textDecoration: 'none', transition: 'all 0.2s',
+                        }}>
+                            Read Docs
+                        </a>
+                    </div>
+
+                    {/* Typewriter */}
+                    <div style={{ fontFamily: 'monospace', fontSize: '0.85rem', color: '#3EDDB9', padding: '12px 24px', borderRadius: '12px', border: '1px solid rgba(62,221,185,0.15)', background: 'rgba(62,221,185,0.04)', display: 'inline-block' }}>
+                        <span style={{ color: '#64748B' }}>$ </span>
+                        <TypeWriter texts={[
+                            'npx agtfi-mcp-server',
+                            'zk.isCompliant(commitment)',
+                            'wallet.transfer("0x...", "100")',
+                            'zk.meetsRequirements(agent, 10, 50000)',
+                            'Pay Alice 500 AlphaUSD with ZK Shield',
+                        ]} />
+                    </div>
+                </div>
+
+                {/* Scroll indicator */}
+                <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', animation: 'bounce 2s infinite' }}>
+                    <div style={{ width: '24px', height: '40px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
+                        <div style={{ width: '3px', height: '8px', borderRadius: '2px', background: 'rgba(255,255,255,0.3)', animation: 'scrollDot 2s infinite' }} />
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* STATS BAR                                          */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(15,20,35,0.8)', padding: '40px 20px' }}>
+                <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', textAlign: 'center' }}>
                     {[
-                        { label: 'Overview', href: '#overview' },
-                        { label: 'Protocol', href: '#protocol' },
-                        { label: 'Features', href: '#features' },
-                        { label: 'Developers', href: '#developers' },
-                        { label: 'Resources', href: '#resources' },
-                    ].map((item) => (
-                        <a key={item.label} href={item.href} style={{ cursor: 'pointer', textDecoration: 'none', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold', transition: 'color 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#94a3b8'}>{item.label}</a>
+                        { ref: c1.ref, val: `${c1.count}+`, label: 'Smart Contracts', sub: 'Deployed on Tempo L1', color: '#FF2D87' },
+                        { ref: c2.ref, val: c2.count.toLocaleString(), label: 'ZK Constraints', sub: 'Across 5 circuits', color: '#1BBFEC' },
+                        { ref: c3.ref, val: c3.count.toString(), label: 'Production Agents', sub: 'Web2 + Web3 hybrid', color: '#3EDDB9' },
+                        { ref: c4.ref, val: `${c4.count}/11`, label: 'Tests Passing', sub: 'ZK circuit coverage', color: '#FF7D2C' },
+                    ].map((s, i) => (
+                        <div key={i} ref={s.ref}>
+                            <div style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 900, color: s.color, fontFamily: 'monospace' }}>{s.val}</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#E2E8F0', marginTop: '4px' }}>{s.label}</div>
+                            <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>{s.sub}</div>
+                        </div>
                     ))}
                 </div>
-                <button onClick={onLaunchApp} className="animate-pulse-slow landing-cta-btn" style={{ pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fff', color: '#000', borderRadius: '9999px', fontWeight: '900', border: 'none', cursor: 'pointer', boxShadow: '0 0 30px rgba(255,255,255,0.3)', transition: 'transform 0.2s', letterSpacing: '0.02em' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                    Launch App
-                </button>
-            </div>
+            </section>
 
-            {/* ════════════════════════════════════════════════════════════ */}
-            {/* HERO - Headline + Floating Terminal Showcase               */}
-            {/* ════════════════════════════════════════════════════════════ */}
-            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 10, padding: '90px 20px 24px' }}>
-
-                {/* GIANT HEADLINE */}
-                <div className="landing-animate-fade-in-up" style={{ textAlign: 'center', maxWidth: '900px', marginBottom: '16px' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '9999px', border: '1px solid rgba(62,221,185,0.2)', backgroundColor: 'rgba(62,221,185,0.05)', marginBottom: '20px', fontSize: '0.75rem', fontWeight: '700', color: '#3EDDB9', letterSpacing: '0.05em' }}>
-                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#3EDDB9', animation: 'pulse 2s infinite' }}></span>
-                        TRUST INFRASTRUCTURE FOR AUTONOMOUS COMMERCE
-                    </div>
-                    <h1 style={{ fontWeight: '900', letterSpacing: '-0.03em', lineHeight: 1.08, fontSize: 'clamp(2.2rem, 5.5vw, 4.5rem)', margin: 0, textShadow: '0 20px 60px rgba(0,0,0,0.5)' }}>
-                        <span style={{ color: '#fff' }}>The Economy Runs on Trust.</span>
-                        <br />
-                        <span className="shimmer-text" style={{ color: '#34d399' }}>We Built It for Machines.</span>
-                    </h1>
-                    <p style={{ color: '#94A3B8', fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)', marginTop: '16px', lineHeight: 1.6, maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
-                        ZK compliance proofs. Verifiable agent reputation. Privacy-preserving payments. The missing trust layer for x402, MPP, and autonomous commerce.
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* THE PROBLEM                                        */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#0C1020' }}>
+                <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '20px' }}>
+                        Every Protocol Solves <span style={{ color: '#FF2D87' }}>Payments</span>.
+                        <br />None of Them Solve <span style={{ color: '#1BBFEC' }}>Trust</span>.
+                    </h2>
+                    <p style={{ color: '#64748B', fontSize: '1.05rem', lineHeight: 1.7, maxWidth: '700px', margin: '0 auto 60px' }}>
+                        x402, MPP, ACP, AP2 — every agent payment protocol answers &quot;how do agents pay?&quot; but none answer &quot;how do agents trust each other while paying?&quot;
                     </p>
-                    {/* Stats pills */}
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
+
+                    {/* Comparison grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', maxWidth: '800px', margin: '0 auto' }}>
+                        <div style={{ padding: '32px', borderRadius: '16px', border: '1px solid rgba(255,45,135,0.15)', background: 'rgba(255,45,135,0.03)', textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#FF2D87', letterSpacing: '0.1em', marginBottom: '16px', textTransform: 'uppercase' }}>WITHOUT TRUST LAYER</div>
+                            {['No OFAC compliance check', 'No agent reputation', 'All payments public on-chain', 'No fraud prevention', 'No dispute resolution'].map(t => (
+                                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: '0.85rem', color: '#94A3B8' }}>
+                                    <span style={{ color: '#EF4444', fontSize: '1rem' }}>&#10007;</span> {t}
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{ padding: '32px', borderRadius: '16px', border: '1px solid rgba(62,221,185,0.2)', background: 'rgba(62,221,185,0.03)', textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#3EDDB9', letterSpacing: '0.1em', marginBottom: '16px', textTransform: 'uppercase' }}>WITH AGENTIC FINANCE</div>
+                            {['ZK compliance proofs (OFAC + AML)', 'Verifiable agent reputation', 'Privacy-preserving payments', 'On-chain fraud detection', 'Escrow + dispute resolution'].map(t => (
+                                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: '0.85rem', color: '#CBD5E1' }}>
+                                    <span style={{ color: '#3EDDB9', fontSize: '1rem' }}>&#10003;</span> {t}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* THREE PILLARS                                      */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+                        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em' }}>
+                            Three Capabilities.
+                            <br /><span style={{ background: 'linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>No Other Protocol Has Them.</span>
+                        </h2>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
                         {[
-                            { label: 'Contracts', value: '21+', color: '#FF2D87' },
-                            { label: 'ZK Circuits', value: '5', color: '#1BBFEC' },
-                            { label: 'Agents', value: '50', color: '#3EDDB9' },
-                            { label: 'On Tempo L1', value: '42431', color: '#FF7D2C' },
-                        ].map(s => (
-                            <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', backgroundColor: 'rgba(255,255,255,0.03)', fontSize: '0.75rem' }}>
-                                <span style={{ color: s.color, fontWeight: '900', fontFamily: 'monospace' }}>{s.value}</span>
-                                <span style={{ color: '#64748b' }}>{s.label}</span>
+                            {
+                                icon: '🔐', color: '#FF2D87', title: 'ZK Compliance',
+                                desc: 'Agents prove OFAC non-membership and AML compliance without revealing identity. Sparse Merkle Tree + PLONK proofs. 13,591 constraints.',
+                                stats: [{ k: 'Proof Time', v: '~15s' }, { k: 'Verification', v: '17ms' }],
+                            },
+                            {
+                                icon: '⭐', color: '#1BBFEC', title: 'Agent Reputation',
+                                desc: 'Anonymous credit scores for AI agents. Prove tx count, volume, and zero disputes — without revealing any transaction. Poseidon hash chain accumulator.',
+                                stats: [{ k: 'Constraints', v: '41,265' }, { k: 'Claims/Proof', v: '32' }],
+                            },
+                            {
+                                icon: '⚡', color: '#3EDDB9', title: 'Privacy Payments',
+                                desc: 'ZK-shielded transfers, proof chaining for micropayments, MPP session compliance. 90%+ gas savings via incremental proof chains.',
+                                stats: [{ k: 'Gas Savings', v: '90%+' }, { k: 'Batch Size', v: '16 tx' }],
+                            },
+                        ].map(p => (
+                            <div key={p.title} style={{ padding: '36px', borderRadius: '20px', border: `1px solid ${p.color}20`, background: `${p.color}05`, transition: 'all 0.3s', cursor: 'default' }}
+                                onMouseOver={e => { e.currentTarget.style.borderColor = `${p.color}40`; e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                                onMouseOut={e => { e.currentTarget.style.borderColor = `${p.color}20`; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                                <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>{p.icon}</div>
+                                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: p.color, marginBottom: '12px' }}>{p.title}</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#94A3B8', lineHeight: 1.7, marginBottom: '20px' }}>{p.desc}</p>
+                                <div style={{ display: 'flex', gap: '12px' }}>
+                                    {p.stats.map(s => (
+                                        <div key={s.k} style={{ padding: '8px 14px', borderRadius: '8px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', flex: 1, textAlign: 'center' }}>
+                                            <div style={{ fontSize: '1rem', fontWeight: 900, color: p.color, fontFamily: 'monospace' }}>{s.v}</div>
+                                            <div style={{ fontSize: '0.65rem', color: '#64748B', marginTop: '2px' }}>{s.k}</div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
-
-                {/* FLOATING TERMINAL - iPhone Edge-to-Edge */}
-                <div className="landing-animate-fade-in-up terminal-tilt" style={{
-                    width: '96%', maxWidth: '1200px', flex: 1, minHeight: '420px',
-                    backgroundColor: 'rgba(12, 16, 22, 0.95)',
-                    border: `1.5px solid ${prompts[activeTab].color}35`, borderRadius: '28px',
-                    boxShadow: `0 40px 80px rgba(0,0,0,0.6), 0 0 60px ${prompts[activeTab].color}10`,
-                    display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative',
-                    animationDelay: '0.2s'
-                }}>
-
-                    {/* Dynamic Island Notch */}
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0 0', flexShrink: 0, backgroundColor: 'rgba(4, 6, 10, 0.95)' }}>
-                        <div style={{
-                            width: '120px', height: '28px', backgroundColor: '#000', borderRadius: '14px',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                            border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
-                        }}>
-                            <span className="animate-pulse" style={{ width: '6px', height: '6px', backgroundColor: prompts[activeTab].color, borderRadius: '50%', boxShadow: `0 0 8px ${prompts[activeTab].color}` }}></span>
-                            <span style={{ fontSize: '0.55rem', fontWeight: '800', color: prompts[activeTab].color, letterSpacing: '0.12em', textTransform: 'uppercase' as const }}>{outputStep === 3 ? "DONE" : "LIVE"}</span>
-                        </div>
-                    </div>
-
-                    {/* Terminal Header - Tab Pills */}
-                    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', padding: '8px 20px', backgroundColor: 'rgba(4, 6, 10, 0.95)', flexShrink: 0, gap: '12px' }}>
-                        {/* Traffic lights */}
-                        <div style={{ display: 'flex', gap: '7px', flexShrink: 0 }}>
-                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#ef4444' }}></div>
-                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#f59e0b' }}></div>
-                            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#10b981' }}></div>
-                        </div>
-
-                        {/* Horizontal Tab Pills */}
-                        <div className="hide-scroll" style={{ display: 'flex', gap: '6px', flex: 1, overflowX: 'auto', padding: '2px 0' }}>
-                            {prompts.map((prompt, index) => (
-                                <button key={index} onClick={() => setActiveTab(index)} style={{
-                                    padding: '5px 14px', borderRadius: '9999px', cursor: 'pointer', transition: 'all 0.3s',
-                                    border: activeTab === index ? `1px solid ${prompt.color}50` : '1px solid rgba(255,255,255,0.06)',
-                                    backgroundColor: activeTab === index ? `${prompt.color}15` : 'transparent',
-                                    color: activeTab === index ? prompt.color : '#64748b',
-                                    fontSize: '0.72rem', fontWeight: 'bold', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'inherit',
-                                    display: 'flex', alignItems: 'center', gap: '5px'
-                                }}>
-                                    {prompt.title}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Terminal Output Content */}
-                    <div className="hide-scroll" style={{ flex: 1, padding: '20px 24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div className={`transition-all duration-500 ${outputStep >= 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`} style={{ backgroundColor: '#161B22', color: '#fff', padding: '14px 20px', borderRadius: '14px', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.05)', alignSelf: 'flex-end', maxWidth: '85%', fontWeight: '500', fontFamily: 'monospace' }}>{prompts[activeTab].command}</div>
-
-                        {activeTab === 0 && outputStep >= 2 && (
-                            <div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-                                <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '20px', padding: '20px 28px', position: 'relative', overflow: 'hidden' }}>
-                                    <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', backgroundColor: '#10b981', height: '100%' }}></div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        <div style={{ width: '56px', height: '56px', borderRadius: '14px', backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981', fontWeight: '900', fontSize: '1.5rem' }}>T</div>
-                                        <div><h3 style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.3rem', margin: '0 0 4px 0', lineHeight: 1 }}>Tony</h3><div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '1.6rem', fontWeight: '900', color: '#fbbf24' }}>10.0</span><span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#818cf8', backgroundColor: 'rgba(99,102,241,0.1)', padding: '2px 8px', borderRadius: '6px', border: '1px solid rgba(99,102,241,0.2)' }}>AlphaUSD</span></div></div>
-                                    </div>
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                    <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(99,102,241,0.2)', borderRadius: '14px', padding: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#818cf8', marginBottom: '12px' }}><BoltIcon style={{ width: '14px', height: '14px' }} /><span style={{ fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Boardroom</span></div><div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontSize: '0.9rem', fontWeight: 'bold' }}><span>Tony</span><span>+10.0</span></div></div>
-                                    <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '14px', padding: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', marginBottom: '12px' }}><ClockIcon style={{ width: '14px', height: '14px' }} /><span style={{ fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Escrow Vault</span></div><div style={{ fontSize: '0.9rem', color: '#6ee7b7', fontFamily: 'monospace', fontWeight: 'bold' }}>0xe89b...bd4d</div></div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 1 && outputStep >= 2 && (
-                            <div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '650px', margin: '0 auto' }}>
-                                <div style={{ backgroundColor: '#05070A', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '18px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 10px 30px rgba(168,85,247,0.1)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><div style={{ width: '36px', height: '36px', backgroundColor: '#000', border: '2px solid #a855f7', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '18px', height: '18px', color: '#a855f7' }} /></div><div><p style={{ fontSize: '0.65rem', color: '#a855f7', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Nexus Vault</p><p style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>500.0 <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>USDC</span></p></div></div>
-                                    <div style={{ backgroundColor: 'rgba(168,85,247,0.1)', padding: '5px 10px', borderRadius: '8px', border: '1px solid rgba(168,85,247,0.3)' }}><span style={{ fontSize: '0.7rem', color: '#c084fc', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}><ClockIcon style={{ width: '13px', height: '13px' }} /> In Escrow</span></div>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1A2844', border: '1px solid #374151', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><CpuChipIcon style={{ width: '24px', height: '24px', color: '#94a3b8' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#10b981', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Dev Agent</span><span style={{ color: '#64748b', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{agentData ? `${agentData.devAddress.slice(0, 6)}...` : "..."}</span></div>
-                                    <div style={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                                        {outputStep >= 3 && (<div style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', padding: '3px 10px', borderRadius: '999px', marginBottom: '6px', zIndex: 10 }}><span style={{ fontSize: '0.6rem', color: '#c084fc', fontWeight: '900', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '4px' }}><CheckBadgeIcon style={{ width: '11px', height: '11px' }} /> AI IS JUDGE</span></div>)}
-                                        <div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_2s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#a855f7', boxShadow: '0 0 10px #a855f7' }}></div></div><span style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', marginTop: '6px', fontFamily: 'monospace' }}>+$5.00 Stream</span>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}><div style={{ width: '48px', height: '48px', backgroundColor: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.4)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', boxShadow: '0 0 20px rgba(168,85,247,0.2)' }}><ShieldCheckIcon style={{ width: '24px', height: '24px', color: '#c084fc' }} /><span className="animate-pulse" style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', backgroundColor: '#a855f7', borderRadius: '50%', border: '2px solid #111827' }}></span></div><span style={{ color: '#fff', fontWeight: 'bold', fontSize: '0.75rem', marginTop: '10px' }}>Audit Agent</span><span style={{ color: '#a855f7', fontSize: '0.55rem', fontFamily: 'monospace', marginTop: '3px' }}>{outputStep >= 3 ? "Signed ✍️" : (agentData ? `${agentData.auditAddress.slice(0, 6)}...` : "...")}</span></div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 2 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(129, 140, 248, 0.3)', borderRadius: '16px', overflow: 'hidden' }}><div style={{ display: 'flex', backgroundColor: 'rgba(129, 140, 248, 0.1)', padding: '12px 20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#a5b4fc', textTransform: 'uppercase' }}><div style={{ flex: 1 }}>Employee</div><div style={{ flex: 1 }}>Wallet</div><div style={{ width: '100px', textAlign: 'right' }}>Amount</div></div>{[{ name: "Alice", wallet: "0x71C...9A", amount: "5k" }, { name: "Bob", wallet: "0x3F2...8B", amount: "4.5k" }, { name: "Charlie", wallet: "0x9E1...1C", amount: "4.5k" }].map((row, i) => (<div key={i} style={{ display: 'flex', padding: '16px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem' }}><div style={{ flex: 1, color: '#fff', fontWeight: 'bold' }}>{row.name}</div><div style={{ flex: 1, color: '#64748b', fontFamily: 'monospace' }}>{row.wallet}</div><div style={{ width: '100px', textAlign: 'right', color: '#10b981', fontWeight: 'bold' }}>{row.amount}</div></div>))}</div></div>)}
-                        {activeTab === 3 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(236, 72, 153, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#1e1b4b', borderRadius: '50%', border: '1px solid #4338ca', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><GlobeAltIcon style={{ width: '24px', height: '24px', color: '#818cf8' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Ethereum</span></div><div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}><span style={{ fontSize: '0.7rem', color: '#ec4899', marginBottom: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>50,000 USDC</span><div style={{ width: '100%', height: '2px', backgroundColor: '#1e293b', position: 'relative', overflow: 'hidden' }}><div className="animate-[slideRight_1.5s_linear_infinite]" style={{ height: '100%', width: '40px', backgroundColor: '#ec4899' }}></div></div><span style={{ fontSize: '0.65rem', color: '#64748b', marginTop: '4px' }}>LayerZero Bridge</span></div><div style={{ textAlign: 'center' }}><div style={{ width: '48px', height: '48px', backgroundColor: '#064e3b', borderRadius: '50%', border: '1px solid #059669', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}><CubeTransparentIcon style={{ width: '24px', height: '24px', color: '#34d399' }} /></div><span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 'bold' }}>Arbitrum</span></div></div></div>)}
-                        {activeTab === 4 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}><div style={{ backgroundColor: '#05070A', border: '1px solid rgba(234, 179, 8, 0.3)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '16px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><ChartBarIcon style={{ width: '24px', height: '24px', color: '#eab308' }} /><span style={{ color: '#fff', fontWeight: 'bold' }}>Portfolio Rebalancing</span></div><span style={{ fontSize: '0.75rem', color: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', padding: '4px 10px', borderRadius: '8px', border: '1px solid rgba(234, 179, 8, 0.2)', fontWeight: 'bold' }}>AUTO-EXECUTED</span></div><div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}><div style={{ textAlign: 'center', opacity: 0.6 }}><p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '4px' }}>Previous Split</p><p style={{ fontSize: '1.1rem', color: '#cbd5e1', fontWeight: 'bold', fontFamily: 'monospace' }}>BTC:52% / ETH:48%</p></div><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /><div style={{ textAlign: 'center' }}><p style={{ fontSize: '0.8rem', color: '#eab308', marginBottom: '4px' }}>New Target Split</p><p style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900', fontFamily: 'monospace' }}>BTC:60% / ETH:40%</p></div></div></div></div>)}
-                        {activeTab === 5 && outputStep >= 2 && (<div className="landing-animate-fade-in-up" style={{ width: '100%', maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}><div style={{ width: '100%', backgroundColor: '#05070A', border: '1px solid rgba(6, 182, 212, 0.3)', borderRadius: '24px', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}><ServerStackIcon style={{ width: '32px', height: '32px', color: '#06b6d4' }} /><span style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold' }}>Uptime API Oracle</span></div><div style={{ width: '2px', height: '40px', backgroundColor: '#06b6d4', opacity: 0.5 }}></div><div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>{[1, 2, 3, 4, 5].map((id) => (<div key={id} style={{ width: '40px', height: '40px', backgroundColor: '#162036', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}><SignalIcon style={{ width: '20px', height: '20px', color: '#06b6d4' }} /><div className="animate-pulse" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div></div>))}<div style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontWeight: 'bold' }}>...</div></div><div style={{ marginTop: '32px', backgroundColor: 'rgba(6, 182, 212, 0.1)', border: '1px solid rgba(6, 182, 212, 0.2)', padding: '10px 20px', borderRadius: '999px' }}><span style={{ fontSize: '0.85rem', color: '#22d3ee', fontWeight: 'bold', fontFamily: 'monospace' }}>Verifying 5,000 active nodes...</span></div></div></div>)}
-
-                        {/* Agent Execution Logs */}
-                        <div className={`transition-all duration-700 mt-auto ${outputStep >= 1 ? 'opacity-100' : 'opacity-0'}`} style={{ backgroundColor: '#030407', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '14px', fontFamily: 'monospace', fontSize: '0.72rem', color: '#64748b' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '6px' }}><CodeBracketIcon style={{ width: '13px', height: '13px' }} /> <span>Agent Execution Logs</span></div>
-                            {activeTab === 1 ? nexusLog.map((log, i) => <p key={i} style={{ margin: '3px 0', color: log.includes('Verified') ? '#a855f7' : '#94a3b8' }}>{log}</p>) : <><p style={{ margin: '3px 0' }}>&gt; Analyzing natural language intent...</p><p style={{ margin: '3px 0' }}>&gt; Fetching real-time on-chain data constraints...</p><p style={{ margin: '3px 0', color: prompts[activeTab].color }}>&gt; Success: Action triggered.</p></>}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Scroll Indicator */}
-                <div className="animate-bounce-slow-scroll" style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', opacity: 0.4 }}>
-                    <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Scroll</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                </div>
             </section>
 
-            <div style={{ width: '100%', overflow: 'hidden', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(11,17,32,0.6)', padding: '12px 0', position: 'relative', zIndex: 10 }}>
-                <div className="animate-ticker" style={{ display: 'flex', whiteSpace: 'nowrap', gap: '40px', width: 'max-content' }}>{[...Array(3)].map((_, i) => (<div key={i} style={{ display: 'flex', gap: '40px', fontFamily: 'monospace', fontSize: '0.8rem', color: '#64748b' }}><span><span style={{ color: '#10b981' }}>[SUCCESS]</span> Agent-03 verified PR. Vault released 5k.</span><span><span style={{ color: '#a855f7' }}>[NEXUS]</span> AuditAgent signed tx. $5 streamed.</span><span><span style={{ color: '#ec4899' }}>[BRIDGE]</span> 50k USDC bridged to Arb.</span></div>))}</div>
-            </div>
-
-            {/* --- SECTION: LIVE NETWORK GLOBE --- */}
-            <GlobeShowcase />
-
-            {/* --- SECTION: THE THESIS (SYMMETRICAL LAYOUT) --- */}
-            <section id="overview" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10 }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '100px' }}><h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>The Thesis. <br /><span className="gradient-text">The Inevitable Shift.</span></h2></div>
-                    <div className="thesis-grid" style={{ display: 'grid', gap: '60px', alignItems: 'start' }}>
-
-                        {/* COLUMN 1: Why Agents? */}
-                        <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><LightBulbIcon style={{ width: '32px', height: '32px', color: '#f59e0b' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>The World Is Changing.</h3></div>
-                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>By 2028, autonomous AI agents will manage more capital than most hedge funds. The question is not <span style={{ color: '#fff' }}>whether</span> this shift happens - it is <span style={{ color: '#f59e0b' }}>who builds the financial rails</span>.</p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><GlobeAltIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>$47T Addressable Market</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Global payroll, treasury management, and cross-border settlement - every dollar that moves will eventually move through an agent.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(34,211,238,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ClockIcon style={{ width: '20px', height: '20px', color: '#22d3ee' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Always-On Execution</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Agents never sleep, never miss deadlines, never fat-finger transactions. They execute 24/7/365 with sub-second precision.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(168,85,247,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BoltIcon style={{ width: '20px', height: '20px', color: '#a855f7' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Infinite Parallelism</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>A single agent swarm can process millions of micro-settlements simultaneously - something no human treasury team can replicate.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(236,72,153,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: '20px', height: '20px', color: '#ec4899' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Zero Trust Required</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Cryptographic proofs replace human trust. No more "I'll pay after delivery" - escrow-backed, ZK-verified settlements eliminate counterparty risk.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(234,179,8,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CodeBracketIcon style={{ width: '20px', height: '20px', color: '#eab308' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Composable Intelligence</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Agents hire other agents. An audit agent verifies work, a treasury agent funds the escrow, a settlement agent distributes payment. The economy compounds itself.</p></div></div>
-                            </div>
-                        </div>
-
-                        {/* COLUMN 2: Why Agentic Finance? */}
-                        <div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}><RocketLaunchIcon style={{ width: '32px', height: '32px', color: '#10b981' }} /><h3 style={{ fontSize: '2rem', color: '#fff', fontWeight: '900', letterSpacing: '-0.01em', margin: 0 }}>Agentic Finance Is The Answer.</h3></div>
-                            <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: 1.7, marginBottom: '40px', fontWeight: '500' }}>Every AI agent needs a bank account. Every agent economy needs a central bank. Agentic Finance is <span style={{ color: '#fff', textDecoration: 'underline', textDecorationColor: '#10b981' }}>the settlement infrastructure</span> for this entire new economy.</p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CheckCircleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Deterministic Finance</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>AI reasoning is probabilistic. Financial execution must be binary. Agentic Finance bridges this gap - every transaction either settles correctly or reverts entirely. Zero ambiguity.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Privacy by Default</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>ZK-SNARKs protect every salary, every vendor payment, every agent settlement from public view. Enterprise-grade privacy is not a feature - it is the foundation.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Omni-Chain, One Protocol</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Capital flows to where it is needed most. Agentic Finance abstracts away bridge complexities across EVM and SVM, so agents operate on any chain through one unified interface.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ScaleIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Game-Theoretic Security</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Our arbitration protocol makes cheating mathematically irrational. Nash equilibrium ensures honest behavior without human judges or centralized courts.</p></div></div>
-                                <div style={{ display: 'flex', gap: '20px' }}><div style={{ flexShrink: 0, width: '36px', height: '36px', backgroundColor: 'rgba(16,185,129,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><KeyIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div><div><h4 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: 'bold', marginBottom: '6px' }}>Sovereign Infrastructure</h4><p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '0.95rem' }}>Self-custodial vaults, programmable multi-sig, and time-locked escrows. No single points of failure. No permission needed. The protocol IS the trust layer.</p></div></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            {/* PROTOCOL STACK - Replacing old Architecture section */}
-            <section id="protocol" style={{ padding: '120px 20px', backgroundColor: '#0B1222', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                {/* Ambient glow */}
-                <div style={{ position: 'absolute', top: '20%', left: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
-                <div style={{ position: 'absolute', bottom: '10%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }}></div>
-
-                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '20px' }}>
-                            <span className="pulse-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#818cf8' }}></span>
-                            <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#a5b4fc', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Protocol Architecture</span>
-                        </div>
-                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            Seven Layers.<br />
-                            <span className="gradient-text">One Unstoppable Stack.</span>
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* FOR DEVELOPERS                                     */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+                        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em' }}>
+                            Built for <span style={{ color: '#3EDDB9' }}>Developers</span>
                         </h2>
-                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            From raw neural intent to settled on-chain value - every layer is purpose-built for the agent economy.
-                        </p>
+                        <p style={{ color: '#64748B', fontSize: '1rem', marginTop: '12px' }}>npm install. One line of code. Trust infrastructure ready.</p>
                     </div>
 
-                    {/* UNIFIED PROTOCOL STACK TABLE */}
-                    <div className="protocol-table reveal" style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', borderRadius: '24px', overflow: 'hidden', backgroundColor: '#1A2844', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 40px 80px rgba(0,0,0,0.4)' }}>
-                        {/* Gradient accent line on left */}
-                        <div style={{ position: 'absolute', left: 0, top: 0, width: '3px', height: '100%', background: 'linear-gradient(to bottom, #a855f7, #22d3ee, #f59e0b, #818cf8, #10b981, #ec4899, #94a3b8)', zIndex: 2 }}></div>
-
-                        {/* Table header */}
-                        <div className="protocol-table-header" style={{ display: 'grid', padding: '16px 24px 16px 28px', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.02)' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Layer</span>
-                                <span className="protocol-header-stat" style={{ fontSize: '0.65rem', fontWeight: '800', color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Spec</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 7 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><SparklesIcon style={{ width: '20px', height: '20px', color: '#c084fc' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#a855f7', backgroundColor: 'rgba(168,85,247,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L7</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Neural Intent Engine</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>LLM-powered natural language parsing into deterministic financial operations</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#c084fc', fontWeight: '800', fontFamily: 'monospace' }}>GPT-4o-mini + Claude</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 6 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CpuChipIcon style={{ width: '20px', height: '20px', color: '#22d3ee' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L6</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>A2A Agent Marketplace</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Nash-equilibrium negotiation and autonomous task execution with on-chain escrow</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '1.1rem', fontWeight: '900', color: '#22d3ee', fontFamily: 'monospace', lineHeight: 1 }}>32</span>
-                                <span style={{ fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>AGENTS</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 5 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ScaleIcon style={{ width: '20px', height: '20px', color: '#f59e0b' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L5</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Game-Theoretic Arbitration</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Trustless dispute resolution - cheating is mathematically irrational</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: '800', fontFamily: 'monospace' }}>3% capped</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 4 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><EyeSlashIcon style={{ width: '20px', height: '20px', color: '#818cf8' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#818cf8', backgroundColor: 'rgba(129,140,248,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L4</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>ZK Privacy Shield</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Zero-Knowledge proofs obscure amounts, identities, and settlement details</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#818cf8', fontWeight: '800', fontFamily: 'monospace' }}>PLONK + Nullifier</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 3 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ShieldCheckIcon style={{ width: '20px', height: '20px', color: '#10b981' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#10b981', backgroundColor: 'rgba(16,185,129,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L3</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Fortress Treasury & Escrow</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Multi-Sig, Time-Vault Escrows, and Conditional Payroll Engine</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: '800', fontFamily: 'monospace' }}>Multi-Sig + ZK</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 2 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(236,72,153,0.1)', border: '1px solid rgba(236,72,153,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ArrowsRightLeftIcon style={{ width: '20px', height: '20px', color: '#ec4899' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#ec4899', backgroundColor: 'rgba(236,72,153,0.12)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L2</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>Omni-Chain Nexus</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Cross-chain value transfer with fiat off-ramping via PayPal Payouts</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#ec4899', fontWeight: '800', fontFamily: 'monospace' }}>EVM + SVM</span>
-                            </div>
-                        </div>
-
-                        {/* Layer 1 */}
-                        <div className="protocol-row reveal-child" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 24px 20px 28px', backgroundColor: 'rgba(255,255,255,0.02)', transition: 'background-color 0.3s' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><CubeTransparentIcon style={{ width: '20px', height: '20px', color: '#e2e8f0' }} /></div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontSize: '0.6rem', fontWeight: '900', color: '#e2e8f0', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 7px', borderRadius: '5px', letterSpacing: '0.1em', flexShrink: 0 }}>L1</span>
-                                    <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: '800', margin: 0, whiteSpace: 'nowrap' }}>AlphaNet Settlement Layer</h3>
-                                </div>
-                                <p className="protocol-row-desc" style={{ color: '#64748b', fontSize: '0.82rem', lineHeight: 1.5, margin: 0 }}>Deterministic on-chain settlement powered by Tempo consensus</p>
-                            </div>
-                            <div className="protocol-row-stat" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.75rem', color: '#e2e8f0', fontWeight: '800', fontFamily: 'monospace' }}>{'<'}1s finality</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Integration Partners Badge Strip */}
-                    <div style={{ marginTop: '60px', textAlign: 'center' }}>
-                        <p style={{ fontSize: '0.7rem', color: '#5a6a80', fontWeight: 'bold', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px' }}>Integrated With</p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                            {[
-                                { name: 'OpenAI', color: '#10b981' },
-                                { name: 'Anthropic', color: '#d97706' },
-                                { name: 'LangChain', color: '#22d3ee' },
-                                { name: 'CrewAI', color: '#38bdf8' },
-                                { name: 'Eliza', color: '#818cf8' },
-                                { name: 'OpenClaw', color: '#a855f7' },
-                                { name: 'MCP', color: '#f43f5e' },
-                                { name: 'Tempo', color: '#34d399' },
-                            ].map((p) => (
-                                <span key={p.name} style={{ padding: '8px 20px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${p.color}25`, fontSize: '0.8rem', fontWeight: '700', color: p.color, letterSpacing: '0.02em' }}>{p.name}</span>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ECOSYSTEM */}
-            <section id="ecosystem" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0E1428', borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                {/* Ambient background glows */}
-                <div style={{ position: 'absolute', top: '-20%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-                <div style={{ position: 'absolute', bottom: '-20%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(99,102,241,0.10) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-                    {/* Title */}
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
-                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Who Builds on Agentic Finance</span>
-                        </div>
-                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>
-                            One Protocol.<br />
-                            <span className="gradient-text">Every Financial Frontier.</span>
-                        </h2>
-                        <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto', lineHeight: 1.7 }}>
-                            From DAO treasuries to autonomous AI swarms - Agentic Finance is the settlement layer powering the next generation of programmable finance.
-                        </p>
-                    </div>
-
-                    {/* Top row - 2 large cards */}
-                    <div className="eco-grid-2 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
-                        {/* Protocol Treasuries */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #10b981, transparent)' }} />
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                                <UserGroupIcon style={{ width: '36px', height: '36px', color: '#10b981' }} />
-                                <h3 style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900' }}>Protocol Treasuries</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: '24px' }}>
-                                DAO-native payroll with ZK-validated bounties and multi-sig escrow. Every disbursement is trustless, auditable, and compliant.
-                            </p>
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>Payroll Automation</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>Bug Bounties</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>Multi-Sig</span>
-                            </div>
-                        </div>
-
-                        {/* Autonomous AI Swarms */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '24px', padding: '48px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #22d3ee, transparent)' }} />
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                                <ServerStackIcon style={{ width: '36px', height: '36px', color: '#22d3ee' }} />
-                                <h3 style={{ fontSize: '1.4rem', color: '#fff', fontWeight: '900' }}>Autonomous AI Swarms</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '0.95rem', marginBottom: '24px' }}>
-                                Machine-to-machine micropayments with automated API budget provisioning. Agents hire agents - trustlessly, at scale.
-                            </p>
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>M2M Payments</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>32 AI Agents</span>
-                                <span style={{ fontSize: '11px', fontWeight: 700, color: '#22d3ee', backgroundColor: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.15)', borderRadius: '9999px', padding: '4px 12px' }}>A2A Escrow</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Middle row - 3 medium cards */}
-                    <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '24px' }}>
-                        {/* Institutional Finance */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
-                            <BriefcaseIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Institutional Finance</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Cross-border contractor settlements with ZK payroll privacy. Fiat off-ramping via PayPal Payouts integration.</p>
-                        </div>
-
-                        {/* DePIN Networks */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(236,72,153,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #ec4899, transparent)' }} />
-                            <BoltIcon style={{ width: '32px', height: '32px', color: '#ec4899', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>DePIN Networks</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Real-time royalty splitting and hardware node reward distribution. High-frequency micro-transaction routing at sub-second finality.</p>
-                        </div>
-
-                        {/* DeFi Vaults */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(168,85,247,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #a855f7, transparent)' }} />
-                            <ChartBarIcon style={{ width: '32px', height: '32px', color: '#a855f7', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>DeFi Algorithmic Vaults</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>AI-driven portfolio rebalancing with automated flash loan execution and cross-chain liquidity routing via AlphaNet.</p>
-                        </div>
-                    </div>
-
-                    {/* Bottom row - 2 cards + stats panel */}
-                    <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px' }}>
-                        {/* Gaming */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
-                            <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Gaming & Metaverse</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Programmatic tournament payouts, NPC-to-NPC autonomous commerce, and zero-click player reward distribution.</p>
-                        </div>
-
-                        {/* Cross-Chain Commerce */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(244,114,182,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f472b6, transparent)' }} />
-                            <GlobeAltIcon style={{ width: '32px', height: '32px', color: '#f472b6', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Cross-Chain Commerce</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem' }}>Omni-chain value transfer between EVM and SVM. Unified state layer with instant settlement across any blockchain.</p>
-                        </div>
-
-                        {/* Protocol Numbers */}
-                        <div style={{ backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '24px', padding: '36px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>32</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>AI Agents</div>
-                            </div>
-                            <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#34d399', letterSpacing: '-0.02em' }}>9</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Verified Contracts</div>
-                            </div>
-                            <div style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '2.5rem', fontWeight: '900', color: '#818cf8', letterSpacing: '-0.02em' }}>14</div>
-                                <div style={{ fontSize: '10px', fontWeight: 900, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Core Features</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ════════════════════════════════════════════════════════════ */}
-            {/* FEATURES - LIVE ON TEMPO L1                                 */}
-            {/* ════════════════════════════════════════════════════════════ */}
-            <section id="features" style={{ padding: '120px 20px', position: 'relative', zIndex: 10, backgroundColor: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '10%', right: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-                <div style={{ position: 'absolute', bottom: '10%', left: '-5%', width: '35vw', height: '35vw', background: 'radial-gradient(circle, rgba(168,85,247,0.12) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
-                            <span className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
-                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Live on Tempo Moderato</span>
-                        </div>
-                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.8rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
-                            14 Features.<br />
-                            <span className="gradient-text">All Real. All On-Chain.</span>
-                        </h2>
-                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '650px', margin: '20px auto 0', lineHeight: 1.7 }}>
-                            Every feature executes real transactions on Tempo L1. 9 source-verified smart contracts. 32 on-chain agents. Zero mocks.
-                        </p>
-                    </div>
-
-                    {/* Phase 2 Feature Grid - 4x2 */}
-                    <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                         {[
-                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'ZK Circuit V2', desc: 'PLONK proving system with Poseidon nullifier pattern. Anti-double-spend protection for private payments.', color: '#818cf8', stat: 'PLONK + Nullifier' },
-                            { icon: <CpuChipIcon style={{ width: '28px', height: '28px' }} />, title: '32 On-Chain Agents', desc: 'Escrow, streams, shield, payroll, token transfer, batch payments, proof verification, treasury, gas profiling - all with real Tempo L1 transactions.', color: '#22d3ee', stat: '32 Native' },
-                            { icon: <SparklesIcon style={{ width: '28px', height: '28px' }} />, title: 'AI Brain Orchestrator', desc: 'Claude-powered natural language parsing into deterministic NexusV2 escrow operations. Real AI, not mock.', color: '#c084fc', stat: 'Claude Sonnet' },
-                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'A2A Economy', desc: 'Agents autonomously hire agents. Coordinator decomposes tasks, creates per-sub-task NexusV2 escrow chains.', color: '#a855f7', stat: '6 TXs/chain' },
-                            { icon: <SignalIcon style={{ width: '28px', height: '28px' }} />, title: 'Live Dashboard', desc: 'Real-time SSE streaming: transaction feed, agent heatmap, ZK proof counter, TVL gauge, revenue ticker.', color: '#10b981', stat: 'SSE Real-time' },
-                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'Verifiable AI Proofs', desc: 'On-chain keccak256 commitment before execution. Verification after. Mismatch triggers slashing event.', color: '#f59e0b', stat: 'AIProofRegistry' },
-                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Tempo Benchmark', desc: '5 real operations comparing Tempo vs Ethereum costs. Proves 99%+ savings for Agentic Finance operations.', color: '#ec4899', stat: '99%+ Savings' },
-                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'SDK Ecosystem', desc: 'Self-registration with webhook health check. 14 community agents across 7 contributor teams.', color: '#38bdf8', stat: '14 Community' },
-                            { icon: <ArrowsRightLeftIcon style={{ width: '28px', height: '28px' }} />, title: 'Stream Settlement', desc: 'Progressive milestone-based escrow. Client approves each deliverable, payment releases incrementally. Real-time notifications.', color: '#06b6d4', stat: 'StreamV1' },
-                            { icon: <CheckBadgeIcon style={{ width: '28px', height: '28px' }} />, title: 'On-Chain Reputation', desc: 'Composite reputation score (0-100) from on-chain ratings, completion rate, and AI proof reliability. Tiered labels from Newcomer to Legend.', color: '#8b5cf6', stat: 'ReputationRegistry' },
-                            { icon: <ShieldCheckIcon style={{ width: '28px', height: '28px' }} />, title: 'Security Deposits', desc: 'Agents stake AlphaUSD to prove skin-in-the-game. Bronze/Silver/Gold tiers unlock fee discounts (up to 3%). Auto-slashing on proof mismatch.', color: '#f97316', stat: '4 Tiers' },
-                            { icon: <ChartBarIcon style={{ width: '28px', height: '28px' }} />, title: 'Revenue Dashboard', desc: 'Live TVL tracking, fee accumulation, volume charts, and top agent leaderboards. Real-time protocol analytics with SSE updates.', color: '#14b8a6', stat: 'Live Analytics' },
-                            { icon: <CodeBracketIcon style={{ width: '28px', height: '28px' }} />, title: 'APS-1 Standard', desc: 'Agent Payment Standard - formal 6-phase protocol for agent payments: Discover, Negotiate, Escrow, Execute, Verify, Settle.', color: '#6366f1', stat: 'Spec v2.1' },
-                            { icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, title: 'Cross-Framework SDK', desc: 'Native adapters for OpenAI function-calling, Anthropic tool-use, Google A2A, LangChain, CrewAI, Eliza, and MCP. 3 lines of code to hire an agent.', color: '#0ea5e9', stat: '7+ Adapters' },
-                        ].map((f, i) => (
-                            <div key={i} className="reveal-child" style={{ backgroundColor: '#1A2844', border: `1px solid ${f.color}20`, borderRadius: '20px', padding: '28px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s' }}>
-                                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${f.color}, transparent)` }} />
-                                <div style={{ color: f.color, marginBottom: '16px' }}>{f.icon}</div>
-                                <h3 style={{ fontSize: '1.1rem', color: '#fff', fontWeight: '800', marginBottom: '8px' }}>{f.title}</h3>
-                                <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>{f.desc}</p>
-                                <span style={{ fontSize: '0.65rem', fontWeight: '800', color: f.color, backgroundColor: `${f.color}15`, border: `1px solid ${f.color}25`, padding: '3px 10px', borderRadius: '9999px', letterSpacing: '0.05em' }}>{f.stat}</span>
+                            { title: 'MCP Payment Server', desc: 'Any AI agent (Claude Code, Cursor) gets payment capabilities', code: 'npx agtfi-mcp-server', badge: 'LIVE ON NPM', color: '#3EDDB9' },
+                            { title: 'Compliance Middleware', desc: 'Drop-in Express middleware — one line adds ZK compliance', code: "app.use(complianceMiddleware({ ... }))", badge: 'SDK', color: '#1BBFEC' },
+                            { title: 'Agent Wallet', desc: 'Full wallet with compliance + reputation built-in', code: "const wallet = new AgentWallet({ privateKey })", badge: 'SDK', color: '#FF2D87' },
+                            { title: 'ZK Privacy API', desc: 'Check compliance, query reputation, verify proofs', code: "await zk.isCompliant(commitment)", badge: 'SDK', color: '#FF7D2C' },
+                        ].map(d => (
+                            <div key={d.title} style={{ padding: '28px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#E2E8F0' }}>{d.title}</h4>
+                                    <span style={{ fontSize: '0.6rem', fontWeight: 800, padding: '3px 10px', borderRadius: '6px', color: d.color, border: `1px solid ${d.color}30`, background: `${d.color}08`, letterSpacing: '0.05em' }}>{d.badge}</span>
+                                </div>
+                                <p style={{ fontSize: '0.8rem', color: '#64748B', marginBottom: '14px' }}>{d.desc}</p>
+                                <div style={{ padding: '10px 16px', borderRadius: '8px', background: '#0A0E1A', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'monospace', fontSize: '0.78rem', color: '#3EDDB9' }}>
+                                    <span style={{ color: '#64748B' }}>$ </span>{d.code}
+                                </div>
                             </div>
                         ))}
                     </div>
 
-                    {/* Deployed Contracts Strip */}
-                    <div className="reveal" style={{ marginTop: '60px', backgroundColor: '#1A2844', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '32px' }}>
-                        <p style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', letterSpacing: '0.15em', textTransform: 'uppercase' as const, marginBottom: '20px', textAlign: 'center' }}>9 Source-Verified Contracts on Tempo Moderato</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-                            {[
-                                { name: 'NexusV2', addr: '0x6A46...2Fab', color: '#10b981' },
-                                { name: 'ShieldVaultV2', addr: '0x3B4b...0055', color: '#818cf8' },
-                                { name: 'MultisendV2', addr: '0x25f4...4575', color: '#22d3ee' },
-                                { name: 'PlonkVerifier', addr: '0x9FB9...50B', color: '#c084fc' },
-                                { name: 'AIProofRegistry', addr: '0x8fDB...a014', color: '#f59e0b' },
-                                { name: 'StreamV1', addr: '0x4fE3...36C', color: '#06b6d4' },
-                                { name: 'ReputationRegistry', addr: '0x9332...4D0', color: '#8b5cf6' },
-                                { name: 'SecurityDeposit', addr: '0x0778...424E', color: '#f97316' },
-                                { name: 'NexusV1 (Legacy)', addr: '0x4B7e...d11', color: '#94a3b8' },
-                            ].map((c) => (
-                                <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', backgroundColor: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.color, flexShrink: 0 }} />
-                                    <div>
-                                        <div style={{ fontSize: '0.8rem', color: '#fff', fontWeight: '700' }}>{c.name}</div>
-                                        <div style={{ fontSize: '0.65rem', color: '#64748b', fontFamily: 'monospace' }}>{c.addr}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* DEVELOPERS */}
-            <section id="developers" style={{ padding: '120px 20px', backgroundColor: '#0D1526', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: '10%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
-                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '9999px', padding: '6px 16px', marginBottom: '24px' }}>
-                            <CommandLineIcon style={{ width: '14px', height: '14px', color: '#34d399' }} />
-                            <span style={{ fontSize: '12px', fontWeight: 900, color: '#34d399', letterSpacing: '0.15em', textTransform: 'uppercase' as const }}>Build on Agentic Finance</span>
-                        </div>
-                        <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em', marginBottom: '20px' }}>Developer <span className="gradient-text">Portal.</span></h2>
-                        <p style={{ color: '#64748b', fontSize: '1.05rem', maxWidth: '600px', margin: '0 auto', lineHeight: 1.7 }}>Register your own AI agent, integrate with any framework, and earn 95% of every job on the marketplace.</p>
-                    </div>
-
-                    {/* Developer action cards - 3 cols */}
-                    <div className="eco-grid-3 reveal" style={{ display: 'grid', gap: '24px', marginBottom: '40px' }}>
-                        {/* Build Agent */}
-                        <a href="/developers" className="bento-item" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #10b981, transparent)' }} />
-                            <CpuChipIcon style={{ width: '32px', height: '32px', color: '#10b981', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Build & Register Agent</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Create your AI agent using the TypeScript SDK, set skills and pricing, and register on the marketplace in minutes.</p>
-                            <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#10b981', display: 'flex', alignItems: 'center', gap: '6px' }}>Open Developer Portal <ArrowTopRightOnSquareIcon style={{ width: '14px', height: '14px' }} /></span>
+                    <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                        <a href="https://github.com/Agentic-Finance/agentic-finance-protocol" target="_blank" rel="noopener"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 28px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.12)', color: '#E2E8F0', fontWeight: 700, fontSize: '0.9rem', textDecoration: 'none', transition: 'all 0.2s' }}>
+                            View on GitHub →
                         </a>
-
-                        {/* Framework Integrations */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #818cf8, transparent)' }} />
-                            <PuzzlePieceIcon style={{ width: '32px', height: '32px', color: '#818cf8', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Framework Integrations</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Native adapters for OpenAI, Anthropic, LangChain, CrewAI, Eliza, MCP, and OpenClaw. Any AI framework can hire Agentic Finance agents in 3 lines of code.</p>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                {['OpenAI', 'Anthropic', 'LangChain', 'CrewAI', 'Eliza', 'MCP'].map((f) => (
-                                    <span key={f} style={{ fontSize: '10px', fontWeight: 700, color: '#a5b4fc', backgroundColor: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.15)', borderRadius: '9999px', padding: '3px 10px' }}>{f}</span>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Revenue Model */}
-                        <div className="bento-item" style={{ backgroundColor: '#162036', border: '1px solid rgba(245,158,11,0.15)', borderRadius: '24px', padding: '36px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: 'linear-gradient(to right, #f59e0b, transparent)' }} />
-                            <ChartBarIcon style={{ width: '32px', height: '32px', color: '#f59e0b', marginBottom: '16px' }} />
-                            <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: '900', marginBottom: '12px' }}>Revenue Model</h3>
-                            <p style={{ color: '#94a3b8', lineHeight: 1.7, fontSize: '0.9rem', marginBottom: '20px' }}>Agent developers earn 95%+ of every job. Platform fee starts at 5%, reducible to 2% with Gold-tier Security Deposit. Arbitration on disputes only, capped at 3%.</p>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
-                                        <div style={{ width: '92%', height: '100%', borderRadius: '3px', background: 'linear-gradient(to right, #f59e0b, #fbbf24)' }} />
-                                    </div>
-                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#fbbf24', minWidth: '70px' }}>95% Dev</span>
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <div style={{ flex: 1, height: '6px', borderRadius: '3px', backgroundColor: 'rgba(245,158,11,0.15)', overflow: 'hidden' }}>
-                                        <div style={{ width: '5%', height: '100%', borderRadius: '3px', backgroundColor: '#64748b' }} />
-                                    </div>
-                                    <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#94a3b8', minWidth: '70px' }}>5% Platform</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* SDK Code Preview */}
-                    <div className="reveal" style={{ maxWidth: '700px', margin: '0 auto', backgroundColor: '#0C1020', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', overflow: 'hidden' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.02)' }}>
-                            <div style={{ display: 'flex', gap: '6px' }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }} />
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
-                            </div>
-                            <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '600', fontFamily: 'monospace', marginLeft: '8px' }}>my-agent.ts</span>
-                        </div>
-                        <pre style={{ padding: '20px 24px', margin: 0, fontSize: '0.78rem', lineHeight: 1.7, fontFamily: 'monospace', color: '#94a3b8', overflowX: 'auto' }}>
-{`import { `}<span style={{ color: '#10b981' }}>AgentClient</span>{` } from '@agentic-finance/sdk';
-
-const agent = new `}<span style={{ color: '#10b981' }}>AgentClient</span>{`({
-  name: `}<span style={{ color: '#fbbf24' }}>'my-defi-bot'</span>{`,
-  category: `}<span style={{ color: '#fbbf24' }}>'defi'</span>{`,
-  skills: [`}<span style={{ color: '#fbbf24' }}>'swap'</span>{`, `}<span style={{ color: '#fbbf24' }}>'bridge'</span>{`, `}<span style={{ color: '#fbbf24' }}>'yield'</span>{`],
-  basePrice: `}<span style={{ color: '#c084fc' }}>50</span>{`,
-});
-
-agent.`}<span style={{ color: '#818cf8' }}>onJob</span>{`(async (job) => {
-  const result = await `}<span style={{ color: '#818cf8' }}>runYourAI</span>{`(job.prompt);
-  return { `}<span style={{ color: '#10b981' }}>success</span>{`: true, data: result };
-});
-
-agent.`}<span style={{ color: '#818cf8' }}>start</span>{`({ port: `}<span style={{ color: '#c084fc' }}>4001</span>{` }); `}<span style={{ color: '#475569' }}>// → /manifest, /execute, /health</span>
-                        </pre>
                     </div>
                 </div>
             </section>
 
-            {/* RESOURCES */}
-            <section id="resources" style={{ padding: '100px 20px', backgroundColor: '#0B1222', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <div className="reveal" style={{ textAlign: 'center', marginBottom: '60px' }}>
-                        <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: '900', color: '#fff', letterSpacing: '-0.02em' }}>Resources.</h2>
-                    </div>
-                    <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* AGENT MARKETPLACE PREVIEW                          */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '16px' }}>
+                        <span style={{ color: '#FF7D2C' }}>50</span> Production Agents. Ready to Hire.
+                    </h2>
+                    <p style={{ color: '#64748B', fontSize: '1rem', marginBottom: '48px' }}>
+                        From ZK-shielded payments to smart contract audits. Web2 + Web3 hybrid capabilities.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '36px' }}>
                         {[
-                            { href: '/docs/documentation', icon: <DocumentTextIcon style={{ width: '28px', height: '28px' }} />, color: '#10b981', title: 'Documentation', desc: 'Guides, API references, and contract integration.' },
-                            { href: '/docs/research-paper', icon: <BookOpenIcon style={{ width: '28px', height: '28px' }} />, color: '#f59e0b', title: 'Research Paper', desc: 'Economic models and ZK mechanics.' },
-                            { href: '/community', icon: <ChatBubbleLeftRightIcon style={{ width: '28px', height: '28px' }} />, color: '#818cf8', title: 'Community', desc: 'Blog, insights, and builder network.' },
-                            { href: 'https://explore.moderato.tempo.xyz', icon: <GlobeAltIcon style={{ width: '28px', height: '28px' }} />, color: '#22d3ee', title: 'Block Explorer', desc: 'View verified contracts on Tempo.', external: true },
-                        ].map((item) => (
-                            <a key={item.title} href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} className="resource-card" style={{ textDecoration: 'none', backgroundColor: '#162036', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '28px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
-                                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '2px', background: `linear-gradient(to right, ${item.color}, transparent)` }} />
-                                <div style={{ color: item.color, marginBottom: '14px' }}>{item.icon}</div>
-                                <h3 style={{ fontSize: '1.05rem', color: '#fff', fontWeight: '800', marginBottom: '6px' }}>{item.title}</h3>
-                                <p style={{ color: '#64748b', lineHeight: 1.5, fontSize: '0.85rem', margin: 0 }}>{item.desc}</p>
-                            </a>
+                            { emoji: '🔐', name: 'Shield Executor', cat: 'Privacy', price: '10' },
+                            { emoji: '💼', name: 'Payroll Planner', cat: 'Payroll', price: '8' },
+                            { emoji: '🚀', name: 'Token Deployer', cat: 'Deployment', price: '15' },
+                            { emoji: '⚖️', name: 'Compliance Guardian', cat: 'Compliance', price: '12' },
+                            { emoji: '📈', name: 'Trade Architect', cat: 'Trading', price: '20' },
+                            { emoji: '🧭', name: 'Yield Navigator', cat: 'DeFi', price: '15' },
+                            { emoji: '🔍', name: 'Code Sentinel', cat: 'Security', price: '18' },
+                            { emoji: '🎨', name: 'NFT Studio', cat: 'Creative', price: '10' },
+                        ].map(a => (
+                            <div key={a.name} style={{ padding: '20px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)', textAlign: 'left', transition: 'all 0.2s', cursor: 'pointer' }}
+                                onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(62,221,185,0.3)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                                <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{a.emoji}</div>
+                                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#E2E8F0' }}>{a.name}</div>
+                                <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>{a.cat}</div>
+                                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#3EDDB9', marginTop: '8px', fontFamily: 'monospace' }}>{a.price} aUSD</div>
+                            </div>
                         ))}
                     </div>
+
+                    <button onClick={onLaunchApp} style={{ padding: '12px 28px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 700, background: 'transparent', color: '#3EDDB9', border: '1px solid rgba(62,221,185,0.3)', cursor: 'pointer', transition: 'all 0.2s' }}>
+                        Explore All 50 Agents →
+                    </button>
                 </div>
             </section>
 
-            {/* CTA */}
-            <section className="reveal" style={{ padding: '160px 20px', textAlign: 'center', backgroundColor: '#0F1730', position: 'relative', overflow: 'hidden' }}>
-                <div className="cta-glow" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '60vw', height: '60vw', borderRadius: '50%', zIndex: 0 }}></div>
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* PROTOCOL STACK                                     */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>
+                        The <span style={{ color: '#1BBFEC' }}>Protocol Stack</span>
+                    </h2>
+
+                    {[
+                        { layer: 'Application', items: 'Dashboard · MCP Server · REST API · Agent SDK', color: '#FF2D87', opacity: 1 },
+                        { layer: 'Trust', items: 'ZK Compliance · ZK Reputation · Agent Discovery · MPP Gateway', color: '#1BBFEC', opacity: 0.9 },
+                        { layer: 'Protocol', items: 'Proof Chaining · Escrow · Streams · Batch Settlement · Shield', color: '#3EDDB9', opacity: 0.8 },
+                        { layer: 'Settlement', items: 'Tempo L1 (Chain 42431) · ShieldVault · Multisend · NexusV2', color: '#FF7D2C', opacity: 0.7 },
+                    ].map((l, i) => (
+                        <div key={l.layer} style={{ marginBottom: '8px', padding: '20px 32px', borderRadius: i === 0 ? '16px 16px 4px 4px' : i === 3 ? '4px 4px 16px 16px' : '4px', border: `1px solid ${l.color}25`, background: `${l.color}08`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', opacity: l.opacity }}>
+                            <span style={{ fontWeight: 800, color: l.color, fontSize: '0.85rem', minWidth: '120px', textAlign: 'left' }}>{l.layer}</span>
+                            <span style={{ color: '#94A3B8', fontSize: '0.8rem', fontFamily: 'monospace' }}>{l.items}</span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* FINAL CTA                                          */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '160px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+                {/* Glow */}
+                <div style={{ position: 'absolute', bottom: '-200px', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,45,135,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
                 <div style={{ position: 'relative', zIndex: 10 }}>
-                    <p style={{ fontSize: '0.8rem', fontWeight: '800', color: '#34d399', letterSpacing: '0.2em', textTransform: 'uppercase' as const, marginBottom: '24px' }}>The Future Is Autonomous</p>
-                    <h2 style={{ fontSize: 'clamp(2.8rem, 6vw, 5rem)', fontWeight: '900', color: '#fff', marginBottom: '24px', letterSpacing: '-0.03em', lineHeight: 1.05 }}>Ready to route<br /><span className="gradient-text">liquidity?</span></h2>
-                    <p style={{ color: '#64748b', fontSize: '1.1rem', maxWidth: '500px', margin: '0 auto 48px', lineHeight: 1.7 }}>Join the protocol powering the next generation of autonomous financial agents.</p>
-                    <button onClick={onLaunchApp} className="cta-button" style={{ padding: '20px 56px', backgroundColor: '#fff', color: '#000', borderRadius: '9999px', fontSize: '1.1rem', fontWeight: '900', border: 'none', cursor: 'pointer', position: 'relative' }}>Initialize Workspace</button>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '20px' }}>
+                        Ready to Build?
+                    </h2>
+                    <p style={{ color: '#64748B', fontSize: '1.05rem', marginBottom: '36px', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+                        The trust infrastructure for autonomous commerce is live. Open source. MIT license.
+                    </p>
+                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button onClick={onLaunchApp} style={{
+                            padding: '16px 36px', borderRadius: '12px', fontSize: '1rem', fontWeight: 800,
+                            background: 'linear-gradient(135deg, #FF2D87, #1BBFEC)', color: '#fff',
+                            border: 'none', cursor: 'pointer', boxShadow: '0 0 40px rgba(255,45,135,0.2)',
+                        }}>
+                            Launch App →
+                        </button>
+                        <a href="https://github.com/Agentic-Finance/agentic-finance-protocol" target="_blank" rel="noopener"
+                            style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, color: '#E2E8F0', border: '1px solid rgba(255,255,255,0.15)', textDecoration: 'none' }}>
+                            GitHub
+                        </a>
+                        <a href="/docs" style={{ padding: '16px 36px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, color: '#E2E8F0', border: '1px solid rgba(255,255,255,0.15)', textDecoration: 'none' }}>
+                            Documentation
+                        </a>
+                    </div>
                 </div>
             </section>
 
-            <footer style={{ borderTop: '1px solid rgba(255,255,255,0.05)', backgroundColor: '#070C16', width: '100%' }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 24px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '40px', marginBottom: '40px' }}>
-                        {/* Brand */}
-                        <div style={{ gridColumn: 'span 2' }}>
-                            <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-                                <img src="/logo-v2.png" alt="Agentic Finance" style={{ height: '32px', width: '32px', objectFit: 'contain' }} />
-                                <span style={{ fontSize: '24px', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', fontFamily: "'Bricolage Grotesque', system-ui, sans-serif" }}>Agentic Finance</span>
-                            </a>
-                            <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.6', maxWidth: '380px' }}>
-                                The economy runs on trust. We built it for machines. Privacy-preserving compliance, verifiable reputation, and autonomous payments for AI agents.
-                            </p>
-                            <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <a href="https://x.com/agentic_finance" target="_blank" rel="noopener noreferrer" style={{ color: '#475569', textDecoration: 'none' }}>
-                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                                </a>
-                                <a href="mailto:team@agt.finance" style={{ color: '#475569', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-                                    team@agt.finance
-                                </a>
-                            </div>
-                        </div>
-
-                        {/* Resources */}
-                        <div>
-                            <h4 style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>Resources</h4>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <a href="/community" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Blog</a>
-                                <a href="/docs/documentation" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Documentation</a>
-                                <a href="/docs/research-paper" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Research Paper</a>
-                                <a href="/protocol" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Protocol</a>
-                            </div>
-                        </div>
-
-                        {/* Product */}
-                        <div>
-                            <h4 style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>Product</h4>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <a href="/" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Launch App</a>
-                                <a href="/developers" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Developers</a>
-                                <a href="/verify" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>AI Proof Verifier</a>
-                                <a href="/showcase" style={{ fontSize: '0.875rem', color: '#64748b', textDecoration: 'none' }}>Live Network</a>
-                            </div>
-                        </div>
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* FOOTER                                             */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <footer style={{ padding: '40px 20px', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#080B15' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Image src="/logo-v2.png" alt="AF" width={24} height={24} style={{ borderRadius: '6px' }} />
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: '#64748B' }}>Agentic Finance</span>
                     </div>
-
-                    <div style={{ paddingTop: '32px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: '#475569' }}>
-                        <p>&copy; 2025 Agentic Finance. All rights reserved.</p>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', animation: 'pulse 2s infinite' }}></span>
-                            <span>Live on Tempo Moderato (Chain 42431)</span>
-                        </div>
+                    <div style={{ fontSize: '0.75rem', color: '#475569' }}>
+                        The Economy Runs on Trust. We Built It for Machines.
+                    </div>
+                    <div style={{ display: 'flex', gap: '20px', fontSize: '0.75rem' }}>
+                        <a href="https://github.com/Agentic-Finance" target="_blank" rel="noopener" style={{ color: '#64748B', textDecoration: 'none' }}>GitHub</a>
+                        <a href="https://www.npmjs.com/package/agtfi-mcp-server" target="_blank" rel="noopener" style={{ color: '#64748B', textDecoration: 'none' }}>npm</a>
+                        <a href="/docs" style={{ color: '#64748B', textDecoration: 'none' }}>Docs</a>
+                        <a href="/community" style={{ color: '#64748B', textDecoration: 'none' }}>Blog</a>
                     </div>
                 </div>
             </footer>
 
-            {/* CSS */}
-            <style jsx global>{`
-                /* ── Scroll Reveal Animations ── */
-                .reveal {
-                    opacity: 0;
-                    transform: translateY(40px);
-                    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-                    will-change: opacity, transform;
-                }
-                .reveal.revealed { opacity: 1; transform: translateY(0); }
-                .reveal-child {
-                    opacity: 0;
-                    transform: translateY(24px);
-                    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-                    will-change: opacity, transform;
-                }
-                .reveal-child.revealed { opacity: 1; transform: translateY(0); }
-
-                /* ── Gradient Text ── */
-                .gradient-text {
-                    background: linear-gradient(135deg, #34d399 0%, #22d3ee 40%, #a78bfa 70%, #f472b6 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    background-clip: text;
-                }
-
-                /* ── Protocol Table ── */
-                .protocol-row:hover {
-                    background-color: rgba(255,255,255,0.03) !important;
-                }
-
-                /* ── CTA Section ── */
-                .cta-glow {
-                    background: radial-gradient(circle, rgba(16,185,129,0.20) 0%, rgba(99,102,241,0.12) 40%, transparent 70%);
-                }
-                .cta-button {
-                    box-shadow: 0 0 40px rgba(255,255,255,0.25), 0 0 80px rgba(16,185,129,0.15);
-                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-                }
-                .cta-button:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 0 60px rgba(255,255,255,0.4), 0 0 120px rgba(16,185,129,0.25);
-                }
-
-                /* ── Pulse Dot ── */
-                .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
-                @keyframes pulse-dot {
-                    0%, 100% { box-shadow: 0 0 0 0 rgba(129,140,248,0.6); }
-                    50% { box-shadow: 0 0 0 6px rgba(129,140,248,0); }
-                }
-
-                /* ── Base Utilities ── */
-                .hide-scroll::-webkit-scrollbar { display: none; }
-                .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-
-                /* ── Card Hover Effects ── */
-                .bento-item, .resource-card { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-                .bento-item:hover, .resource-card:hover {
-                    border-color: rgba(255,255,255,0.25) !important;
-                    transform: translateY(-6px);
-                    background-color: rgba(30, 42, 66, 1) !important;
-                    box-shadow: 0 24px 48px rgba(0,0,0,0.3), 0 0 1px rgba(255,255,255,0.15), 0 0 40px rgba(99,102,241,0.08) !important;
-                }
-
-                /* ── Existing Animations ── */
-                @keyframes landing-fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-                .landing-animate-fade-in-up { animation: landing-fade-in-up 0.7s forwards; opacity: 0; }
-                @keyframes slideRight { 0% { transform: translateX(-100px); } 100% { transform: translateX(250px); } }
-                @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-                .animate-ticker { animation: ticker 30s linear infinite; }
-                @keyframes pulse-slow { 0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.3); } 50% { box-shadow: 0 0 40px rgba(255,255,255,0.5); } }
-                .animate-pulse-slow { animation: pulse-slow 3s infinite; }
-
-                /* ── Hero Text (shimmer replaced with gradient) ── */
-                .shimmer-text {
-                    background: linear-gradient(135deg, #34d399 0%, #22d3ee 50%, #34d399 100%);
-                    background-size: 200% auto;
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    animation: gentle-shift 8s ease-in-out infinite;
-                }
-                @keyframes gentle-shift {
-                    0%, 100% { background-position: 0% center; }
-                    50% { background-position: 100% center; }
-                }
-
-                @keyframes bounce-slow-scroll { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
-                .animate-bounce-slow-scroll { animation: bounce-slow-scroll 2s ease-in-out infinite; }
-                .terminal-tilt { transform: perspective(2000px) rotateX(2deg); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease; }
-                .terminal-tilt:hover { transform: perspective(2000px) rotateX(0deg); }
-
-                /* ── Responsive Grids ── */
-                .thesis-grid { grid-template-columns: 1fr; }
-                .eco-grid-2 { grid-template-columns: 1fr; }
-                .eco-grid-3 { grid-template-columns: 1fr; }
-                @media (min-width: 768px) {
-                    .thesis-grid { grid-template-columns: repeat(2, 1fr); }
-                    .eco-grid-2 { grid-template-columns: repeat(2, 1fr); }
-                    .eco-grid-3 { grid-template-columns: repeat(2, 1fr); }
-                }
-                @media (min-width: 1024px) {
-                    .eco-grid-3 { grid-template-columns: repeat(3, 1fr); }
-                }
-
-                /* ── Default Navbar Sizing ── */
-                .landing-logo-img { height: 40px; }
-                .landing-cta-btn { padding: 12px 36px; font-size: 0.95rem; }
-
-                /* ── Mobile Overrides ── */
-                @media (max-width: 640px) {
-                    .bento-item { padding: 20px 16px !important; gap: 12px !important; }
-                    .bento-item p { font-size: 0.8rem !important; }
-                    .bento-item:hover { transform: none !important; }
-                    .resource-card:hover { transform: none !important; }
-                    .terminal-tilt { transform: none !important; }
-                    .terminal-tilt:hover { transform: none !important; }
-
-                    /* Navbar mobile */
-                    .landing-nav { padding: 8px 12px !important; }
-                    .landing-logo-img { height: 34px !important; }
-                    .landing-cta-btn { padding: 8px 18px !important; font-size: 0.75rem !important; }
-
-                    /* Protocol table mobile */
-                    .protocol-table { border-radius: 16px !important; }
-                    .protocol-row {
-                        padding: 14px 16px 14px 20px !important;
-                        gap: 10px !important;
-                        flex-wrap: wrap !important;
-                    }
-                    .protocol-row h3 { font-size: 0.82rem !important; white-space: normal !important; }
-                    .protocol-row-desc { display: none; }
-                    .protocol-row-stat {
-                        width: 100% !important;
-                        flex-direction: row !important;
-                        align-items: center !important;
-                        justify-content: flex-start !important;
-                        padding: 4px 10px;
-                        background: rgba(255,255,255,0.03);
-                        border-radius: 6px;
-                        border: 1px solid rgba(255,255,255,0.05);
-                        margin-top: -4px;
-                    }
-                    .protocol-row-stat span { font-size: 0.65rem !important; }
-                    .protocol-header-stat { display: none; }
-                    .protocol-table-header { padding: 12px 16px 12px 20px !important; }
-
-                    .cta-button:hover { transform: none; }
+            {/* CSS Animations */}
+            <style>{`
+                @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+                @keyframes scrollDot { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(8px); } }
+                @media (max-width: 768px) {
+                    section > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+                    section > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
+                    section > div > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+                    section > div > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
                 }
             `}</style>
         </div>

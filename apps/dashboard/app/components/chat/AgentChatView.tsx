@@ -60,9 +60,100 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [expandedResults, setExpandedResults] = useState<Set<string>>(new Set());
+    const [contextMenu, setContextMenu] = useState<{ msgId: string; x: number; y: number } | null>(null);
+    const [showGroupSettings, setShowGroupSettings] = useState(false);
+    const [inviteWallet, setInviteWallet] = useState('');
+    const [replyTo, setReplyTo] = useState<Message | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // Close context menu on outside click
+    useEffect(() => {
+        const handler = () => setContextMenu(null);
+        window.addEventListener('click', handler);
+        return () => window.removeEventListener('click', handler);
+    }, []);
+
+    // Message actions
+    const handleReact = async (msgId: string, emoji: string) => {
+        try {
+            await fetch(`/api/chat/messages/${msgId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'react', wallet: walletAddress, emoji }),
+            });
+            setContextMenu(null);
+        } catch {}
+    };
+
+    const handleDeleteMessage = async (msgId: string) => {
+        try {
+            await fetch(`/api/chat/messages/${msgId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete', wallet: walletAddress }),
+            });
+            setMessages(prev => prev.map(m => m.id === msgId ? { ...m, content: 'This message was deleted', messageType: 'system' } : m));
+            setContextMenu(null);
+        } catch {}
+    };
+
+    const handlePinMessage = async (msgId: string) => {
+        try {
+            await fetch(`/api/chat/messages/${msgId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'pin', wallet: walletAddress }),
+            });
+            setContextMenu(null);
+        } catch {}
+    };
+
+    const handleInviteMember = async () => {
+        if (!inviteWallet.trim() || !selectedChannel) return;
+        try {
+            await fetch(`/api/chat/channels/${selectedChannel.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'invite', wallet: walletAddress, inviteWallet: inviteWallet.trim() }),
+            });
+            setInviteWallet('');
+        } catch {}
+    };
+
+    const handleKickMember = async (kickWallet: string) => {
+        if (!selectedChannel) return;
+        try {
+            await fetch(`/api/chat/channels/${selectedChannel.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'kick', wallet: walletAddress, kickWallet }),
+            });
+        } catch {}
+    };
+
+    const handleDeleteGroup = async () => {
+        if (!selectedChannel) return;
+        if (!confirm('Delete this group? This cannot be undone.')) return;
+        try {
+            await fetch(`/api/chat/channels/${selectedChannel.id}?wallet=${walletAddress}`, { method: 'DELETE' });
+            setChannels(prev => prev.filter(c => c.id !== selectedChannel.id));
+            setSelectedChannel(null);
+            setShowGroupSettings(false);
+        } catch {}
+    };
+
+    const handleInviteAgent = async (agent: Agent) => {
+        if (!selectedChannel) return;
+        try {
+            await fetch(`/api/chat/channels/${selectedChannel.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'invite', wallet: walletAddress, inviteWallet: `agent:${agent.id}`, inviteDisplayName: agent.name }),
+            });
+        } catch {}
+    };
 
     // Fetch agents
     useEffect(() => {
@@ -267,16 +358,57 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
             );
         }
 
+        // Reactions
+        const reactions = (msg.metadata as any)?.reactions || {};
+        const reactionKeys = Object.keys(reactions);
+        const isPinned = (msg.metadata as any)?.pinned;
+
         // Standard text
         return (
-            <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
-                <div className={`max-w-[70%] rounded-2xl ${isUser ? 'rounded-br-sm' : 'rounded-bl-sm'} px-4 py-2.5`}
-                    style={{ background: isUser ? 'rgba(27,191,236,0.1)' : 'var(--pp-surface-1)', border: `1px solid ${isUser ? 'rgba(27,191,236,0.2)' : 'var(--pp-border)'}` }}>
+            <div key={msg.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 group relative`}>
+                <div className={`max-w-[70%] rounded-2xl ${isUser ? 'rounded-br-sm' : 'rounded-bl-sm'} px-4 py-2.5 relative`}
+                    style={{ background: isUser ? 'rgba(27,191,236,0.1)' : 'var(--pp-surface-1)', border: `1px solid ${isUser ? 'rgba(27,191,236,0.2)' : 'var(--pp-border)'}` }}
+                    onContextMenu={(e) => { e.preventDefault(); setContextMenu({ msgId: msg.id, x: e.clientX, y: e.clientY }); }}>
+
+                    {/* Pin indicator */}
+                    {isPinned && <div className="text-[9px] mb-1 flex items-center gap-1" style={{ color: 'var(--agt-orange)' }}>📌 Pinned</div>}
+
+                    {/* Reply reference */}
+                    {msg.replyToId && <div className="text-[10px] px-2 py-1 mb-1 rounded-lg border-l-2" style={{ borderColor: 'var(--agt-blue)', background: 'var(--pp-surface-2)', color: 'var(--pp-text-muted)' }}>Reply to message</div>}
+
                     {!isUser && msg.senderName && <p className="text-[10px] font-medium mb-0.5" style={{ color: 'var(--agt-blue)' }}>{msg.senderName}</p>}
-                    <p className="text-sm" style={{ color: 'var(--pp-text-primary)' }}>{msg.content}</p>
-                    <p className="text-[10px] mt-1" style={{ color: 'var(--pp-text-muted)', textAlign: isUser ? 'right' : 'left' }}>
-                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
+                    <p className="text-sm" style={{ color: 'var(--pp-text-primary)' }}>{msg.isDeleted ? <em style={{ color: 'var(--pp-text-muted)' }}>This message was deleted</em> : msg.content}</p>
+
+                    <div className="flex items-center justify-between mt-1">
+                        <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {msg.isEdited && <span className="ml-1">(edited)</span>}
+                        </p>
+                    </div>
+
+                    {/* Reactions */}
+                    {reactionKeys.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                            {reactionKeys.map(emoji => (
+                                <button key={emoji} onClick={() => handleReact(msg.id, emoji)}
+                                    className="text-[11px] px-1.5 py-0.5 rounded-full flex items-center gap-1 transition-all hover:opacity-80"
+                                    style={{ background: 'var(--pp-surface-2)', border: '1px solid var(--pp-border)' }}>
+                                    <span>{emoji}</span>
+                                    <span style={{ color: 'var(--pp-text-muted)', fontSize: '9px' }}>{reactions[emoji].length}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Hover action buttons */}
+                    <div className="absolute -top-3 right-2 hidden group-hover:flex items-center gap-0.5 rounded-lg px-1 py-0.5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                        {['👍', '❤️', '🔥'].map(e => (
+                            <button key={e} onClick={() => handleReact(msg.id, e)} className="text-sm px-1 hover:scale-125 transition-transform">{e}</button>
+                        ))}
+                        <button onClick={() => setReplyTo(msg)} className="text-xs px-1 hover:opacity-80" style={{ color: 'var(--pp-text-muted)' }}>↩</button>
+                        <button onClick={(e) => { e.stopPropagation(); setContextMenu({ msgId: msg.id, x: e.clientX, y: e.clientY }); }}
+                            className="text-xs px-1 hover:opacity-80" style={{ color: 'var(--pp-text-muted)' }}>⋯</button>
+                    </div>
                 </div>
             </div>
         );
@@ -449,6 +581,14 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                                     {selectedChannel?.type === 'group' && <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{selectedChannel.participants.length} members</span>}
                                 </div>
                             </div>
+                            {/* Group settings button */}
+                            {selectedChannel?.type === 'group' && (
+                                <button onClick={() => setShowGroupSettings(!showGroupSettings)}
+                                    className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:opacity-80"
+                                    style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                </button>
+                            )}
                         </div>
 
                         {/* Messages */}
@@ -480,8 +620,19 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                             <div ref={messagesEndRef} />
                         </div>
 
+                        {/* Reply bar */}
+                        {replyTo && (
+                            <div className="px-5 py-2 flex items-center gap-2" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-surface-1)' }}>
+                                <div className="flex-1 min-w-0 border-l-2 pl-2" style={{ borderColor: 'var(--agt-blue)' }}>
+                                    <p className="text-[10px] font-medium" style={{ color: 'var(--agt-blue)' }}>Replying to {replyTo.senderName || 'message'}</p>
+                                    <p className="text-xs truncate" style={{ color: 'var(--pp-text-muted)' }}>{replyTo.content}</p>
+                                </div>
+                                <button onClick={() => setReplyTo(null)} className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>✕</button>
+                            </div>
+                        )}
+
                         {/* Input */}
-                        <div className="px-5 py-3" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
+                        <div className="px-5 py-3" style={{ borderTop: replyTo ? 'none' : '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
                             <div className="flex items-center gap-2">
                                 {/* File upload */}
                                 <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,.pdf,.doc,.docx,.txt,.csv" />
@@ -506,6 +657,111 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                     </>
                 )}
             </div>
+
+            {/* Context Menu */}
+            {contextMenu && (
+                <div className="fixed z-[100] rounded-xl shadow-2xl py-1 min-w-[180px]"
+                    style={{ left: contextMenu.x, top: contextMenu.y, background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+                    onClick={e => e.stopPropagation()}>
+                    <button onClick={() => { setReplyTo(messages.find(m => m.id === contextMenu.msgId) || null); setContextMenu(null); }}
+                        className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-all hover:opacity-80" style={{ color: 'var(--pp-text-secondary)' }}>
+                        ↩️ Reply
+                    </button>
+                    <button onClick={() => handlePinMessage(contextMenu.msgId)}
+                        className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-all hover:opacity-80" style={{ color: 'var(--pp-text-secondary)' }}>
+                        📌 Pin Message
+                    </button>
+                    <button onClick={() => { navigator.clipboard.writeText(messages.find(m => m.id === contextMenu.msgId)?.content || ''); setContextMenu(null); }}
+                        className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-all hover:opacity-80" style={{ color: 'var(--pp-text-secondary)' }}>
+                        📋 Copy Text
+                    </button>
+                    <div className="my-1" style={{ borderTop: '1px solid var(--pp-border)' }} />
+                    <button onClick={() => handleDeleteMessage(contextMenu.msgId)}
+                        className="w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-all hover:opacity-80" style={{ color: 'var(--agt-pink)' }}>
+                        🗑 Delete
+                    </button>
+                </div>
+            )}
+
+            {/* Group Settings Panel */}
+            {showGroupSettings && selectedChannel?.type === 'group' && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={() => setShowGroupSettings(false)}>
+                    <div className="w-[400px] max-h-[80vh] rounded-2xl overflow-hidden" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }} onClick={e => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="p-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                            <h3 className="text-base font-bold" style={{ color: 'var(--pp-text-primary)' }}>Group Settings</h3>
+                            <button onClick={() => setShowGroupSettings(false)} className="text-lg" style={{ color: 'var(--pp-text-muted)' }}>✕</button>
+                        </div>
+
+                        <div className="p-5 space-y-4 overflow-y-auto max-h-[60vh]">
+                            {/* Group info */}
+                            <div>
+                                <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--pp-text-muted)' }}>Group Name</label>
+                                <div className="text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{selectedChannel.name}</div>
+                            </div>
+
+                            {/* Invite member */}
+                            <div>
+                                <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--pp-text-muted)' }}>Invite Member</label>
+                                <div className="flex gap-2">
+                                    <input type="text" placeholder="0x... wallet address" value={inviteWallet} onChange={e => setInviteWallet(e.target.value)}
+                                        className="flex-1 px-3 py-2 rounded-lg text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                    <button onClick={handleInviteMember} className="px-4 py-2 rounded-lg text-sm font-medium text-white" style={{ background: 'var(--agt-blue)' }}>Invite</button>
+                                </div>
+                            </div>
+
+                            {/* Invite agent */}
+                            <div>
+                                <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--pp-text-muted)' }}>Add AI Agent</label>
+                                <div className="space-y-1 max-h-40 overflow-y-auto">
+                                    {agents.slice(0, 10).map(agent => (
+                                        <button key={agent.id} onClick={() => handleInviteAgent(agent)}
+                                            className="w-full flex items-center gap-2 p-2 rounded-lg text-left transition-all hover:opacity-80"
+                                            style={{ background: 'var(--pp-surface-1)' }}>
+                                            <span className="text-lg">{agent.avatarEmoji}</span>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-xs font-medium truncate block" style={{ color: 'var(--pp-text-primary)' }}>{agent.name}</span>
+                                                <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{agent.category}</span>
+                                            </div>
+                                            <span className="text-xs" style={{ color: 'var(--agt-mint)' }}>+ Add</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Members list */}
+                            <div>
+                                <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--pp-text-muted)' }}>Members ({selectedChannel.participants.length})</label>
+                                <div className="space-y-1">
+                                    {selectedChannel.participants.map(p => (
+                                        <div key={p} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--pp-surface-1)' }}>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))', color: '#fff' }}>
+                                                    {p.startsWith('agent:') ? '🤖' : p.slice(2, 4).toUpperCase()}
+                                                </div>
+                                                <span className="text-xs font-mono" style={{ color: 'var(--pp-text-secondary)' }}>
+                                                    {p.startsWith('agent:') ? p.replace('agent:', '') : `${p.slice(0, 6)}...${p.slice(-4)}`}
+                                                </span>
+                                            </div>
+                                            {p.toLowerCase() !== walletAddress.toLowerCase() && (
+                                                <button onClick={() => handleKickMember(p)} className="text-[10px] px-2 py-1 rounded" style={{ color: 'var(--agt-pink)' }}>Remove</button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Danger zone */}
+                            <div className="pt-3" style={{ borderTop: '1px solid var(--pp-border)' }}>
+                                <button onClick={handleDeleteGroup} className="w-full py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
+                                    style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}>
+                                    Delete Group
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

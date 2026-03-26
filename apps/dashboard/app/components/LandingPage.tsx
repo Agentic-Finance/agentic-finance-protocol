@@ -201,28 +201,29 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         LIVE ON TEMPO L1
                     </div>
 
-                    {/* 3D Logo */}
-                    <div style={{ marginBottom: '24px' }}>
+                    {/* 3D Logo — large, spinning 360 */}
+                    <div style={{ marginBottom: '32px', perspective: '600px' }}>
                         <div style={{
-                            width: '80px', height: '80px', margin: '0 auto',
-                            animation: 'float 4s ease-in-out infinite',
-                            filter: 'drop-shadow(0 0 30px rgba(62,221,185,0.3))',
+                            width: '140px', height: '140px', margin: '0 auto',
+                            animation: 'spin3d 8s linear infinite',
+                            filter: 'drop-shadow(0 0 40px rgba(62,221,185,0.4)) drop-shadow(0 0 80px rgba(255,45,135,0.2))',
                         }}>
-                            <Image src="/logo-v2.png" alt="AF" width={80} height={80} style={{ borderRadius: '20px' }} />
+                            <Image src="/logo-v2.png" alt="AF" width={140} height={140} style={{ borderRadius: '28px' }} />
                         </div>
                     </div>
 
-                    {/* Headline — single line */}
-                    <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 3.2rem)', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.15, margin: '0 0 20px' }}>
-                        <span style={{ color: '#fff' }}>The Economy Runs on Trust. </span>
+                    {/* Headline */}
+                    <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 3.2rem)', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.2, margin: '0 0 20px' }}>
+                        <span style={{ color: '#fff' }}>The Economy Runs on Trust.</span>
+                        <br />
                         <span style={{ background: 'linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                             We Built It for Machines.
                         </span>
                     </h1>
 
-                    {/* Subtitle */}
-                    <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.25rem)', color: '#64748B', lineHeight: 1.6, maxWidth: '640px', margin: '0 auto 36px' }}>
-                        Privacy-preserving compliance. Verifiable agent reputation. Autonomous payments. The missing trust layer for the agentic economy.
+                    {/* Subtitle — shorter */}
+                    <p style={{ fontSize: 'clamp(0.95rem, 1.5vw, 1.15rem)', color: '#94A3B8', lineHeight: 1.6, maxWidth: '520px', margin: '0 auto 36px' }}>
+                        ZK compliance. Agent reputation. Private payments.<br />The trust layer x402 and MPP don&apos;t have.
                     </p>
 
                     {/* CTA Buttons */}
@@ -474,6 +475,78 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* ═══════════════════════════════════════════════════ */}
+            {/* HOW IT WORKS                                        */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '120px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '16px' }}>
+                        How It <span style={{ color: '#3EDDB9' }}>Works</span>
+                    </h2>
+                    <p style={{ color: '#64748B', fontSize: '1rem', marginBottom: '64px' }}>From zero to trusted agent in four steps</p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0' }}>
+                        {[
+                            { step: '01', title: 'Install SDK', desc: 'npm install agtfi-mcp-server or import the SDK into your agent', icon: '📦', color: '#FF2D87' },
+                            { step: '02', title: 'Prove Compliance', desc: 'Generate ZK proof showing OFAC non-membership + AML compliance', icon: '🔐', color: '#1BBFEC' },
+                            { step: '03', title: 'Build Reputation', desc: 'Each successful payment adds to your verifiable on-chain history', icon: '⭐', color: '#3EDDB9' },
+                            { step: '04', title: 'Transact Privately', desc: 'Pay, receive, and settle — all privacy-preserving, all autonomous', icon: '⚡', color: '#FF7D2C' },
+                        ].map((s, i) => (
+                            <div key={s.step} style={{ padding: '32px 24px', position: 'relative', textAlign: 'center' }}>
+                                {i < 3 && <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', width: '40px', height: '2px', background: `linear-gradient(90deg, ${s.color}40, transparent)` }} />}
+                                <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>{s.icon}</div>
+                                <div style={{ fontSize: '0.65rem', fontWeight: 900, color: s.color, letterSpacing: '0.15em', marginBottom: '8px' }}>STEP {s.step}</div>
+                                <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#E2E8F0', marginBottom: '8px' }}>{s.title}</h4>
+                                <p style={{ fontSize: '0.8rem', color: '#64748B', lineHeight: 1.6 }}>{s.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* ECOSYSTEM / BUILT ON                                */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '80px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>BUILT ON & COMPATIBLE WITH</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap', opacity: 0.5 }}>
+                        {['Tempo L1', 'Circom V2', 'snarkjs', 'PLONK', 'Poseidon', 'ethers.js', 'MCP Protocol', 'x402', 'MPP'].map(t => (
+                            <span key={t} style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748B', fontFamily: 'monospace' }}>{t}</span>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
+            {/* BLOG PREVIEW                                        */}
+            {/* ═══════════════════════════════════════════════════ */}
+            <section style={{ padding: '100px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Latest <span style={{ color: '#1BBFEC' }}>Insights</span></h2>
+                        <a href="/community" style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1BBFEC', textDecoration: 'none' }}>View all →</a>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        {[
+                            { title: 'Building the Trust Layer for Machine Payments', desc: 'ZK compliance proofs, agent reputation, and privacy payments — the infrastructure no other protocol has.', tag: 'Technical', date: 'Mar 2026', href: '/community/blog/zk-trust-layer', color: '#3EDDB9' },
+                            { title: 'Security Standard for Open Agentic Commerce', desc: '10 security requirements for autonomous agent transactions at machine speed.', tag: 'Security', date: 'Mar 2026', href: '/community/blog/security-standard', color: '#FF2D87' },
+                        ].map(b => (
+                            <a key={b.title} href={b.href} style={{ padding: '28px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)', textDecoration: 'none', display: 'block', transition: 'all 0.2s' }}
+                                onMouseOver={e => { e.currentTarget.style.borderColor = `${b.color}40`; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                                    <span style={{ fontSize: '0.65rem', fontWeight: 800, padding: '3px 10px', borderRadius: '6px', color: b.color, border: `1px solid ${b.color}30`, background: `${b.color}08` }}>{b.tag}</span>
+                                    <span style={{ fontSize: '0.7rem', color: '#475569' }}>{b.date}</span>
+                                </div>
+                                <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#E2E8F0', marginBottom: '8px', lineHeight: 1.3 }}>{b.title}</h3>
+                                <p style={{ fontSize: '0.8rem', color: '#64748B', lineHeight: 1.6 }}>{b.desc}</p>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════ */}
             {/* FINAL CTA                                          */}
             {/* ═══════════════════════════════════════════════════ */}
             <section style={{ padding: '160px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
@@ -531,7 +604,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <style>{`
                 @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
                 @keyframes scrollDot { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(8px); } }
-                @keyframes float { 0%, 100% { transform: translateY(0) rotateY(0deg); } 50% { transform: translateY(-12px) rotateY(10deg); } }
+                @keyframes spin3d { 0% { transform: rotateY(0deg) translateY(0); } 25% { transform: rotateY(90deg) translateY(-8px); } 50% { transform: rotateY(180deg) translateY(0); } 75% { transform: rotateY(270deg) translateY(-8px); } 100% { transform: rotateY(360deg) translateY(0); } }
                 @media (max-width: 768px) {
                     section > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
                     section > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }

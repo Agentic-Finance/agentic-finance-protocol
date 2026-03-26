@@ -20,12 +20,12 @@ Agentic Finance is trust infrastructure for autonomous commerce. We provide thre
 
 ### Architecture
 
-\`\`\`
-Application Layer    Dashboard · MCP Server · REST API · Agent SDK
-Trust Layer          ZK Compliance · ZK Reputation · Agent Discovery
-Protocol Layer       MPP Gateway · Proof Chaining · Escrow · Streams
-Settlement Layer     Tempo L1 (Chain 42431) · ShieldVault · Multisend
-\`\`\`
+| Layer | Components |
+|-------|-----------|
+| **Application** | Dashboard, MCP Server, REST API, Agent SDK |
+| **Trust** | ZK Compliance, ZK Reputation, Agent Discovery |
+| **Protocol** | MPP Gateway, Proof Chaining, Escrow, Streams |
+| **Settlement** | Tempo L1 (Chain 42431), ShieldVault, Multisend |
 
 ### Chain Info
 

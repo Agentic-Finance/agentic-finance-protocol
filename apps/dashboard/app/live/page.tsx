@@ -17,7 +17,7 @@ const LiveDashboard = dynamic(() => import('../components/LiveDashboard'), {
 export default function LivePage() {
   return (
     <AppShell>
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-full">
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-1">
             <div

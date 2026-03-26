@@ -21,11 +21,19 @@ function truncateAddress(addr: string): string {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
-export function UserProfileArea({ walletAddress, isAdmin, onDisconnect }: UserProfileAreaProps) {
+export function UserProfileArea({ walletAddress: walletProp, isAdmin, onDisconnect }: UserProfileAreaProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { exportWallet } = usePrivy();
+  const { exportWallet, logout, authenticated, user } = usePrivy();
+  const { wallets } = require('@privy-io/react-auth').useWallets();
+
+  // Get wallet from Privy if not passed as prop
+  const walletAddress = walletProp || wallets?.[0]?.address || user?.wallet?.address;
+  const displayName = user?.google?.name || user?.discord?.username || user?.email?.address || null;
+
+  // Use Privy logout if no onDisconnect prop
+  const handleDisconnect = onDisconnect || logout;
   const [isDark, setIsDark] = useState(true);
 
   // Sync theme state
@@ -71,10 +79,10 @@ export function UserProfileArea({ walletAddress, isAdmin, onDisconnect }: UserPr
     }
   }, [open]);
 
-  if (!walletAddress) return null;
+  if (!walletAddress && !authenticated) return null;
 
-  const hue = getHueFromAddress(walletAddress);
-  const initials = walletAddress.slice(2, 4).toUpperCase();
+  const hue = walletAddress ? getHueFromAddress(walletAddress) : 220;
+  const initials = walletAddress ? walletAddress.slice(2, 4).toUpperCase() : (displayName ? displayName.charAt(0).toUpperCase() : '?');
 
   const handleCopy = async () => {
     try {
@@ -186,18 +194,16 @@ export function UserProfileArea({ walletAddress, isAdmin, onDisconnect }: UserPr
 
             <div className="border-t border-white/[0.06] my-1" />
 
-            {onDisconnect && (
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  onDisconnect();
-                }}
-                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-500/[0.06] transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Disconnect</span>
-              </button>
-            )}
+            <button
+              onClick={() => {
+                setOpen(false);
+                handleDisconnect();
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-500/[0.06] transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Disconnect</span>
+            </button>
           </div>
         </div>
       )}

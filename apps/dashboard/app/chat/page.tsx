@@ -3,18 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import { AppShell } from '../components/ui/AppShell';
 import { useSharedWallet } from '../providers/SharedWalletContext';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import dynamic from 'next/dynamic';
 
 const AgentChatView = dynamic(() => import('../components/chat/AgentChatView'), { ssr: false });
 
 export default function ChatPage() {
     const { walletAddress: sharedWallet, isConnected, connect, isLoading } = useSharedWallet();
+    const { authenticated, user, login, ready } = usePrivy();
+    const { wallets } = useWallets();
     const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
-    // Sync from shared context (Privy + MetaMask)
+    // Sync from shared context OR Privy directly
     useEffect(() => {
-        if (sharedWallet) setWalletAddress(sharedWallet);
-    }, [sharedWallet]);
+        const addr = sharedWallet || wallets?.[0]?.address || user?.wallet?.address;
+        if (addr) setWalletAddress(addr);
+    }, [sharedWallet, wallets, user]);
 
     // Fallback: direct MetaMask detection
     useEffect(() => {

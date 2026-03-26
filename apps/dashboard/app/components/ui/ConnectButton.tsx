@@ -31,17 +31,9 @@ export function ConnectButton() {
     );
   }
 
-  return (
-    <button
-      onClick={logout}
-      type="button"
-      className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all hover:opacity-80"
-      style={{ color: 'var(--pp-text-primary)', background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}
-    >
-      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 flex-shrink-0" />
-      <span className="hidden sm:inline font-mono text-xs">{displayName}</span>
-    </button>
-  );
+  // When authenticated, UserProfileArea handles the display + dropdown
+  // ConnectButton should not render anything to avoid double UI
+  return null;
 }
 
 export default ConnectButton;

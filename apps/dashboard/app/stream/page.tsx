@@ -104,7 +104,7 @@ export default function StreamPage() {
 
             {/* Header */}
             <div className="border-b border-white/[0.08] pp-glass">
-                <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
+                <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-center gap-4">
                             <Link href="/?app=1" className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/10 border border-indigo-500/20 hover:bg-indigo-500/30 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.15)]">
@@ -140,7 +140,7 @@ export default function StreamPage() {
                 </div>
             </div>
 
-            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 {isLoading ? (
                     <StreamPageSkeleton />
                 ) : selected ? (

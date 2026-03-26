@@ -291,7 +291,7 @@ export default function LiveDashboard() {
   return (
     <div className="text-white px-4 sm:px-6 pb-6">
       {/* Connection Status */}
-      <div className="max-w-[1400px] mx-auto mb-6 flex items-center justify-end gap-4">
+      <div className="max-w-full mx-auto mb-6 flex items-center justify-end gap-4">
         <div className="text-right">
           <div className="text-[10px] text-slate-500 uppercase tracking-wider">Status</div>
           <div className={`text-sm font-medium ${state.connected ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -305,7 +305,7 @@ export default function LiveDashboard() {
       </div>
 
       {/* Stats Bar */}
-      <div className="max-w-[1400px] mx-auto mb-6">
+      <div className="max-w-full mx-auto mb-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <StatCard label="Transactions" value={state.stats.totalTxs} color="blue" icon={<span className="text-sm">📊</span>} trend={{ value: 18, direction: 'up', label: '24h' }} variant="compact" />
           <StatCard label="Agent Jobs" value={state.stats.totalAgentJobs} color="emerald" icon={<span className="text-sm">🤖</span>} trend={{ value: 7, direction: 'up', label: 'today' }} variant="compact" />
@@ -316,12 +316,12 @@ export default function LiveDashboard() {
       </div>
 
       {/* Event Filter Bar */}
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-full mx-auto">
         <EventFilterBar active={eventFilter} onChange={setEventFilter} />
       </div>
 
       {/* Main Grid */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="max-w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Column 1: TX Feed (tall) */}
         <div className="row-span-2">
           <TxFeed events={filteredEvents} />

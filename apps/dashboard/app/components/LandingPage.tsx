@@ -478,91 +478,36 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* PROTOCOL STACK                                     */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '16px' }}>
+            <section style={{ padding: '100px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>
                         The <span style={{ color: '#1BBFEC' }}>Protocol Stack</span>
                     </h2>
-                    <p style={{ color: '#64748B', fontSize: '1rem', marginBottom: '56px' }}>Four layers working together. Each independently verifiable.</p>
 
-                    <div style={{ position: 'relative' }}>
-                        {/* Vertical connector line */}
-                        <div style={{ position: 'absolute', left: '50%', top: '40px', bottom: '40px', width: '2px', background: 'linear-gradient(180deg, #FF2D87, #1BBFEC, #3EDDB9, #FF7D2C)', opacity: 0.3, transform: 'translateX(-50%)' }} />
-
+                    {/* Clean layered stack */}
+                    <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)' }}>
                         {[
-                            {
-                                layer: 'Application', color: '#FF2D87', icon: '🖥️',
-                                nodes: [
-                                    { name: 'Dashboard', desc: 'Web UI for managing payments' },
-                                    { name: 'MCP Server', desc: 'Claude Code / Cursor plugin' },
-                                    { name: 'REST API', desc: 'Universal HTTP endpoints' },
-                                    { name: 'Agent SDK', desc: 'npm install agtfi-mcp-server' },
-                                ]
-                            },
-                            {
-                                layer: 'Trust', color: '#1BBFEC', icon: '🛡️',
-                                nodes: [
-                                    { name: 'ZK Compliance', desc: 'OFAC + AML proofs' },
-                                    { name: 'ZK Reputation', desc: 'Anonymous credit scores' },
-                                    { name: 'Agent Discovery', desc: 'On-chain marketplace' },
-                                    { name: 'MPP Gateway', desc: 'Compliant sessions' },
-                                ]
-                            },
-                            {
-                                layer: 'Protocol', color: '#3EDDB9', icon: '⚙️',
-                                nodes: [
-                                    { name: 'Proof Chaining', desc: '16 payments per batch' },
-                                    { name: 'Escrow', desc: 'Trustless NexusV2' },
-                                    { name: 'Streams', desc: 'Per-second payroll' },
-                                    { name: 'Shield', desc: 'ZK-SNARK PLONK privacy' },
-                                ]
-                            },
-                            {
-                                layer: 'Settlement', color: '#FF7D2C', icon: '⛓️',
-                                nodes: [
-                                    { name: 'Tempo L1', desc: 'Chain 42431' },
-                                    { name: 'ShieldVault', desc: 'Private settlement' },
-                                    { name: 'Multisend', desc: 'Batch transfers' },
-                                    { name: 'NexusV2', desc: 'Escrow lifecycle' },
-                                ]
-                            },
-                        ].map((l, li) => (
-                            <div key={l.layer} style={{ position: 'relative', marginBottom: '32px' }}>
-                                {/* Layer header with dot */}
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px', position: 'relative', zIndex: 2 }}>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${l.color}15`, border: `2px solid ${l.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', boxShadow: `0 0 20px ${l.color}20` }}>
-                                        {l.icon}
-                                    </div>
-                                    <span style={{ fontWeight: 900, color: l.color, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{l.layer} Layer</span>
-                                </div>
-
-                                {/* Node cards */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', position: 'relative', zIndex: 2 }}>
-                                    {l.nodes.map((n, ni) => (
-                                        <div key={n.name} style={{
-                                            padding: '16px 12px', borderRadius: '12px',
-                                            background: `linear-gradient(135deg, ${l.color}06, ${l.color}03)`,
-                                            border: `1px solid ${l.color}18`,
-                                            transition: 'all 0.3s',
-                                            cursor: 'default',
-                                        }}
-                                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = `${l.color}50`; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 8px 24px ${l.color}15`; }}
-                                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = `${l.color}18`; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                                        >
-                                            <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E2E8F0', marginBottom: '4px' }}>{n.name}</div>
-                                            <div style={{ fontSize: '0.65rem', color: '#64748B', lineHeight: 1.4 }}>{n.desc}</div>
-                                        </div>
+                            { layer: 'Application', items: ['Dashboard', 'MCP Server', 'REST API', 'Agent SDK'], color: '#FF2D87' },
+                            { layer: 'Trust', items: ['ZK Compliance', 'ZK Reputation', 'Agent Discovery', 'MPP Gateway'], color: '#1BBFEC' },
+                            { layer: 'Protocol', items: ['Proof Chaining', 'Escrow', 'Streams', 'ZK Shield'], color: '#3EDDB9' },
+                            { layer: 'Settlement', items: ['Tempo L1', 'ShieldVault', 'Multisend', 'NexusV2'], color: '#FF7D2C' },
+                        ].map((l, i) => (
+                            <div key={l.layer} style={{
+                                display: 'flex', alignItems: 'center', padding: '18px 28px',
+                                borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                                background: `linear-gradient(90deg, ${l.color}08, transparent)`,
+                            }}>
+                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: l.color, marginRight: '16px', flexShrink: 0, boxShadow: `0 0 8px ${l.color}60` }} />
+                                <span style={{ fontWeight: 800, color: l.color, fontSize: '0.8rem', width: '110px', textAlign: 'left', flexShrink: 0 }}>{l.layer}</span>
+                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                    {l.items.map(item => (
+                                        <span key={item} style={{
+                                            fontSize: '0.72rem', padding: '4px 10px', borderRadius: '6px',
+                                            background: `${l.color}10`, border: `1px solid ${l.color}20`,
+                                            color: '#CBD5E1', fontWeight: 500,
+                                        }}>{item}</span>
                                     ))}
                                 </div>
-
-                                {/* Connector arrows between layers */}
-                                {li < 3 && (
-                                    <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
-                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                            <path d="M10 4 L10 16 M6 12 L10 16 L14 12" stroke={l.color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity={0.4} />
-                                        </svg>
-                                    </div>
-                                )}
                             </div>
                         ))}
                     </div>

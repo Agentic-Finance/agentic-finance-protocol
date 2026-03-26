@@ -100,9 +100,15 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3 px-3 py-4 group">
-                    <div className="flex-shrink-0" style={{ animation: 'sidebar-logo-spin 20s linear infinite', perspective: '200px' }}>
-                        <Image src="/logo-v2.png" alt="Agentic Finance" width={36} height={36} />
+                <Link href="/?app=1" className="flex items-center gap-3 px-3 py-4 group">
+                    <div className="flex-shrink-0 relative" style={{ width: 36, height: 36 }}>
+                        <div className="absolute inset-[-4px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(62,221,185,0.08) 0%, transparent 70%)', animation: 'pulse-glow 4s ease-in-out infinite' }} />
+                        <div className="absolute inset-[-6px] rounded-full" style={{ border: '1px solid rgba(62,221,185,0.12)', animation: 'orbit-tilt-1 12s linear infinite' }}>
+                            <div style={{ position: 'absolute', top: '-2px', left: '50%', transform: 'translateX(-50%)', width: '4px', height: '4px', borderRadius: '50%', background: '#3EDDB9', boxShadow: '0 0 6px #3EDDB9' }} />
+                        </div>
+                        <div style={{ animation: 'logo-float 6s ease-in-out infinite' }}>
+                            <Image src="/logo-v2.png" alt="Agentic Finance" width={36} height={36} />
+                        </div>
                     </div>
                     {!collapsed && (
                         <span className="text-[15px] font-extrabold tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>

@@ -160,7 +160,7 @@ Already implemented in ShieldVaultV2:
 | ReputationRegistry | `0xF32969...58875` | SR-1, SR-6, SR-9 |
 | MPPComplianceGateway | `0x5F68F2...6B6d` | SR-3, SR-4 |
 | ShieldVaultV2 | `0x3B4b47...e0055` | SR-2 |
-| AgentDiscoveryRegistry | *(pending)* | SR-6, SR-7 |
+| AgentDiscoveryRegistry | `0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47` | SR-6, SR-7 |
 
 ## 6. Compliance with Existing Regulations
 

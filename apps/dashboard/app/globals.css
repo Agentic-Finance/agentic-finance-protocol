@@ -815,10 +815,20 @@ html.light .intent-wallet-input:not(:focus) {
   border-left: 2px solid var(--agt-blue) !important;
 }
 
-/* ── Sidebar logo 3D spin ── */
-@keyframes sidebar-logo-spin {
-  0% { transform: rotateY(0deg); }
-  100% { transform: rotateY(360deg); }
+/* ── Sidebar logo gentle 3D rotation + float ── */
+@keyframes sidebar-logo-rotate {
+  0%, 100% { transform: rotateY(0deg) rotateX(0deg); }
+  25% { transform: rotateY(15deg) rotateX(5deg); }
+  50% { transform: rotateY(0deg) rotateX(0deg); }
+  75% { transform: rotateY(-15deg) rotateX(-5deg); }
+}
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 /* ── Respect user motion preferences ── */

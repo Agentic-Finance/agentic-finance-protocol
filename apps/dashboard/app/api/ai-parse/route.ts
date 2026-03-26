@@ -189,6 +189,7 @@ JSON FORMAT FOR CHAT:
                 { role: "user", content: prompt }
             ],
             temperature: 0.1, // Low temperature for deterministic, stable parsing
+            max_tokens: 1000, // Limit response size for faster completion
         });
 
         const resultText = completion.choices[0].message.content;

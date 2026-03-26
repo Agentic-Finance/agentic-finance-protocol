@@ -205,7 +205,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                     <div style={{ marginBottom: '32px', perspective: '600px' }}>
                         <div style={{
                             width: '140px', height: '140px', margin: '0 auto',
-                            animation: 'spin3d 8s linear infinite',
+                            animation: 'spin3d 20s linear infinite',
                             filter: 'drop-shadow(0 0 40px rgba(62,221,185,0.4)) drop-shadow(0 0 80px rgba(255,45,135,0.2))',
                         }}>
                             <Image src="/logo-v2.png" alt="AF" width={140} height={140} style={{ borderRadius: '28px' }} />
@@ -504,14 +504,31 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             </section>
 
             {/* ═══════════════════════════════════════════════════ */}
-            {/* ECOSYSTEM / BUILT ON                                */}
+            {/* WHY AGENTIC FINANCE                                 */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '80px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#475569', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>BUILT ON & COMPATIBLE WITH</div>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap', opacity: 0.5 }}>
-                        {['Tempo L1', 'Circom V2', 'snarkjs', 'PLONK', 'Poseidon', 'ethers.js', 'MCP Protocol', 'x402', 'MPP'].map(t => (
-                            <span key={t} style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748B', fontFamily: 'monospace' }}>{t}</span>
+            <section style={{ padding: '100px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                    <h2 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 900, letterSpacing: '-0.03em', textAlign: 'center', marginBottom: '56px' }}>
+                        Why <span style={{ color: '#1BBFEC' }}>Agentic Finance</span>?
+                    </h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        {[
+                            { q: 'Why can\'t I just use my own local agent?', a: 'You can — and should. Your local agent is the brain. Agentic Finance provides the on-chain hands: funded wallets, ZK proofs, escrow protection, and verifiable reputation that local agents can\'t generate alone.', icon: '🧠' },
+                            { q: 'How is this different from x402 or MPP?', a: 'x402 and MPP solve payments. We solve trust. Our ZK compliance proofs and agent reputation layer plug into any payment protocol — including x402 and MPP. We\'re complementary, not competing.', icon: '🔗' },
+                            { q: 'Is the ZK cryptography real?', a: 'Yes. Real Circom V2 circuits, real PLONK proofs, real on-chain verification. 11/11 circuit tests passing. Audited with Slither. 96,121 total constraints across 5 production circuits.', icon: '🔐' },
+                            { q: 'What happens if an agent fails a task?', a: 'Escrow protection via NexusV2. Funds are locked in smart contracts until the task is completed. Dispute resolution and timeout-based refunds are built into the protocol.', icon: '🛡️' },
+                            { q: 'Can I use this on other chains?', a: 'Currently on Tempo L1 (testnet). Cross-chain ZK verification via LayerZero DVN is built. Mainnet deployment planned after full audit completion.', icon: '⛓️' },
+                            { q: 'Is this open source?', a: 'Yes. MIT license. All contracts, circuits, SDK, and specs on GitHub. The trust infrastructure for the agentic economy should be a public good.', icon: '📂' },
+                        ].map(f => (
+                            <div key={f.q} style={{ padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                                    <span style={{ fontSize: '1.4rem', flexShrink: 0, marginTop: '2px' }}>{f.icon}</span>
+                                    <div>
+                                        <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#E2E8F0', marginBottom: '8px', lineHeight: 1.3 }}>{f.q}</h4>
+                                        <p style={{ fontSize: '0.8rem', color: '#94A3B8', lineHeight: 1.7 }}>{f.a}</p>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>

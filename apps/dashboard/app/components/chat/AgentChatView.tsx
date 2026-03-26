@@ -109,13 +109,23 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
             const res = await fetch('/api/chat/channels', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: walletAddress, agentId: agent.id, type: 'agent' }),
+                body: JSON.stringify({
+                    type: 'agent',
+                    agentId: agent.id,
+                    createdBy: walletAddress,
+                    participants: [
+                        { wallet: walletAddress, role: 'owner' },
+                        { wallet: `agent:${agent.id}`, displayName: agent.name, role: 'agent' },
+                    ],
+                }),
             });
             const data = await res.json();
             if (data.channel) {
                 setSelectedChannel({ id: data.channel.id, type: 'agent', name: agent.name, avatar: agent.avatarEmoji, lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress], agentId: agent.id });
             }
-        } catch {}
+        } catch (err) {
+            console.error('Select agent failed:', err);
+        }
     }, [walletAddress]);
 
     // Send message
@@ -175,15 +185,24 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
             const res = await fetch('/api/chat/channels', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: walletAddress, type: 'group', name: groupName }),
+                body: JSON.stringify({
+                    type: 'group',
+                    name: groupName,
+                    createdBy: walletAddress,
+                    participants: [{ wallet: walletAddress, role: 'owner' }],
+                }),
             });
             const data = await res.json();
             if (data.channel) {
-                setChannels(prev => [{ id: data.channel.id, type: 'group', name: groupName, avatar: '', lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress] }, ...prev]);
+                setChannels(prev => [{ id: data.channel.id, type: 'group', name: groupName, avatar: '👥', lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress] }, ...prev]);
+                setSelectedChannel({ id: data.channel.id, type: 'group', name: groupName, avatar: '👥', lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress] });
                 setShowNewGroup(false);
                 setGroupName('');
+                setSelectedAgent(null);
             }
-        } catch {}
+        } catch (err) {
+            console.error('Create group failed:', err);
+        }
     }, [groupName, walletAddress]);
 
     const filteredAgents = agents.filter(a => !searchQuery || a.name.toLowerCase().includes(searchQuery.toLowerCase()) || a.category.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -479,8 +498,8 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                                     style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
                                 <button onClick={handleSend} disabled={!newMessage.trim() || isExecuting}
                                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white transition-all disabled:opacity-30"
-                                    style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))' }}>
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                                    style={{ background: 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' }}>
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
                                 </button>
                             </div>
                         </div>

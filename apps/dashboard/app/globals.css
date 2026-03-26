@@ -275,10 +275,18 @@ html.light [style*="background: rgba(255,255,255,0.04"] {
 html.light ::placeholder { color: #6B7280 !important; opacity: 1 !important; }
 html.light .placeholder-slate-600::placeholder { color: #4B5563 !important; }
 
-/* Scrollbar */
+/* Scrollbar — dark mode (default) */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+html { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) rgba(255,255,255,0.03); }
+
+/* Scrollbar — light mode */
 html.light ::-webkit-scrollbar-track { background: #E8EBF0; }
-html.light ::-webkit-scrollbar-thumb { background: #B0B8C8; }
+html.light ::-webkit-scrollbar-thumb { background: #B0B8C8; border-radius: 10px; }
 html.light ::-webkit-scrollbar-thumb:hover { background: #8896A8; }
+html.light { scrollbar-color: #B0B8C8 #E8EBF0; }
 
 /* Skeleton loading */
 html.light .pp-skeleton { background: linear-gradient(90deg, #E8E8EC, #F0F0F4, #E8E8EC) !important; }

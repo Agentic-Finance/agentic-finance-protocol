@@ -474,20 +474,35 @@ export default function AgentChatView({ walletAddress }: Props) {
                                             <button onClick={handleCreateDM} disabled={!dmWallet.trim()} className="w-full py-2 rounded-lg text-sm font-medium text-white disabled:opacity-30" style={{ background: 'var(--agt-blue)' }}>Start Chat</button>
                                         </div>
                                     )}
-                                    {channels.filter(c => c.type === 'dm' || c.type === 'agent').map(ch => (
-                                        <button key={ch.id} onClick={() => setSelectedChannel(ch)}
-                                            className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
-                                            style={{ background: selectedChannel?.id === ch.id ? 'var(--pp-surface-2)' : 'transparent' }}>
-                                            <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))', color: '#fff' }}>
-                                                {ch.avatar || ch.name?.[0] || '?'}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{ch.name}</p>
-                                                <p className="text-[10px] truncate" style={{ color: 'var(--pp-text-muted)' }}>{ch.lastMessage || 'No messages'}</p>
-                                            </div>
-                                            {ch.unread > 0 && <span className="min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold text-white" style={{ background: 'var(--agt-pink)' }}>{ch.unread}</span>}
-                                        </button>
-                                    ))}
+                                    {(() => {
+                                        const dmChannels = channels.filter(c => (c.type === 'dm' || c.type === 'agent') && c.name && c.name !== 'undefined');
+                                        if (dmChannels.length === 0 && !showNewDM) {
+                                            return (
+                                                <div className="text-center py-8 px-4">
+                                                    <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: 'var(--pp-surface-1)' }}>
+                                                        <svg className="w-6 h-6" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                                                    </div>
+                                                    <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>No conversations yet</p>
+                                                    <p className="text-xs mt-1 mb-3" style={{ color: 'var(--pp-text-muted)' }}>Start a chat with another user by wallet address, or chat with an agent in Canvas mode</p>
+                                                    <button onClick={() => setShowNewDM(true)} className="text-xs px-4 py-2 rounded-lg font-medium text-white" style={{ background: 'var(--agt-blue)' }}>+ New Message</button>
+                                                </div>
+                                            );
+                                        }
+                                        return dmChannels.map(ch => (
+                                            <button key={ch.id} onClick={() => setSelectedChannel(ch)}
+                                                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
+                                                style={{ background: selectedChannel?.id === ch.id ? 'var(--pp-surface-2)' : 'transparent' }}>
+                                                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))', color: '#fff' }}>
+                                                    {ch.avatar || ch.name?.[0] || '?'}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{ch.name}</p>
+                                                    <p className="text-[10px] truncate" style={{ color: 'var(--pp-text-muted)' }}>{ch.lastMessage || 'Start chatting'}</p>
+                                                </div>
+                                                {ch.unread > 0 && <span className="min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold text-white" style={{ background: 'var(--agt-pink)' }}>{ch.unread}</span>}
+                                            </button>
+                                        ));
+                                    })()}
                                 </>
                             )}
 

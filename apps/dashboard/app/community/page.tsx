@@ -7,13 +7,31 @@ export const metadata: Metadata = {
 
 const POSTS = [
     {
+        slug: 'zk-trust-layer',
+        title: 'Building the Trust Layer for Machine Payments',
+        subtitle: 'Every protocol solves how agents pay. None solve how agents trust each other while paying. We built both.',
+        date: 'March 26, 2026',
+        readTime: '12 min read',
+        tags: ['ZK-SNARK', 'Compliance', 'Reputation', 'PLONK'],
+        featured: true,
+    },
+    {
+        slug: 'security-standard',
+        title: 'Security Standard for Open Agentic Commerce',
+        subtitle: '10 security requirements for when AI agents transact autonomously at machine speed.',
+        date: 'March 26, 2026',
+        readTime: '8 min read',
+        tags: ['Security', 'OFAC', 'EU AI Act', 'Threat Model'],
+        featured: false,
+    },
+    {
         slug: 'ai-payroll-infrastructure',
         title: 'AI-Powered Payroll Infrastructure on Tempo L1',
         subtitle: 'How Agentic Finance eliminates the gap between intent and execution for on-chain payments.',
         date: 'March 9, 2026',
         readTime: '8 min read',
         tags: ['Infrastructure', 'AI', 'ZK Privacy'],
-        featured: true,
+        featured: false,
     },
 ];
 

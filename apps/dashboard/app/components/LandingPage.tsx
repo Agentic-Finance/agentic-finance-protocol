@@ -153,13 +153,13 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
     const c4 = useCounter(11, 1500);
 
     return (
-        <div style={{ background: '#0A0E1A', color: '#fff', minHeight: '100vh', overflow: 'hidden' }}>
+        <div style={{ background: '#111827', color: '#fff', minHeight: '100vh', overflow: 'hidden' }}>
 
             {/* --- NAV --- */}
             <nav style={{
                 position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
                 padding: '16px 24px',
-                background: scrollY > 50 ? 'rgba(10, 14, 26, 0.9)' : 'transparent',
+                background: scrollY > 50 ? 'rgba(17, 24, 39, 0.95)' : 'transparent',
                 backdropFilter: scrollY > 50 ? 'blur(20px)' : 'none',
                 borderBottom: scrollY > 50 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                 transition: 'all 0.3s',
@@ -201,11 +201,21 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         LIVE ON TEMPO L1
                     </div>
 
-                    {/* Headline */}
-                    <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.05, margin: '0 0 20px' }}>
-                        <span style={{ display: 'block', color: '#fff' }}>The Economy Runs</span>
-                        <span style={{ display: 'block', color: '#fff' }}>on Trust.</span>
-                        <span style={{ display: 'block', background: 'linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                    {/* 3D Logo */}
+                    <div style={{ marginBottom: '24px' }}>
+                        <div style={{
+                            width: '80px', height: '80px', margin: '0 auto',
+                            animation: 'float 4s ease-in-out infinite',
+                            filter: 'drop-shadow(0 0 30px rgba(62,221,185,0.3))',
+                        }}>
+                            <Image src="/logo-v2.png" alt="AF" width={80} height={80} style={{ borderRadius: '20px' }} />
+                        </div>
+                    </div>
+
+                    {/* Headline — single line */}
+                    <h1 style={{ fontSize: 'clamp(1.8rem, 4vw, 3.2rem)', fontWeight: 900, letterSpacing: '-0.03em', lineHeight: 1.15, margin: '0 0 20px' }}>
+                        <span style={{ color: '#fff' }}>The Economy Runs on Trust. </span>
+                        <span style={{ background: 'linear-gradient(135deg, #FF2D87, #1BBFEC, #3EDDB9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                             We Built It for Machines.
                         </span>
                     </h1>
@@ -277,7 +287,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* THE PROBLEM                                        */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#0C1020' }}>
+            <section style={{ padding: '120px 20px', background: '#141B2D' }}>
                 <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
                     <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '20px' }}>
                         Every Protocol Solves <span style={{ color: '#FF2D87' }}>Payments</span>.
@@ -312,7 +322,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* THREE PILLARS                                      */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <section style={{ padding: '120px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: '64px' }}>
                         <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em' }}>
@@ -362,7 +372,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* FOR DEVELOPERS                                     */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <section style={{ padding: '120px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
                     <div style={{ textAlign: 'center', marginBottom: '64px' }}>
                         <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em' }}>
@@ -384,7 +394,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                                     <span style={{ fontSize: '0.6rem', fontWeight: 800, padding: '3px 10px', borderRadius: '6px', color: d.color, border: `1px solid ${d.color}30`, background: `${d.color}08`, letterSpacing: '0.05em' }}>{d.badge}</span>
                                 </div>
                                 <p style={{ fontSize: '0.8rem', color: '#64748B', marginBottom: '14px' }}>{d.desc}</p>
-                                <div style={{ padding: '10px 16px', borderRadius: '8px', background: '#0A0E1A', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'monospace', fontSize: '0.78rem', color: '#3EDDB9' }}>
+                                <div style={{ padding: '10px 16px', borderRadius: '8px', background: '#111827', border: '1px solid rgba(255,255,255,0.06)', fontFamily: 'monospace', fontSize: '0.78rem', color: '#3EDDB9' }}>
                                     <span style={{ color: '#64748B' }}>$ </span>{d.code}
                                 </div>
                             </div>
@@ -403,7 +413,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* AGENT MARKETPLACE PREVIEW                          */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <section style={{ padding: '120px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center' }}>
                     <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '16px' }}>
                         <span style={{ color: '#FF7D2C' }}>50</span> Production Agents. Ready to Hire.
@@ -443,7 +453,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* PROTOCOL STACK                                     */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '120px 20px', background: '#0C1020', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+            <section style={{ padding: '120px 20px', background: '#141B2D', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                 <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
                     <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 900, letterSpacing: '-0.03em', marginBottom: '48px' }}>
                         The <span style={{ color: '#1BBFEC' }}>Protocol Stack</span>
@@ -466,7 +476,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* FINAL CTA                                          */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ padding: '160px 20px', background: '#0A0E1A', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <section style={{ padding: '160px 20px', background: '#111827', borderTop: '1px solid rgba(255,255,255,0.06)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
                 {/* Glow */}
                 <div style={{ position: 'absolute', bottom: '-200px', left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,45,135,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
@@ -499,7 +509,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* FOOTER                                             */}
             {/* ═══════════════════════════════════════════════════ */}
-            <footer style={{ padding: '40px 20px', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#080B15' }}>
+            <footer style={{ padding: '40px 20px', borderTop: '1px solid rgba(255,255,255,0.06)', background: '#0F1629' }}>
                 <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Image src="/logo-v2.png" alt="AF" width={24} height={24} style={{ borderRadius: '6px' }} />
@@ -521,6 +531,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <style>{`
                 @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
                 @keyframes scrollDot { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(8px); } }
+                @keyframes float { 0%, 100% { transform: translateY(0) rotateY(0deg); } 50% { transform: translateY(-12px) rotateY(10deg); } }
                 @media (max-width: 768px) {
                     section > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
                     section > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }

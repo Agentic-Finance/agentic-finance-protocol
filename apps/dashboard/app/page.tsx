@@ -765,11 +765,11 @@ export default function Dashboard() {
 
     return (
         <AppShellWrapper>
-        <div className="min-h-screen font-sans relative overflow-x-hidden pb-32" style={{ background: 'var(--pp-bg-primary)', color: 'var(--pp-text-secondary)' }}>
+        <div className="font-sans relative overflow-x-hidden" style={{ color: 'var(--pp-text-secondary)' }}>
 
             {toastComponent}
 
-            <main id="main-content" className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
+            <div id="main-content">
 
                 {/* ── Welcome Header ──────────────────────── */}
                 <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -867,7 +867,7 @@ export default function Dashboard() {
                         />
                     )}
                 </Suspense>
-            </main>
+            </div>
 
             {/* Chat — floating button + slide-in panel */}
             {walletAddress && (

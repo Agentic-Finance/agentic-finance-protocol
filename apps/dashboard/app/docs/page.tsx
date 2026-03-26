@@ -342,100 +342,50 @@ X-Reputation-Min-Tx: 10
 ];
 
 function MarkdownRenderer({ content }: { content: string }) {
-    const lines = content.trim().split('\n');
-    const elements: React.ReactNode[] = [];
+    const Markdown = require('react-markdown').default;
 
-    let inCodeBlock = false;
-    let codeLines: string[] = [];
-    let codeLang = '';
-    let inTable = false;
-    let tableRows: string[][] = [];
-
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-
-        if (line.startsWith('\`\`\`')) {
-            if (inCodeBlock) {
-                elements.push(
-                    <div key={i} className="my-4 rounded-lg overflow-hidden" style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)' }}>
-                        {codeLang && <div className="px-4 py-1.5 text-[10px] font-mono uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)', borderBottom: '1px solid var(--pp-border)' }}>{codeLang}</div>}
-                        <pre className="p-4 overflow-x-auto text-[13px] leading-relaxed font-mono" style={{ color: 'var(--agt-mint)' }}>{codeLines.join('\n')}</pre>
-                    </div>
-                );
-                codeLines = [];
-                inCodeBlock = false;
-            } else {
-                inCodeBlock = true;
-                codeLang = line.slice(3).trim();
-            }
-            continue;
-        }
-
-        if (inCodeBlock) {
-            codeLines.push(line);
-            continue;
-        }
-
-        if (line.startsWith('|') && line.endsWith('|')) {
-            const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
-            if (cells.every(c => /^[-:]+$/.test(c))) continue;
-            if (!inTable) inTable = true;
-            tableRows.push(cells);
-            if (i + 1 >= lines.length || !lines[i + 1]?.startsWith('|')) {
-                elements.push(
-                    <div key={i} className="my-4 overflow-x-auto rounded-lg" style={{ border: '1px solid var(--pp-border)' }}>
-                        <table className="w-full text-[13px]">
-                            <thead><tr style={{ background: 'var(--pp-surface-1)' }}>
-                                {tableRows[0].map((h, j) => <th key={j} className="px-4 py-2.5 text-left font-semibold" style={{ color: 'var(--pp-text-primary)', borderBottom: '1px solid var(--pp-border)' }}>{h}</th>)}
-                            </tr></thead>
-                            <tbody>
-                                {tableRows.slice(1).map((row, ri) => (
-                                    <tr key={ri} style={{ borderBottom: '1px solid var(--pp-border)' }}>
-                                        {row.map((cell, ci) => <td key={ci} className="px-4 py-2 font-mono text-[12px]" style={{ color: 'var(--pp-text-secondary)' }}>
-                                            {cell.startsWith('\`') && cell.endsWith('\`')
-                                                ? <code className="px-1.5 py-0.5 rounded text-[11px]" style={{ background: 'var(--pp-surface-1)', color: 'var(--agt-mint)' }}>{cell.slice(1, -1)}</code>
-                                                : cell}
-                                        </td>)}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                );
-                tableRows = [];
-                inTable = false;
-            }
-            continue;
-        }
-
-        if (line.startsWith('## ')) {
-            elements.push(<h2 key={i} className="text-xl font-bold mt-8 mb-4" style={{ color: 'var(--pp-text-primary)' }}>{line.slice(3)}</h2>);
-        } else if (line.startsWith('### ')) {
-            elements.push(<h3 key={i} className="text-base font-semibold mt-6 mb-3" style={{ color: 'var(--pp-text-primary)' }}>{line.slice(4)}</h3>);
-        } else if (line.startsWith('- **')) {
-            const match = line.match(/- \*\*(.+?)\*\*[:\s]*(.*)$/);
-            if (match) {
-                elements.push(<li key={i} className="ml-4 mb-1.5 text-[13px] list-disc" style={{ color: 'var(--pp-text-secondary)' }}><strong style={{ color: 'var(--pp-text-primary)' }}>{match[1]}</strong>{match[2] ? ` — ${match[2]}` : ''}</li>);
-            }
-        } else if (line.startsWith('- ')) {
-            elements.push(<li key={i} className="ml-4 mb-1 text-[13px] list-disc" style={{ color: 'var(--pp-text-secondary)' }}>{line.slice(2)}</li>);
-        } else if (line.match(/^\d+\. \*\*/)) {
-            const match = line.match(/^\d+\. \*\*(.+?)\*\*\s*[—-]\s*(.*)$/);
-            if (match) {
-                elements.push(<li key={i} className="ml-4 mb-2 text-[13px] list-decimal" style={{ color: 'var(--pp-text-secondary)' }}><strong style={{ color: 'var(--pp-text-primary)' }}>{match[1]}</strong> — {match[2]}</li>);
-            }
-        } else if (line.trim() === '') {
-            elements.push(<div key={i} className="h-2" />);
-        } else {
-            const rendered = line
-                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\`(.+?)\`/g, '<code class="px-1 py-0.5 rounded text-[11px]" style="background:var(--pp-surface-1);color:var(--agt-mint)">$1</code>')
-                .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:var(--agt-blue);text-decoration:underline">$1</a>');
-            elements.push(<p key={i} className="text-[13px] leading-relaxed mb-2" style={{ color: 'var(--pp-text-secondary)' }} dangerouslySetInnerHTML={{ __html: rendered }} />);
-        }
-    }
-
-    return <div>{elements}</div>;
+    return (
+        <div className="docs-content">
+            <Markdown
+                components={{
+                    h2: ({ children }: any) => <h2 className="text-xl font-bold mt-8 mb-4" style={{ color: 'var(--pp-text-primary)' }}>{children}</h2>,
+                    h3: ({ children }: any) => <h3 className="text-base font-semibold mt-6 mb-3" style={{ color: 'var(--pp-text-primary)' }}>{children}</h3>,
+                    p: ({ children }: any) => <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'var(--pp-text-secondary)' }}>{children}</p>,
+                    strong: ({ children }: any) => <strong style={{ color: 'var(--pp-text-primary)', fontWeight: 600 }}>{children}</strong>,
+                    li: ({ children }: any) => <li className="ml-4 mb-1.5 text-[13px] list-disc" style={{ color: 'var(--pp-text-secondary)' }}>{children}</li>,
+                    ol: ({ children }: any) => <ol className="list-decimal ml-4 mb-4">{children}</ol>,
+                    ul: ({ children }: any) => <ul className="list-disc ml-4 mb-4">{children}</ul>,
+                    a: ({ href, children }: any) => <a href={href} target="_blank" rel="noopener" style={{ color: 'var(--agt-blue)', textDecoration: 'underline' }}>{children}</a>,
+                    code: ({ className, children, ...props }: any) => {
+                        const isBlock = className?.includes('language-');
+                        if (isBlock) {
+                            const lang = className?.replace('language-', '') || '';
+                            return (
+                                <div className="my-4 rounded-lg overflow-hidden" style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)' }}>
+                                    {lang && <div className="px-4 py-1.5 text-[10px] font-mono uppercase tracking-wider" style={{ color: 'var(--pp-text-muted)', borderBottom: '1px solid var(--pp-border)' }}>{lang}</div>}
+                                    <pre className="p-4 overflow-x-auto text-[13px] leading-relaxed font-mono" style={{ color: 'var(--agt-mint)' }}>
+                                        <code>{children}</code>
+                                    </pre>
+                                </div>
+                            );
+                        }
+                        return <code className="px-1.5 py-0.5 rounded text-[11px]" style={{ background: 'var(--pp-surface-1)', color: 'var(--agt-mint)' }}>{children}</code>;
+                    },
+                    pre: ({ children }: any) => <>{children}</>,
+                    table: ({ children }: any) => (
+                        <div className="my-4 overflow-x-auto rounded-lg" style={{ border: '1px solid var(--pp-border)' }}>
+                            <table className="w-full text-[13px]">{children}</table>
+                        </div>
+                    ),
+                    thead: ({ children }: any) => <thead style={{ background: 'var(--pp-surface-1)' }}>{children}</thead>,
+                    th: ({ children }: any) => <th className="px-4 py-2.5 text-left font-semibold" style={{ color: 'var(--pp-text-primary)', borderBottom: '1px solid var(--pp-border)' }}>{children}</th>,
+                    td: ({ children }: any) => <td className="px-4 py-2 text-[12px]" style={{ color: 'var(--pp-text-secondary)', borderBottom: '1px solid var(--pp-border)' }}>{children}</td>,
+                }}
+            >
+                {content}
+            </Markdown>
+        </div>
+    );
 }
 
 export default function DocsPage() {

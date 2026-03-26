@@ -101,7 +101,7 @@ export function Sidebar() {
             {/* Logo */}
             <div className="flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2.5 px-3 py-4 group">
-                    <Image src="/logo.png" alt="Agentic Finance" width={32} height={32} className="flex-shrink-0 rounded-full" />
+                    <Image src="/logo-v2.png" alt="Agentic Finance" width={32} height={32} className="flex-shrink-0" />
                     {!collapsed && (
                         <span className="text-sm font-bold tracking-tight whitespace-nowrap" style={{ fontFamily: 'var(--agt-font-display)', color: 'var(--pp-text-primary)' }}>
                             Agentic Finance

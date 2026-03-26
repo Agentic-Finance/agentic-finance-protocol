@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, LogOut, Copy, Check, Shield } from 'lucide-react';
+import { ChevronDown, LogOut, Copy, Check, Shield, Key, Sun, Moon } from 'lucide-react';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface UserProfileAreaProps {
   walletAddress?: string;
@@ -24,6 +25,27 @@ export function UserProfileArea({ walletAddress, isAdmin, onDisconnect }: UserPr
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { exportWallet } = usePrivy();
+  const [isDark, setIsDark] = useState(true);
+
+  // Sync theme state
+  useEffect(() => {
+    setIsDark(!document.documentElement.classList.contains('light'));
+  }, []);
+
+  const toggleTheme = () => {
+    const isLight = document.documentElement.classList.toggle('light');
+    setIsDark(!isLight);
+    localStorage.setItem('theme-preference', isLight ? 'light' : 'dark');
+  };
+
+  const handleExportKey = async () => {
+    try {
+      await exportWallet();
+    } catch (e) {
+      console.error('Export wallet failed:', e);
+    }
+  };
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -145,6 +167,24 @@ export function UserProfileArea({ walletAddress, isAdmin, onDisconnect }: UserPr
               )}
               <span>{copied ? 'Copied!' : 'Copy Address'}</span>
             </button>
+
+            <button
+              onClick={handleExportKey}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/[0.04] transition-colors"
+            >
+              <Key className="w-4 h-4" />
+              <span>Export Private Key</span>
+            </button>
+
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/[0.04] transition-colors"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+            </button>
+
+            <div className="border-t border-white/[0.06] my-1" />
 
             {onDisconnect && (
               <button

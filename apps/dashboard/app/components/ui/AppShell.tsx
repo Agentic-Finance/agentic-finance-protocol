@@ -51,7 +51,7 @@ function AppShellInner({ children, walletAddress, isAdmin, onDisconnect }: AppSh
       {/* Main content area */}
       <div
         className={`
-          transition-all duration-300 ease-in-out
+          transition-all duration-300 ease-in-out min-w-0 overflow-x-hidden
           ${collapsed ? 'lg:ml-16' : 'lg:ml-60'}
         `}
       >
@@ -88,7 +88,7 @@ function AppShellInner({ children, walletAddress, isAdmin, onDisconnect }: AppSh
         </header>
 
         {/* Page content */}
-        <main className="p-6 pb-20 lg:pb-6 max-w-[1440px] mx-auto">
+        <main className="p-4 sm:p-6 pb-20 lg:pb-6 max-w-[1440px] mx-auto overflow-x-hidden">
           {children}
         </main>
       </div>

@@ -282,8 +282,8 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                 </div>
 
                 {/* Scroll indicator */}
-                <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', animation: 'bounce 2s infinite' }}>
-                    <div style={{ width: '24px', height: '40px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', paddingTop: '8px' }}>
+                <div style={{ marginTop: '48px', animation: 'bounce 2s infinite' }}>
+                    <div style={{ width: '24px', height: '40px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.15)', display: 'flex', justifyContent: 'center', paddingTop: '8px', margin: '0 auto' }}>
                         <div style={{ width: '3px', height: '8px', borderRadius: '2px', background: 'rgba(255,255,255,0.3)', animation: 'scrollDot 2s infinite' }} />
                     </div>
                 </div>

@@ -201,14 +201,38 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
                         LIVE ON TEMPO L1
                     </div>
 
-                    {/* 3D Logo — large, spinning 360 */}
-                    <div style={{ marginBottom: '32px', perspective: '600px' }}>
+                    {/* 3D Logo Orb — floating with orbit rings */}
+                    <div style={{ marginBottom: '32px', position: 'relative', width: '200px', height: '200px', margin: '0 auto 32px' }}>
+                        {/* Outer glow */}
+                        <div style={{ position: 'absolute', inset: '-40px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(62,221,185,0.12) 0%, rgba(255,45,135,0.06) 40%, transparent 70%)', animation: 'pulse-glow 4s ease-in-out infinite' }} />
+
+                        {/* Orbit ring 1 */}
+                        <div style={{ position: 'absolute', inset: '-10px', borderRadius: '50%', border: '1px solid rgba(62,221,185,0.15)', animation: 'orbit-tilt-1 12s linear infinite', transformStyle: 'preserve-3d' }}>
+                            <div style={{ position: 'absolute', top: '-4px', left: '50%', transform: 'translateX(-50%)', width: '8px', height: '8px', borderRadius: '50%', background: '#3EDDB9', boxShadow: '0 0 12px #3EDDB9' }} />
+                        </div>
+
+                        {/* Orbit ring 2 */}
+                        <div style={{ position: 'absolute', inset: '-25px', borderRadius: '50%', border: '1px solid rgba(27,191,236,0.1)', animation: 'orbit-tilt-2 18s linear infinite reverse', transformStyle: 'preserve-3d' }}>
+                            <div style={{ position: 'absolute', bottom: '-4px', right: '20%', width: '6px', height: '6px', borderRadius: '50%', background: '#1BBFEC', boxShadow: '0 0 10px #1BBFEC' }} />
+                        </div>
+
+                        {/* Orbit ring 3 */}
+                        <div style={{ position: 'absolute', inset: '-40px', borderRadius: '50%', border: '1px solid rgba(255,45,135,0.08)', animation: 'orbit-tilt-3 25s linear infinite', transformStyle: 'preserve-3d' }}>
+                            <div style={{ position: 'absolute', top: '30%', right: '-4px', width: '5px', height: '5px', borderRadius: '50%', background: '#FF2D87', boxShadow: '0 0 8px #FF2D87' }} />
+                        </div>
+
+                        {/* Logo center — gentle float */}
                         <div style={{
-                            width: '140px', height: '140px', margin: '0 auto',
-                            animation: 'spin3d 20s linear infinite',
-                            filter: 'drop-shadow(0 0 40px rgba(62,221,185,0.4)) drop-shadow(0 0 80px rgba(255,45,135,0.2))',
+                            position: 'absolute', inset: '20px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            animation: 'logo-float 6s ease-in-out infinite',
                         }}>
-                            <Image src="/logo-v2.png" alt="AF" width={140} height={140} style={{ borderRadius: '28px' }} />
+                            <div style={{
+                                width: '120px', height: '120px',
+                                filter: 'drop-shadow(0 0 30px rgba(62,221,185,0.4)) drop-shadow(0 0 60px rgba(255,45,135,0.15))',
+                            }}>
+                                <Image src="/logo-v2.png" alt="Agentic Finance" width={120} height={120} style={{ borderRadius: '24px' }} />
+                            </div>
                         </div>
                     </div>
 
@@ -621,7 +645,11 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             <style>{`
                 @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
                 @keyframes scrollDot { 0% { opacity: 0; transform: translateY(0); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(8px); } }
-                @keyframes spin3d { 0% { transform: rotateY(0deg) translateY(0); } 25% { transform: rotateY(90deg) translateY(-8px); } 50% { transform: rotateY(180deg) translateY(0); } 75% { transform: rotateY(270deg) translateY(-8px); } 100% { transform: rotateY(360deg) translateY(0); } }
+                @keyframes logo-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+                @keyframes pulse-glow { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+                @keyframes orbit-tilt-1 { 0% { transform: rotateX(60deg) rotateZ(0deg); } 100% { transform: rotateX(60deg) rotateZ(360deg); } }
+                @keyframes orbit-tilt-2 { 0% { transform: rotateX(75deg) rotateY(20deg) rotateZ(0deg); } 100% { transform: rotateX(75deg) rotateY(20deg) rotateZ(360deg); } }
+                @keyframes orbit-tilt-3 { 0% { transform: rotateX(45deg) rotateY(-30deg) rotateZ(0deg); } 100% { transform: rotateX(45deg) rotateY(-30deg) rotateZ(360deg); } }
                 @media (max-width: 768px) {
                     section > div[style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
                     section > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }

@@ -246,6 +246,101 @@ app.use('/api', complianceMiddleware({
         `
     },
     {
+        id: 'gateway',
+        title: 'Agent Gateway',
+        icon: '🌐',
+        content: `
+## Universal Agent Gateway
+
+One SDK. Every payment rail. Zero configuration.
+
+\`\`\`typescript
+import { AgentGateway } from '@agtfi/sdk';
+
+const gw = new AgentGateway({ privateKey: '0x...' });
+
+// Direct payment — auto-selects optimal rail
+await gw.pay('0xRecipient', '100');
+
+// Batch payment — multiple recipients, 1 transaction
+await gw.batchPay([
+    { address: '0xAlice', amount: '100' },
+    { address: '0xBob', amount: '200' },
+]);
+
+// Escrow — trustless with dispute resolution
+await gw.escrow('0xWorker', '500', {
+    judge: '0xJudge',
+    deadline: 7 * 86400,
+});
+
+// Stream — per-second accrual
+await gw.stream('0xWorker', '1000', {
+    duration: 30 * 24 * 3600,
+});
+\`\`\`
+
+**Supported Rails:**
+
+| Rail | Use Case | Contract |
+|------|----------|----------|
+| \`direct\` | Simple token transfer | ERC20.transfer() |
+| \`shielded\` | ZK private payment | ShieldVaultV2 |
+| \`multisend\` | Batch to N recipients | MultisendV2 |
+| \`escrow\` | Trustless with dispute | NexusV2 |
+| \`stream\` | Per-second streaming | StreamV1 |
+
+### Agent App Store API
+
+Developers publish and monetize agents:
+
+\`\`\`bash
+# List agents
+GET /api/agent-store?action=list&category=escrow&sort=popular
+
+# Developer earnings
+GET /api/agent-store?action=stats&owner=0x33F7...
+
+# Publish new agent
+POST /api/agent-store
+{ "action": "publish", "name": "My Agent", "category": "analytics", ... }
+\`\`\`
+
+Revenue split: **95% developer / 5% platform**
+
+### Autonomous Operations
+
+Agents run 24/7 with budget management:
+
+\`\`\`bash
+# Create autonomous task
+POST /api/autonomous-ops
+{
+    "action": "create",
+    "agentId": "contract-auditor",
+    "goal": "Monitor contract for anomalies",
+    "budget": 500,
+    "duration": 2592000
+}
+
+# Pause/Resume/Stop
+POST /api/autonomous-ops  { "action": "pause", "opId": "op_..." }
+\`\`\`
+
+Auto-pause when budget reaches 95%. Spending logs with timestamps.
+
+### Sanctions Oracle
+
+Production OFAC compliance with real sanctions data:
+
+- **87 real sanctioned ETH addresses** from OFAC SDN list
+- Auto-updated nightly from official source
+- Builds Sparse Merkle Tree with Poseidon hashing
+- Publishes root to ComplianceRegistry on-chain
+- Tested: Tornado Cash = sanctioned, clean wallets = clear
+        `
+    },
+    {
         id: 'mcp-server',
         title: 'MCP Server',
         icon: '🤖',

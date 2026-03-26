@@ -1,5 +1,5 @@
 {
-  "name": "@agtfi/mcp-server",
+  "name": "agtfi-mcp-server",
   "version": "1.0.0",
   "description": "MCP Payment Server for Agentic Finance — payments, compliance, reputation for any AI agent",
   "type": "module",

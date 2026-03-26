@@ -7,6 +7,12 @@ import { AGTFI_NEXUS_ADDRESS, AGTFI_MULTISEND_ADDRESS, AGTFI_SHIELD_ADDRESS, AGT
 // Direct imports for critical above-the-fold components
 import Navbar from './components/Navbar';
 import DashboardMainTabs, { type MainTabId } from './components/DashboardMainTabs';
+import { AppShell } from './components/ui/AppShell';
+
+// Wrapper that conditionally renders AppShell for logged-in dashboard
+function AppShellWrapper({ children }: { children: React.ReactNode }) {
+    return <AppShell>{children}</AppShell>;
+}
 import { TerminalSkeleton, ChartSkeleton, BoardroomSkeleton, SidebarSkeleton, SectionSkeleton } from './components/Skeletons';
 import { FeatureErrorBoundary } from './components/FeatureErrorBoundary';
 
@@ -758,15 +764,10 @@ export default function Dashboard() {
     if (!currentWorkspace) { return (<>{toastComponent}<Suspense fallback={<LazyFallback />}><GatewayScreen walletAddress={walletAddress} currentWorkspace={currentWorkspace} gatewayMode={gatewayMode} setGatewayMode={(val: any) => setGatewayMode(val)} setupStep={setupStep} setSetupStep={(val: any) => setSetupStep(val)} setupType={setupType} setSetupType={(val: any) => setSetupType(val)} setupName={setupName} setSetupName={(val: any) => setSetupName(val)} joinAdminWallet={joinAdminWallet} setJoinAdminWallet={(val: any) => setJoinAdminWallet(val)} ack1={ack1} setAck1={(val: any) => setAck1(val)} ack2={ack2} setAck2={(val: any) => setAck2(val)} ack3={ack3} setAck3={(val: any) => setAck3(val)} isDeployingWorkspace={isDeployingWorkspace} deployWorkspace={deployWorkspace} joinWorkspace={joinWorkspace} connectWallet={connectWallet} disconnectWallet={disconnectWallet} initializeSession={initializeSession} /></Suspense></>); }
 
     return (
+        <AppShellWrapper>
         <div className="min-h-screen font-sans relative overflow-x-hidden pb-32" style={{ background: 'var(--pp-bg-primary)', color: 'var(--pp-text-secondary)' }}>
-            {/* Global styles moved to globals.css */}
-
-            {/* Subtle ambient glow — matches dark blue theme */}
-            <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[radial-gradient(circle,_rgba(79,70,229,0.04)_0%,_transparent_70%)] pointer-events-none mix-blend-screen will-change-transform"></div>
 
             {toastComponent}
-
-            <Navbar currentWorkspace={currentWorkspace} isAdmin={isAdmin} isSystemLocked={isSystemLocked} setIsSystemLocked={setIsSystemLocked} userBalance={userBalance} activeVaultToken={activeVaultToken} walletAddress={walletAddress} connectWallet={connectWallet} disconnectWallet={disconnectWallet} />
 
             <main id="main-content" className="max-w-[1400px] mx-auto px-4 sm:px-8 py-6 sm:py-10">
 
@@ -948,5 +949,6 @@ export default function Dashboard() {
                 />
             )}
         </div>
+        </AppShellWrapper>
     );
 }

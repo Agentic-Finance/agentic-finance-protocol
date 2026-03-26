@@ -54,6 +54,13 @@ const sections: NavSection[] = [
         ],
     },
     {
+        label: 'Resources',
+        items: [
+            { href: '/docs', label: 'Docs', icon: <ClipboardIcon className="w-[18px] h-[18px]" /> },
+            { href: '/community', label: 'Blog', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
+        ],
+    },
+    {
         label: 'System',
         items: [
             { href: '/admin', label: 'Admin', icon: <WrenchScrewdriverIcon className="w-[18px] h-[18px]" /> },

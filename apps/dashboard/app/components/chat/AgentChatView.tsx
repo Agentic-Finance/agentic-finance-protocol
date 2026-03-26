@@ -59,6 +59,11 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
     const [activeTab, setActiveTab] = useState<ChatTab>('agents');
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [groupName, setGroupName] = useState('');
+    const [agentCategory, setAgentCategory] = useState('all');
+    const [agentPage, setAgentPage] = useState(0);
+    const [showNewDM, setShowNewDM] = useState(false);
+    const [dmWallet, setDmWallet] = useState('');
+    const AGENTS_PER_PAGE = 10;
     const [expandedResults, setExpandedResults] = useState<Set<string>>(new Set());
     const [contextMenu, setContextMenu] = useState<{ msgId: string; x: number; y: number } | null>(null);
     const [showGroupSettings, setShowGroupSettings] = useState(false);
@@ -301,7 +306,41 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
         }
     }, [groupName, walletAddress]);
 
-    const filteredAgents = agents.filter(a => !searchQuery || a.name.toLowerCase().includes(searchQuery.toLowerCase()) || a.category.toLowerCase().includes(searchQuery.toLowerCase()));
+    // Create DM with another user
+    const handleCreateDM = useCallback(async () => {
+        if (!dmWallet.trim()) return;
+        try {
+            const res = await fetch('/api/chat/channels', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: 'dm',
+                    createdBy: walletAddress,
+                    participants: [
+                        { wallet: walletAddress, role: 'owner' },
+                        { wallet: dmWallet.trim(), role: 'member' },
+                    ],
+                }),
+            });
+            const data = await res.json();
+            if (data.channel) {
+                const shortAddr = `${dmWallet.slice(0, 6)}...${dmWallet.slice(-4)}`;
+                setSelectedChannel({ id: data.channel.id, type: 'dm', name: shortAddr, avatar: '', lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress, dmWallet] });
+                setChannels(prev => [{ id: data.channel.id, type: 'dm', name: shortAddr, avatar: '', lastMessage: '', lastMessageAt: '', unread: 0, participants: [walletAddress, dmWallet] }, ...prev]);
+                setShowNewDM(false);
+                setDmWallet('');
+                setSelectedAgent(null);
+            }
+        } catch {}
+    }, [dmWallet, walletAddress]);
+
+    // Filter + paginate agents
+    const categories = ['all', ...Array.from(new Set(agents.map(a => a.category)))];
+    const filteredAgents = agents
+        .filter(a => agentCategory === 'all' || a.category === agentCategory)
+        .filter(a => !searchQuery || a.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const pagedAgents = filteredAgents.slice(agentPage * AGENTS_PER_PAGE, (agentPage + 1) * AGENTS_PER_PAGE);
+    const totalAgentPages = Math.ceil(filteredAgents.length / AGENTS_PER_PAGE);
 
     // Render message
     const renderMessage = (msg: Message) => {
@@ -456,45 +495,88 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                 {/* Content based on tab */}
                 <div className="flex-1 overflow-y-auto">
                     {activeTab === 'agents' && (
-                        <div className="p-2 space-y-1">
-                            {filteredAgents.map(agent => (
-                                <button key={agent.id} onClick={() => handleSelectAgent(agent)}
-                                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
-                                    style={{
-                                        background: selectedAgent?.id === agent.id ? 'var(--pp-surface-2)' : 'transparent',
-                                        border: selectedAgent?.id === agent.id ? '1px solid var(--pp-border)' : '1px solid transparent',
-                                    }}
-                                    onMouseEnter={e => { if (selectedAgent?.id !== agent.id) e.currentTarget.style.background = 'var(--pp-surface-1)'; }}
-                                    onMouseLeave={e => { if (selectedAgent?.id !== agent.id) e.currentTarget.style.background = 'transparent'; }}>
-                                    <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0" style={{ background: 'var(--pp-surface-2)' }}>{agent.avatarEmoji}</div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{agent.name}</span>
-                                            {agent.isVerified && <span className="text-[8px]" style={{ color: 'var(--agt-blue)' }}>✓</span>}
+                        <div>
+                            {/* Category pills */}
+                            <div className="px-3 py-2 overflow-x-auto" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                                <div className="flex gap-1 min-w-max">
+                                    {categories.map(cat => (
+                                        <button key={cat} onClick={() => { setAgentCategory(cat); setAgentPage(0); }}
+                                            className="text-[10px] px-2 py-1 rounded-full transition-all whitespace-nowrap font-medium capitalize"
+                                            style={{
+                                                background: agentCategory === cat ? 'var(--agt-blue)' : 'var(--pp-surface-1)',
+                                                color: agentCategory === cat ? '#fff' : 'var(--pp-text-muted)',
+                                                border: `1px solid ${agentCategory === cat ? 'var(--agt-blue)' : 'var(--pp-border)'}`,
+                                            }}>
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Agent list (paginated) */}
+                            <div className="p-2 space-y-1">
+                                {pagedAgents.map(agent => (
+                                    <button key={agent.id} onClick={() => handleSelectAgent(agent)}
+                                        className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
+                                        style={{
+                                            background: selectedAgent?.id === agent.id ? 'var(--pp-surface-2)' : 'transparent',
+                                            border: selectedAgent?.id === agent.id ? '1px solid var(--pp-border)' : '1px solid transparent',
+                                        }}
+                                        onMouseEnter={e => { if (selectedAgent?.id !== agent.id) e.currentTarget.style.background = 'var(--pp-surface-1)'; }}
+                                        onMouseLeave={e => { if (selectedAgent?.id !== agent.id) e.currentTarget.style.background = 'transparent'; }}>
+                                        <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0" style={{ background: 'var(--pp-surface-2)' }}>{agent.avatarEmoji}</div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{agent.name}</span>
+                                                {agent.isVerified && <span className="text-[8px]" style={{ color: 'var(--agt-blue)' }}>✓</span>}
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-0.5">
+                                                <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{agent.category}</span>
+                                                <span className="text-[10px] font-mono" style={{ color: 'var(--agt-mint)' }}>${agent.basePrice}</span>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2 mt-0.5">
-                                            <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{agent.category}</span>
-                                            <span className="text-[10px] font-mono" style={{ color: 'var(--agt-mint)' }}>${agent.basePrice}</span>
-                                        </div>
-                                    </div>
-                                    <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-                                </button>
-                            ))}
+                                        <div className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Pagination */}
+                            {totalAgentPages > 1 && (
+                                <div className="flex items-center justify-center gap-2 py-2 px-3" style={{ borderTop: '1px solid var(--pp-border)' }}>
+                                    <button onClick={() => setAgentPage(Math.max(0, agentPage - 1))} disabled={agentPage === 0}
+                                        className="text-xs px-2 py-1 rounded disabled:opacity-30" style={{ color: 'var(--pp-text-muted)' }}>Prev</button>
+                                    <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{agentPage + 1}/{totalAgentPages}</span>
+                                    <button onClick={() => setAgentPage(Math.min(totalAgentPages - 1, agentPage + 1))} disabled={agentPage >= totalAgentPages - 1}
+                                        className="text-xs px-2 py-1 rounded disabled:opacity-30" style={{ color: 'var(--pp-text-muted)' }}>Next</button>
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {activeTab === 'direct' && (
                         <div className="p-2 space-y-1">
-                            {channels.filter(c => c.type === 'dm').length === 0 ? (
-                                <div className="text-center py-12 px-4">
+                            {/* New DM button */}
+                            <button onClick={() => setShowNewDM(!showNewDM)}
+                                className="w-full flex items-center gap-2 p-2.5 rounded-xl text-left transition-all"
+                                style={{ color: 'var(--agt-blue)', background: 'var(--pp-surface-1)', border: '1px dashed var(--pp-border)' }}>
+                                <span className="text-lg">+</span>
+                                <span className="text-sm font-medium">New Message</span>
+                            </button>
+                            {showNewDM && (
+                                <div className="p-3 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <input type="text" placeholder="Enter wallet address (0x...)" value={dmWallet} onChange={e => setDmWallet(e.target.value)}
+                                        className="w-full px-3 py-2 rounded-lg text-sm mb-2 outline-none" style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                    <button onClick={handleCreateDM} disabled={!dmWallet.trim()} className="w-full py-2 rounded-lg text-sm font-medium text-white disabled:opacity-30" style={{ background: 'var(--agt-blue)' }}>Start Chat</button>
+                                </div>
+                            )}
+
+                            {channels.filter(c => c.type === 'dm' || c.type === 'agent').length === 0 && !showNewDM ? (
+                                <div className="text-center py-8 px-4">
                                     <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: 'var(--pp-surface-1)' }}>
                                         <svg className="w-6 h-6" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                                     </div>
-                                    <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>No direct messages</p>
-                                    <p className="text-xs mt-1" style={{ color: 'var(--pp-text-muted)' }}>Chat with an agent first — they will appear here</p>
-                                    <button onClick={() => setActiveTab('agents')} className="mt-3 text-xs px-4 py-2 rounded-lg" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--agt-blue)' }}>
-                                        Browse Agents
-                                    </button>
+                                    <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>No conversations yet</p>
+                                    <p className="text-xs mt-1" style={{ color: 'var(--pp-text-muted)' }}>Send a direct message or chat with an agent</p>
                                 </div>
                             ) : channels.filter(c => c.type === 'dm').map(ch => (
                                 <button key={ch.id} onClick={() => { setSelectedChannel(ch); setSelectedAgent(null); }}

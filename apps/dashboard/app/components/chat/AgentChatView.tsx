@@ -264,30 +264,30 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
     return (
         <div className="flex h-full">
             {/* LEFT PANEL — Agent List */}
-            <div className="w-80 border-r border-white/[0.06] flex flex-col bg-white/[0.01]">
-                {/* Search */}
-                <div className="p-3 border-b border-white/[0.06]">
-                    <input
-                        type="text"
-                        placeholder="Search agents..."
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        className="w-full px-3 py-2 bg-white/[0.03] border border-white/[0.06] rounded-lg text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/30 transition-colors"
-                    />
+            <div className="w-80 flex flex-col" style={{ borderRight: '1px solid var(--pp-border)', background: 'var(--pp-bg-secondary)' }}>
+                {/* Header */}
+                <div className="p-4" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                    <h2 className="text-sm font-bold mb-3" style={{ color: 'var(--pp-text-primary)' }}>Agent Chat</h2>
+                    <div className="relative">
+                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        <input type="text" placeholder="Search agents..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-3 py-2 rounded-lg text-sm outline-none transition-colors"
+                            style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}
+                        />
+                    </div>
                 </div>
 
                 {/* Category filter */}
-                <div className="px-3 py-2 border-b border-white/[0.06] overflow-x-auto">
+                <div className="px-4 py-2 overflow-x-auto" style={{ borderBottom: '1px solid var(--pp-border)' }}>
                     <div className="flex gap-1.5 min-w-max">
                         {categories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => setCategoryFilter(cat)}
-                                className={`text-[10px] px-2.5 py-1 rounded-full transition-all whitespace-nowrap ${
-                                    categoryFilter === cat
-                                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                                        : 'bg-white/[0.04] text-slate-400 border border-white/[0.06] hover:bg-white/[0.06]'
-                                }`}
+                            <button key={cat} onClick={() => setCategoryFilter(cat)}
+                                className="text-[10px] px-2.5 py-1 rounded-full transition-all whitespace-nowrap font-medium"
+                                style={{
+                                    background: categoryFilter === cat ? 'var(--agt-blue)' : 'var(--pp-surface-1)',
+                                    color: categoryFilter === cat ? '#fff' : 'var(--pp-text-muted)',
+                                    border: `1px solid ${categoryFilter === cat ? 'var(--agt-blue)' : 'var(--pp-border)'}`,
+                                }}
                             >
                                 {cat === 'all' ? 'All' : cat}
                             </button>
@@ -296,50 +296,49 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                 </div>
 
                 {/* Agent list */}
-                <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+                <div className="flex-1 overflow-y-auto p-2 space-y-1">
                     {filteredAgents.length === 0 ? (
-                        <div className="text-center py-8 text-slate-500 text-sm">
-                            No agents found
-                        </div>
+                        <div className="text-center py-8 text-sm" style={{ color: 'var(--pp-text-muted)' }}>No agents found</div>
                     ) : (
                         filteredAgents.map(agent => (
-                            <AgentCard
-                                key={agent.id}
-                                agent={agent}
-                                isSelected={selectedAgent?.id === agent.id}
-                                onClick={() => handleSelectAgent(agent)}
-                            />
+                            <AgentCard key={agent.id} agent={agent} isSelected={selectedAgent?.id === agent.id} onClick={() => handleSelectAgent(agent)} />
                         ))
                     )}
                 </div>
             </div>
 
             {/* RIGHT PANEL — Chat */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col" style={{ background: 'var(--pp-bg-primary)' }}>
                 {!selectedAgent ? (
-                    /* Empty state */
                     <div className="flex-1 flex items-center justify-center">
-                        <div className="text-center">
-                            <div className="text-6xl mb-4 opacity-20">&#128172;</div>
-                            <p className="text-slate-500 text-lg font-medium">Select an agent to start chatting</p>
-                            <p className="text-slate-600 text-sm mt-1">Choose from the agent list on the left</p>
+                        <div className="text-center max-w-xs">
+                            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'var(--pp-surface-1)' }}>
+                                <svg className="w-8 h-8" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                            </div>
+                            <p className="text-base font-semibold" style={{ color: 'var(--pp-text-primary)' }}>Select an agent</p>
+                            <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Choose from 50 specialized agents to start a conversation</p>
                         </div>
                     </div>
                 ) : (
                     <>
                         {/* Chat header */}
-                        <div className="px-5 py-3 border-b border-white/[0.06] flex items-center gap-3 bg-white/[0.01]">
-                            <span className="text-2xl">{selectedAgent.avatarEmoji}</span>
+                        <div className="px-5 py-3 flex items-center gap-3" style={{ borderBottom: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: 'var(--pp-surface-2)' }}>
+                                {selectedAgent.avatarEmoji}
+                            </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2">
-                                    <span className="font-bold text-sm text-white truncate">{selectedAgent.name}</span>
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/[0.06] text-slate-400">
-                                        {selectedAgent.category}
-                                    </span>
+                                    <span className="font-bold text-sm truncate" style={{ color: 'var(--pp-text-primary)' }}>{selectedAgent.name}</span>
+                                    {selectedAgent.isVerified && <svg className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--agt-blue)' }} fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
+                                    <span className="text-[10px] px-1.5 py-0.5 rounded-md font-medium" style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-muted)' }}>{selectedAgent.category}</span>
                                 </div>
-                                <div className="flex items-center gap-1.5 mt-0.5">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                    <span className="text-[10px] text-emerald-400">Online</span>
+                                <div className="flex items-center gap-3 mt-0.5">
+                                    <div className="flex items-center gap-1">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                        <span className="text-[10px]" style={{ color: 'var(--agt-mint)' }}>Online</span>
+                                    </div>
+                                    <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{selectedAgent.totalJobs} jobs | ★ {selectedAgent.avgRating}</span>
+                                    <span className="text-[10px] font-mono" style={{ color: 'var(--agt-mint)' }}>${selectedAgent.basePrice}</span>
                                 </div>
                             </div>
                         </div>
@@ -347,23 +346,33 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                         {/* Messages area */}
                         <div className="flex-1 overflow-y-auto px-5 py-4">
                             {messages.length === 0 && !isExecuting && (
-                                <div className="text-center py-12">
-                                    <div className="text-4xl mb-3">{selectedAgent.avatarEmoji}</div>
-                                    <p className="text-slate-400 text-sm font-medium">Start a conversation with {selectedAgent.name}</p>
-                                    <p className="text-slate-600 text-xs mt-1">Send a message to begin</p>
+                                <div className="text-center py-16">
+                                    <div className="w-14 h-14 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl" style={{ background: 'var(--pp-surface-1)' }}>
+                                        {selectedAgent.avatarEmoji}
+                                    </div>
+                                    <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>Start a conversation with {selectedAgent.name}</p>
+                                    <p className="text-xs mt-1 mb-4" style={{ color: 'var(--pp-text-muted)' }}>Describe what you need — the agent will execute on-chain</p>
+                                    <div className="flex flex-wrap gap-2 justify-center max-w-md mx-auto">
+                                        {['Audit my contract', 'Deploy a token', 'Check vault balance', 'Create escrow'].map(s => (
+                                            <button key={s} onClick={() => setNewMessage(s)} className="text-xs px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
+                                                style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-secondary)' }}>
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
                             {messages.map(renderMessage)}
                             {isExecuting && (
                                 <div className="flex justify-start mb-3">
-                                    <div className="bg-white/[0.04] border border-white/[0.06] rounded-2xl rounded-bl-sm px-4 py-3">
+                                    <div className="rounded-2xl rounded-bl-sm px-4 py-3" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
                                         <div className="flex items-center gap-2">
                                             <div className="flex gap-1">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                                                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--agt-blue)', animationDelay: '0ms' }} />
+                                                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--agt-blue)', animationDelay: '150ms' }} />
+                                                <span className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--agt-blue)', animationDelay: '300ms' }} />
                                             </div>
-                                            <span className="text-xs text-slate-500">{selectedAgent.name} is working...</span>
+                                            <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>{selectedAgent.name} is working...</span>
                                         </div>
                                     </div>
                                 </div>
@@ -372,22 +381,17 @@ export default function AgentChatView({ walletAddress }: AgentChatViewProps) {
                         </div>
 
                         {/* Input area */}
-                        <div className="px-5 py-3 border-t border-white/[0.06] bg-white/[0.01]">
+                        <div className="px-5 py-3" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
                             <div className="flex items-center gap-2">
-                                <input
-                                    type="text"
-                                    value={newMessage}
-                                    onChange={e => setNewMessage(e.target.value)}
+                                <input type="text" value={newMessage} onChange={e => setNewMessage(e.target.value)}
                                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                                    placeholder={`Message ${selectedAgent.name}...`}
-                                    disabled={isExecuting}
-                                    className="flex-1 px-4 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-cyan-500/30 transition-colors disabled:opacity-50"
+                                    placeholder={`Message ${selectedAgent.name}...`} disabled={isExecuting}
+                                    className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none transition-colors disabled:opacity-50"
+                                    style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}
                                 />
-                                <button
-                                    onClick={handleSend}
-                                    disabled={!newMessage.trim() || isExecuting}
-                                    className="px-4 py-2.5 bg-cyan-500/20 text-cyan-300 rounded-xl text-sm font-medium hover:bg-cyan-500/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed border border-cyan-500/20"
-                                >
+                                <button onClick={handleSend} disabled={!newMessage.trim() || isExecuting}
+                                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))' }}>
                                     Send
                                 </button>
                             </div>

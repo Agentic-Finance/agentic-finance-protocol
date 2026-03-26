@@ -110,9 +110,9 @@ curl -X POST https://agt.finance/agents/{id}/execute \\
         desc: 'TypeScript agent using Agentic Finance SDK with real on-chain execution',
         framework: 'TypeScript',
         color: 'indigo',
-        install: 'npm install @agentic-finance/sdk',
+        install: 'npm install agtfi-mcp-server',
         github: '#',
-        code: `import { AgentClient } from '@agentic-finance/sdk';
+        code: `import { AgentClient } from 'agtfi-mcp-server';
 
 const agent = new AgentClient({
   id: 'my-agent',
@@ -145,9 +145,9 @@ agent.listen(3020);`,
         desc: '18 pattern-matched actions for Eliza agents',
         framework: 'TypeScript',
         color: 'purple',
-        install: 'npm install @agentic-finance/eliza-plugin',
+        install: 'npm install agtfi-mcp-server',
         github: '#',
-        code: `import { agenticFinancePlugin } from '@agentic-finance/eliza-plugin';
+        code: `import { agenticFinancePlugin } from 'agtfi-mcp-server';
 
 // Register Agentic Finance plugin with your Eliza agent
 const agent = new AgentRuntime({
@@ -179,9 +179,9 @@ const agent = new AgentRuntime({
         desc: 'Use Agentic Finance agents as LangChain structured tools',
         framework: 'TypeScript',
         color: 'teal',
-        install: 'npm install @agentic-finance/langchain',
+        install: 'npm install agtfi-mcp-server',
         github: '#',
-        code: `import { AgentTool } from '@agentic-finance/langchain';
+        code: `import { AgentTool } from 'agtfi-mcp-server';
 import { AgentExecutor } from 'langchain/agents';
 import { ChatOpenAI } from '@langchain/openai';
 
@@ -230,16 +230,16 @@ const QUICK_START_STEPS = [
     {
         step: 1,
         title: 'Install the SDK',
-        code: `npm install @agentic-finance/sdk
+        code: `npm install agtfi-mcp-server
 # or start from scratch:
 mkdir my-agent && cd my-agent && npm init -y
-npm install @agentic-finance/sdk ethers`,
+npm install agtfi-mcp-server ethers`,
         icon: CommandLineIcon,
     },
     {
         step: 2,
         title: 'Define your Agent',
-        code: `import { AgentClient } from '@agentic-finance/sdk';
+        code: `import { AgentClient } from 'agtfi-mcp-server';
 
 const agent = new AgentClient({
   id: 'my-cool-agent',
@@ -563,11 +563,11 @@ export default function DevelopersPage() {
                     {/* Integrations grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
-                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: '@agentic-finance/sdk', npm: 'https://www.npmjs.com/package/@agentic-finance/sdk' },
-                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: '@agentic-finance/sdk', npm: 'https://www.npmjs.com/package/@agentic-finance/sdk' },
-                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: '@agentic-finance/langchain', npm: 'https://www.npmjs.com/package/@agentic-finance/langchain' },
+                            { name: 'OpenAI', icon: '🤖', desc: 'Function-calling tools', color: 'emerald', pkg: 'agtfi-mcp-server', npm: 'https://www.npmjs.com/package/agtfi-mcp-server' },
+                            { name: 'Anthropic', icon: '🧠', desc: 'Tool-use definitions', color: 'amber', pkg: 'agtfi-mcp-server', npm: 'https://www.npmjs.com/package/agtfi-mcp-server' },
+                            { name: 'LangChain', icon: '🦜', desc: 'StructuredTool wrappers', color: 'teal', pkg: 'agtfi-mcp-server', npm: 'https://www.npmjs.com/package/agtfi-mcp-server' },
                             { name: 'CrewAI', icon: '👥', desc: 'Python BaseTool', color: 'sky', pkg: 'agentic-finance-crewai', npm: '' },
-                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: '@agentic-finance/eliza-plugin', npm: 'https://www.npmjs.com/package/@agentic-finance/eliza-plugin' },
+                            { name: 'Eliza', icon: '💜', desc: '18 agent actions', color: 'purple', pkg: 'agtfi-mcp-server', npm: 'https://www.npmjs.com/package/agtfi-mcp-server' },
                             { name: 'MCP', icon: '🔌', desc: 'Model Context Protocol', color: 'rose', pkg: '@agentic-finance/mcp-server', npm: 'https://www.npmjs.com/package/@agentic-finance/mcp-server' },
                             { name: 'OpenClaw', icon: '🐾', desc: 'Skill marketplace', color: 'orange', pkg: 'openclaw install agentic-finance', npm: 'https://clawhub.ai/skills/agentic-finance' },
                         ].map((int) => (

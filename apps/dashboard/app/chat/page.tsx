@@ -42,21 +42,26 @@ export default function ChatPage() {
                     <div className="flex items-center justify-center h-full">
                         <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(99,102,241,0.3)', borderTopColor: '#6366f1' }} />
                     </div>
-                ) : !walletAddress ? (
+                ) : !walletAddress && !authenticated ? (
                     <div className="flex items-center justify-center h-full">
                         <div className="text-center">
                             <div className="text-6xl mb-4 opacity-20">&#128274;</div>
-                            <p className="text-lg font-medium" style={{ color: 'var(--pp-text-secondary)' }}>Connect your wallet</p>
+                            <p className="text-lg font-medium" style={{ color: 'var(--pp-text-secondary)' }}>Sign in to continue</p>
                             <p className="text-sm mt-1 mb-4" style={{ color: 'var(--pp-text-muted)' }}>
                                 Sign in to chat with AI agents
                             </p>
                             <button
-                                onClick={connect}
-                                className="px-6 py-2.5 bg-cyan-500/20 text-cyan-300 rounded-xl text-sm font-medium hover:bg-cyan-500/30 transition-all border border-cyan-500/20"
+                                onClick={() => login()}
+                                className="px-6 py-2.5 rounded-xl text-sm font-medium text-white hover:opacity-90 transition-all"
+                                style={{ background: 'linear-gradient(135deg, #06b6d4, #6366f1)' }}
                             >
-                                Connect Wallet
+                                Sign In
                             </button>
                         </div>
+                    </div>
+                ) : !walletAddress ? (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'rgba(99,102,241,0.3)', borderTopColor: '#6366f1' }} />
                     </div>
                 ) : (
                     <AgentChatView walletAddress={walletAddress} />

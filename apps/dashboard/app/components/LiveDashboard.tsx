@@ -87,34 +87,30 @@ function TxFeed({ events }: { events: ProtocolEvent[] }) {
           <p className="text-slate-500 text-xs text-center py-4">Waiting for events...</p>
         )}
         {recent.map((event) => (
-          <div key={event.id} className="flex items-center gap-3 text-xs bg-slate-800/40 rounded-lg px-3 py-2 border border-white/[0.03] hover:border-indigo-500/20 transition-colors">
-            <span className="text-lg">{getEventIcon(event.type)}</span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-slate-200 font-medium">{getEventLabel(event.type)}</span>
-                {event.data.agentId && (
-                  <span className="text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded text-[10px]">{event.data.agentId}</span>
-                )}
+          <div key={event.id} className="flex items-start gap-3 text-xs bg-slate-800/40 rounded-lg px-3 py-2.5 border border-white/[0.03] hover:border-indigo-500/20 transition-colors">
+            <span className="text-lg flex-shrink-0 mt-0.5">{getEventIcon(event.type)}</span>
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-slate-200 font-medium truncate">{getEventLabel(event.type)}</span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {event.data.amount && Number.isFinite(Number(event.data.amount)) && (
+                    <span className="text-emerald-400 font-mono text-[10px]">
+                      ${Number(event.data.amount).toFixed(2)}
+                    </span>
+                  )}
+                  <span className="text-slate-600 text-[10px]">
+                    {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
               </div>
               {event.data.txHash && (
-                <a
-                  href={event.data.explorerUrl || `https://explore.moderato.tempo.xyz/tx/${event.data.txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-500 hover:text-indigo-400 font-mono truncate block"
-                >
-                  {event.data.txHash.slice(0, 10)}...{event.data.txHash.slice(-8)}
+                <a href={event.data.explorerUrl || `https://explore.moderato.tempo.xyz/tx/${event.data.txHash}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-slate-500 hover:text-indigo-400 font-mono text-[10px] truncate block mt-0.5">
+                  {event.data.txHash.slice(0, 8)}...{event.data.txHash.slice(-6)}
                 </a>
               )}
             </div>
-            {event.data.amount && Number.isFinite(Number(event.data.amount)) && (
-              <span className="text-emerald-400 font-mono text-[10px] whitespace-nowrap">
-                ${Number(event.data.amount).toFixed(2)}
-              </span>
-            )}
-            <span className="text-slate-600 text-[10px] whitespace-nowrap">
-              {new Date(event.timestamp).toLocaleTimeString()}
-            </span>
           </div>
         ))}
       </div>

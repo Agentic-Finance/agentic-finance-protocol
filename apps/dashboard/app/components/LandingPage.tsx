@@ -158,26 +158,27 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* --- NAV --- */}
             <nav style={{
                 position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-                padding: '16px 24px',
+                padding: '12px 16px',
                 background: scrollY > 50 ? 'rgba(17, 24, 39, 0.95)' : 'transparent',
                 backdropFilter: scrollY > 50 ? 'blur(20px)' : 'none',
                 borderBottom: scrollY > 50 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                 transition: 'all 0.3s',
             }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Image src="/logo-v2.png" alt="AF" width={36} height={36} style={{ borderRadius: '8px' }} />
-                        <span style={{ fontWeight: 800, fontSize: '1.1rem', letterSpacing: '-0.02em' }}>Agentic Finance</span>
-                    </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Image src="/logo-v2.png" alt="AF" width={32} height={32} style={{ borderRadius: '8px' }} />
+                        <span className="hidden sm:inline" style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.02em' }}>Agentic Finance</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <a href="https://github.com/Agentic-Finance/agentic-finance-protocol" target="_blank" rel="noopener"
-                            style={{ padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, color: '#94A3B8', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none', transition: 'all 0.2s' }}>
+                            className="hidden sm:inline-block"
+                            style={{ padding: '7px 14px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 600, color: '#94A3B8', border: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none' }}>
                             GitHub
                         </a>
                         <button onClick={onLaunchApp} style={{
-                            padding: '8px 20px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 700,
+                            padding: '7px 16px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700,
                             background: 'linear-gradient(135deg, #FF2D87, #1BBFEC)', color: '#fff',
-                            border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+                            border: 'none', cursor: 'pointer',
                         }}>
                             Launch App
                         </button>
@@ -188,7 +189,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* HERO                                               */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '40px 20px 40px', textAlign: 'center' }}>
+            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '70px 16px 40px', textAlign: 'center' }}>
                 <ParticleGrid />
 
                 {/* Radial glow */}
@@ -293,7 +294,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* STATS BAR                                          */}
             {/* ═══════════════════════════════════════════════════ */}
             <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(15,20,35,0.8)', padding: '40px 20px' }}>
-                <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', textAlign: 'center' }}>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
                     {[
                         { ref: c1.ref, val: `${c1.count}+`, label: 'Smart Contracts', sub: 'Deployed on Tempo L1', color: '#FF2D87' },
                         { ref: c2.ref, val: c2.count.toLocaleString(), label: 'ZK Constraints', sub: 'Across 5 circuits', color: '#1BBFEC' },

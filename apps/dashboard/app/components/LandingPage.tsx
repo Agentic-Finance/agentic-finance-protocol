@@ -188,7 +188,7 @@ export default function LandingPage({ onLaunchApp }: { onLaunchApp: () => void }
             {/* ═══════════════════════════════════════════════════ */}
             {/* HERO                                               */}
             {/* ═══════════════════════════════════════════════════ */}
-            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '120px 20px 80px', textAlign: 'center' }}>
+            <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '40px 20px 40px', textAlign: 'center' }}>
                 <ParticleGrid />
 
                 {/* Radial glow */}

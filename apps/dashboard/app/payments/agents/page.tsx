@@ -27,12 +27,23 @@ export default function AgentPaymentsPage() {
     const { walletAddress } = useSharedWallet();
     const [gatewayStats, setGatewayStats] = useState({ totalSessions: 0, totalCompliant: 0, totalVolume: 0 });
 
-    // Fetch gateway stats from chain
+    // Fetch existing sessions from API
     useEffect(() => {
-        fetch(`/api/contract-read?address=${MPP_GATEWAY}&method=getStats`)
+        fetch('/api/mpp/session')
             .then(r => r.json())
             .then(data => {
-                if (data.result) setGatewayStats({ totalSessions: Number(data.result[0] || 0), totalCompliant: Number(data.result[1] || 0), totalVolume: Number(data.result[2] || 0) / 1e6 });
+                if (data.sessions) {
+                    setSessions(data.sessions.map((s: any) => ({
+                        id: s.sessionId,
+                        agent: s.serviceUrl || 'MPP Session',
+                        budget: parseFloat(s.spendingLimit) / 1e6,
+                        spent: parseFloat(s.spent) / 1e6,
+                        status: s.status,
+                        calls: s.payments?.length || 0,
+                        expiresAt: new Date(s.expiresAt).toISOString(),
+                        compliant: true,
+                    })));
+                }
             }).catch(() => {});
     }, []);
 
@@ -40,17 +51,35 @@ export default function AgentPaymentsPage() {
         if (!walletAddress) return;
         setCreating(true);
         try {
+            const durationMs = parseInt(duration) * 1000;
             const res = await fetch('/api/mpp/session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wallet: walletAddress, budget, duration, maxPerCall, requireCompliance }),
+                body: JSON.stringify({
+                    serviceUrl: `agent-session-${walletAddress.slice(0, 8)}`,
+                    spendingLimit: (parseFloat(budget) * 1e6).toString(),
+                    token: '0x20c0000000000000000000000000000000000001',
+                    durationMs,
+                    recipientAddress: walletAddress,
+                }),
             });
             const data = await res.json();
-            if (data.sessionId) {
-                setSessions(prev => [{ id: data.sessionId, agent: 'New Session', budget: parseFloat(budget), spent: 0, status: 'active', calls: 0, expiresAt: new Date(Date.now() + parseInt(duration) * 1000).toISOString(), compliant: requireCompliance }, ...prev]);
+            if (data.success && data.session) {
+                setSessions(prev => [{
+                    id: data.session.sessionId,
+                    agent: 'MPP Session',
+                    budget: parseFloat(budget),
+                    spent: 0,
+                    status: 'active',
+                    calls: 0,
+                    expiresAt: new Date(data.session.expiresAt).toISOString(),
+                    compliant: requireCompliance,
+                }, ...prev]);
                 setShowCreate(false);
+            } else {
+                alert(data.error || 'Failed to create session');
             }
-        } catch {}
+        } catch (e: any) { alert(e.message); }
         finally { setCreating(false); }
     }, [walletAddress, budget, duration, maxPerCall, requireCompliance]);
 

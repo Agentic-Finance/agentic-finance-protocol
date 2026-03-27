@@ -23,7 +23,6 @@ const sections: NavSection[] = [
             { href: '/?app=1', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
             { href: '/chat', label: 'Chat', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
             { href: '/portfolio', label: 'Portfolio', icon: <BriefcaseIcon className="w-[18px] h-[18px]" /> },
-            { href: '/live', label: 'Live Feed', icon: <ActivityIcon className="w-[18px] h-[18px]" /> },
             { href: '/stream', label: 'Streams', icon: <SignalIcon className="w-[18px] h-[18px]" /> },
         ],
     },
@@ -39,9 +38,11 @@ const sections: NavSection[] = [
     {
         label: 'Payments',
         items: [
-            { href: '/mpp', label: 'MPP Protocol', icon: <ArrowsRightLeftIcon className="w-[18px] h-[18px]" /> },
-            { href: '/mpp/catalog', label: 'API Catalog', icon: <GlobeAltIcon className="w-[18px] h-[18px]" /> },
-            { href: '/mpp/laso', label: 'Laso Finance', icon: <CreditCardIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/send', label: 'Send & Receive', icon: <ArrowsRightLeftIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/swap', label: 'Swap & Bridge', icon: <GlobeAltIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/buy', label: 'Buy & Sell', icon: <CreditCardIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/subscriptions', label: 'Subscriptions', icon: <SignalIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/agents', label: 'Agent Payments', icon: <BoltIcon className="w-[18px] h-[18px]" /> },
         ],
     },
     {
@@ -100,7 +101,7 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center justify-between">
-                <Link href="/?app=1" className="flex items-center gap-3 px-3 py-4 group">
+                <Link href="/?app=1" className="flex items-center gap-3 px-3 py-4 group" title="Dashboard">
                     <div className="flex-shrink-0 relative" style={{ width: 36, height: 36, perspective: '200px' }}>
                         <div className="absolute inset-[-6px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(62,221,185,0.1) 0%, rgba(27,191,236,0.05) 50%, transparent 70%)', animation: 'pulse-glow 4s ease-in-out infinite' }} />
                         <div style={{

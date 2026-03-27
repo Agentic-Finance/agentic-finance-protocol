@@ -5,12 +5,15 @@ import { useSidebar } from './SidebarContext';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-    HomeIcon, ChatBubbleLeftRightIcon, BriefcaseIcon, ActivityIcon,
-    SignalIcon, AiBrainIcon, BoltIcon, ShieldIcon, ChartBarIcon,
+    HomeIcon, ChatBubbleLeftRightIcon, BriefcaseIcon,
+    AiBrainIcon, BoltIcon, ShieldIcon, ChartBarIcon,
     CurrencyDollarIcon, WalletIcon, ClipboardIcon,
     WrenchScrewdriverIcon, CodeBracketIcon,
     ChevronLeftIcon, ChevronRightIcon, XMarkIcon,
     ArrowsRightLeftIcon, CreditCardIcon, GlobeAltIcon,
+    SignalIcon, RobotIcon, BookOpenIcon, MessageIcon,
+    PulseIcon, ShieldCheckIcon, CoinsIcon, AiNetworkIcon,
+    ArrowPathIcon,
 } from '../icons';
 
 interface NavSection { label: string; items: NavItem[]; }
@@ -23,15 +26,15 @@ const sections: NavSection[] = [
             { href: '/?app=1', label: 'Dashboard', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
             { href: '/chat', label: 'Chat', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
             { href: '/portfolio', label: 'Portfolio', icon: <BriefcaseIcon className="w-[18px] h-[18px]" /> },
-            { href: '/stream', label: 'Streams', icon: <SignalIcon className="w-[18px] h-[18px]" /> },
+            { href: '/stream', label: 'Streams', icon: <PulseIcon className="w-[18px] h-[18px]" /> },
         ],
     },
     {
         label: 'Intelligence',
         items: [
             { href: '/cortex', label: 'Cortex', icon: <AiBrainIcon className="w-[18px] h-[18px]" /> },
-            { href: '/swarm', label: 'Swarm', icon: <BoltIcon className="w-[18px] h-[18px]" /> },
-            { href: '/sentinel', label: 'Sentinel', icon: <ShieldIcon className="w-[18px] h-[18px]" /> },
+            { href: '/swarm', label: 'Swarm', icon: <AiNetworkIcon className="w-[18px] h-[18px]" /> },
+            { href: '/sentinel', label: 'Sentinel', icon: <ShieldCheckIcon className="w-[18px] h-[18px]" /> },
             { href: '/analytics', label: 'Analytics', icon: <ChartBarIcon className="w-[18px] h-[18px]" /> },
         ],
     },
@@ -39,17 +42,17 @@ const sections: NavSection[] = [
         label: 'Payments',
         items: [
             { href: '/payments/send', label: 'Send & Receive', icon: <ArrowsRightLeftIcon className="w-[18px] h-[18px]" /> },
-            { href: '/payments/swap', label: 'Swap & Bridge', icon: <GlobeAltIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/swap', label: 'Swap & Bridge', icon: <ArrowPathIcon className="w-[18px] h-[18px]" /> },
             { href: '/payments/buy', label: 'Buy & Sell', icon: <CreditCardIcon className="w-[18px] h-[18px]" /> },
             { href: '/payments/subscriptions', label: 'Subscriptions', icon: <SignalIcon className="w-[18px] h-[18px]" /> },
-            { href: '/payments/agents', label: 'Agent Payments', icon: <BoltIcon className="w-[18px] h-[18px]" /> },
+            { href: '/payments/agents', label: 'Agent Payments', icon: <RobotIcon className="w-[18px] h-[18px]" /> },
         ],
     },
     {
         label: 'Finance',
         items: [
             { href: '/shield', label: 'Shield', icon: <ShieldIcon className="w-[18px] h-[18px]" /> },
-            { href: '/revenue', label: 'Revenue', icon: <CurrencyDollarIcon className="w-[18px] h-[18px]" /> },
+            { href: '/revenue', label: 'Revenue', icon: <CoinsIcon className="w-[18px] h-[18px]" /> },
             { href: '/wallets', label: 'Wallets', icon: <WalletIcon className="w-[18px] h-[18px]" /> },
             { href: '/transactions', label: 'History', icon: <ClipboardIcon className="w-[18px] h-[18px]" /> },
         ],
@@ -57,8 +60,8 @@ const sections: NavSection[] = [
     {
         label: 'Resources',
         items: [
-            { href: '/docs', label: 'Docs', icon: <ClipboardIcon className="w-[18px] h-[18px]" /> },
-            { href: '/community', label: 'Blog', icon: <ChatBubbleLeftRightIcon className="w-[18px] h-[18px]" /> },
+            { href: '/docs', label: 'Docs', icon: <BookOpenIcon className="w-[18px] h-[18px]" /> },
+            { href: '/community', label: 'Blog', icon: <MessageIcon className="w-[18px] h-[18px]" /> },
         ],
     },
     {

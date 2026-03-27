@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, LogOut, Copy, Check, Shield, Key, Sun, Moon } from 'lucide-react';
+import { ChevronDown, LogOut, Copy, Check, Shield, Key, Sun, Moon, Home as HomeIcon } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
 
 interface UserProfileAreaProps {
@@ -193,6 +193,18 @@ export function UserProfileArea({ walletAddress: walletProp, isAdmin, onDisconne
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
             </button>
+
+            <a
+              href="/"
+              onClick={() => {
+                setOpen(false);
+                sessionStorage.removeItem('agtfi_session_active');
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/[0.04] transition-colors"
+            >
+              <HomeIcon className="w-4 h-4" />
+              <span>Home Page</span>
+            </a>
 
             <div className="border-t border-white/[0.06] my-1" />
 

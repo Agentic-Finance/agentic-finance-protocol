@@ -155,10 +155,16 @@ export default function Dashboard() {
     const { signMessage: privySignMsg } = usePrivySignMessage();
 
     // Skip landing if Privy already authenticated (e.g., navigating back from sub-page)
+    // But respect user's explicit "Home Page" navigation (no session flag = show landing)
     useEffect(() => {
         if (privyReady && privyAuthenticated && showLanding) {
-            setShowLanding(false);
-            sessionStorage.setItem('agtfi_session_active', 'true');
+            const hasSession = sessionStorage.getItem('agtfi_session_active') === 'true';
+            const params = new URLSearchParams(window.location.search);
+            const hasAppParam = params.get('app') === '1';
+            // Only auto-skip if session flag exists or ?app=1
+            if (hasSession || hasAppParam) {
+                setShowLanding(false);
+            }
         }
     }, [privyReady, privyAuthenticated, showLanding]);
 

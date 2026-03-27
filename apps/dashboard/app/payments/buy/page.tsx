@@ -1,175 +1,233 @@
 'use client';
 import React, { useState } from 'react';
-import { useSharedWallet } from '../../providers/SharedWalletContext';
 
-const PROVIDERS = [
-    {
-        id: 'moonpay',
-        name: 'MoonPay',
-        logo: 'https://www.moonpay.com/assets/logo-full-white.svg',
-        fees: '1.5-4.5%',
-        methods: ['Visa', 'Mastercard', 'Apple Pay', 'Google Pay', 'Bank Transfer'],
-        url: (addr: string, crypto: string, mode: string) =>
-            `https://buy-sandbox.moonpay.com/?apiKey=pk_test_1&currencyCode=${crypto.toLowerCase()}&walletAddress=${addr}`,
-        color: '#7B61FF',
-    },
-    {
-        id: 'transak',
-        name: 'Transak',
-        logo: 'https://assets.transak.com/images/logo/transak-logo.svg',
-        fees: '1-5%',
-        methods: ['Visa', 'Mastercard', 'Bank Transfer', 'SEPA'],
-        url: (addr: string, crypto: string, mode: string) =>
-            `https://global-stg.transak.com/?apiKey=e05c35b8-c28d-4a81-bb0a-34a089e3a7ff&cryptoCurrencyCode=${crypto}&walletAddress=${addr}&productsAvailed=${mode.toUpperCase()}`,
-        color: '#0364FF',
-    },
-    {
-        id: 'ramp',
-        name: 'Ramp',
-        logo: 'https://ramp.network/assets/ramp-logo-light.svg',
-        fees: '0.49-2.9%',
-        methods: ['Visa', 'Mastercard', 'Apple Pay', 'Bank Transfer'],
-        url: (addr: string, crypto: string, mode: string) =>
-            `https://app.demo.ramp.network/?hostApiKey=demo&userAddress=${addr}&defaultAsset=${crypto}`,
-        color: '#21BF73',
-    },
+type Tab = 'buy' | 'sell' | 'visa' | 'gift';
+
+const CRYPTO_OPTIONS = [
+    { symbol: 'USDC', name: 'USD Coin', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg' },
+    { symbol: 'USDT', name: 'Tether', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdt.svg' },
+    { symbol: 'ETH', name: 'Ethereum', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/eth.svg' },
 ];
 
-const CRYPTOS = [
-    { symbol: 'USDC', name: 'USD Coin', icon: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg', color: '#2775CA' },
-    { symbol: 'ETH', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg', color: '#627EEA' },
-    { symbol: 'USDT', name: 'Tether', icon: 'https://cryptologos.cc/logos/tether-usdt-logo.svg', color: '#26A17B' },
-    { symbol: 'BTC', name: 'Bitcoin', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg', color: '#F7931A' },
-    { symbol: 'MATIC', name: 'Polygon', icon: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' },
+const SELL_OPTIONS = [
+    { id: 'venmo', name: 'Venmo', icon: '💜', desc: 'Instant transfer to Venmo account' },
+    { id: 'paypal', name: 'PayPal', icon: '🅿️', desc: 'Send to PayPal email' },
+    { id: 'bank', name: 'Bank Transfer', icon: '🏦', desc: 'ACH/Wire to bank account' },
+];
+
+const GIFT_BRANDS = [
+    { id: 'amazon', name: 'Amazon', icon: '📦', amounts: [25, 50, 100, 200] },
+    { id: 'apple', name: 'Apple', icon: '🍎', amounts: [25, 50, 100] },
+    { id: 'google', name: 'Google Play', icon: '🎮', amounts: [10, 25, 50, 100] },
+    { id: 'uber', name: 'Uber', icon: '🚗', amounts: [25, 50] },
+    { id: 'starbucks', name: 'Starbucks', icon: '☕', amounts: [10, 25, 50] },
+    { id: 'netflix', name: 'Netflix', icon: '🎬', amounts: [25, 50, 100] },
 ];
 
 export default function BuySellPage() {
-    const [mode, setMode] = useState<'buy' | 'sell'>('buy');
-    const [selectedCrypto, setSelectedCrypto] = useState('USDC');
-    const [selectedProvider, setSelectedProvider] = useState('moonpay');
+    const [tab, setTab] = useState<Tab>('buy');
     const [amount, setAmount] = useState('');
-    const { walletAddress } = useSharedWallet();
+    const [selectedCrypto, setSelectedCrypto] = useState(CRYPTO_OPTIONS[0]);
+    const [selectedSellOption, setSelectedSellOption] = useState(SELL_OPTIONS[0]);
+    const [selectedGift, setSelectedGift] = useState(GIFT_BRANDS[0]);
+    const [selectedGiftAmount, setSelectedGiftAmount] = useState(50);
+    const [email, setEmail] = useState('');
+    const [processing, setProcessing] = useState(false);
+    const [success, setSuccess] = useState<string | null>(null);
 
-    const provider = PROVIDERS.find(p => p.id === selectedProvider)!;
-    const crypto = CRYPTOS.find(c => c.symbol === selectedCrypto)!;
+    const handleAction = async () => {
+        setProcessing(true);
+        setSuccess(null);
 
-    const handleBuy = () => {
-        const url = provider.url(walletAddress || '', selectedCrypto, mode);
-        window.open(url, '_blank', 'width=500,height=700');
+        try {
+            if (tab === 'buy') {
+                const res = await fetch('/api/locus/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'buy', amount, crypto: selectedCrypto.symbol }),
+                });
+                const data = await res.json();
+                setSuccess(data.message || `Buy order placed: ${amount} USD → ${selectedCrypto.symbol}`);
+            } else if (tab === 'sell') {
+                const res = await fetch('/api/locus/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'sell', amount, method: selectedSellOption.id, email }),
+                });
+                const data = await res.json();
+                setSuccess(data.message || `Sell order placed: ${amount} ${selectedCrypto.symbol} → ${selectedSellOption.name}`);
+            } else if (tab === 'visa') {
+                const res = await fetch('/api/locus/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'visa', amount }),
+                });
+                const data = await res.json();
+                setSuccess(data.message || `Visa card funded: $${amount}`);
+            } else if (tab === 'gift') {
+                const res = await fetch('/api/locus/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'gift', brand: selectedGift.id, amount: selectedGiftAmount }),
+                });
+                const data = await res.json();
+                setSuccess(data.message || `${selectedGift.name} gift card: $${selectedGiftAmount}`);
+            }
+        } catch (e: any) {
+            setSuccess(`Error: ${e.message}`);
+        }
+        setProcessing(false);
     };
 
     return (
         <div style={{ color: 'var(--pp-text-primary)' }}>
             <div className="mb-6">
-                <h1 className="text-xl font-bold">Buy & Sell Crypto</h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Purchase crypto with card or bank — compare providers for best rates</p>
+                <h1 className="text-xl font-bold">Buy, Sell & Cash Out</h1>
+                <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Convert between crypto and fiat — Visa cards, Venmo, PayPal, gift cards</p>
             </div>
 
-            <div className="max-w-2xl mx-auto">
-                {/* Mode */}
-                <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
-                    <button onClick={() => setMode('buy')} className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all"
-                        style={{ background: mode === 'buy' ? 'var(--agt-mint)' : 'transparent', color: mode === 'buy' ? '#000' : 'var(--pp-text-muted)' }}>Buy Crypto</button>
-                    <button onClick={() => setMode('sell')} className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all"
-                        style={{ background: mode === 'sell' ? 'var(--agt-orange)' : 'transparent', color: mode === 'sell' ? '#000' : 'var(--pp-text-muted)' }}>Sell Crypto</button>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    {/* Left: Form */}
-                    <div className="lg:col-span-3 rounded-xl p-6" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                        {/* Amount */}
-                        <div className="mb-4">
-                            <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>{mode === 'buy' ? 'YOU PAY' : 'YOU SELL'}</label>
-                            <div className="flex gap-2">
-                                <input type="number" placeholder="100" value={amount} onChange={e => setAmount(e.target.value)}
-                                    className="flex-1 px-4 py-3 rounded-xl text-lg font-mono outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                                <span className="flex items-center px-4 py-3 rounded-xl text-sm font-medium" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>USD</span>
-                            </div>
-                        </div>
-
-                        {/* Crypto selector */}
-                        <div className="mb-4">
-                            <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>{mode === 'buy' ? 'YOU RECEIVE' : 'TOKEN'}</label>
-                            <div className="grid grid-cols-5 gap-2">
-                                {CRYPTOS.map(c => (
-                                    <button key={c.symbol} onClick={() => setSelectedCrypto(c.symbol)}
-                                        className="flex flex-col items-center gap-1 py-3 rounded-xl transition-all"
-                                        style={{ background: selectedCrypto === c.symbol ? `${c.color}15` : 'var(--pp-surface-1)', border: `1px solid ${selectedCrypto === c.symbol ? c.color + '40' : 'var(--pp-border)'}` }}>
-                                        <img src={c.icon} alt={c.symbol} className="w-6 h-6" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                                        <span className="text-[10px] font-semibold" style={{ color: selectedCrypto === c.symbol ? c.color : 'var(--pp-text-muted)' }}>{c.symbol}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Provider selector */}
-                        <div className="mb-4">
-                            <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>PROVIDER</label>
-                            <div className="space-y-2">
-                                {PROVIDERS.map(p => (
-                                    <button key={p.id} onClick={() => setSelectedProvider(p.id)}
-                                        className="w-full flex items-center justify-between p-3 rounded-xl transition-all"
-                                        style={{ background: selectedProvider === p.id ? `${p.color}10` : 'var(--pp-surface-1)', border: `1px solid ${selectedProvider === p.id ? p.color + '40' : 'var(--pp-border)'}` }}>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold" style={{ background: `${p.color}20`, color: p.color }}>{p.name[0]}</div>
-                                            <div className="text-left">
-                                                <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>{p.name}</p>
-                                                <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{p.methods.slice(0, 3).join(', ')}</p>
-                                            </div>
-                                        </div>
-                                        <span className="text-xs font-mono" style={{ color: p.color }}>{p.fees}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Estimate */}
-                        {amount && (
-                            <div className="p-3 rounded-xl mb-4 space-y-1" style={{ background: 'var(--pp-surface-1)' }}>
-                                <div className="flex justify-between text-xs"><span style={{ color: 'var(--pp-text-muted)' }}>You {mode === 'buy' ? 'pay' : 'sell'}</span><span>${amount} USD</span></div>
-                                <div className="flex justify-between text-xs"><span style={{ color: 'var(--pp-text-muted)' }}>Fee (~{provider.fees.split('-')[0]})</span><span>~${(parseFloat(amount) * 0.02).toFixed(2)}</span></div>
-                                <div className="flex justify-between text-xs font-semibold"><span style={{ color: 'var(--pp-text-muted)' }}>You receive</span><span style={{ color: 'var(--agt-mint)' }}>~{(parseFloat(amount) * 0.97).toFixed(2)} {selectedCrypto}</span></div>
-                            </div>
-                        )}
-
-                        <button onClick={handleBuy} disabled={!amount}
-                            className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40"
-                            style={{ background: mode === 'buy' ? `linear-gradient(135deg, ${crypto.color}, var(--agt-mint))` : `linear-gradient(135deg, var(--agt-orange), var(--agt-pink))` }}>
-                            {mode === 'buy' ? `Buy ${selectedCrypto} via ${provider.name}` : `Sell ${selectedCrypto} via ${provider.name}`}
+            <div className="max-w-md mx-auto">
+                {/* Tab selector */}
+                <div className="grid grid-cols-4 rounded-xl mb-4 p-1" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                    {([
+                        { key: 'buy' as Tab, label: '💳 Buy', },
+                        { key: 'sell' as Tab, label: '💸 Sell' },
+                        { key: 'visa' as Tab, label: '💳 Visa' },
+                        { key: 'gift' as Tab, label: '🎁 Gift' },
+                    ]).map(t => (
+                        <button key={t.key} onClick={() => { setTab(t.key); setSuccess(null); }}
+                            className="py-2 rounded-lg text-[11px] font-semibold transition-all"
+                            style={{ background: tab === t.key ? 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' : 'transparent', color: tab === t.key ? '#fff' : 'var(--pp-text-muted)' }}>
+                            {t.label}
                         </button>
-
-                        <p className="text-[10px] text-center mt-3" style={{ color: 'var(--pp-text-muted)' }}>Opens {provider.name} in a new window. Sandbox/demo mode for testing.</p>
-                    </div>
-
-                    {/* Right: Info */}
-                    <div className="lg:col-span-2 space-y-4">
-                        <div className="rounded-xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                            <h3 className="text-sm font-bold mb-3">Supported Payment Methods</h3>
-                            <div className="grid grid-cols-2 gap-2">
-                                {['💳 Visa', '💳 Mastercard', '🍎 Apple Pay', '📱 Google Pay', '🏦 Bank Transfer', '🇪🇺 SEPA'].map(m => (
-                                    <div key={m} className="flex items-center gap-2 p-2 rounded-lg text-xs" style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-secondary)' }}>{m}</div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="rounded-xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                            <h3 className="text-sm font-bold mb-3">How It Works</h3>
-                            <div className="space-y-3">
-                                {[
-                                    { step: '1', text: 'Choose amount and crypto' },
-                                    { step: '2', text: 'Select payment provider' },
-                                    { step: '3', text: 'Complete payment in provider window' },
-                                    { step: '4', text: 'Crypto sent to your wallet' },
-                                ].map(s => (
-                                    <div key={s.step} className="flex items-center gap-3">
-                                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ background: 'var(--pp-surface-2)', color: 'var(--agt-blue)' }}>{s.step}</div>
-                                        <p className="text-xs" style={{ color: 'var(--pp-text-secondary)' }}>{s.text}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
+
+                {/* Card */}
+                <div className="rounded-2xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
+
+                    {/* BUY TAB */}
+                    {tab === 'buy' && (
+                        <>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--pp-text-muted)' }}>Buy Crypto with USD</p>
+                            <div className="flex items-center gap-3 p-3 rounded-xl mb-4" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                <span className="text-lg" style={{ color: 'var(--pp-text-muted)' }}>$</span>
+                                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00"
+                                    className="flex-1 text-2xl font-bold bg-transparent outline-none" style={{ color: 'var(--pp-text-primary)' }} />
+                                <span className="text-sm font-medium" style={{ color: 'var(--pp-text-muted)' }}>USD</span>
+                            </div>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--pp-text-muted)' }}>Receive</p>
+                            <div className="space-y-2 mb-4">
+                                {CRYPTO_OPTIONS.map(c => (
+                                    <button key={c.symbol} onClick={() => setSelectedCrypto(c)}
+                                        className="w-full flex items-center gap-3 p-3 rounded-xl transition-all"
+                                        style={{ background: selectedCrypto.symbol === c.symbol ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: `1px solid ${selectedCrypto.symbol === c.symbol ? 'var(--agt-blue)' : 'var(--pp-border)'}` }}>
+                                        <img src={c.icon} alt="" className="w-8 h-8 rounded-full" />
+                                        <div className="text-left">
+                                            <p className="text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{c.symbol}</p>
+                                            <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{c.name}</p>
+                                        </div>
+                                        {selectedCrypto.symbol === c.symbol && <span className="ml-auto text-sm" style={{ color: 'var(--agt-blue)' }}>✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    {/* SELL TAB */}
+                    {tab === 'sell' && (
+                        <>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--pp-text-muted)' }}>Sell Crypto</p>
+                            <div className="flex items-center gap-3 p-3 rounded-xl mb-4" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00"
+                                    className="flex-1 text-2xl font-bold bg-transparent outline-none" style={{ color: 'var(--pp-text-primary)' }} />
+                                <span className="text-sm font-medium" style={{ color: 'var(--pp-text-muted)' }}>USDC</span>
+                            </div>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--pp-text-muted)' }}>Cash out to</p>
+                            <div className="space-y-2 mb-4">
+                                {SELL_OPTIONS.map(o => (
+                                    <button key={o.id} onClick={() => setSelectedSellOption(o)}
+                                        className="w-full flex items-center gap-3 p-3 rounded-xl transition-all"
+                                        style={{ background: selectedSellOption.id === o.id ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: `1px solid ${selectedSellOption.id === o.id ? 'var(--agt-mint)' : 'var(--pp-border)'}` }}>
+                                        <span className="text-2xl">{o.icon}</span>
+                                        <div className="text-left">
+                                            <p className="text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{o.name}</p>
+                                            <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{o.desc}</p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={`${selectedSellOption.name} email or username`}
+                                className="w-full px-4 py-3 rounded-xl text-sm outline-none mb-4"
+                                style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                        </>
+                    )}
+
+                    {/* VISA TAB */}
+                    {tab === 'visa' && (
+                        <>
+                            <div className="text-center mb-4">
+                                <div className="w-48 h-28 mx-auto rounded-xl flex items-center justify-center mb-3" style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', border: '1px solid var(--pp-border)' }}>
+                                    <div>
+                                        <p className="text-[10px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>PREPAID</p>
+                                        <p className="text-lg font-bold text-white">Visa Card</p>
+                                        <p className="text-[9px]" style={{ color: 'var(--agt-mint)' }}>Funded by USDC</p>
+                                    </div>
+                                </div>
+                                <p className="text-[11px]" style={{ color: 'var(--pp-text-muted)' }}>Get a virtual Visa card funded by your crypto balance</p>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 rounded-xl mb-4" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                <span className="text-lg" style={{ color: 'var(--pp-text-muted)' }}>$</span>
+                                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder="0.00"
+                                    className="flex-1 text-2xl font-bold bg-transparent outline-none" style={{ color: 'var(--pp-text-primary)' }} />
+                                <span className="text-sm font-medium" style={{ color: 'var(--pp-text-muted)' }}>USD</span>
+                            </div>
+                        </>
+                    )}
+
+                    {/* GIFT TAB */}
+                    {tab === 'gift' && (
+                        <>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--pp-text-muted)' }}>Buy Gift Card with Crypto</p>
+                            <div className="grid grid-cols-3 gap-2 mb-4">
+                                {GIFT_BRANDS.map(g => (
+                                    <button key={g.id} onClick={() => setSelectedGift(g)}
+                                        className="flex flex-col items-center gap-1 p-3 rounded-xl transition-all"
+                                        style={{ background: selectedGift.id === g.id ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: `1px solid ${selectedGift.id === g.id ? 'var(--agt-blue)' : 'var(--pp-border)'}` }}>
+                                        <span className="text-2xl">{g.icon}</span>
+                                        <span className="text-[10px] font-medium" style={{ color: 'var(--pp-text-primary)' }}>{g.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--pp-text-muted)' }}>Amount</p>
+                            <div className="flex gap-2 mb-4">
+                                {selectedGift.amounts.map(a => (
+                                    <button key={a} onClick={() => setSelectedGiftAmount(a)}
+                                        className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                                        style={{ background: selectedGiftAmount === a ? 'var(--agt-blue)' : 'var(--pp-surface-1)', color: selectedGiftAmount === a ? '#fff' : 'var(--pp-text-muted)', border: `1px solid ${selectedGiftAmount === a ? 'var(--agt-blue)' : 'var(--pp-border)'}` }}>
+                                        ${a}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    {/* Success message */}
+                    {success && (
+                        <div className="mb-4 p-3 rounded-xl text-sm" style={{ background: success.startsWith('Error') ? 'rgba(239,68,68,0.1)' : 'rgba(62,221,185,0.1)', border: `1px solid ${success.startsWith('Error') ? 'rgba(239,68,68,0.2)' : 'rgba(62,221,185,0.2)'}`, color: success.startsWith('Error') ? '#EF4444' : 'var(--agt-mint)' }}>
+                            {success}
+                        </div>
+                    )}
+
+                    {/* Action button */}
+                    <button onClick={handleAction} disabled={processing || (tab !== 'gift' && (!amount || parseFloat(amount) <= 0))}
+                        className="w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-40"
+                        style={{ background: 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' }}>
+                        {processing ? 'Processing...' : tab === 'buy' ? `Buy ${selectedCrypto.symbol}` : tab === 'sell' ? `Sell to ${selectedSellOption.name}` : tab === 'visa' ? 'Fund Visa Card' : `Buy $${selectedGiftAmount} ${selectedGift.name} Card`}
+                    </button>
+                </div>
+
+                <p className="text-center text-[9px] mt-3" style={{ color: 'var(--pp-text-muted)' }}>Powered by Locus API — USDC settlements on supported networks</p>
             </div>
         </div>
     );

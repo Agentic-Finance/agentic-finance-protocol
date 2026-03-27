@@ -62,34 +62,31 @@ export default function PortfolioPage() {
     const [txHistory, setTxHistory] = useState<TxHistory[]>([]);
     const [selectedChain, setSelectedChain] = useState<string>('all');
 
-    // Fetch balances from Tempo + simulated multi-chain
+    const [defiPositions, setDefiPositions] = useState<any[]>([]);
+    const [defiTotal, setDefiTotal] = useState(0);
+
+    // Fetch REAL balances from multi-chain API
     const fetchBalances = useCallback(async () => {
         if (!walletAddress) return;
         setLoading(true);
 
-        const tempoTokens: TokenBalance[] = [
-            { symbol: 'AlphaUSD', name: 'Alpha Stablecoin', balance: '0.00', valueUSD: 0, chain: 'Tempo', chainLogo: '/logo-v2.png', chainColor: '#3EDDB9', change24h: 0, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg', address: '0x20c0000000000000000000000000000000000001' },
-            { symbol: 'pathUSD', name: 'Path Dollar', balance: '0.00', valueUSD: 0, chain: 'Tempo', chainLogo: '/logo-v2.png', chainColor: '#3EDDB9', change24h: 0, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdt.svg', address: '0x20c0000000000000000000000000000000000000' },
-            { symbol: 'BetaUSD', name: 'Beta Dollar', balance: '0.00', valueUSD: 0, chain: 'Tempo', chainLogo: '/logo-v2.png', chainColor: '#3EDDB9', change24h: 0, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/dai.svg', address: '0x20c0000000000000000000000000000000000002' },
-            { symbol: 'ThetaUSD', name: 'Theta Dollar', balance: '0.00', valueUSD: 0, chain: 'Tempo', chainLogo: '/logo-v2.png', chainColor: '#3EDDB9', change24h: 0, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg', address: '0x20c0000000000000000000000000000000000003' },
-        ];
-
-        // Fetch real Tempo balances
+        // 1. Real multi-chain balances (Tempo on-chain + LI.FI for ETH/Polygon/Base/etc.)
         try {
-            const res = await fetch(`/api/balance?wallet=${walletAddress}`);
+            const res = await fetch(`/api/portfolio/balances?wallet=${walletAddress}`);
             const data = await res.json();
-            if (data.balances) {
-                for (const b of data.balances) {
-                    const token = tempoTokens.find(t => t.address.toLowerCase() === b.token?.toLowerCase() || t.symbol === b.symbol);
-                    if (token) {
-                        token.balance = parseFloat(b.balance || '0').toFixed(2);
-                        token.valueUSD = parseFloat(b.balance || '0');
-                    }
-                }
-            }
+            if (data.tokens) setTokens(data.tokens);
+            if (data.totalValue != null) setTotalValue(data.totalValue);
         } catch {}
 
-        // Fetch escrow/stream data for portfolio
+        // 2. Real DeFi positions (on-chain contract balances)
+        try {
+            const res = await fetch(`/api/portfolio/defi?wallet=${walletAddress}`);
+            const data = await res.json();
+            if (data.positions) setDefiPositions(data.positions);
+            if (data.totalValue != null) setDefiTotal(data.totalValue);
+        } catch {}
+
+        // 3. Transaction history
         try {
             const res = await fetch(`/api/employee-portal?wallet=${walletAddress}`);
             const data = await res.json();
@@ -107,9 +104,6 @@ export default function PortfolioPage() {
             }
         } catch {}
 
-        const total = tempoTokens.reduce((sum, t) => sum + t.valueUSD, 0);
-        setTokens(tempoTokens);
-        setTotalValue(total);
         setLoading(false);
     }, [walletAddress]);
 
@@ -362,21 +356,27 @@ export default function PortfolioPage() {
                 {/* DeFi */}
                 {tab === 'defi' && (
                     <div className="rounded-xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--pp-text-primary)' }}>DeFi Positions</h3>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-sm font-bold" style={{ color: 'var(--pp-text-primary)' }}>DeFi Positions</h3>
+                            <span className="text-sm font-mono font-bold" style={{ color: 'var(--agt-mint)' }}>TVL: ${defiTotal.toFixed(2)}</span>
+                        </div>
                         <div className="space-y-3">
-                            {[
-                                { protocol: 'Agentic Escrow', type: 'Escrow', value: '$0.00', icon: '🔐', chain: 'Tempo' },
-                                { protocol: 'Agentic Streams', type: 'Streaming', value: '$0.00', icon: '📡', chain: 'Tempo' },
-                                { protocol: 'Shield Vault', type: 'Privacy Pool', value: '$0.00', icon: '🛡️', chain: 'Tempo' },
-                                { protocol: 'Agent Staking', type: 'Staked', value: '$0.00', icon: '🏦', chain: 'Tempo' },
-                            ].map(p => (
-                                <div key={p.protocol} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                            {defiPositions.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <p className="text-sm" style={{ color: 'var(--pp-text-muted)' }}>Loading on-chain positions...</p>
+                                </div>
+                            ) : defiPositions.map(p => (
+                                <div key={p.protocol} className="flex items-center gap-3 p-4 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
                                     <span className="text-2xl">{p.icon}</span>
                                     <div className="flex-1">
                                         <p className="text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{p.protocol}</p>
-                                        <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{p.type} on {p.chain}</p>
+                                        <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{p.description}</p>
+                                        <p className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>{p.address?.slice(0, 10)}...{p.address?.slice(-6)}</p>
                                     </div>
-                                    <p className="text-sm font-mono font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{p.value}</p>
+                                    <div className="text-right">
+                                        <p className="text-sm font-mono font-bold" style={{ color: p.value > 0 ? 'var(--agt-mint)' : 'var(--pp-text-muted)' }}>{p.valueFormatted}</p>
+                                        <p className="text-[9px]" style={{ color: 'var(--pp-text-muted)' }}>{p.type} on {p.chain}</p>
+                                    </div>
                                 </div>
                             ))}
                         </div>

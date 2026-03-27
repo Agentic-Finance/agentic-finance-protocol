@@ -32,7 +32,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
 # Cache Next.js build artifacts — dramatically speeds up rebuilds
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NODE_OPTIONS="--max-old-space-size=6144"
 RUN --mount=type=cache,target=/app/.next/cache \
     npm run build
 

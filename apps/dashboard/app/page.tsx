@@ -869,26 +869,17 @@ export default function Dashboard() {
                 </Suspense>
             </div>
 
-            {/* Chat — floating button + slide-in panel */}
-            {walletAddress && (
-                <>
-                    <ChatButton
+            {/* Chat Panel — opened from agent jobs (no floating button, use sidebar Chat instead) */}
+            {walletAddress && isChatOpen && (
+                <Suspense fallback={null}>
+                    <ChatPanel
                         walletAddress={walletAddress}
-                        onClick={() => setIsChatOpen(true)}
                         isOpen={isChatOpen}
+                        onClose={() => { setIsChatOpen(false); setChatTargetJobId(null); }}
+                        contacts={contacts}
+                        targetJobId={chatTargetJobId}
                     />
-                    {isChatOpen && (
-                        <Suspense fallback={null}>
-                            <ChatPanel
-                                walletAddress={walletAddress}
-                                isOpen={isChatOpen}
-                                onClose={() => { setIsChatOpen(false); setChatTargetJobId(null); }}
-                                contacts={contacts}
-                                targetJobId={chatTargetJobId}
-                            />
-                        </Suspense>
-                    )}
-                </>
+                </Suspense>
             )}
 
             {/* Onboarding Checklist — floating bottom-right */}

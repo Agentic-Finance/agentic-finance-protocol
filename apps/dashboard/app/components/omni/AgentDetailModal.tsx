@@ -273,14 +273,22 @@ function AgentDetailModal({ agent, isOpen, onClose, onHire, onSubmitTask }: Agen
                                 <span className="text-2xl font-bold text-white">{a.basePrice}</span>
                                 <span className="text-sm text-slate-500">alphaUSD</span>
                             </div>
-                            <button
-                                onClick={() => { onHire(agent); onClose(); }}
-                                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2"
-                            >
-                                <CpuChipIcon className="w-4 h-4" />
-                                Hire Agent
-                                <ArrowRightIcon className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <a href={`/chat?agent=${encodeURIComponent(agent.name)}`}
+                                    className="px-5 py-2.5 text-sm font-bold rounded-xl transition-all flex items-center gap-2"
+                                    style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--agt-blue)' }}>
+                                    💬 Chat
+                                </a>
+                                <button
+                                    onClick={() => { onHire(agent); onClose(); }}
+                                    className="px-5 py-2.5 text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2"
+                                    style={{ background: 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' }}
+                                >
+                                    <CpuChipIcon className="w-4 h-4" />
+                                    Hire
+                                    <ArrowRightIcon className="w-4 h-4" />
+                                </button>
+                            </div>
                         </div>
                     ) : null}
                 </div>

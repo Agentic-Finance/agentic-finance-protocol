@@ -175,8 +175,56 @@ export default function AgentPaymentsPage() {
                             <div className="h-2 rounded-full overflow-hidden mb-2" style={{ background: 'var(--pp-surface-1)' }}>
                                 <div className="h-full rounded-full" style={{ width: `${(s.spent / s.budget) * 100}%`, background: s.spent >= s.budget ? '#EF4444' : 'linear-gradient(90deg, var(--agt-blue), var(--agt-mint))' }} />
                             </div>
-                            <div className="flex justify-between text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
-                                <span>${s.spent.toFixed(2)} / ${s.budget}</span><span>{s.calls} calls</span>
+                            <div className="flex items-center justify-between text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                                <span>${s.spent.toFixed(2)} / ${s.budget}</span>
+                                <span>{s.calls} calls</span>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: '1px solid var(--pp-border)' }}>
+                                {s.status === 'active' && (
+                                    <button onClick={async () => {
+                                        // Simulate agent payment
+                                        try {
+                                            const res = await fetch('/api/mpp/session', {
+                                                method: 'PATCH',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ sessionId: s.id, addSpent: '1000000' }),
+                                            });
+                                            const data = await res.json();
+                                            if (data.success) {
+                                                setSessions(prev => prev.map(ss => ss.id === s.id ? { ...ss, spent: parseFloat(data.session.spent) / 1e6, calls: data.session.payments.length, status: data.session.status } : ss));
+                                            }
+                                        } catch {}
+                                    }} className="text-[10px] px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
+                                        style={{ background: 'rgba(27,191,236,0.1)', color: 'var(--agt-blue)', border: '1px solid rgba(27,191,236,0.2)' }}>
+                                        ⚡ Test Payment ($1)
+                                    </button>
+                                )}
+                                {s.status === 'active' && (
+                                    <button onClick={async () => {
+                                        try {
+                                            await fetch('/api/mpp/session', {
+                                                method: 'PATCH',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({ sessionId: s.id, cancel: true }),
+                                            });
+                                            setSessions(prev => prev.map(ss => ss.id === s.id ? { ...ss, status: 'expired' as const } : ss));
+                                        } catch {}
+                                    }} className="text-[10px] px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
+                                        style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', border: '1px solid rgba(239,68,68,0.2)' }}>
+                                        ✕ Cancel
+                                    </button>
+                                )}
+                                <button onClick={() => { navigator.clipboard.writeText(s.id); }}
+                                    className="text-[10px] px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80"
+                                    style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-muted)', border: '1px solid var(--pp-border)' }}>
+                                    📋 Copy ID
+                                </button>
+                                <span className="flex-1" />
+                                <span className="text-[9px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>
+                                    Expires: {new Date(s.expiresAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                </span>
                             </div>
                         </div>
                     ))}

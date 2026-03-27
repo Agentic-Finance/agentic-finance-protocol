@@ -161,6 +161,8 @@ export default function AgentChatView({ walletAddress }: Props) {
     const [groupName, setGroupName] = useState('');
     const [replyTo, setReplyTo] = useState<Message | null>(null);
     const [typingUsers, setTypingUsers] = useState<string[]>([]);
+    const [showGroupSettings, setShowGroupSettings] = useState(false);
+    const [showSlashMenu, setShowSlashMenu] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -633,15 +635,33 @@ export default function AgentChatView({ walletAddress }: Props) {
                                 {/* Header */}
                                 <div className="px-5 py-3 flex items-center gap-3" style={{ borderBottom: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: 'var(--pp-surface-2)' }}>
-                                        {selectedChannel.avatar || '💬'}
+                                        {selectedChannel.type === 'group' ? '👥' : (selectedChannel.avatar || '💬')}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <span className="font-bold text-sm" style={{ color: 'var(--pp-text-primary)' }}>{selectedChannel.name}</span>
-                                        <div className="flex items-center gap-1 mt-0.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                                            <span className="text-[10px]" style={{ color: 'var(--agt-mint)' }}>Online</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-sm" style={{ color: 'var(--pp-text-primary)' }}>{selectedChannel.name}</span>
+                                            {selectedChannel.type === 'group' && (
+                                                <span className="text-[9px] px-1.5 py-0.5 rounded-md" style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-muted)' }}>Group</span>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                            <div className="flex items-center gap-1">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                                <span className="text-[10px]" style={{ color: 'var(--agt-mint)' }}>Online</span>
+                                            </div>
+                                            {selectedChannel.type === 'group' && (
+                                                <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{selectedChannel.participants.length} members</span>
+                                            )}
                                         </div>
                                     </div>
+                                    {/* Settings button for groups */}
+                                    {selectedChannel.type === 'group' && (
+                                        <button onClick={() => setShowGroupSettings(!showGroupSettings)}
+                                            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:opacity-80"
+                                            style={{ background: showGroupSettings ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                        </button>
+                                    )}
                                 </div>
 
                                 {/* Messages */}
@@ -760,9 +780,9 @@ export default function AgentChatView({ walletAddress }: Props) {
                                             style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
                                         </button>
-                                        <input type="text" value={input} onChange={e => setInput(e.target.value)}
-                                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleMsgSend(); } }}
-                                            placeholder={replyTo ? `Reply to ${replyTo.senderName}...` : 'Type a message...'}
+                                        <input type="text" value={input} onChange={e => { setInput(e.target.value); setShowSlashMenu(e.target.value === '/'); }}
+                                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleMsgSend(); } if (e.key === 'Escape') setShowSlashMenu(false); }}
+                                            placeholder={replyTo ? `Reply to ${replyTo.senderName}...` : 'Type a message... (/ for commands)'}
                                             className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
                                         <button onClick={handleMsgSend} disabled={!input.trim()}
                                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white transition-all disabled:opacity-30"
@@ -774,6 +794,109 @@ export default function AgentChatView({ walletAddress }: Props) {
                             </>
                         )}
                     </div>
+
+                    {/* Group Settings Panel (slide-in from right) */}
+                    {showGroupSettings && selectedChannel?.type === 'group' && (
+                        <div className="w-72 flex flex-col" style={{ borderLeft: '1px solid var(--pp-border)', background: 'var(--pp-bg-secondary)' }}>
+                            <div className="p-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                                <h3 className="text-sm font-bold" style={{ color: 'var(--pp-text-primary)' }}>Group Settings</h3>
+                                <button onClick={() => setShowGroupSettings(false)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:opacity-80" style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-muted)' }}>✕</button>
+                            </div>
+
+                            <div className="p-4 text-center" style={{ borderBottom: '1px solid var(--pp-border)' }}>
+                                <div className="w-14 h-14 rounded-xl mx-auto mb-2 flex items-center justify-center text-2xl" style={{ background: 'var(--pp-surface-2)' }}>👥</div>
+                                <p className="font-bold text-sm" style={{ color: 'var(--pp-text-primary)' }}>{selectedChannel.name}</p>
+                                <p className="text-[10px] mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>{selectedChannel.participants.length} members</p>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                                {/* Invite */}
+                                <div className="p-3 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <p className="text-[10px] font-semibold mb-2" style={{ color: 'var(--pp-text-primary)' }}>Invite Member</p>
+                                    <div className="flex gap-1">
+                                        <input type="text" placeholder="0x..." className="flex-1 px-2 py-1.5 rounded-lg text-[11px] outline-none" style={{ background: 'var(--pp-bg-primary)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}
+                                            onKeyDown={e => { if (e.key === 'Enter') { const t = e.currentTarget; if (t.value.trim()) { setSelectedChannel({ ...selectedChannel, participants: [...selectedChannel.participants, t.value.trim()] }); t.value = ''; } } }} />
+                                        <button className="px-2 py-1.5 rounded-lg text-[10px] font-medium text-white" style={{ background: 'var(--agt-blue)' }}
+                                            onClick={() => { /* invite logic */ }}>Invite</button>
+                                    </div>
+                                </div>
+
+                                {/* Add Agent */}
+                                <div className="p-3 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <p className="text-[10px] font-semibold mb-2" style={{ color: 'var(--pp-text-primary)' }}>Add AI Agent</p>
+                                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                                        {agents.slice(0, 8).map(a => (
+                                            <button key={a.id} className="w-full flex items-center gap-2 p-1.5 rounded-lg text-left hover:opacity-80 transition-all" style={{ background: 'var(--pp-bg-primary)' }}
+                                                onClick={() => {
+                                                    setMessages(prev => [...prev, { id: `sys-${Date.now()}`, channelId: selectedChannel.id, senderWallet: 'system', senderName: 'System', content: `${a.avatarEmoji} ${a.name} joined the group`, messageType: 'system', metadata: null, createdAt: new Date().toISOString() }]);
+                                                }}>
+                                                <span className="text-sm">{a.avatarEmoji}</span>
+                                                <div>
+                                                    <p className="text-[10px] font-medium" style={{ color: 'var(--pp-text-primary)' }}>{a.name}</p>
+                                                    <p className="text-[8px]" style={{ color: 'var(--pp-text-muted)' }}>{a.category} · ${a.basePrice}</p>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Members */}
+                                <div className="p-3 rounded-xl" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                    <p className="text-[10px] font-semibold mb-2" style={{ color: 'var(--pp-text-primary)' }}>Members ({selectedChannel.participants.length})</p>
+                                    {selectedChannel.participants.map((w, i) => (
+                                        <div key={w} className="flex items-center gap-2 p-1.5 rounded-lg" style={{ background: i === 0 ? 'transparent' : 'var(--pp-bg-primary)', marginBottom: '2px' }}>
+                                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold" style={{ background: 'linear-gradient(135deg, var(--agt-blue), var(--agt-mint))', color: '#fff' }}>{w.slice(2, 4)}</div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-[10px] font-mono truncate" style={{ color: 'var(--pp-text-primary)' }}>{w === walletAddress ? 'You' : `${w.slice(0, 6)}...${w.slice(-4)}`}</p>
+                                                <p className="text-[8px]" style={{ color: i === 0 ? 'var(--agt-pink)' : 'var(--pp-text-muted)' }}>{i === 0 ? 'Owner' : 'Member'}</p>
+                                            </div>
+                                            {i > 0 && selectedChannel.participants[0] === walletAddress && (
+                                                <button className="text-[8px] px-1.5 py-0.5 rounded" style={{ color: '#EF4444', background: 'rgba(239,68,68,0.1)' }}
+                                                    onClick={() => setSelectedChannel({ ...selectedChannel, participants: selectedChannel.participants.filter(p => p !== w) })}>Kick</button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Actions */}
+                                <button className="w-full py-2 rounded-xl text-[11px] font-medium transition-all" style={{ color: '#F59E0B', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.15)' }}>Leave Group</button>
+                                {selectedChannel.participants[0] === walletAddress && (
+                                    <button className="w-full py-2 rounded-xl text-[11px] font-medium transition-all" style={{ color: '#EF4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}
+                                        onClick={() => { setSelectedChannel(null); setShowGroupSettings(false); setChannels(prev => prev.filter(c => c.id !== selectedChannel.id)); }}>Delete Group</button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Slash Command Menu (appears above input) */}
+            {showSlashMenu && (
+                <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-80 rounded-xl py-2 z-50"
+                    style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)', boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }}>
+                    <p className="text-[10px] font-semibold px-3 mb-1" style={{ color: 'var(--pp-text-muted)' }}>SLASH COMMANDS</p>
+                    {[
+                        { cmd: '/pay', desc: 'Send payment inline', icon: '💸', example: '/pay @Alice 100 USDC' },
+                        { cmd: '/deploy', desc: 'Deploy a token', icon: '🚀', example: '/deploy MoonCoin 1M' },
+                        { cmd: '/audit', desc: 'Audit a contract', icon: '🔍', example: '/audit 0x6A46...' },
+                        { cmd: '/escrow', desc: 'Create escrow', icon: '🔐', example: '/escrow $500 @Bob' },
+                        { cmd: '/stream', desc: 'Start payment stream', icon: '📡', example: '/stream @Alice $100/mo' },
+                        { cmd: '/balance', desc: 'Check vault balance', icon: '🏦', example: '/balance' },
+                        { cmd: '/shield', desc: 'ZK shielded payment', icon: '🛡️', example: '/shield @Alice 50 USDC' },
+                    ].map(c => (
+                        <button key={c.cmd} onClick={() => { setInput(c.cmd + ' '); setShowSlashMenu(false); }}
+                            className="w-full text-left px-3 py-2 flex items-center gap-3 transition-all hover:opacity-80"
+                            style={{ background: 'transparent' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--pp-surface-1)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>
+                            <span className="text-lg">{c.icon}</span>
+                            <div className="flex-1">
+                                <p className="text-xs font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{c.cmd}</p>
+                                <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{c.desc}</p>
+                            </div>
+                            <span className="text-[9px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>{c.example}</span>
+                        </button>
+                    ))}
                 </div>
             )}
         </div>

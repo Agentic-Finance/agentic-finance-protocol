@@ -519,17 +519,43 @@ export default function AgentChatView({ walletAddress }: Props) {
                                             <button onClick={handleCreateGroup} disabled={!groupName.trim()} className="w-full py-2 rounded-lg text-sm font-medium text-white disabled:opacity-30" style={{ background: 'var(--agt-blue)' }}>Create</button>
                                         </div>
                                     )}
-                                    {channels.filter(c => c.type === 'group').map(ch => (
-                                        <button key={ch.id} onClick={() => setSelectedChannel(ch)}
-                                            className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
-                                            style={{ background: selectedChannel?.id === ch.id ? 'var(--pp-surface-2)' : 'transparent' }}>
-                                            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0" style={{ background: 'var(--pp-surface-2)' }}>👥</div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{ch.name}</p>
-                                                <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{ch.participants.length} members</p>
-                                            </div>
-                                        </button>
-                                    ))}
+                                    {(() => {
+                                        const groupChannels = channels.filter(c => c.type === 'group');
+                                        if (groupChannels.length === 0 && !showNewGroup) {
+                                            return (
+                                                <div className="text-center py-8 px-4">
+                                                    <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style={{ background: 'var(--pp-surface-1)' }}>
+                                                        <span className="text-2xl">👥</span>
+                                                    </div>
+                                                    <p className="text-sm font-medium" style={{ color: 'var(--pp-text-primary)' }}>No groups yet</p>
+                                                    <p className="text-xs mt-1 mb-3" style={{ color: 'var(--pp-text-muted)' }}>Create a group to collaborate with your team and AI agents together</p>
+                                                    <div className="space-y-2 text-left px-2">
+                                                        <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                                                            <span>💡</span> <span>Invite team members by wallet address</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                                                            <span>🤖</span> <span>Add AI agents to get on-chain assistance</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                                                            <span>💸</span> <span>Send payments and create escrows inline</span>
+                                                        </div>
+                                                    </div>
+                                                    <button onClick={() => setShowNewGroup(true)} className="mt-4 text-xs px-4 py-2 rounded-lg font-medium text-white" style={{ background: 'var(--agt-blue)' }}>+ Create Group</button>
+                                                </div>
+                                            );
+                                        }
+                                        return groupChannels.map(ch => (
+                                            <button key={ch.id} onClick={() => setSelectedChannel(ch)}
+                                                className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left transition-all"
+                                                style={{ background: selectedChannel?.id === ch.id ? 'var(--pp-surface-2)' : 'transparent' }}>
+                                                <div className="w-9 h-9 rounded-lg flex items-center justify-center text-lg flex-shrink-0" style={{ background: 'var(--pp-surface-2)' }}>👥</div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium truncate" style={{ color: 'var(--pp-text-primary)' }}>{ch.name}</p>
+                                                    <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{ch.participants.length} members</p>
+                                                </div>
+                                            </button>
+                                        ));
+                                    })()}
                                 </>
                             )}
                         </div>
@@ -539,12 +565,29 @@ export default function AgentChatView({ walletAddress }: Props) {
                     <div className="flex-1 flex flex-col">
                         {!selectedChannel ? (
                             <div className="flex-1 flex items-center justify-center">
-                                <div className="text-center max-w-xs">
+                                <div className="text-center max-w-sm">
                                     <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'var(--pp-surface-1)' }}>
-                                        <svg className="w-8 h-8" style={{ color: 'var(--pp-text-muted)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                                        <Image src="/logo-v2.png" alt="" width={40} height={40} style={{ borderRadius: 10 }} />
                                     </div>
-                                    <p className="text-base font-semibold" style={{ color: 'var(--pp-text-primary)' }}>Select a conversation</p>
-                                    <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Or start a new direct message</p>
+                                    <p className="text-lg font-bold" style={{ color: 'var(--pp-text-primary)' }}>Agentic Finance Chat</p>
+                                    <p className="text-sm mt-1 mb-6" style={{ color: 'var(--pp-text-muted)' }}>Connect with users, teams, and AI agents</p>
+
+                                    <div className="grid grid-cols-2 gap-3 text-left">
+                                        {[
+                                            { icon: '💬', title: 'Direct Message', desc: 'Chat 1-on-1 with any wallet', action: () => { setMsgTab('direct'); setShowNewDM(true); } },
+                                            { icon: '👥', title: 'Create Group', desc: 'Collaborate with your team', action: () => { setMsgTab('groups'); setShowNewGroup(true); } },
+                                            { icon: '🤖', title: 'Agent Canvas', desc: 'Command 50 AI agents', action: () => setMode('canvas') },
+                                            { icon: '💸', title: 'Send Payment', desc: 'Pay inline via chat', action: () => setMode('canvas') },
+                                        ].map(tip => (
+                                            <button key={tip.title} onClick={tip.action}
+                                                className="p-3 rounded-xl text-left transition-all hover:scale-[1.02]"
+                                                style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                                                <span className="text-xl">{tip.icon}</span>
+                                                <p className="text-xs font-semibold mt-1.5" style={{ color: 'var(--pp-text-primary)' }}>{tip.title}</p>
+                                                <p className="text-[10px] mt-0.5" style={{ color: 'var(--pp-text-muted)' }}>{tip.desc}</p>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         ) : (

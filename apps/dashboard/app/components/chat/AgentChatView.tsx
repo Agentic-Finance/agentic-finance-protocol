@@ -159,9 +159,12 @@ export default function AgentChatView({ walletAddress }: Props) {
     const [showNewGroup, setShowNewGroup] = useState(false);
     const [dmWallet, setDmWallet] = useState('');
     const [groupName, setGroupName] = useState('');
+    const [replyTo, setReplyTo] = useState<Message | null>(null);
+    const [typingUsers, setTypingUsers] = useState<string[]>([]);
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const REACTIONS = ['👍', '❤️', '🔥', '😂', '🎉', '🤔'];
 
     // Fetch agents
     useEffect(() => {
@@ -247,6 +250,30 @@ export default function AgentChatView({ walletAddress }: Props) {
         }
     }, [input, isProcessing, walletAddress, agents]);
 
+    // --- Reactions ---
+    const handleReact = useCallback((msgId: string, emoji: string) => {
+        setMessages(prev => prev.map(m => {
+            if (m.id !== msgId) return m;
+            const reactions = { ...(m.metadata?.reactions || {}) };
+            if (!reactions[emoji]) reactions[emoji] = [];
+            const idx = reactions[emoji].indexOf(walletAddress);
+            if (idx >= 0) reactions[emoji].splice(idx, 1);
+            else reactions[emoji].push(walletAddress);
+            if (reactions[emoji].length === 0) delete reactions[emoji];
+            return { ...m, metadata: { ...m.metadata, reactions } };
+        }));
+    }, [walletAddress]);
+
+    // --- Pin ---
+    const handlePin = useCallback((msgId: string) => {
+        setMessages(prev => prev.map(m => m.id === msgId ? { ...m, metadata: { ...m.metadata, pinned: !m.metadata?.pinned } } : m));
+    }, []);
+
+    // --- Delete ---
+    const handleDeleteMsg = useCallback((msgId: string) => {
+        setMessages(prev => prev.filter(m => m.id !== msgId));
+    }, []);
+
     // --- Messages: Send ---
     const handleMsgSend = useCallback(async () => {
         if (!input.trim() || !selectedChannel || isProcessing) return;
@@ -254,13 +281,24 @@ export default function AgentChatView({ walletAddress }: Props) {
         setInput('');
         setIsProcessing(true);
 
-        setMessages(prev => [...prev, { id: `t-${Date.now()}`, channelId: selectedChannel.id, senderWallet: walletAddress, senderName: 'You', content, messageType: 'text', metadata: null, createdAt: new Date().toISOString() }]);
+        const newMsg: Message = {
+            id: `t-${Date.now()}`,
+            channelId: selectedChannel.id,
+            senderWallet: walletAddress,
+            senderName: 'You',
+            content,
+            messageType: 'text',
+            metadata: replyTo ? { replyToId: replyTo.id, replyToContent: replyTo.content?.slice(0, 100) } : null,
+            createdAt: new Date().toISOString(),
+        };
+        setMessages(prev => [...prev, newMsg]);
+        setReplyTo(null);
 
         try {
             await fetch('/api/chat/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ channelId: selectedChannel.id, wallet: walletAddress, content }),
+                body: JSON.stringify({ channelId: selectedChannel.id, wallet: walletAddress, content, replyToId: replyTo?.id }),
             });
         } catch {}
         setIsProcessing(false);
@@ -613,18 +651,81 @@ export default function AgentChatView({ walletAddress }: Props) {
                                             <p className="text-sm" style={{ color: 'var(--pp-text-muted)' }}>No messages yet. Say hello!</p>
                                         </div>
                                     )}
+                                    {/* Pinned messages bar */}
+                                    {messages.filter(m => m.metadata?.pinned).length > 0 && (
+                                        <div className="mb-3 p-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(255,125,44,0.06)', border: '1px solid rgba(255,125,44,0.15)' }}>
+                                            <span className="text-xs">📌</span>
+                                            <span className="text-[11px] font-medium" style={{ color: 'var(--agt-orange)' }}>{messages.filter(m => m.metadata?.pinned).length} pinned message(s)</span>
+                                        </div>
+                                    )}
+
                                     {messages.map(msg => {
                                         const isMe = msg.senderWallet.toLowerCase() === walletAddress.toLowerCase();
+                                        const reactions = msg.metadata?.reactions || {};
+                                        const isPinned = msg.metadata?.pinned;
+                                        const replyContent = msg.metadata?.replyToContent;
+
                                         if (msg.messageType === 'system') {
                                             return <div key={msg.id} className="flex justify-center my-2"><span className="text-xs px-3 py-1 rounded-full" style={{ background: 'var(--pp-surface-1)', color: 'var(--pp-text-muted)' }}>{msg.content}</span></div>;
                                         }
+
                                         return (
-                                            <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-3`}>
-                                                <div className={`max-w-[70%] rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} px-4 py-2.5`}
-                                                    style={{ background: isMe ? 'rgba(27,191,236,0.1)' : 'var(--pp-surface-1)', border: `1px solid ${isMe ? 'rgba(27,191,236,0.2)' : 'var(--pp-border)'}` }}>
-                                                    {!isMe && msg.senderName && <p className="text-[10px] font-medium mb-0.5" style={{ color: 'var(--agt-blue)' }}>{msg.senderName}</p>}
-                                                    <p className="text-sm" style={{ color: 'var(--pp-text-primary)' }}>{msg.content}</p>
-                                                    <p className="text-[10px] mt-1" style={{ color: 'var(--pp-text-muted)', textAlign: isMe ? 'right' : 'left' }}>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                            <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-3 group relative`}>
+                                                <div className="max-w-[70%] relative">
+                                                    {/* Reply preview */}
+                                                    {replyContent && (
+                                                        <div className="mb-1 ml-2 px-3 py-1 rounded-lg text-[10px] truncate" style={{ background: 'var(--pp-surface-1)', borderLeft: '2px solid var(--agt-blue)', color: 'var(--pp-text-muted)' }}>
+                                                            ↩ {replyContent}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Pin indicator */}
+                                                    {isPinned && (
+                                                        <div className="flex items-center gap-1 mb-0.5 ml-2">
+                                                            <span className="text-[9px]">📌</span>
+                                                            <span className="text-[9px]" style={{ color: 'var(--agt-orange)' }}>Pinned</span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Bubble */}
+                                                    <div className={`rounded-2xl ${isMe ? 'rounded-br-sm' : 'rounded-bl-sm'} px-4 py-2.5`}
+                                                        style={{ background: isMe ? 'rgba(27,191,236,0.1)' : 'var(--pp-surface-1)', border: `1px solid ${isMe ? 'rgba(27,191,236,0.2)' : 'var(--pp-border)'}` }}>
+                                                        {!isMe && msg.senderName && <p className="text-[10px] font-semibold mb-0.5" style={{ color: 'var(--agt-blue)' }}>{msg.senderName}</p>}
+                                                        <p className="text-sm whitespace-pre-wrap break-words" style={{ color: 'var(--pp-text-primary)' }}>{msg.content}</p>
+                                                        <div className="flex items-center justify-end gap-1 mt-1">
+                                                            <span className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>
+                                                                {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </span>
+                                                            {isMe && <span className="text-[9px]" style={{ color: 'var(--agt-blue)' }}>✓✓</span>}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Reactions display */}
+                                                    {Object.keys(reactions).length > 0 && (
+                                                        <div className="flex gap-1 mt-1 ml-2 flex-wrap">
+                                                            {Object.entries(reactions).map(([emoji, users]: [string, any]) => (
+                                                                <button key={emoji} onClick={() => handleReact(msg.id, emoji)}
+                                                                    className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] transition-all hover:scale-110"
+                                                                    style={{ background: (users as string[]).includes(walletAddress) ? 'rgba(27,191,236,0.15)' : 'var(--pp-surface-1)', border: `1px solid ${(users as string[]).includes(walletAddress) ? 'rgba(27,191,236,0.3)' : 'var(--pp-border)'}` }}>
+                                                                    <span>{emoji}</span>
+                                                                    <span style={{ color: 'var(--pp-text-muted)' }}>{(users as string[]).length}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    {/* Hover action bar */}
+                                                    <div className={`absolute ${isMe ? 'left-0' : 'right-0'} -top-8 hidden group-hover:flex items-center gap-0.5 rounded-lg px-1 py-0.5 z-10`}
+                                                        style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                                                        {REACTIONS.slice(0, 4).map(emoji => (
+                                                            <button key={emoji} onClick={() => handleReact(msg.id, emoji)} className="w-6 h-6 flex items-center justify-center rounded hover:scale-125 transition-transform text-xs">{emoji}</button>
+                                                        ))}
+                                                        <div className="w-px h-4 mx-0.5" style={{ background: 'var(--pp-border)' }} />
+                                                        <button onClick={() => setReplyTo(msg)} className="w-6 h-6 flex items-center justify-center rounded hover:opacity-80 text-[10px]" title="Reply">↩</button>
+                                                        <button onClick={() => handlePin(msg.id)} className="w-6 h-6 flex items-center justify-center rounded hover:opacity-80 text-[10px]" title="Pin">📌</button>
+                                                        <button onClick={() => { navigator.clipboard.writeText(msg.content); }} className="w-6 h-6 flex items-center justify-center rounded hover:opacity-80 text-[10px]" title="Copy">📋</button>
+                                                        <button onClick={() => handleDeleteMsg(msg.id)} className="w-6 h-6 flex items-center justify-center rounded hover:opacity-80 text-[10px]" title="Delete">🗑</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         );
@@ -632,12 +733,36 @@ export default function AgentChatView({ walletAddress }: Props) {
                                     <div ref={scrollRef} />
                                 </div>
 
+                                {/* Typing indicator */}
+                                {typingUsers.length > 0 && (
+                                    <div className="px-5 py-1">
+                                        <span className="text-[10px] italic" style={{ color: 'var(--pp-text-muted)' }}>{typingUsers.join(', ')} typing...</span>
+                                    </div>
+                                )}
+
+                                {/* Reply bar */}
+                                {replyTo && (
+                                    <div className="px-5 py-2 flex items-center gap-2" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-surface-1)' }}>
+                                        <div className="w-1 h-8 rounded-full" style={{ background: 'var(--agt-blue)' }} />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[10px] font-semibold" style={{ color: 'var(--agt-blue)' }}>Replying to {replyTo.senderName || 'message'}</p>
+                                            <p className="text-[11px] truncate" style={{ color: 'var(--pp-text-muted)' }}>{replyTo.content}</p>
+                                        </div>
+                                        <button onClick={() => setReplyTo(null)} className="w-6 h-6 rounded flex items-center justify-center hover:opacity-80" style={{ color: 'var(--pp-text-muted)' }}>✕</button>
+                                    </div>
+                                )}
+
                                 {/* Input */}
-                                <div className="px-5 py-3" style={{ borderTop: '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
+                                <div className="px-5 py-3" style={{ borderTop: replyTo ? 'none' : '1px solid var(--pp-border)', background: 'var(--pp-bg-card)' }}>
                                     <div className="flex items-center gap-2">
+                                        <input type="file" ref={fileRef} onChange={handleFile} className="hidden" />
+                                        <button onClick={() => fileRef.current?.click()} className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:opacity-80"
+                                            style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-muted)' }}>
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                                        </button>
                                         <input type="text" value={input} onChange={e => setInput(e.target.value)}
                                             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleMsgSend(); } }}
-                                            placeholder="Type a message..."
+                                            placeholder={replyTo ? `Reply to ${replyTo.senderName}...` : 'Type a message...'}
                                             className="flex-1 px-4 py-2.5 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
                                         <button onClick={handleMsgSend} disabled={!input.trim()}
                                             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-white transition-all disabled:opacity-30"

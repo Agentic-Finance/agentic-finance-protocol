@@ -154,6 +154,14 @@ export default function Dashboard() {
     const { wallets: privyWallets } = useWallets();
     const { signMessage: privySignMsg } = usePrivySignMessage();
 
+    // Skip landing if Privy already authenticated (e.g., navigating back from sub-page)
+    useEffect(() => {
+        if (privyReady && privyAuthenticated && showLanding) {
+            setShowLanding(false);
+            sessionStorage.setItem('agtfi_session_active', 'true');
+        }
+    }, [privyReady, privyAuthenticated, showLanding]);
+
     // Listen for notification clicks to open chat panel (same-page navigation)
     useEffect(() => {
         const handleOpenChat = (e: Event) => {
@@ -411,13 +419,14 @@ export default function Dashboard() {
     // Privy: auto-connect wallet ONLY after fresh OAuth redirect (not from stale sessions)
     useEffect(() => {
         if (privyReady && privyAuthenticated && privyUser && !walletAddress && !privyAutoConnectRef.current && !showLanding) {
-            // Only auto-connect if user JUST completed OAuth (sessionStorage flag set before redirect)
+            // Clear OAuth pending flag if present
             const oauthPending = sessionStorage.getItem('agtfi_oauth_pending') === 'true';
-            if (!oauthPending) return; // Stale Privy session — don't auto-connect, let user click explicitly
-            sessionStorage.removeItem('agtfi_oauth_pending');
+            if (oauthPending) sessionStorage.removeItem('agtfi_oauth_pending');
             privyAutoConnectRef.current = true;
+            // Auto-connect Privy wallet (works for both fresh OAuth and returning from sub-pages)
             const wallet = (privyUser.wallet as any)?.address
-                || (privyUser.linkedAccounts?.find((a: any) => a.type === 'wallet') as any)?.address;
+                || (privyUser.linkedAccounts?.find((a: any) => a.type === 'wallet') as any)?.address
+                || privyWallets?.[0]?.address;
             if (wallet) {
                 initializeSession(wallet);
             }

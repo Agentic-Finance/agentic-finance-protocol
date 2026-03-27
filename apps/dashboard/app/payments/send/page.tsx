@@ -1,150 +1,240 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useSharedWallet } from '../../providers/SharedWalletContext';
+
+const TOKENS = [
+    { symbol: 'AlphaUSD', address: '0x20c0000000000000000000000000000000000001', decimals: 6 },
+    { symbol: 'pathUSD', address: '0x20c0000000000000000000000000000000000002', decimals: 6 },
+    { symbol: 'BetaUSD', address: '0x20c0000000000000000000000000000000000003', decimals: 6 },
+];
 
 export default function SendReceivePage() {
-    const [activeTab, setActiveTab] = useState<'send' | 'receive' | 'request' | 'split'>('send');
+    const [tab, setTab] = useState<'send'|'receive'|'request'|'split'>('send');
     const [amount, setAmount] = useState('');
     const [recipient, setRecipient] = useState('');
     const [token, setToken] = useState('AlphaUSD');
+    const [note, setNote] = useState('');
+    const [shielded, setShielded] = useState(false);
+    const [sending, setSending] = useState(false);
+    const [result, setResult] = useState<{success: boolean; txHash?: string; error?: string}|null>(null);
+    const [splitAddresses, setSplitAddresses] = useState('');
+    const [splitTotal, setSplitTotal] = useState('');
+    const { walletAddress } = useSharedWallet();
+
+    const handleSend = useCallback(async () => {
+        if (!recipient || !amount || !walletAddress) return;
+        setSending(true); setResult(null);
+        try {
+            const res = await fetch('/api/transfer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ from: walletAddress, to: recipient, amount, token, note, shielded }),
+            });
+            const data = await res.json();
+            if (data.txHash) setResult({ success: true, txHash: data.txHash });
+            else setResult({ success: false, error: data.error || 'Transfer failed' });
+        } catch (e: any) {
+            setResult({ success: false, error: e.message });
+        } finally { setSending(false); }
+    }, [recipient, amount, walletAddress, token, note, shielded]);
+
+    const handleRequest = useCallback(async () => {
+        if (!recipient || !amount) return;
+        try {
+            const res = await fetch('/api/payment-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ from: walletAddress, requestFrom: recipient, amount, token, reason: note }),
+            });
+            const data = await res.json();
+            if (data.id) setResult({ success: true, txHash: data.id });
+            else setResult({ success: false, error: data.error || 'Request failed' });
+        } catch (e: any) { setResult({ success: false, error: e.message }); }
+    }, [recipient, amount, walletAddress, token, note]);
+
+    const splitCount = splitAddresses.split('\n').filter(a => a.trim().startsWith('0x')).length || 1;
+    const perPerson = splitTotal ? (parseFloat(splitTotal) / splitCount).toFixed(2) : '0.00';
 
     const tabs = [
-        { id: 'send', label: 'Send', icon: '↗️' },
-        { id: 'receive', label: 'Receive', icon: '↙️' },
-        { id: 'request', label: 'Request', icon: '📩' },
-        { id: 'split', label: 'Split Bill', icon: '✂️' },
-    ] as const;
+        { id: 'send' as const, label: 'Send', icon: '↗' },
+        { id: 'receive' as const, label: 'Receive', icon: '↙' },
+        { id: 'request' as const, label: 'Request', icon: '📩' },
+        { id: 'split' as const, label: 'Split', icon: '✂' },
+    ];
 
     return (
         <div style={{ color: 'var(--pp-text-primary)' }}>
             <div className="mb-6">
                 <h1 className="text-xl font-bold">Send & Receive</h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Transfer tokens, generate payment links, request payments, or split bills</p>
+                <p className="text-sm mt-1" style={{ color: 'var(--pp-text-muted)' }}>Transfer tokens on Tempo L1 — real on-chain transactions</p>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-1 p-1 rounded-xl mb-6" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
-                {tabs.map(t => (
-                    <button key={t.id} onClick={() => setActiveTab(t.id)}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all"
-                        style={{ background: activeTab === t.id ? 'var(--agt-blue)' : 'transparent', color: activeTab === t.id ? '#fff' : 'var(--pp-text-muted)' }}>
-                        <span>{t.icon}</span> {t.label}
-                    </button>
-                ))}
-            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                {/* Left: Form */}
+                <div className="lg:col-span-3">
+                    {/* Tabs */}
+                    <div className="flex gap-1 p-1 rounded-xl mb-5" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
+                        {tabs.map(t => (
+                            <button key={t.id} onClick={() => { setTab(t.id); setResult(null); }}
+                                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-medium transition-all"
+                                style={{ background: tab === t.id ? 'var(--agt-blue)' : 'transparent', color: tab === t.id ? '#fff' : 'var(--pp-text-muted)' }}>
+                                <span className="text-base">{t.icon}</span> {t.label}
+                            </button>
+                        ))}
+                    </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Form */}
-                <div className="rounded-xl p-6" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                    {activeTab === 'send' && (
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Recipient</label>
-                                <input type="text" placeholder="0x... or name from contacts" value={recipient} onChange={e => setRecipient(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                            </div>
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Amount</label>
-                                <div className="flex gap-2">
-                                    <input type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)}
-                                        className="flex-1 px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                                    <select value={token} onChange={e => setToken(e.target.value)}
-                                        className="px-3 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}>
-                                        <option>AlphaUSD</option><option>pathUSD</option><option>BetaUSD</option><option>ThetaUSD</option>
-                                    </select>
+                    <div className="rounded-xl p-6" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
+                        {/* SEND */}
+                        {tab === 'send' && (
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>RECIPIENT</label>
+                                    <input type="text" placeholder="0x... wallet address or ENS name" value={recipient} onChange={e => setRecipient(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-sm font-mono outline-none transition-all focus:ring-2 focus:ring-[var(--agt-blue)]" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
                                 </div>
-                            </div>
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Note (optional)</label>
-                                <input type="text" placeholder="Payment for..." className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                            </div>
-                            <div className="flex items-center gap-3 pt-2">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" className="rounded" />
-                                    <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>ZK Shield (private payment)</span>
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>AMOUNT</label>
+                                    <div className="flex gap-2">
+                                        <input type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)}
+                                            className="flex-1 px-4 py-3 rounded-xl text-lg font-mono outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                        <select value={token} onChange={e => setToken(e.target.value)}
+                                            className="px-4 py-3 rounded-xl text-sm font-medium outline-none min-w-[130px]" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }}>
+                                            {TOKENS.map(t => <option key={t.symbol}>{t.symbol}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>NOTE <span className="font-normal">(optional)</span></label>
+                                    <input type="text" placeholder="Payment for..." value={note} onChange={e => setNote(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                <label className="flex items-center gap-2 cursor-pointer py-1">
+                                    <input type="checkbox" checked={shielded} onChange={e => setShielded(e.target.checked)} className="rounded" />
+                                    <span className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>🛡 ZK Shield — private transaction (ZK-SNARK proof)</span>
                                 </label>
-                            </div>
-                            <button className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-                                style={{ background: 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' }}>
-                                Send Payment
-                            </button>
-                        </div>
-                    )}
 
-                    {activeTab === 'receive' && (
-                        <div className="space-y-4 text-center">
-                            <div className="w-48 h-48 mx-auto rounded-xl flex items-center justify-center" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)' }}>
-                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://agt.finance/pay/receive&bgcolor=1A1D28&color=3EDDB9`} alt="QR" className="rounded-lg" />
-                            </div>
-                            <p className="text-sm font-medium">Your Payment QR Code</p>
-                            <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Share this QR or link for anyone to pay you</p>
-                            <button className="px-6 py-2.5 rounded-xl text-sm font-medium transition-all" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--agt-blue)' }}>
-                                Copy Payment Link
-                            </button>
-                        </div>
-                    )}
+                                {result && (
+                                    <div className="p-3 rounded-xl text-sm" style={{ background: result.success ? 'rgba(62,221,185,0.08)' : 'rgba(239,68,68,0.08)', border: `1px solid ${result.success ? 'rgba(62,221,185,0.2)' : 'rgba(239,68,68,0.2)'}`, color: result.success ? 'var(--agt-mint)' : '#EF4444' }}>
+                                        {result.success ? `✅ Sent! TX: ${result.txHash?.slice(0, 16)}...` : `❌ ${result.error}`}
+                                    </div>
+                                )}
 
-                    {activeTab === 'request' && (
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Request from</label>
-                                <input type="text" placeholder="0x... wallet address" className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                <button onClick={handleSend} disabled={!recipient || !amount || sending}
+                                    className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40"
+                                    style={{ background: shielded ? 'linear-gradient(135deg, #6366f1, #3EDDB9)' : 'linear-gradient(135deg, var(--agt-pink), var(--agt-blue))' }}>
+                                    {sending ? '⏳ Sending...' : shielded ? '🛡 Send Shielded Payment' : '↗ Send Payment'}
+                                </button>
                             </div>
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Amount</label>
-                                <input type="number" placeholder="0.00" className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                            </div>
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Reason</label>
-                                <input type="text" placeholder="For project deliverable..." className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
-                            </div>
-                            <button className="w-full py-3 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg, var(--agt-mint), var(--agt-blue))' }}>
-                                Send Request
-                            </button>
-                        </div>
-                    )}
+                        )}
 
-                    {activeTab === 'split' && (
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Total Amount</label>
-                                <input type="number" placeholder="Total bill amount" className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                        {/* RECEIVE */}
+                        {tab === 'receive' && (
+                            <div className="text-center space-y-4">
+                                <div className="w-52 h-52 mx-auto rounded-xl overflow-hidden" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', padding: 8 }}>
+                                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://agt.finance/pay/${walletAddress || ''}`)}&bgcolor=1A1D28&color=3EDDB9`} alt="QR" className="w-full h-full rounded-lg" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold">Your Payment QR</p>
+                                    <p className="text-xs mt-1 font-mono" style={{ color: 'var(--pp-text-muted)' }}>{walletAddress?.slice(0, 10)}...{walletAddress?.slice(-8)}</p>
+                                </div>
+                                <button onClick={() => { navigator.clipboard.writeText(`https://agt.finance/pay/${walletAddress || ''}`); }}
+                                    className="px-6 py-2.5 rounded-xl text-sm font-medium transition-all" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--agt-blue)' }}>
+                                    📋 Copy Payment Link
+                                </button>
                             </div>
-                            <div>
-                                <label className="text-xs font-medium mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>Split between (wallet addresses, one per line)</label>
-                                <textarea rows={3} placeholder="0x...\n0x...\n0x..." className="w-full px-4 py-3 rounded-xl text-sm outline-none resize-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                        )}
+
+                        {/* REQUEST */}
+                        {tab === 'request' && (
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>REQUEST FROM</label>
+                                    <input type="text" placeholder="0x... wallet address" value={recipient} onChange={e => setRecipient(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-sm font-mono outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>AMOUNT</label>
+                                    <input type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-lg font-mono outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>REASON</label>
+                                    <input type="text" placeholder="For project deliverable..." value={note} onChange={e => setNote(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-sm outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                {result && (
+                                    <div className="p-3 rounded-xl text-sm" style={{ background: result.success ? 'rgba(62,221,185,0.08)' : 'rgba(239,68,68,0.08)', color: result.success ? 'var(--agt-mint)' : '#EF4444' }}>
+                                        {result.success ? '✅ Request sent!' : `❌ ${result.error}`}
+                                    </div>
+                                )}
+                                <button onClick={handleRequest} disabled={!recipient || !amount}
+                                    className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40"
+                                    style={{ background: 'linear-gradient(135deg, var(--agt-mint), var(--agt-blue))' }}>
+                                    📩 Send Payment Request
+                                </button>
                             </div>
-                            <div className="p-3 rounded-lg" style={{ background: 'var(--pp-surface-1)' }}>
-                                <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Each person pays: <span style={{ color: 'var(--agt-mint)' }}>$0.00</span></p>
+                        )}
+
+                        {/* SPLIT */}
+                        {tab === 'split' && (
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>TOTAL AMOUNT</label>
+                                    <input type="number" placeholder="Total bill" value={splitTotal} onChange={e => setSplitTotal(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-lg font-mono outline-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                <div>
+                                    <label className="text-xs font-semibold mb-1.5 block" style={{ color: 'var(--pp-text-muted)' }}>SPLIT BETWEEN (one wallet per line)</label>
+                                    <textarea rows={4} placeholder={'0x...\n0x...\n0x...'} value={splitAddresses} onChange={e => setSplitAddresses(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl text-sm font-mono outline-none resize-none" style={{ background: 'var(--pp-surface-1)', border: '1px solid var(--pp-border)', color: 'var(--pp-text-primary)' }} />
+                                </div>
+                                <div className="p-4 rounded-xl text-center" style={{ background: 'var(--pp-surface-1)' }}>
+                                    <p className="text-xs" style={{ color: 'var(--pp-text-muted)' }}>Each person pays</p>
+                                    <p className="text-2xl font-bold font-mono" style={{ color: 'var(--agt-mint)' }}>${perPerson}</p>
+                                    <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{splitCount} people × ${perPerson} = ${splitTotal || '0'}</p>
+                                </div>
+                                <button disabled={!splitTotal || splitCount < 2}
+                                    className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-40"
+                                    style={{ background: 'linear-gradient(135deg, var(--agt-orange), var(--agt-pink))' }}>
+                                    ✂ Split & Send Requests
+                                </button>
                             </div>
-                            <button className="w-full py-3 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg, var(--agt-orange), var(--agt-pink))' }}>
-                                Split & Send Requests
-                            </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
-                {/* Recent transactions */}
-                <div className="rounded-xl p-6" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
-                    <h3 className="text-sm font-bold mb-4">Recent Transactions</h3>
-                    <div className="space-y-3">
-                        {[
-                            { type: 'sent', to: '0x7a58...9e4', amount: '100', token: 'AlphaUSD', time: '2 min ago', status: 'confirmed' },
-                            { type: 'received', to: '0x3C44...3BC', amount: '250', token: 'AlphaUSD', time: '1 hour ago', status: 'confirmed' },
-                            { type: 'sent', to: '0x90F8...9C1', amount: '50', token: 'pathUSD', time: '3 hours ago', status: 'confirmed' },
-                        ].map((tx, i) => (
-                            <div key={i} className="flex items-center gap-3 p-3 rounded-lg" style={{ background: 'var(--pp-surface-1)' }}>
-                                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: tx.type === 'sent' ? 'rgba(255,45,135,0.1)' : 'rgba(62,221,185,0.1)' }}>
-                                    <span className="text-sm">{tx.type === 'sent' ? '↗️' : '↙️'}</span>
+                {/* Right: Info panel */}
+                <div className="lg:col-span-2 space-y-4">
+                    <div className="rounded-xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
+                        <h3 className="text-sm font-bold mb-3">Quick Info</h3>
+                        <div className="space-y-2">
+                            {[
+                                { label: 'Network', value: 'Tempo L1 (42431)', color: 'var(--agt-mint)' },
+                                { label: 'Gas', value: 'Free (testnet)', color: 'var(--agt-blue)' },
+                                { label: 'Settlement', value: 'Instant', color: 'var(--agt-orange)' },
+                                { label: 'ZK Shield', value: 'PLONK (15s proof)', color: '#6366f1' },
+                            ].map(i => (
+                                <div key={i.label} className="flex justify-between text-xs p-2 rounded-lg" style={{ background: 'var(--pp-surface-1)' }}>
+                                    <span style={{ color: 'var(--pp-text-muted)' }}>{i.label}</span>
+                                    <span className="font-medium" style={{ color: i.color }}>{i.value}</span>
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-xs font-medium">{tx.type === 'sent' ? 'Sent to' : 'Received from'} {tx.to}</p>
-                                    <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{tx.time}</p>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl p-5" style={{ background: 'var(--pp-bg-card)', border: '1px solid var(--pp-border)' }}>
+                        <h3 className="text-sm font-bold mb-3">Supported Tokens</h3>
+                        <div className="space-y-2">
+                            {TOKENS.map(t => (
+                                <div key={t.symbol} className="flex items-center gap-3 p-2 rounded-lg" style={{ background: 'var(--pp-surface-1)' }}>
+                                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: 'var(--pp-surface-2)' }}>$</div>
+                                    <div>
+                                        <p className="text-xs font-medium">{t.symbol}</p>
+                                        <p className="text-[9px] font-mono" style={{ color: 'var(--pp-text-muted)' }}>{t.address.slice(0, 10)}...</p>
+                                    </div>
                                 </div>
-                                <span className="text-sm font-mono font-medium" style={{ color: tx.type === 'sent' ? 'var(--agt-pink)' : 'var(--agt-mint)' }}>
-                                    {tx.type === 'sent' ? '-' : '+'}{tx.amount} {tx.token}
-                                </span>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

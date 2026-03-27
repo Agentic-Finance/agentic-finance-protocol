@@ -4,24 +4,24 @@ import React, { useState } from 'react';
 type Tab = 'buy' | 'sell' | 'visa' | 'gift';
 
 const CRYPTO_OPTIONS = [
-    { symbol: 'USDC', name: 'USD Coin', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg' },
-    { symbol: 'USDT', name: 'Tether', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdt.svg' },
-    { symbol: 'ETH', name: 'Ethereum', icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/eth.svg' },
+    { symbol: 'USDC', name: 'USD Coin', icon: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
+    { symbol: 'USDT', name: 'Tether', icon: 'https://assets.coingecko.com/coins/images/325/small/Tether.png' },
+    { symbol: 'ETH', name: 'Ethereum', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
 ];
 
 const SELL_OPTIONS = [
-    { id: 'venmo', name: 'Venmo', icon: '💜', desc: 'Instant transfer to Venmo account' },
-    { id: 'paypal', name: 'PayPal', icon: '🅿️', desc: 'Send to PayPal email' },
-    { id: 'bank', name: 'Bank Transfer', icon: '🏦', desc: 'ACH/Wire to bank account' },
+    { id: 'venmo', name: 'Venmo', icon: 'https://cdn.worldvectorlogo.com/logos/venmo-2.svg', desc: 'Instant transfer to Venmo account', isImg: true },
+    { id: 'paypal', name: 'PayPal', icon: 'https://cdn.worldvectorlogo.com/logos/paypal-icon.svg', desc: 'Send to PayPal email', isImg: true },
+    { id: 'bank', name: 'Bank Transfer', icon: '', desc: 'ACH/Wire to bank account', isImg: false, emoji: '🏦' },
 ];
 
 const GIFT_BRANDS = [
-    { id: 'amazon', name: 'Amazon', icon: '📦', amounts: [25, 50, 100, 200] },
-    { id: 'apple', name: 'Apple', icon: '🍎', amounts: [25, 50, 100] },
-    { id: 'google', name: 'Google Play', icon: '🎮', amounts: [10, 25, 50, 100] },
-    { id: 'uber', name: 'Uber', icon: '🚗', amounts: [25, 50] },
-    { id: 'starbucks', name: 'Starbucks', icon: '☕', amounts: [10, 25, 50] },
-    { id: 'netflix', name: 'Netflix', icon: '🎬', amounts: [25, 50, 100] },
+    { id: 'amazon', name: 'Amazon', icon: 'https://cdn.worldvectorlogo.com/logos/amazon-icon-1.svg', amounts: [25, 50, 100, 200], isImg: true },
+    { id: 'apple', name: 'Apple', icon: 'https://cdn.worldvectorlogo.com/logos/apple-14.svg', amounts: [25, 50, 100], isImg: true },
+    { id: 'google', name: 'Google Play', icon: 'https://cdn.worldvectorlogo.com/logos/google-play-5.svg', amounts: [10, 25, 50, 100], isImg: true },
+    { id: 'uber', name: 'Uber', icon: 'https://cdn.worldvectorlogo.com/logos/uber-15.svg', amounts: [25, 50], isImg: true },
+    { id: 'starbucks', name: 'Starbucks', icon: 'https://cdn.worldvectorlogo.com/logos/starbucks-coffee-3.svg', amounts: [10, 25, 50], isImg: true },
+    { id: 'netflix', name: 'Netflix', icon: 'https://cdn.worldvectorlogo.com/logos/netflix-4.svg', amounts: [25, 50, 100], isImg: true },
 ];
 
 export default function BuySellPage() {
@@ -149,7 +149,7 @@ export default function BuySellPage() {
                                     <button key={o.id} onClick={() => setSelectedSellOption(o)}
                                         className="w-full flex items-center gap-3 p-3 rounded-xl transition-all"
                                         style={{ background: selectedSellOption.id === o.id ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: `1px solid ${selectedSellOption.id === o.id ? 'var(--agt-mint)' : 'var(--pp-border)'}` }}>
-                                        <span className="text-2xl">{o.icon}</span>
+                                        {(o as any).isImg ? <img src={o.icon} alt="" className="w-8 h-8 rounded" /> : <span className="text-2xl">{(o as any).emoji || o.icon}</span>}
                                         <div className="text-left">
                                             <p className="text-sm font-semibold" style={{ color: 'var(--pp-text-primary)' }}>{o.name}</p>
                                             <p className="text-[10px]" style={{ color: 'var(--pp-text-muted)' }}>{o.desc}</p>
@@ -194,7 +194,7 @@ export default function BuySellPage() {
                                     <button key={g.id} onClick={() => setSelectedGift(g)}
                                         className="flex flex-col items-center gap-1 p-3 rounded-xl transition-all"
                                         style={{ background: selectedGift.id === g.id ? 'var(--pp-surface-2)' : 'var(--pp-surface-1)', border: `1px solid ${selectedGift.id === g.id ? 'var(--agt-blue)' : 'var(--pp-border)'}` }}>
-                                        <span className="text-2xl">{g.icon}</span>
+                                        {(g as any).isImg ? <img src={g.icon} alt="" className="w-8 h-8 rounded" /> : <span className="text-2xl">{g.icon}</span>}
                                         <span className="text-[10px] font-medium" style={{ color: 'var(--pp-text-primary)' }}>{g.name}</span>
                                     </button>
                                 ))}

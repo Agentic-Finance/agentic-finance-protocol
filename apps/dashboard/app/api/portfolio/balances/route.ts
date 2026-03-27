@@ -3,10 +3,10 @@ import { ethers } from 'ethers';
 
 const TEMPO_RPC = 'https://rpc.moderato.tempo.xyz';
 const TEMPO_TOKENS = [
-    { address: '0x20c0000000000000000000000000000000000001', symbol: 'AlphaUSD', name: 'Alpha Stablecoin', decimals: 6, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg' },
-    { address: '0x20c0000000000000000000000000000000000000', symbol: 'pathUSD', name: 'Path Dollar', decimals: 6, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdt.svg' },
-    { address: '0x20c0000000000000000000000000000000000002', symbol: 'BetaUSD', name: 'Beta Dollar', decimals: 6, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/dai.svg' },
-    { address: '0x20c0000000000000000000000000000000000003', symbol: 'ThetaUSD', name: 'Theta Dollar', decimals: 6, logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg' },
+    { address: '0x20c0000000000000000000000000000000000001', symbol: 'AlphaUSD', name: 'Alpha Stablecoin', decimals: 6, logo: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
+    { address: '0x20c0000000000000000000000000000000000000', symbol: 'pathUSD', name: 'Path Dollar', decimals: 6, logo: 'https://assets.coingecko.com/coins/images/325/small/Tether.png' },
+    { address: '0x20c0000000000000000000000000000000000002', symbol: 'BetaUSD', name: 'Beta Dollar', decimals: 6, logo: 'https://assets.coingecko.com/coins/images/9956/small/Badge_Dai.png' },
+    { address: '0x20c0000000000000000000000000000000000003', symbol: 'ThetaUSD', name: 'Theta Dollar', decimals: 6, logo: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
 ];
 
 const ERC20_ABI = ['function balanceOf(address) view returns (uint256)'];
@@ -17,7 +17,7 @@ const CHAINS = [
     { id: 8453, name: 'Base', color: '#0052FF', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/base.svg' },
     { id: 42161, name: 'Arbitrum', color: '#12AAFF', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/arbitrum.svg' },
     { id: 10, name: 'Optimism', color: '#FF0420', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/optimism.svg' },
-    { id: 42431, name: 'Tempo', color: '#3EDDB9', logo: '/logo-v2.png' },
+    { id: 42431, name: 'Tempo', color: '#3EDDB9', logo: 'https://agt.finance/logo-v2.png' },
 ];
 
 export async function GET(req: NextRequest) {
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
                                 valueUSD: parseFloat(t.priceUSD || '0') * bal,
                                 chain: chain.name, chainId: chain.id,
                                 chainLogo: chain.logo, chainColor: chain.color,
-                                logo: t.logoURI || chain.logo,
+                                logo: t.logoURI || `https://assets.coingecko.com/coins/images/279/small/ethereum.png`,
                                 address: t.address || 'native', change24h: 0,
                             });
                         }

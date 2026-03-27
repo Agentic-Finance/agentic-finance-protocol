@@ -13,12 +13,12 @@ const CHAINS = [
 ];
 
 const TOKENS = [
-    { symbol: 'USDC', name: 'USD Coin', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdc.svg' },
-    { symbol: 'USDT', name: 'Tether', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/usdt.svg' },
-    { symbol: 'ETH', name: 'Ethereum', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/eth.svg' },
-    { symbol: 'WBTC', name: 'Wrapped BTC', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/wbtc.svg' },
-    { symbol: 'DAI', name: 'Dai', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/dai.svg' },
-    { symbol: 'MATIC', name: 'Polygon', logo: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/tokens/matic.svg' },
+    { symbol: 'USDC', name: 'USD Coin', logo: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
+    { symbol: 'USDT', name: 'Tether', logo: 'https://assets.coingecko.com/coins/images/325/small/Tether.png' },
+    { symbol: 'ETH', name: 'Ethereum', logo: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png' },
+    { symbol: 'WBTC', name: 'Wrapped BTC', logo: 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png' },
+    { symbol: 'DAI', name: 'Dai', logo: 'https://assets.coingecko.com/coins/images/9956/small/Badge_Dai.png' },
+    { symbol: 'MATIC', name: 'Polygon', logo: 'https://assets.coingecko.com/coins/images/4713/small/polygon.png' },
 ];
 
 interface Quote {

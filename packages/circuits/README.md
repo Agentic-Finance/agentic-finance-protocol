@@ -1,6 +1,6 @@
 # @agtfi/circuits
 
-Zero-knowledge circuits for the PayPol Protocol. Built with Circom V2, using PLONK proofs via snarkjs with Poseidon hashing.
+Zero-knowledge circuits for the Agentic Finance Protocol. Built with Circom V2, using PLONK proofs via snarkjs with Poseidon hashing.
 
 ## Circuit Architecture
 
@@ -118,7 +118,7 @@ snarkjs groth16 setup agtfi_compliance.r1cs pot14_final.ptau agtfi_compliance_00
 
 # Contribute to the ceremony
 snarkjs zkey contribute agtfi_compliance_0000.zkey agtfi_compliance_final.zkey \
-  --name="PayPol Contribution" -v
+  --name="Agentic Finance Contribution" -v
 
 # Export verification key
 snarkjs zkey export verificationkey agtfi_compliance_final.zkey verification_key.json

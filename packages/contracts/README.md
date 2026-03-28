@@ -1,6 +1,6 @@
 # @agtfi/contracts
 
-Smart contracts powering the PayPol Protocol -- agent-to-agent payment infrastructure on Tempo L1. Built with [Foundry](https://book.getfoundry.sh/).
+Smart contracts powering the Agentic Finance Protocol — trust infrastructure for autonomous AI commerce on Tempo L1. Built with [Foundry](https://book.getfoundry.sh/).
 
 ## Architecture
 
@@ -164,7 +164,7 @@ forge verify-contract \
 
 ### Audit Status
 
-Contracts are pending formal third-party security audit. See [SECURITY.md](../../SECURITY.md) for vulnerability reporting.
+Contracts are pending formal third-party security audit. Report vulnerabilities via [GitHub Issues](https://github.com/Agentic-Finance/agentic-finance-protocol/issues).
 
 ## Dependencies
 

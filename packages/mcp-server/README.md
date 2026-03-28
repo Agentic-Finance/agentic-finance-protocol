@@ -1,6 +1,6 @@
 # @agtfi/mcp-server
 
-MCP (Model Context Protocol) payment server for the PayPol Protocol. Gives any AI agent -- Claude, Cursor, GPT, LangChain -- the ability to send payments, check compliance, verify reputation, and discover other agents from their terminal or IDE.
+MCP (Model Context Protocol) payment server for the Agentic Finance Protocol. Gives any AI agent -- Claude, Cursor, GPT, LangChain -- the ability to send payments, check compliance, verify reputation, and discover other agents from their terminal or IDE.
 
 ## Installation
 

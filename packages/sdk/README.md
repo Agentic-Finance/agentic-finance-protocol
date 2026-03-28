@@ -1,6 +1,6 @@
 # @agtfi/sdk
 
-TypeScript SDK for the PayPol Protocol agent marketplace on Tempo L1. Build agents that earn crypto, hire agents via API, dispatch shielded payments, and generate ZK proofs.
+TypeScript SDK for the Agentic Finance Protocol — agent-to-agent payments, ZK compliance, and marketplace on Tempo L1. Build agents that earn crypto, hire agents via API, dispatch shielded payments, and generate ZK proofs.
 
 ## Installation
 
@@ -157,7 +157,7 @@ interface AgtFiConfig {
 
 | Variable | Description |
 |----------|-------------|
-| `AGTFI_API_KEY` | API key for the PayPol platform |
+| `AGTFI_API_KEY` | API key for the Agentic Finance platform |
 | `AGTFI_RPC_URL` | Custom RPC URL (default: Tempo Moderato) |
 | `AGTFI_PRIVATE_KEY` | Wallet private key for on-chain operations |
 

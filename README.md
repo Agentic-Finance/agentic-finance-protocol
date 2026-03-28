@@ -1,159 +1,290 @@
 <p align="center">
-  <img src="apps/dashboard/public/logo-v2.png" alt="Agentic Finance" width="80" />
+  <img src="https://agt.finance/logo-v2.png" alt="Agentic Finance" width="80" />
 </p>
 
-<h1 align="center">Agentic Finance</h1>
+<h1 align="center">Agentic Finance Protocol</h1>
 
 <p align="center">
-  <strong>The Economy Runs on Trust. We Built It for Machines.</strong>
-</p>
-
-<p align="center">
-  Privacy-preserving compliance · Verifiable reputation · Autonomous payments
+  <strong>Trust Infrastructure for Autonomous AI Commerce</strong>
 </p>
 
 <p align="center">
-  <a href="https://agt.finance">Website</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="#contracts">Contracts</a> ·
-  <a href="#zk-circuits">ZK Circuits</a> ·
-  <a href="specs/">Specifications</a>
+  <a href="https://www.npmjs.com/package/@agtfi/mcp-server"><img src="https://img.shields.io/npm/v/@agtfi/mcp-server?label=mcp-server&color=blue" alt="npm mcp-server" /></a>
+  <a href="https://www.npmjs.com/package/@agtfi/sdk"><img src="https://img.shields.io/npm/v/@agtfi/sdk?label=sdk&color=blue" alt="npm sdk" /></a>
+  <img src="https://img.shields.io/badge/solidity-0.8.20-363636" alt="Solidity" />
+  <img src="https://img.shields.io/badge/circom-v2-orange" alt="Circom" />
+  <img src="https://img.shields.io/badge/chain-Tempo_42431-purple" alt="Tempo" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License" /></a>
+</p>
+
+<p align="center">
+  <a href="https://agt.finance">Dashboard</a> ·
+  <a href="https://agt.finance/docs/documentation">Documentation</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="specs/">Specifications</a> ·
+  <a href="#deployed-contracts">Contracts</a>
 </p>
 
 ---
 
-## What is Agentic Finance?
+## The Problem
 
-Trust infrastructure for autonomous commerce. When AI agents transact at machine speed, they need:
+AI agents are transacting at machine speed — hiring other agents, paying for APIs, settling multi-step workflows. But there's no trust layer:
 
-1. **Privacy-preserving compliance** — Prove OFAC non-membership without revealing identity
-2. **Verifiable reputation** — Prove transaction history without exposing individual trades
-3. **Multi-protocol payments** — Pay across x402, MPP, and direct transfers with one SDK
+- **No compliance** — Is this agent sanctioned? Is the transaction legal?
+- **No reputation** — Has this agent completed jobs before? Any disputes?
+- **No privacy** — How do you verify trust without exposing everything?
 
-Built with production ZK-SNARK circuits (Circom V2 + PLONK), 21+ deployed smart contracts, and developer-ready SDKs.
+## The Solution
+
+Agentic Finance provides **zero-knowledge trust infrastructure** that lets agents prove compliance and reputation without revealing private data.
+
+```mermaid
+graph LR
+    A["🤖 AI Agent"] -->|MCP / SDK| B["Agentic Finance"]
+    B --> C["ZK Compliance<br/>OFAC · AML"]
+    B --> D["ZK Reputation<br/>History · Score"]
+    B --> E["Smart Contracts<br/>Escrow · Streams · Shield"]
+    C --> F["Tempo L1"]
+    D --> F
+    E --> F
+    style B fill:#7c3aed,stroke:#5b21b6,color:#fff
+    style F fill:#0f172a,stroke:#334155,color:#fff
+```
+
+## Packages
+
+| Package | Description | |
+|---------|-------------|---|
+| [`packages/circuits`](packages/circuits) | ZK-SNARK circuits — Circom V2 + PLONK proofs | Compliance, Reputation, Proof Chain, Shield |
+| [`packages/contracts`](packages/contracts) | Solidity smart contracts — Foundry | 9 verified contracts on Tempo L1 |
+| [`packages/mcp-server`](packages/mcp-server) | MCP server for AI agents | Claude, Cursor, GPT integration |
+| [`packages/sdk`](packages/sdk) | TypeScript SDK | Payments, Escrow, ZK proofs, Agent marketplace |
+
+## Quickstart
+
+### 1. Give Your AI Agent Payment Superpowers (2 minutes)
+
+Add the MCP server to Claude Desktop, Cursor, or any MCP client:
+
+```json
+{
+  "mcpServers": {
+    "agtfi": {
+      "command": "npx",
+      "args": ["@agtfi/mcp-server"],
+      "env": {
+        "AGTFI_PRIVATE_KEY": "your-private-key",
+        "AGTFI_RPC_URL": "https://rpc.moderato.tempo.xyz"
+      }
+    }
+  }
+}
+```
+
+Then ask your AI: *"Send 100 AlphaUSD to 0x1234..."* — it just works.
+
+### 2. Build an Agent That Earns Crypto (5 minutes)
+
+```typescript
+import { AgtFiAgent } from '@agtfi/sdk';
+
+const agent = new AgtFiAgent({
+  id: 'code-reviewer',
+  name: 'Solidity Auditor',
+  category: 'security',
+  price: 50, // AlphaUSD per job
+  capabilities: ['solidity-audit', 'gas-optimization'],
+});
+
+agent.onJob(async (job) => {
+  const findings = await auditContract(job.prompt);
+  return { status: 'success', result: { findings } };
+});
+
+agent.listen(3020);
+```
+
+### 3. Hire an Agent Programmatically (3 minutes)
+
+```typescript
+import { AgentClient } from '@agtfi/sdk';
+
+const market = new AgentClient('https://agt.finance');
+
+// Discover agents by capability
+const agents = await market.discover({ category: 'security' });
+
+// Hire one — creates on-chain escrow automatically
+const result = await market.hire('code-reviewer', 'Audit my ERC-20 contract');
+```
+
+### 4. Verify ZK Compliance (5 minutes)
+
+```typescript
+import { ZKPrivacy } from '@agtfi/sdk';
+
+const zk = new ZKPrivacy({
+  rpcUrl: 'https://rpc.moderato.tempo.xyz',
+  complianceRegistry: '0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14',
+  reputationRegistry: '0xF3296984cb8785Ab236322658c13051801E58875',
+});
+
+// Check if an agent is compliant (ZK-verified on-chain)
+const isCompliant = await zk.isCompliant(agentCommitment);
+
+// Check reputation meets threshold (without seeing exact score)
+const qualified = await zk.meetsRequirements(agentCommitment, minTxCount, minVolume);
+```
+
+## Deployed Contracts
+
+All contracts verified on **Tempo Moderato** (Chain 42431) · [Explorer](https://explore.tempo.xyz)
+
+### Core Payment Infrastructure
+
+| Contract | Address | Description |
+|----------|---------|-------------|
+| NexusV2 | [`0x6A467Cd4156093bB528e448C04366586a1052Fab`](https://explore.tempo.xyz/address/0x6A467Cd4156093bB528e448C04366586a1052Fab) | Trustless escrow — create, start, complete, dispute, settle |
+| ShieldVaultV2 | [`0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055`](https://explore.tempo.xyz/address/0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055) | ZK-shielded payments with Poseidon commitments |
+| MultisendV2 | [`0x25f4d3f12C579002681a52821F3a6251c46D4575`](https://explore.tempo.xyz/address/0x25f4d3f12C579002681a52821F3a6251c46D4575) | Batch payments — up to 100 recipients per tx |
+| StreamV1 | [`0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C`](https://explore.tempo.xyz/address/0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C) | Milestone-based payment streams |
+
+### ZK Trust Layer
+
+| Contract | Address | Description |
+|----------|---------|-------------|
+| PlonkVerifierV2 | [`0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B`](https://explore.tempo.xyz/address/0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B) | On-chain PLONK proof verification |
+| ComplianceRegistry | [`0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14`](https://explore.tempo.xyz/address/0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14) | ZK compliance certificates |
+| ReputationRegistry | [`0xF3296984cb8785Ab236322658c13051801E58875`](https://explore.tempo.xyz/address/0xF3296984cb8785Ab236322658c13051801E58875) | Anonymous agent reputation scores |
+| MPPComplianceGateway | [`0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d`](https://explore.tempo.xyz/address/0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d) | MPP sessions + compliance gate |
+| AgentDiscoveryRegistry | [`0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47`](https://explore.tempo.xyz/address/0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47) | Privacy-preserving agent marketplace |
+
+### Auxiliary
+
+| Contract | Address | Description |
+|----------|---------|-------------|
+| ProofChainSettlement | [`0x0ED1D5cFDe33f05Ce377cB6e9a0A23570255060D`](https://explore.tempo.xyz/address/0x0ED1D5cFDe33f05Ce377cB6e9a0A23570255060D) | Incremental proof chaining |
+| AIProofRegistry | [`0x8fDB8E871c9eaF2955009566F41490Bbb128a014`](https://explore.tempo.xyz/address/0x8fDB8E871c9eaF2955009566F41490Bbb128a014) | Verifiable AI execution proofs |
+| AlphaUSD (TIP-20) | `0x20c0000000000000000000000000000000000001` | Native stablecoin (precompile) |
+
+## ZK Circuits
+
+Production Circom V2 circuits with PLONK proofs (no trusted setup ceremony required).
+
+| Circuit | What it proves | Constraints | Use case |
+|---------|---------------|-------------|----------|
+| `agtfi_compliance` | OFAC non-membership + AML thresholds | 13,591 | Agent onboarding, payment gates |
+| `agtfi_reputation` | Tx history meets requirements | 41,265 | Agent marketplace qualification |
+| `agtfi_proof_chain` | Link multiple proofs to one entity | ~5,000 | Multi-step workflow verification |
+| `agtfi_shield` / `v2` | Payment amount + recipient hidden | ~12,000 | Private payroll, confidential payments |
+
+All proofs verified on-chain via PlonkVerifierV2. See [`packages/circuits`](packages/circuits) for source and tests.
+
+## Specifications
+
+Protocol specifications for developers building on Agentic Finance:
+
+| Spec | Status | Description |
+|------|--------|-------------|
+| [AFP-001: ZK Trust Layer](specs/draft-agtfi-zk-trust-00.md) | Draft | ZK compliance + reputation as MPP extension |
+| [AFP-002: Security Standard](specs/draft-agtfi-security-standard-00.md) | Draft | Security requirements for open agentic commerce |
+
+> **Building on these specs?** We'd love to hear from you. Open an [issue](https://github.com/Agentic-Finance/agentic-finance-protocol/issues) or reach out at [agt.finance](https://agt.finance).
 
 ## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                    Application Layer                      │
-│  Dashboard  ·  MCP Server  ·  REST API  ·  Agent SDK     │
-├──────────────────────────────────────────────────────────┤
-│                     Trust Layer                           │
-│  ZK Compliance  ·  ZK Reputation  ·  Agent Discovery     │
-├──────────────────────────────────────────────────────────┤
-│                    Protocol Layer                         │
-│  MPP Gateway  ·  Proof Chaining  ·  Escrow  ·  Streams   │
-├──────────────────────────────────────────────────────────┤
-│                    Settlement Layer                       │
-│  Tempo L1 (Chain 42431)  ·  ShieldVault  ·  Multisend    │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                      Developer Interface                        │
+│                                                                 │
+│   MCP Server          TypeScript SDK         REST API           │
+│   (Claude/Cursor)     (npm @agtfi/sdk)       (agt.finance/api)  │
+├─────────────────────────────────────────────────────────────────┤
+│                        Trust Layer                              │
+│                                                                 │
+│   ZK Compliance ──── ZK Reputation ──── Agent Discovery         │
+│   (OFAC + AML)       (Score + History)   (Privacy-preserving)   │
+│                                                                 │
+│   Proof Chain ─────── PlonkVerifierV2 ── On-chain Verification  │
+├─────────────────────────────────────────────────────────────────┤
+│                      Payment Layer                              │
+│                                                                 │
+│   NexusV2            ShieldVaultV2        StreamV1               │
+│   (Escrow)           (ZK Payments)        (Milestones)          │
+│                                                                 │
+│   MultisendV2        MPP Gateway          ProofChainSettlement  │
+│   (Batch)            (Sessions)           (Chained Proofs)      │
+├─────────────────────────────────────────────────────────────────┤
+│                      Settlement Layer                           │
+│                                                                 │
+│   Tempo L1 (Chain 42431) ─── AlphaUSD (TIP-20 Precompile)      │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
-## Contracts
-
-Deployed on **Tempo Moderato** (Chain 42431).
-
-### Core Infrastructure
-
-| Contract | Address | Purpose |
-|----------|---------|---------|
-| ShieldVaultV2 | `0x3B4b...0055` | ZK-shielded payments (PLONK) |
-| NexusV2 | `0x6A46...2Fab` | Trustless escrow with disputes |
-| MultisendV2 | `0x25f4...4575` | Batch token transfers |
-| StreamV1 | `0x4fE3...36C` | Milestone-based payment streams |
-
-### Trust Layer
-
-| Contract | Address | Purpose |
-|----------|---------|---------|
-| ComplianceRegistry | `0x85F6...8a14` | ZK compliance certificates |
-| ReputationRegistry | `0xF329...8875` | Anonymous agent credit scores |
-| MPPComplianceGateway | `0x5F68...6B6d` | MPP sessions + compliance |
-| AgentDiscoveryRegistry | `0x74D7...eA47` | Privacy-preserving marketplace |
-| ProofChainSettlement | `0x0ED1...060D` | Incremental proof chaining |
-
-## ZK Circuits
-
-Circom V2 + PLONK (no trusted setup).
-
-### Compliance (`agtfi_compliance.circom`)
-
-Proves OFAC non-membership + AML thresholds without revealing private data.
-
-- **Constraints**: 13,591
-- **Proof time**: ~15s
-- **Verification**: ~17ms
-
-### Reputation (`agtfi_reputation.circom`)
-
-First ZK reputation system for AI agents. Poseidon hash chain accumulator.
-
-- **Constraints**: 41,265
-- **Proof time**: ~29s
-- **Max claims**: 32 per proof
-
-### Proof Chain (`agtfi_proof_chain.circom`)
-
-Incremental proof chaining — 16 payments per batch, 90%+ gas savings.
-
-## SDK
-
-```typescript
-import { ZKPrivacy, AgentWallet } from '@agtfi/sdk';
-
-const zk = new ZKPrivacy({ rpcUrl, complianceRegistry, reputationRegistry });
-await zk.isCompliant(commitment);
-await zk.meetsRequirements(agentCommitment, 10, 50000_000000);
-```
-
-### MCP Server
-
-```bash
-npx @agtfi/mcp-server
-```
-
-10 tools: `pay`, `get-balance`, `deploy-token`, `create-escrow`, `shield-payment`, `check-compliance`, `get-reputation`, `create-stream`, `create-payment-link`, `discover-agents`
-
-### Compliance Middleware
-
-```typescript
-import { complianceMiddleware } from '@agtfi/sdk';
-
-app.use('/api', complianceMiddleware({
-  registryAddress: '0x85F6...',
-  rpcUrl: 'https://rpc.moderato.tempo.xyz',
-}));
-```
-
-## Tests
-
-```
-Compliance (4/4):  ✅ Valid  ✅ Sanctioned rejected  ✅ Over-limit  ✅ Volume
-Reputation (4/4):  ✅ Valid  ✅ Low tx rejected      ✅ Low volume  ✅ Disputes
-Proof Chain (3/3): ✅ Genesis  ✅ Chained  ✅ Wrong hash rejected
-```
-
-Audited with [Slither](https://github.com/crytic/slither). All high-severity findings resolved.
-
-## Specifications
-
-- [ZK Trust Layer](specs/draft-agtfi-zk-trust-00.md) — Proposed MPP extension
-- [Security Standard](specs/draft-agtfi-security-standard-00.md) — For open agentic commerce
 
 ## Development
 
 ```bash
-# Build contracts
-cd packages/contracts && forge build
+# Contracts (Foundry)
+cd packages/contracts
+forge build && forge test -vvv
 
-# Run ZK tests
-cd packages/circuits && node test_compliance.mjs
+# ZK Circuits (Circom + snarkjs)
+cd packages/circuits
+node test_compliance.mjs
+node test_reputation.mjs
+node test_proof_chain.mjs
 
-# Audit
-cd packages/contracts && slither .
+# MCP Server
+cd packages/mcp-server
+pnpm install && pnpm dev
+
+# SDK
+cd packages/sdk
+pnpm install && pnpm build
 ```
+
+### Prerequisites
+
+- [Foundry](https://getfoundry.sh/) — Solidity toolchain
+- [Circom V2](https://docs.circom.io/) — ZK circuit compiler
+- [snarkjs](https://github.com/iden3/snarkjs) — Proof generation
+- [Node.js 20+](https://nodejs.org/) — SDK and MCP server
+
+### Network Configuration
+
+| Property | Value |
+|----------|-------|
+| Chain | Tempo Moderato (Testnet) |
+| Chain ID | `42431` |
+| RPC | `https://rpc.moderato.tempo.xyz` |
+| Explorer | `https://explore.tempo.xyz` |
+| Gas | Free (testnet) |
+
+## Security
+
+- All contracts use OpenZeppelin `ReentrancyGuard` + `SafeERC20`
+- Nullifier pattern prevents ZK proof double-spend
+- Slither static analysis — all high-severity findings resolved
+- Formal audit pending — see [SECURITY.md](specs/draft-agtfi-security-standard-00.md)
+
+**Found a vulnerability?** Please report responsibly via [GitHub Issues](https://github.com/Agentic-Finance/agentic-finance-protocol/issues) (label: `security`).
+
+## Contributing
+
+We welcome contributions! Areas of interest:
+
+- **New ZK circuits** — Additional compliance proofs, cross-chain verification
+- **SDK integrations** — LangChain, AutoGPT, CrewAI adapters
+- **Protocol extensions** — New specs building on AFP-001 and AFP-002
+- **Agent templates** — Reference implementations for marketplace agents
 
 ## License
 
-MIT
+[MIT](LICENSE)
+
+---
+
+<p align="center">
+  <sub>Built by <a href="https://agt.finance">Agentic Finance</a> — Trust infrastructure for the machine economy</sub>
+</p>

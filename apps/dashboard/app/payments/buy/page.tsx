@@ -10,18 +10,18 @@ const CRYPTO_OPTIONS = [
 ];
 
 const SELL_OPTIONS = [
-    { id: 'venmo', name: 'Venmo', icon: 'https://cdn.worldvectorlogo.com/logos/venmo-2.svg', desc: 'Instant transfer to Venmo account', isImg: true },
-    { id: 'paypal', name: 'PayPal', icon: 'https://cdn.worldvectorlogo.com/logos/paypal-icon.svg', desc: 'Send to PayPal email', isImg: true },
-    { id: 'bank', name: 'Bank Transfer', icon: '', desc: 'ACH/Wire to bank account', isImg: false, emoji: '🏦' },
+    { id: 'venmo', name: 'Venmo', icon: '', desc: 'Instant transfer to Venmo account', isImg: false, emoji: '💜', color: '#3D95CE' },
+    { id: 'paypal', name: 'PayPal', icon: '', desc: 'Send to PayPal email', isImg: false, emoji: '🅿️', color: '#003087' },
+    { id: 'bank', name: 'Bank Transfer', icon: '', desc: 'ACH/Wire to bank account', isImg: false, emoji: '🏦', color: '#4A5568' },
 ];
 
 const GIFT_BRANDS = [
-    { id: 'amazon', name: 'Amazon', icon: 'https://cdn.worldvectorlogo.com/logos/amazon-icon-1.svg', amounts: [25, 50, 100, 200], isImg: true },
-    { id: 'apple', name: 'Apple', icon: 'https://cdn.worldvectorlogo.com/logos/apple-14.svg', amounts: [25, 50, 100], isImg: true },
-    { id: 'google', name: 'Google Play', icon: 'https://cdn.worldvectorlogo.com/logos/google-play-5.svg', amounts: [10, 25, 50, 100], isImg: true },
-    { id: 'uber', name: 'Uber', icon: 'https://cdn.worldvectorlogo.com/logos/uber-15.svg', amounts: [25, 50], isImg: true },
-    { id: 'starbucks', name: 'Starbucks', icon: 'https://cdn.worldvectorlogo.com/logos/starbucks-coffee-3.svg', amounts: [10, 25, 50], isImg: true },
-    { id: 'netflix', name: 'Netflix', icon: 'https://cdn.worldvectorlogo.com/logos/netflix-4.svg', amounts: [25, 50, 100], isImg: true },
+    { id: 'amazon', name: 'Amazon', icon: 'https://logo.clearbit.com/amazon.com', amounts: [25, 50, 100, 200], isImg: true },
+    { id: 'apple', name: 'Apple', icon: 'https://logo.clearbit.com/apple.com', amounts: [25, 50, 100], isImg: true },
+    { id: 'google', name: 'Google Play', icon: 'https://logo.clearbit.com/play.google.com', amounts: [10, 25, 50, 100], isImg: true },
+    { id: 'uber', name: 'Uber', icon: 'https://logo.clearbit.com/uber.com', amounts: [25, 50], isImg: true },
+    { id: 'starbucks', name: 'Starbucks', icon: 'https://logo.clearbit.com/starbucks.com', amounts: [10, 25, 50], isImg: true },
+    { id: 'netflix', name: 'Netflix', icon: 'https://logo.clearbit.com/netflix.com', amounts: [25, 50, 100], isImg: true },
 ];
 
 export default function BuySellPage() {

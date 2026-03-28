@@ -1,0 +1,11 @@
+{
+  "name": "@agtfi/test-utils",
+  "version": "1.0.0",
+  "description": "Shared testing utilities — fixtures, mocks, helpers for Agentic Finance",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": { "build": "tsc" },
+  "dependencies": { "ethers": "^6.13.0" },
+  "devDependencies": { "typescript": "^5.5.0", "vitest": "^2.0.0" },
+  "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@agtfi/config",
+  "version": "1.0.0",
+  "description": "Shared chain configs, contract addresses, and token metadata for Agentic Finance",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": { "build": "tsc" },
+  "devDependencies": { "typescript": "^5.5.0" },
+  "license": "MIT"
+}

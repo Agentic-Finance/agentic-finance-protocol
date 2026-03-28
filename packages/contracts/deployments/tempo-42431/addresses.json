@@ -1,0 +1,81 @@
+{
+  "chainId": 42431,
+  "chainName": "Tempo Moderato",
+  "rpc": "https://rpc.moderato.tempo.xyz",
+  "explorer": "https://moderato.tempo.xyz",
+  "deployedAt": "2025-03-15",
+  "deployer": "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793",
+  "contracts": {
+    "NexusV2": {
+      "address": "0x6A467Cd4156093bB528e448C04366586a1052Fab",
+      "name": "PayPolNexusV2",
+      "description": "Trustless escrow with full lifecycle management"
+    },
+    "ShieldVaultV2": {
+      "address": "0x3B4b47971B61cB502DD97eAD9cAF0552ffae0055",
+      "name": "PayPolShieldVaultV2",
+      "description": "ZK-shielded payment vault with Poseidon commitments"
+    },
+    "PlonkVerifierV2": {
+      "address": "0x9FB90e9FbdB80B7ED715D98D9dd8d9786805450B",
+      "name": "PlonkVerifierV2",
+      "description": "PLONK proof verifier (auto-generated from snarkjs)"
+    },
+    "AIProofRegistry": {
+      "address": "0x8fDB8E871c9eaF2955009566F41490Bbb128a014",
+      "name": "AIProofRegistry",
+      "description": "AI proof commitment and slashing mechanism"
+    },
+    "StreamV1": {
+      "address": "0x4fE37c46E3D442129c2319de3D24c21A6cbfa36C",
+      "name": "PayPolStreamV1",
+      "description": "Milestone-based streaming escrow"
+    },
+    "MultisendV2": {
+      "address": "0x25f4d3f12C579002681a52821F3a6251c46D4575",
+      "name": "PayPolMultisendVaultV2",
+      "description": "Gas-optimized batch payments (up to 100 recipients)"
+    },
+    "ComplianceVerifier": {
+      "address": "0x4896f5797b59CC8EE5e942eBd0Ed6772af9131fF",
+      "name": "ComplianceVerifier",
+      "description": "ZK compliance proof verifier"
+    },
+    "ComplianceRegistry": {
+      "address": "0x85F64F80CF5a314d23C26B137FB85EAE70bB8a14",
+      "name": "ComplianceRegistry",
+      "description": "ZK compliance certificate storage"
+    },
+    "ReputationVerifier": {
+      "address": "0x2e2C368afB20810AadA9e6BB2Fb51002614F7Da4",
+      "name": "ReputationVerifier",
+      "description": "ZK reputation proof verifier"
+    },
+    "ReputationRegistry": {
+      "address": "0xF3296984cb8785Ab236322658c13051801E58875",
+      "name": "ReputationRegistry",
+      "description": "On-chain agent reputation registry"
+    },
+    "MPPComplianceGateway": {
+      "address": "0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d",
+      "name": "MPPComplianceGateway",
+      "description": "MPP payment sessions with compliance checks"
+    },
+    "AgentDiscoveryRegistry": {
+      "address": "0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47",
+      "name": "AgentDiscoveryRegistry",
+      "description": "Privacy-preserving agent marketplace"
+    },
+    "ProofChainSettlement": {
+      "address": "0x0ED1D5cFDe33f05Ce377cB6e9a0A23570255060D",
+      "name": "ProofChainSettlement",
+      "description": "Incremental proof chaining for batch settlement"
+    }
+  },
+  "tokens": {
+    "AlphaUSD": "0x20c0000000000000000000000000000000000001",
+    "pathUSD": "0x20c0000000000000000000000000000000000000",
+    "BetaUSD": "0x20c0000000000000000000000000000000000002",
+    "ThetaUSD": "0x20c0000000000000000000000000000000000003"
+  }
+}

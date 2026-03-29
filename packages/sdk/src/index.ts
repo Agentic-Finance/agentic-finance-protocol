@@ -24,7 +24,7 @@ import axios from 'axios';
 
 // ── Payment SDK ───────────────────────────────────────────
 
-export interface Agentic FinanceConfig {
+export interface AgenticFinanceConfig {
     apiKey: string;
     workspaceId: string;
     environment?: 'mainnet' | 'testnet';
@@ -44,7 +44,7 @@ export class AgtFiAgentClient {
     private workspaceId: string;
     private baseURL: string;
 
-    constructor(config: Agentic FinanceConfig) {
+    constructor(config: AgenticFinanceConfig) {
         this.apiKey      = config.apiKey;
         this.workspaceId = config.workspaceId;
         this.baseURL     = config.environment === 'mainnet'
@@ -87,6 +87,33 @@ export class AgtFiAgentClient {
         return response.data;
     }
 }
+
+// ── ZK Privacy + Gateway ─────────────────────────────────
+
+export { ZKPrivacy, batchComplianceProofs } from './zk-privacy';
+export type {
+    ZKPrivacyConfig,
+    ComplianceProofInput,
+    ComplianceResult,
+    ReputationClaim,
+    ReputationProofInput,
+    ReputationResult,
+    BatchProofResult,
+} from './zk-privacy';
+
+export { AgentGateway } from './gateway';
+export type {
+    GatewayConfig,
+    PayOptions,
+    StreamOptions,
+    EscrowOptions,
+    PaymentRail,
+    PrivacyLevel,
+    GatewayStats,
+} from './gateway';
+
+export { ProtocolRouter } from './protocol-router';
+export type { RouterConfig, PaymentRequest } from './protocol-router';
 
 // ── Agent Marketplace SDK ─────────────────────────────────
 

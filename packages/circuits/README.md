@@ -76,13 +76,13 @@ Chain multiple proofs together for complex multi-step verification.
 
 ## Constraint Counts and Proof Times
 
-| Circuit | Constraints | Powers of Tau | Proof Time (est.) |
-|---------|------------|---------------|-------------------|
-| agtfi_compliance | ~2,000 | pot14 (16K) | ~1s |
-| agtfi_reputation | ~3,500 | pot14 (16K) | ~1.5s |
-| agtfi_proof_chain | ~5,000 | pot15 (32K) | ~2s |
-| agtfi_shield | ~8,000 | pot15 (32K) | ~3s |
-| agtfi_shield_v2 | ~12,000 | pot16 (64K) | ~4s |
+| Circuit | Constraints | Powers of Tau | Proof System | Proof Time (est.) |
+|---------|------------|---------------|-------------|-------------------|
+| agtfi_compliance | 13,591 | pot14 (16K) | PLONK | ~15s |
+| agtfi_reputation | 41,265 | pot16 (64K) | PLONK | ~29s |
+| agtfi_proof_chain | ~5,000 | pot15 (32K) | PLONK | ~8s |
+| agtfi_shield | ~8,000 | pot15 (32K) | PLONK | ~10s |
+| agtfi_shield_v2 | ~12,000 | pot16 (64K) | PLONK | ~15s |
 
 Proof times measured on a standard x86_64 machine. Production daemon uses Poseidon singleton cache and parallel proof processing for throughput.
 
@@ -102,23 +102,21 @@ circom agtfi_compliance.circom --r1cs --wasm --sym -l lib
 snarkjs r1cs info agtfi_compliance.r1cs
 ```
 
-## Trusted Setup
+## Proving Key Setup
 
-The repository includes pre-computed Powers of Tau ceremony files:
+All circuits use **PLONK** (universal setup — no per-circuit trusted setup ceremony required).
 
-- `pot14_final.ptau` -- supports up to 16,384 constraints
-- `pot15_final.ptau` -- supports up to 32,768 constraints
-- `pot16_final.ptau` -- supports up to 65,536 constraints
+The repository includes pre-computed Powers of Tau files:
 
-Generate a proving key:
+- `pot14_final.ptau` — supports up to 16,384 constraints
+- `pot15_final.ptau` — supports up to 32,768 constraints
+- `pot16_final.ptau` — supports up to 65,536 constraints
+
+Generate a PLONK proving key:
 
 ```bash
-# Phase 2: circuit-specific setup
-snarkjs groth16 setup agtfi_compliance.r1cs pot14_final.ptau agtfi_compliance_0000.zkey
-
-# Contribute to the ceremony
-snarkjs zkey contribute agtfi_compliance_0000.zkey agtfi_compliance_final.zkey \
-  --name="Agentic Finance Contribution" -v
+# PLONK setup (universal — no circuit-specific ceremony needed)
+snarkjs plonk setup agtfi_compliance.r1cs pot14_final.ptau agtfi_compliance_final.zkey
 
 # Export verification key
 snarkjs zkey export verificationkey agtfi_compliance_final.zkey verification_key.json
@@ -130,17 +128,17 @@ snarkjs zkey export verificationkey agtfi_compliance_final.zkey verification_key
 # Generate witness
 node agtfi_compliance_js/generate_witness.js agtfi_compliance_js/agtfi_compliance.wasm input.json witness.wtns
 
-# Generate proof
-snarkjs groth16 prove agtfi_compliance_final.zkey witness.wtns proof.json public.json
+# Generate PLONK proof
+snarkjs plonk prove agtfi_compliance_final.zkey witness.wtns proof.json public.json
 
 # Verify off-chain
-snarkjs groth16 verify verification_key.json public.json proof.json
+snarkjs plonk verify verification_key.json public.json proof.json
 ```
 
 ## Export Solidity Verifier
 
 ```bash
-# Generate on-chain verifier contract
+# Generate on-chain PLONK verifier contract
 snarkjs zkey export solidityverifier agtfi_compliance_final.zkey ComplianceVerifier.sol
 ```
 

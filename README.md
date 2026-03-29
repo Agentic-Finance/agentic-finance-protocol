@@ -242,6 +242,19 @@ Protocol specifications for developers building on Agentic Finance:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+## Roadmap
+
+| Phase | Name | Status | Key Deliverables |
+|-------|------|--------|-----------------|
+| **1** | ZK Trust Foundation | ✅ Live | ZK Compliance (OFAC+AML), ZK Reputation, ShieldVault, Escrow, Streams |
+| **2** | Identity & Attestation | ✅ Live | Agent DID, SpendPolicy, TEE Registry, Inference Registry, KYA |
+| **3** | Protocol Interoperability | 🔜 Next | x402 facilitator, ERC-8004, Google AP2, cross-protocol VC exchange |
+| **4** | Streaming Proofs | 📋 Planned | Nova IVC folding, client-side WASM proving, EigenLayer AVS, optimistic zkML |
+| **5** | Cross-Chain Trust | 📋 Planned | SP1 state proofs, ERC-7683 intents, zkEmail/TLSNotary, multi-chain reputation |
+| **6** | Post-Quantum | 📋 Planned | LatticeFold migration, recursive ZK reporting, autonomous agent governance |
+
+> Full details in [AFP-002 §8](specs/draft-agtfi-security-standard-00.md#8-roadmap)
+
 ## Development
 
 ```bash

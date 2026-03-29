@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/solidity-0.8.20-363636" alt="Solidity" />
   <img src="https://img.shields.io/badge/circom-v2-orange" alt="Circom" />
   <img src="https://img.shields.io/badge/chain-Tempo_42431-purple" alt="Tempo" />
-  <img src="https://img.shields.io/badge/contracts-19_deployed-brightgreen" alt="Contracts" />
+  <img src="https://img.shields.io/badge/contracts-22_deployed-brightgreen" alt="Contracts" />
   <img src="https://img.shields.io/badge/ZK_circuits-5-cyan" alt="Circuits" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License" /></a>
 </p>
@@ -75,7 +75,7 @@ agentic-finance-protocol/
 | Package | Description | Key Features |
 |---------|-------------|--------------|
 | [`circuits`](packages/circuits) | ZK-SNARK circuits | 5 Circom V2 circuits, PLONK proofs, Poseidon hashing |
-| [`contracts`](packages/contracts) | Smart contracts | 19 contracts on Tempo L1, Foundry tests |
+| [`contracts`](packages/contracts) | Smart contracts | 22 contracts on Tempo L1, Foundry tests |
 | [`mcp-server`](packages/mcp-server) | MCP server | Claude/Cursor/GPT integration, 12 tools |
 | [`sdk`](packages/sdk) | TypeScript SDK | ZK proof generation, payments, escrow, agent marketplace |
 
@@ -177,6 +177,14 @@ All contracts live on **Tempo Moderato** (Chain 42431) &middot; [Explorer](https
 | TEERegistry | [`0x3afF0B...b99F`](https://explore.tempo.xyz/address/0x3afF0B6eB92a35516C08D4b741aC97f72436b99F) | Hardware attestation (SGX, TDX, SEV-SNP, ARM CCA) |
 | KnowYourAgent | [`0x399373...c885`](https://explore.tempo.xyz/address/0x3993737035F952dC1b7A9E88573e7f5E9eCcf885) | Unified 5-checkpoint trust assessment |
 
+### Protocol Interoperability (Phase 3)
+
+| Contract | Address | Description |
+|----------|---------|-------------|
+| X402Facilitator | [`0x69780f...14B8`](https://explore.tempo.xyz/address/0x69780f02A9302C749025F90911497e58f75214B8) | x402 HTTP payment settlement (EIP-712 signed) |
+| ERC8004Registry | [`0xb873Ad...6c22`](https://explore.tempo.xyz/address/0xb873Ad426B5838CB98Fb9e1FfB1e7b85eB646c22) | ERC-8004 Trustless Agent Registry (3-registry) |
+| CrossChainVC | [`0xF83A70...9470`](https://explore.tempo.xyz/address/0xF83A70d27896ABA8cb65b806643bEC6Fab979470) | Cross-protocol Verifiable Credential bridge |
+
 ### Auxiliary
 
 | Contract | Address | Description |
@@ -209,7 +217,7 @@ Production Circom V2 circuits with PLONK proofs (no trusted setup ceremony requi
 |-------|------|--------|-----------------|
 | **1** | ZK Trust Foundation | ✅ Live | ZK Compliance, ZK Reputation, ShieldVault, Escrow, Streams |
 | **2** | Identity & Attestation | ✅ Live | Agent DID, SpendPolicy, TEE Registry, Inference Registry, KYA |
-| **3** | Protocol Interoperability | 🔜 Next | x402 facilitator, ERC-8004, Google AP2, cross-protocol VCs |
+| **3** | Protocol Interoperability | ✅ Live | x402 facilitator, ERC-8004 Registry, CrossChain VCs |
 | **4** | Streaming Proofs | 📋 Planned | Nova IVC folding, WASM client proving, EigenLayer AVS |
 | **5** | Cross-Chain Trust | 📋 Planned | SP1 state proofs, ERC-7683 intents, zkEmail, TLSNotary |
 | **6** | Post-Quantum | 📋 Planned | LatticeFold migration, recursive ZK, autonomous governance |

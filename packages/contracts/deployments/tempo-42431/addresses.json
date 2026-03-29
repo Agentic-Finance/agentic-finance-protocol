@@ -95,6 +95,21 @@
       "address": "0x3993737035F952dC1b7A9E88573e7f5E9eCcf885",
       "name": "KnowYourAgent",
       "description": "Unified 5-checkpoint trust assessment aggregator"
+    },
+    "X402Facilitator": {
+      "address": "0x69780f02A9302C749025F90911497e58f75214B8",
+      "name": "X402Facilitator",
+      "description": "x402 HTTP payment protocol settlement (EIP-712 signed authorizations)"
+    },
+    "ERC8004Registry": {
+      "address": "0xb873Ad426B5838CB98Fb9e1FfB1e7b85eB646c22",
+      "name": "ERC8004Registry",
+      "description": "ERC-8004 Trustless Agent Registry (Identity + Reputation + Validation)"
+    },
+    "CrossChainVC": {
+      "address": "0xF83A70d27896ABA8cb65b806643bEC6Fab979470",
+      "name": "CrossChainVC",
+      "description": "Cross-protocol Verifiable Credential bridge with EIP-712 signatures"
     }
   },
   "tokens": {

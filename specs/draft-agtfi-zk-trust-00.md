@@ -1,7 +1,7 @@
 ---
 afp: 001
-title: ZK Trust Layer for Machine Payments
-description: Privacy-preserving compliance and reputation proofs for autonomous agent commerce
+title: "ZK Trust Layer for Machine Payments"
+description: "Privacy-preserving compliance, reputation, and inference attestation for autonomous agent commerce"
 author: Agentic Finance Team
 status: Draft
 type: Standards Track
@@ -15,13 +15,15 @@ requires: MPP (Machine Payments Protocol)
 
 ## Abstract
 
-This specification defines a privacy-preserving trust layer for machine-to-machine payment protocols. It introduces two zero-knowledge proof systems — **ZK Compliance** and **ZK Agent Reputation** — that extend existing payment protocols (MPP, x402) with verifiable trust signals while preserving agent privacy.
+This specification defines a privacy-preserving trust layer for machine-to-machine payment protocols. It introduces three zero-knowledge proof systems — **ZK Compliance**, **ZK Agent Reputation**, and **ZK Inference Attestation** — that extend existing payment protocols (MPP, x402, AP2) with verifiable trust signals while preserving agent privacy.
 
-Agents prove regulatory compliance (OFAC non-membership, AML thresholds) and transaction reputation (history, volume, dispute rate) without revealing private data. Merchants verify these proofs on-chain before accepting payments.
+Agents prove regulatory compliance (OFAC non-membership, AML thresholds), transaction reputation (history, volume, dispute rate), and inference integrity (model execution verification) without revealing private data. Merchants verify these proofs on-chain before accepting payments.
+
+The specification defines both the current production system (PLONK-based proofs) and the next-generation architecture (Nova IVC folding with recursive composition).
 
 ## Motivation
 
-Machine payment protocols (MPP, x402, ACP) enable AI agents to pay for resources programmatically. However, none address the fundamental trust question: *should this agent be trusted?*
+Machine payment protocols (MPP, x402, AP2) enable AI agents to pay for resources programmatically. However, none address the fundamental trust question: *should this agent be trusted?*
 
 Without trust infrastructure, the ecosystem faces a trilemma:
 
@@ -31,15 +33,35 @@ Without trust infrastructure, the ecosystem faces a trilemma:
 
 This specification resolves the trilemma by enabling trust verification without identity disclosure.
 
+### Design Goals
+
+1. **Privacy-first** — Agent addresses, transaction amounts, and individual histories MUST never appear on-chain
+2. **Composable** — Trust proofs MUST work with any payment protocol (MPP, x402, AP2, ERC-7683 intents)
+3. **Incremental** — Trust MUST accumulate over time without re-proving the entire history
+4. **Verifiable** — All trust claims MUST be cryptographically verifiable on-chain
+5. **Future-proof** — Architecture MUST support migration to post-quantum proof systems
+
 ### Comparison with Existing Approaches
 
-| Protocol | Compliance | Reputation | Privacy | Trust Model |
-|----------|-----------|------------|---------|-------------|
-| MPP | None | None | Public on-chain | None |
-| x402 | None | None | Public on-chain | None |
-| ACP (Stripe) | Centralized (Radar) | None | Stripe-controlled | Custodial |
-| AP2 (Google) | Centralized | None | Google-controlled | Custodial |
-| **AFP-001** | **ZK proofs** | **ZK proofs** | **Zero-knowledge** | **Decentralized** |
+| Protocol | Compliance | Reputation | Inference | Privacy | Trust Model |
+|----------|-----------|------------|-----------|---------|-------------|
+| MPP | None | None | None | Public on-chain | None |
+| x402 | None | None | None | Public on-chain | None |
+| ACP (Stripe) | Centralized | None | None | Custodial | Stripe-controlled |
+| AP2 (Google) | Centralized | None | None | Google-controlled | Custodial |
+| ERC-8004 | None | On-chain scores | None | Fully public | Reputation only |
+| **AFP-001** | **ZK proofs** | **ZK proofs** | **ZK proofs** | **Zero-knowledge** | **Decentralized** |
+
+## Terminology
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+
+- **Commitment** — A Poseidon hash binding an agent's identity to a random secret: `Poseidon(address, secret)`. The commitment serves as a pseudonymous on-chain identifier.
+- **Accumulator** — A Poseidon hash chain summarizing an agent's transaction history. Each new transaction extends the chain.
+- **Certificate** — An on-chain record asserting that a commitment has passed compliance verification. Certificates expire.
+- **Nullifier** — A unique value derived from a secret, used to prevent double-spending in shielded payments.
+- **SMT** — Sparse Merkle Tree: a data structure for efficient set membership/non-membership proofs.
+- **IVC** — Incremental Verifiable Computation: a proof system where each step folds into a running accumulator, enabling streaming proofs.
 
 ## Specification
 
@@ -48,16 +70,17 @@ This specification resolves the trilemma by enabling trust verification without 
 The trust layer sits between the payment protocol and the settlement layer:
 
 ```
-Agent ─── Payment Protocol (MPP/x402) ─── Trust Layer ─── Settlement (Tempo L1)
-                                               │
-                                    ┌──────────┴──────────┐
-                                    │                     │
-                              ZK Compliance         ZK Reputation
-                              (OFAC + AML)          (History + Score)
-                                    │                     │
-                                    ▼                     ▼
-                            ComplianceRegistry    ReputationRegistry
-                              (on-chain)              (on-chain)
+Agent ─── Payment Protocol (MPP/x402/AP2) ─── Trust Layer ─── Settlement (Tempo L1)
+                                                     │
+                                          ┌──────────┼──────────┐
+                                          │          │          │
+                                    ZK Compliance  ZK Rep   ZK Inference
+                                    (OFAC + AML)  (History)  (Model Attestation)
+                                          │          │          │
+                                          ▼          ▼          ▼
+                                    Compliance   Reputation   Inference
+                                    Registry     Registry     Registry
+                                     (on-chain)  (on-chain)   (on-chain)
 ```
 
 ### 1. ZK Compliance Proof
@@ -129,12 +152,9 @@ interface IComplianceRegistry {
     ) external returns (bool success);
 
     /// @notice Check if a commitment has a valid (non-expired) certificate
-    /// @param commitment The compliance commitment to check
-    /// @return True if compliant
     function isCompliant(uint256 commitment) external view returns (bool);
 
-    /// @notice Update the OFAC sanctions Merkle root (owner only, should be updated daily)
-    /// @param newRoot New Sparse Merkle Tree root
+    /// @notice Update the OFAC sanctions Merkle root (owner only)
     function updateSanctionsRoot(uint256 newRoot) external;
 }
 ```
@@ -165,6 +185,7 @@ This construction is:
 - **Append-only** — New claims extend the chain, old claims cannot be removed
 - **Binding** — Each claim is bound to `agentAddress`, preventing cross-agent forgery
 - **Collision-resistant** — Poseidon over BN254 provides ~128-bit collision resistance
+- **Incrementally verifiable** — New claims can be folded into the existing accumulator without re-proving the entire history (see §5: Next-Generation Architecture)
 
 #### 2.2 Circuit
 
@@ -190,7 +211,7 @@ This construction is:
 |--------|-------|-------------|
 | `agentAddress` | 1 | Agent's address |
 | `agentSecret` | 1 | Blinding factor |
-| `actualClaimCount` | 1 | Number of real claims (remainder padded with zeros) |
+| `actualClaimCount` | 1 | Number of real claims (remainder padded) |
 | `claimAmounts[32]` | 32 | Transaction amounts |
 | `claimTimestamps[32]` | 32 | Transaction timestamps |
 | `claimStatuses[32]` | 32 | Completion statuses (1=success, 0=dispute) |
@@ -225,10 +246,7 @@ This construction is:
 ```solidity
 interface IReputationRegistry {
     /// @notice Register an accumulator hash for an agent (daemon only)
-    function registerAccumulator(
-        uint256 agentCommitment,
-        uint256 accumulatorHash
-    ) external;
+    function registerAccumulator(uint256 agentCommitment, uint256 accumulatorHash) external;
 
     /// @notice Submit a reputation proof
     function verifyReputation(
@@ -255,9 +273,76 @@ interface IReputationRegistry {
 }
 ```
 
-### 3. HTTP Protocol Integration
+### 3. ZK Inference Attestation
 
-#### 3.1 MPP Extension Headers
+#### 3.1 Motivation
+
+When an AI agent claims it executed a specific model to produce a result, there is currently no way to verify this claim. A malicious agent could claim to run GPT-4 while actually running a cheaper model, or fabricate outputs entirely.
+
+ZK Inference Attestation allows agents to cryptographically prove that a specific model (identified by hash) was executed on specific inputs, without revealing model weights or full input data.
+
+#### 3.2 Architecture
+
+```
+Agent executes model inference
+    │
+    ├── Committed inputs: Poseidon(input_tensor)
+    ├── Model hash: keccak256(model_weights)
+    ├── Output commitment: Poseidon(output_tensor)
+    │
+    ▼
+Generate zkML proof (EZKL / Giza / custom)
+    │
+    ▼
+Submit attestation on-chain
+    │
+    ▼
+InferenceRegistry stores attestation
+```
+
+#### 3.3 On-Chain Interface
+
+```solidity
+interface IInferenceRegistry {
+    struct ModelAttestation {
+        bytes32 modelHash;           // keccak256(model_weights)
+        uint256 inputCommitment;     // Poseidon(input_data)
+        uint256 outputCommitment;    // Poseidon(output_data)
+        uint256 timestamp;
+        uint256 agentCommitment;     // Links to reputation system
+    }
+
+    /// @notice Register a verified model for inference attestation
+    function registerModel(
+        bytes32 modelHash,
+        string calldata modelURI,    // IPFS/Arweave URI for model metadata
+        bytes32 verificationKeyHash
+    ) external;
+
+    /// @notice Submit and verify an inference attestation
+    function attestInference(
+        ModelAttestation calldata attestation,
+        bytes calldata proof         // zkML proof (EZKL/Giza format)
+    ) external returns (bool);
+
+    /// @notice Check if an agent has a valid inference attestation for a model
+    function hasAttestation(
+        uint256 agentCommitment,
+        bytes32 modelHash
+    ) external view returns (bool valid, uint256 timestamp);
+}
+```
+
+#### 3.4 Integration with Reputation
+
+Verified inference attestations feed into the reputation system:
+- Agents with verified inference proofs receive higher trust scores
+- Merchants can require inference attestation for high-value API calls
+- Attestations are linked to `agentCommitment`, preserving privacy
+
+### 4. Protocol Integration
+
+#### 4.1 MPP Extension Headers
 
 **Server → Client (402 response):**
 
@@ -296,23 +381,31 @@ Authorization: Payment credential="<payment_signature>",
 7. If reputation fails → return 403 with X-Trust-Error: reputation_insufficient
 ```
 
-#### 3.2 x402 Extension
+#### 4.2 x402 Extension
 
 For x402 (HTTP 402 with EIP-3009), the trust headers are identical. The only difference is the payment credential format (EIP-3009 `TransferWithAuthorization` signature instead of MPP session key).
 
-### 4. MPP Compliance Gateway
+#### 4.3 ERC-7683 Intent Extension
+
+For intent-based payments, trust requirements are encoded in the intent order:
+
+```solidity
+struct TrustRequirements {
+    uint256 minComplianceCertAge;   // Max age of compliance cert (seconds)
+    uint256 minReputationTxCount;
+    uint256 minReputationVolume;
+    bytes32 requiredModelHash;       // Optional: require specific model attestation
+    bool requireTEEAttestation;      // Optional: require TEE hardware proof
+}
+```
+
+#### 4.4 MPP Compliance Gateway
 
 Bridges MPP session management with ZK trust verification:
 
 ```solidity
 interface IMPPComplianceGateway {
     /// @notice Create a session that requires ZK compliance
-    /// @param complianceCommitment Must be verified in ComplianceRegistry
-    /// @param reputationCommitment Optional; if non-zero, must be verified
-    /// @param token Payment token address
-    /// @param maxBudget Maximum spend for this session
-    /// @param duration Session duration in seconds
-    /// @return sessionId Unique session identifier
     function createCompliantSession(
         uint256 complianceCommitment,
         uint256 reputationCommitment,
@@ -333,6 +426,78 @@ interface IMPPComplianceGateway {
 }
 ```
 
+### 5. Next-Generation Architecture
+
+This section describes the target architecture for AFP-001 v2, incorporating folding-based IVC and recursive proof composition.
+
+#### 5.1 Nova IVC for Streaming Proofs
+
+The current architecture requires generating a full PLONK proof for each compliance/reputation verification. Nova IVC enables **streaming proofs** where each payment step folds into a running accumulator, and only the final compressed proof is verified on-chain.
+
+**Benefits:**
+- 1000 sequential payments verified at roughly the same cost as 1
+- Incremental accumulation — no need to re-prove entire history
+- Sub-second per-step folding (vs. 15-29s per PLONK proof)
+
+**Target interface:**
+
+```solidity
+interface IFoldingVerifier {
+    /// @notice Verify a folded IVC proof covering N steps
+    function verifyFoldedProof(
+        bytes calldata compressedProof,
+        uint256[2] calldata publicAccumulator,
+        uint256 stepCount,
+        uint256 finalOutputHash
+    ) external view returns (bool);
+
+    /// @notice Verify an incremental update to an existing folded proof
+    function verifyIncrementalFold(
+        uint256[2] calldata previousAccumulator,
+        uint256[2] calldata newAccumulator,
+        bytes calldata transitionProof
+    ) external view returns (bool);
+}
+```
+
+#### 5.2 Client-Side Proving
+
+The compliance circuit (13,591 constraints) is small enough for client-side proving via WASM:
+
+| Platform | Framework | Est. Proof Time |
+|----------|-----------|-----------------|
+| Browser (WASM) | snarkjs | ~30s |
+| Browser (WASM + Workers) | mopro | ~8s |
+| Mobile (native) | mopro/rapidsnark | ~3s |
+| Server (Node.js) | snarkjs | ~15s |
+| Server (native + GPU) | rapidsnark | ~2s |
+
+#### 5.3 Cross-Chain Verification
+
+For multi-chain deployment, trust proofs generated on Tempo L1 can be verified on other chains using succinct state proofs:
+
+```solidity
+interface ICrossChainTrustVerifier {
+    /// @notice Verify a trust proof from another chain
+    function verifyCrossChainTrust(
+        uint256 sourceChainId,
+        bytes calldata stateProof,       // SP1/Succinct proof of source chain state
+        uint256 commitment,
+        uint256 blockHeight
+    ) external view returns (bool compliant, bool reputationValid);
+}
+```
+
+#### 5.4 Post-Quantum Migration Path
+
+Current BN254 proofs provide 128-bit classical security but are vulnerable to quantum attacks. The migration path:
+
+1. **Phase 1 (current):** BN254 + PLONK — production-proven, widely supported
+2. **Phase 2 (2027):** Dual proofs — BN254 + lattice-based (LatticeFold) in parallel
+3. **Phase 3 (2029):** Full migration to lattice-based proofs when quantum threat materializes
+
+No contract changes required for Phase 2 — the verifier interface accepts `bytes calldata proof` which is format-agnostic.
+
 ## Security Considerations
 
 ### Privacy Properties
@@ -344,12 +509,15 @@ interface IMPPComplianceGateway {
 | **Individual transactions** | Never revealed; only aggregates (count, volume) |
 | **Compliance status** | Binary (pass/fail); no details about why |
 | **Reputation details** | Only "meets threshold" disclosed; exact scores hidden |
+| **Model weights** | Never revealed; only model hash is public |
+| **Inference inputs** | Never revealed; only input commitment is public |
 
 ### Soundness
 
 - **PLONK proofs** are computationally sound under the BN254 discrete logarithm assumption (128-bit security)
 - **SMT non-inclusion** proofs are complete — it is infeasible to prove exclusion of an included element
 - **Poseidon hash chain** is collision-resistant — forging a valid accumulator requires breaking Poseidon
+- **Nova IVC** (when deployed) inherits soundness from the underlying commitment scheme
 
 ### Known Attack Vectors
 
@@ -361,12 +529,14 @@ interface IMPPComplianceGateway {
 | Front-running | Observe proof submission and act on it | Commitment hides all private inputs; proof reveals nothing beyond public signals |
 | Temporal attack | Use expired certificate | On-chain expiry check: `block.timestamp < issuedAt + validity` |
 | Sybil reputation | Create multiple agents with fake history | Each claim bound to `agentAddress`; daemon validates against real on-chain transactions |
+| zkML forgery | Claim false model execution | Inference proof verified against registered model verification key |
 
 ### Trust Assumptions
 
 1. **Sanctions oracle** — The entity updating `sanctionsRoot` is trusted to maintain an accurate OFAC list
 2. **Reputation daemon** — The entity registering accumulator hashes is trusted to validate claims against real transactions
 3. **BN254 security** — The discrete logarithm problem on BN254 is hard (standard assumption, used by Ethereum precompiles)
+4. **Model registry** — Model hashes are registered by trusted parties (model developers or auditors)
 
 ## Reference Implementation
 
@@ -380,18 +550,19 @@ interface IMPPComplianceGateway {
 | ReputationVerifier | `0x2e2C368afB20810AadA9e6BB2Fb51002614F7Da4` | Reputation-specific verifier |
 | ReputationRegistry | `0xF3296984cb8785Ab236322658c13051801E58875` | Score storage + queries |
 | MPPComplianceGateway | `0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d` | Session management |
+| AIProofRegistry | `0x8fDB8E871c9eaF2955009566F41490Bbb128a014` | Inference attestation storage |
 
 ### Test Results
 
 ```
 Compliance Circuit (4/4 passed)
-  ✓ Valid proof — clean address, amounts within thresholds
+  ✓ Valid proof — clean address, amounts within thresholds (~15s)
   ✓ Sanctioned address — proof generation fails (correct rejection)
   ✓ Over-limit amount — proof generation fails (correct rejection)
   ✓ Over-limit volume — proof generation fails (correct rejection)
 
 Reputation Circuit (4/4 passed)
-  ✓ Valid reputation — 10 txs, $50K volume, 0 disputes
+  ✓ Valid reputation — 10 txs, $50K volume, 0 disputes (~29s)
   ✓ Insufficient tx count — proof generation fails (correct rejection)
   ✓ Insufficient volume — proof generation fails (correct rejection)
   ✓ Non-zero disputes — proof generation fails (correct rejection)
@@ -402,19 +573,68 @@ Reputation Circuit (4/4 passed)
 | Metric | Compliance | Reputation |
 |--------|-----------|------------|
 | Constraints | 13,591 | 41,265 |
-| Proof generation | ~15s | ~29s |
+| Proof generation (server) | ~15s | ~29s |
 | Proof verification (off-chain) | ~17ms | ~25ms |
 | Proof verification (on-chain) | ~280K gas | ~280K gas |
 | Proof size | 24 field elements | 24 field elements |
 
+## Test Vectors
+
+### Compliance Proof — Valid Case
+
+```json
+{
+  "description": "Clean address, amounts within thresholds",
+  "inputs": {
+    "senderAddress": "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793",
+    "secret": "987654321098765432109876543210",
+    "amount": "5000000000",
+    "cumulativeVolume": "8000000000",
+    "amountThreshold": "10000000000",
+    "volumeThreshold": "10000000000"
+  },
+  "expected": {
+    "proofGenerated": true,
+    "proofVerified": true,
+    "publicSignals": ["sanctionsRoot", "commitment", "10000000000", "10000000000"]
+  }
+}
+```
+
+### Compliance Proof — Rejection Case
+
+```json
+{
+  "description": "Amount exceeds threshold — circuit MUST reject",
+  "inputs": {
+    "senderAddress": "0x33F7E5da060A7FEE31AB4C7a5B27F4cC3B020793",
+    "secret": "987654321098765432109876543210",
+    "amount": "15000000000",
+    "cumulativeVolume": "8000000000",
+    "amountThreshold": "10000000000",
+    "volumeThreshold": "10000000000"
+  },
+  "expected": {
+    "proofGenerated": false,
+    "error": "constraint violation: amount >= amountThreshold"
+  }
+}
+```
+
 ## References
 
-- [Machine Payments Protocol (MPP)](https://paymentauth.org) — Base payment protocol this spec extends
-- [MPP GitHub](https://github.com/tempoxyz/mpp-specs) — MPP reference implementation
+- [Machine Payments Protocol (MPP)](https://paymentauth.org) — Base payment protocol
 - [x402 Protocol](https://github.com/coinbase/x402) — HTTP 402 payment standard by Coinbase
+- [Google AP2](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol) — Agent Payments Protocol
+- [ERC-7683](https://www.erc7683.org) — Cross-chain intent standard
+- [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) — Trustless Agent identity standard
+- [Nova IVC](https://github.com/microsoft/Nova) — Folding scheme by Microsoft Research
+- [HyperNova](https://eprint.iacr.org/2023/573) — Generalized folding for CCS
+- [LatticeFold](https://link.springer.com/chapter/10.1007/978-981-95-5099-9_11) — Post-quantum folding (ASIACRYPT 2025)
+- [EZKL](https://github.com/zkonduit/ezkl) — zkML proving framework
 - [circomlib SMTVerifier](https://github.com/iden3/circomlib) — Sparse Merkle Tree library
-- [Poseidon Hash Function](https://eprint.iacr.org/2019/458) — Arithmetic-friendly hash for ZK circuits
-- [PLONK Proof System](https://eprint.iacr.org/2019/953) — Universal SNARK with no per-circuit setup
+- [Poseidon Hash](https://eprint.iacr.org/2019/458) — Arithmetic-friendly hash for ZK circuits
+- [PLONK](https://eprint.iacr.org/2019/953) — Universal SNARK with no per-circuit setup
 - [OFAC SDN List](https://sanctionssearch.ofac.treas.gov/) — U.S. sanctions database
 
 ## Copyright

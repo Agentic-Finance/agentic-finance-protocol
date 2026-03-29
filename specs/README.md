@@ -1,30 +1,42 @@
 # Agentic Finance Protocol Specifications
 
-Protocol specifications defining standards for trust infrastructure in autonomous AI commerce.
+Zero-knowledge trust infrastructure for autonomous agent commerce.
 
 ## Specifications
 
-| ID | Title | Status | Description |
-|----|-------|--------|-------------|
-| AFP-001 | [ZK Trust Layer](draft-agtfi-zk-trust-00.md) | Draft | ZK compliance proofs + agent reputation as extensions to the Machine Payments Protocol (MPP) |
-| AFP-002 | [Security Standard](draft-agtfi-security-standard-00.md) | Draft | Security requirements and threat model for open agentic commerce networks |
+| AFP | Title | Status | Category |
+|-----|-------|--------|----------|
+| [AFP-001](draft-agtfi-zk-trust-00.md) | ZK Trust Layer for Machine Payments | Draft | Core |
+| [AFP-002](draft-agtfi-security-standard-00.md) | Security Standard for Open Agentic Commerce | Draft | Security |
 
-## How to Contribute
+## AFP-001: ZK Trust Layer
 
-We welcome new specifications! To propose one:
+Privacy-preserving compliance, reputation, and inference attestation.
+
+- **ZK Compliance** — OFAC sanctions non-membership + AML thresholds (13,591 constraints)
+- **ZK Reputation** — Transaction history accumulator with hash chain integrity (41,265 constraints)
+- **ZK Inference** — AI model execution verification via zkML attestation
+- **Next-gen** — Nova IVC streaming proofs, cross-chain verification, post-quantum migration
+
+## AFP-002: Security Standard
+
+Threat model, security requirements, agent identity, and regulatory compliance.
+
+- **15 threats** — 10 current + 5 emerging (inference spoofing, prompt injection, quantum)
+- **12 security requirements** — Identity binding, replay prevention, budget enforcement, TEE attestation
+- **Agent DID** — W3C-compatible decentralized identity for machines
+- **4 trust tiers** — Minimal (wallet) → Full (ZK + TEE + inference)
+- **Regulatory mapping** — OFAC, AML, Travel Rule, EU AI Act, GDPR, MiCA, FATF
+
+## Contributing
 
 1. Fork this repository
-2. Create a new file: `specs/draft-agtfi-{topic}-00.md`
-3. Follow the format of existing specs (Abstract, Problem, Solution, Protocol, Security)
+2. Create `specs/draft-agtfi-{topic}-00.md`
+3. Follow existing spec format
 4. Open a Pull Request with `[SPEC]` prefix
 
-## Specification Lifecycle
+## Lifecycle
 
 ```
 Draft → Review → Accepted → Final
 ```
-
-- **Draft** — Initial proposal, open for feedback
-- **Review** — Under active community review
-- **Accepted** — Approved by maintainers
-- **Final** — Stable, implemented in production contracts

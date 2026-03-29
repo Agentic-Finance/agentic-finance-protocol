@@ -111,7 +111,7 @@ contract ERC8004Registry {
     function registerAgent(
         address agentAddress,
         string calldata endpoint,
-        string[] calldata capabilities,
+        bytes32[] calldata capabilities,
         address[] calldata supportedTokens,
         uint8 agentType
     ) external returns (uint256 tokenId) {
@@ -158,7 +158,7 @@ contract ERC8004Registry {
     function updateAgent(
         uint256 tokenId,
         string calldata endpoint,
-        string[] calldata capabilities,
+        bytes32[] calldata capabilities,
         bool active
     ) external {
         require(_owners[tokenId] == msg.sender, "Not agent owner");

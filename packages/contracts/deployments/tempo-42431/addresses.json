@@ -70,6 +70,31 @@
       "address": "0x0ED1D5cFDe33f05Ce377cB6e9a0A23570255060D",
       "name": "ProofChainSettlement",
       "description": "Incremental proof chaining for batch settlement"
+    },
+    "AgentDIDRegistry": {
+      "address": "0x8510035Fb7B014527a41aBBB592F64d0b5Bf0DD2",
+      "name": "AgentDIDRegistry",
+      "description": "W3C-compatible DID registry with Verifiable Credentials"
+    },
+    "AgentSpendPolicy": {
+      "address": "0x6c393f33baE036F187200Bd5EB3e9ecE75166951",
+      "name": "AgentSpendPolicy",
+      "description": "Programmable spend limits with kill switch"
+    },
+    "InferenceRegistry": {
+      "address": "0xD99108A49CC88e5363F4e8932Cca84Ab4EF6265F",
+      "name": "InferenceRegistry",
+      "description": "zkML inference attestation for AI model verification"
+    },
+    "TEERegistry": {
+      "address": "0x3afF0B6eB92a35516C08D4b741aC97f72436b99F",
+      "name": "TEERegistry",
+      "description": "Trusted Execution Environment attestation registry"
+    },
+    "KnowYourAgent": {
+      "address": "0x3993737035F952dC1b7A9E88573e7f5E9eCcf885",
+      "name": "KnowYourAgent",
+      "description": "Unified 5-checkpoint trust assessment aggregator"
     }
   },
   "tokens": {

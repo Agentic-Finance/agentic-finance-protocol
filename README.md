@@ -44,9 +44,11 @@ graph LR
     A["🤖 AI Agent"] -->|MCP / SDK| B["Agentic Finance"]
     B --> C["ZK Compliance<br/>OFAC · AML"]
     B --> D["ZK Reputation<br/>History · Score"]
+    B --> G["ZK Inference<br/>Model Attestation"]
     B --> E["Smart Contracts<br/>Escrow · Streams · Shield"]
     C --> F["Tempo L1"]
     D --> F
+    G --> F
     E --> F
     style B fill:#7c3aed,stroke:#5b21b6,color:#fff
     style F fill:#0f172a,stroke:#334155,color:#fff
@@ -57,7 +59,7 @@ graph LR
 | Package | Description | |
 |---------|-------------|---|
 | [`packages/circuits`](packages/circuits) | ZK-SNARK circuits — Circom V2 + PLONK proofs | Compliance, Reputation, Proof Chain, Shield |
-| [`packages/contracts`](packages/contracts) | Solidity smart contracts — Foundry | 9 verified contracts on Tempo L1 |
+| [`packages/contracts`](packages/contracts) | Solidity smart contracts — Foundry | 14 contracts on Tempo L1 |
 | [`packages/mcp-server`](packages/mcp-server) | MCP server for AI agents | Claude, Cursor, GPT integration |
 | [`packages/sdk`](packages/sdk) | TypeScript SDK | Payments, Escrow, ZK proofs, Agent marketplace |
 
@@ -160,6 +162,16 @@ All contracts verified on **Tempo Moderato** (Chain 42431) · [Explorer](https:/
 | MPPComplianceGateway | [`0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d`](https://explore.tempo.xyz/address/0x5F68F2A17a28b06A02A649cade5a666C49cb6B6d) | MPP sessions + compliance gate |
 | AgentDiscoveryRegistry | [`0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47`](https://explore.tempo.xyz/address/0x74D79e0AEd3CF9aE9A325558940bB1c8fB8CeA47) | Privacy-preserving agent marketplace |
 
+### Agent Identity & Attestation (Phase 2)
+
+| Contract | Address | Description |
+|----------|---------|-------------|
+| AgentDIDRegistry | [`0x8510035Fb7B014527a41aBBB592F64d0b5Bf0DD2`](https://explore.tempo.xyz/address/0x8510035Fb7B014527a41aBBB592F64d0b5Bf0DD2) | W3C-compatible DID + Verifiable Credentials |
+| AgentSpendPolicy | [`0x6c393f33baE036F187200Bd5EB3e9ecE75166951`](https://explore.tempo.xyz/address/0x6c393f33baE036F187200Bd5EB3e9ecE75166951) | Per-tx/daily/monthly caps, kill switch, whitelists |
+| InferenceRegistry | [`0xD99108A49CC88e5363F4e8932Cca84Ab4EF6265F`](https://explore.tempo.xyz/address/0xD99108A49CC88e5363F4e8932Cca84Ab4EF6265F) | zkML attestation for AI model verification |
+| TEERegistry | [`0x3afF0B6eB92a35516C08D4b741aC97f72436b99F`](https://explore.tempo.xyz/address/0x3afF0B6eB92a35516C08D4b741aC97f72436b99F) | Hardware attestation (SGX, TDX, SEV-SNP, ARM CCA) |
+| KnowYourAgent | [`0x3993737035F952dC1b7A9E88573e7f5E9eCcf885`](https://explore.tempo.xyz/address/0x3993737035F952dC1b7A9E88573e7f5E9eCcf885) | 5-checkpoint trust assessment, tiers 0-4 |
+
 ### Auxiliary
 
 | Contract | Address | Description |
@@ -187,10 +199,14 @@ Protocol specifications for developers building on Agentic Finance:
 
 | Spec | Status | Description |
 |------|--------|-------------|
-| [AFP-001: ZK Trust Layer](specs/draft-agtfi-zk-trust-00.md) | Draft | ZK compliance + reputation as MPP extension |
-| [AFP-002: Security Standard](specs/draft-agtfi-security-standard-00.md) | Draft | Security requirements for open agentic commerce |
+| [AFP-001: ZK Trust Layer](specs/draft-agtfi-zk-trust-00.md) | Draft | ZK compliance, reputation, and inference attestation |
+| [AFP-002: Security Standard](specs/draft-agtfi-security-standard-00.md) | Draft | 15 threats, 12 SRs, agent DID, TEE, KYA framework |
 
-> **Building on these specs?** We'd love to hear from you. Open an [issue](https://github.com/Agentic-Finance/agentic-finance-protocol/issues) or reach out at [agt.finance](https://agt.finance).
+**AFP-001** covers ZK Compliance (OFAC + AML), ZK Reputation (hash chain accumulator), ZK Inference Attestation (zkML), and the next-gen architecture (Nova IVC, cross-chain, post-quantum).
+
+**AFP-002** covers 15 threat vectors, 12 security requirements (RFC 2119), Agent DID framework (W3C), TEE attestation (SGX/SEV-SNP/ARM CCA), 4-tier graduated trust, Know Your Agent (KYA), and a 6-phase roadmap.
+
+> **Building on these specs?** Open an [issue](https://github.com/Agentic-Finance/agentic-finance-protocol/issues) or reach out at [agt.finance](https://agt.finance).
 
 ## Architecture
 
@@ -201,12 +217,16 @@ Protocol specifications for developers building on Agentic Finance:
 │   MCP Server          TypeScript SDK         REST API           │
 │   (Claude/Cursor)     (npm @agtfi/sdk)       (agt.finance/api)  │
 ├─────────────────────────────────────────────────────────────────┤
-│                        Trust Layer                              │
+│                     Identity & Trust Layer                      │
 │                                                                 │
-│   ZK Compliance ──── ZK Reputation ──── Agent Discovery         │
-│   (OFAC + AML)       (Score + History)   (Privacy-preserving)   │
+│   Agent DID ─── KnowYourAgent ─── TEE Attestation              │
+│   (W3C DID)    (5-Checkpoint)     (SGX/SEV/CCA)                │
 │                                                                 │
-│   Proof Chain ─────── PlonkVerifierV2 ── On-chain Verification  │
+│   ZK Compliance ── ZK Reputation ── ZK Inference                │
+│   (OFAC + AML)    (Score + History)  (Model Attestation)        │
+│                                                                 │
+│   SpendPolicy ─── PlonkVerifierV2 ── Inference Registry         │
+│   (Caps/Kill)     (On-chain ZKP)     (zkML Proofs)              │
 ├─────────────────────────────────────────────────────────────────┤
 │                      Payment Layer                              │
 │                                                                 │

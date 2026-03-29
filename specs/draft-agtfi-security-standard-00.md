@@ -426,36 +426,55 @@ All contracts MUST follow:
 
 ### 8. Roadmap
 
-#### Phase 1: Foundation (Current)
+#### Phase 1: ZK Trust Foundation
 
-- [x] ZK Compliance proofs (OFAC + AML)
-- [x] ZK Reputation proofs (history + volume)
-- [x] Nullifier-based anti-double-spend
-- [x] Session budget enforcement
+- [x] ZK Compliance proofs (OFAC + AML) — 13,591 constraints, PLONK
+- [x] ZK Reputation proofs (history + volume) — 41,265 constraints, Poseidon accumulator
+- [x] Nullifier-based anti-double-spend (ShieldVaultV2)
+- [x] Session budget enforcement (MPPComplianceGateway)
 - [x] On-chain event audit trail
+- [x] 9 core contracts deployed on Tempo L1
 
-#### Phase 2: Identity & Attestation (2026-2027)
+#### Phase 2: Identity & Attestation
 
-- [ ] Agent DID registry on Tempo L1
-- [ ] TEE attestation integration (Phala / EigenCompute)
-- [ ] ZK Inference attestation (EZKL / Giza)
-- [ ] ERC-8004 compatibility for agent identity
-- [ ] x402 facilitator integration
+- [x] Agent DID Registry — W3C-compatible, Verifiable Credentials
+- [x] Agent Spend Policy — Per-tx/daily/monthly caps, kill switch, recipient whitelist
+- [x] TEE Registry — Intel SGX, AMD SEV-SNP, ARM CCA attestation
+- [x] Inference Registry — zkML attestation for AI model verification
+- [x] Know Your Agent (KYA) — 5-checkpoint composite trust assessment
+- [x] 4-tier graduated trust model
 
-#### Phase 3: Advanced Trust (2027-2028)
+#### Phase 3: Protocol Interoperability
 
-- [ ] Nova IVC streaming proofs
-- [ ] EigenLayer AVS for daemon security
-- [ ] Cross-chain trust verification (SP1 state proofs)
-- [ ] Intent-based payments (ERC-7683)
-- [ ] zkEmail / TLSNotary bridges for fiat verification
+- [ ] x402 facilitator integration (Coinbase payment protocol)
+- [ ] ERC-8004 compatibility layer
+- [ ] Google AP2 payment rail adapter
+- [ ] Cross-protocol credential portability (VC exchange)
+- [ ] Multi-chain DID resolution
 
-#### Phase 4: Post-Quantum & Sovereignty (2028-2030)
+#### Phase 4: Streaming Proofs & Verified Compute
 
-- [ ] LatticeFold migration for post-quantum proofs
-- [ ] Full intent-based architecture with solver network
-- [ ] Autonomous agent liability framework
+- [ ] Nova IVC folding for streaming payment proofs
+- [ ] Client-side WASM proving (browser + mobile)
+- [ ] EigenLayer AVS registration for daemon security
+- [ ] Optimistic zkML (challenge-based inference verification)
+- [ ] Recursive proof composition (proof-of-proofs)
+
+#### Phase 5: Cross-Chain Trust
+
+- [ ] Cross-chain trust verification via SP1 state proofs
+- [ ] Intent-based payments (ERC-7683 solver network)
+- [ ] zkEmail / TLSNotary bridges for fiat payment verification
+- [ ] Multi-chain reputation aggregation
+- [ ] Bridge-less trust transfer between chains
+
+#### Phase 6: Post-Quantum & Autonomous Governance
+
+- [ ] LatticeFold migration for post-quantum proof security
 - [ ] Privacy-preserving regulatory reporting (recursive ZK proofs)
+- [ ] Autonomous agent liability framework (on-chain dispute resolution)
+- [ ] Decentralized oracle network for sanctions list updates
+- [ ] Full intent-based architecture with permissionless solver network
 
 ## Deployed Infrastructure
 

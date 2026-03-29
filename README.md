@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/solidity-0.8.20-363636" alt="Solidity" />
   <img src="https://img.shields.io/badge/circom-v2-orange" alt="Circom" />
   <img src="https://img.shields.io/badge/chain-Tempo_42431-purple" alt="Tempo" />
-  <img src="https://img.shields.io/badge/contracts-14_deployed-brightgreen" alt="Contracts" />
+  <img src="https://img.shields.io/badge/contracts-19_deployed-brightgreen" alt="Contracts" />
   <img src="https://img.shields.io/badge/ZK_circuits-5-cyan" alt="Circuits" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License" /></a>
 </p>
@@ -75,7 +75,7 @@ agentic-finance-protocol/
 | Package | Description | Key Features |
 |---------|-------------|--------------|
 | [`circuits`](packages/circuits) | ZK-SNARK circuits | 5 Circom V2 circuits, PLONK proofs, Poseidon hashing |
-| [`contracts`](packages/contracts) | Smart contracts | 14 contracts on Tempo L1, Foundry tests |
+| [`contracts`](packages/contracts) | Smart contracts | 19 contracts on Tempo L1, Foundry tests |
 | [`mcp-server`](packages/mcp-server) | MCP server | Claude/Cursor/GPT integration, 12 tools |
 | [`sdk`](packages/sdk) | TypeScript SDK | ZK proof generation, payments, escrow, agent marketplace |
 

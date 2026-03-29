@@ -88,6 +88,18 @@ export class AgtFiAgentClient {
     }
 }
 
+// ── Agent Identity, Trust & Policy ────────────────────────
+
+export { AgentIdentity, TRUST_TIERS } from './identity';
+export type {
+    IdentityConfig,
+    SpendPolicyConfig,
+    DIDInfo,
+    TrustTier,
+    SpendPolicyInfo,
+    KYAAssessment,
+} from './identity';
+
 // ── ZK Privacy + Gateway ─────────────────────────────────
 
 export { ZKPrivacy, batchComplianceProofs } from './zk-privacy';

@@ -12,7 +12,7 @@ Zero-knowledge circuits for the Agentic Finance Protocol. Built with Circom V2, 
                     └──────────┬───────────┘
                                │
           ┌────────────────────┼────────────────────┐
-          ▼                    ▼                     ▼
+          ▼                    ▼                    ▼
  ┌─────────────────┐ ┌─────────────────┐  ┌──────────────────┐
  │  agtfi_shield   │ │agtfi_compliance │  │ agtfi_reputation │
  │  agtfi_shield_v2│ │                 │  │                  │

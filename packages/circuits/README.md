@@ -21,9 +21,9 @@ Zero-knowledge circuits for the Agentic Finance Protocol. Built with Circom V2, 
  │  with nullifier │ │  without reveal │  │  exact scores    │
  │  anti-replay    │ │  identity       │  │                  │
  └────────┬────────┘ └────────┬────────┘  └────────┬─────────┘
-          │                   │                     │
-          │         ┌─────────┴─────────┐           │
-          │         ▼                   ▼           │
+          │                   │                    │
+          │         ┌─────────┴─────────┐          │
+          │         ▼                   ▼          │
           │  ┌──────────────┐  ┌──────────────┐    │
           │  │agtfi_proof   │  │  On-chain    │    │
           │  │  _chain      │  │  Verifier    │    │

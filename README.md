@@ -236,7 +236,7 @@ Production Circom V2 circuits with PLONK proofs (no trusted setup ceremony requi
 │                     Identity & Trust Layer                      │
 │                                                                 │
 │   Agent DID ────── KnowYourAgent ────── TEE Attestation         │
-│   (W3C DID)       (5-Checkpoint)        (SGX/SEV/CCA)          │
+│   (W3C DID)       (5-Checkpoint)        (SGX/SEV/CCA)           │
 │                                                                 │
 │   ZK Compliance ── ZK Reputation ── ZK Inference ── SpendPolicy │
 │   (OFAC + AML)    (Score + History) (zkML Proofs)  (Caps/Kill)  │
@@ -251,7 +251,7 @@ Production Circom V2 circuits with PLONK proofs (no trusted setup ceremony requi
 ├─────────────────────────────────────────────────────────────────┤
 │                      Settlement Layer                           │
 │                                                                 │
-│   Tempo L1 (Chain 42431) ─── AlphaUSD (TIP-20 Precompile)      │
+│   Tempo L1 (Chain 42431) ─── AlphaUSD (TIP-20 Precompile)       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
